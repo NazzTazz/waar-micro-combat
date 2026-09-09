@@ -6,9 +6,23 @@
     "require": {
         "php": "^8.2"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
     "autoload": {
         "psr-4": {
             "Waar\\MicroCombat\\": "src/"
         }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:js": [
+            "node tests/acceptance-zones-model.test.js",
+            "node tests/finalist-comparison-model.test.js",
+            "node tests/finalist-stability-model.test.js",
+            "node tests/mixed-composition-observation-model.test.js"
+        ],
+        "test:all": ["@test", "@test:js"],
+        "smoke": "php bin/run-wind-tunnel.php experiments/t24-astra-vector-corrections.json reports/smoke"
     }
 }

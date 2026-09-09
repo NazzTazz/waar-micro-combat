@@ -1,0 +1,5 @@
+/vendor/
+/reports/
+/.phpunit.cache/
+/composer.phar
+/.idea/
