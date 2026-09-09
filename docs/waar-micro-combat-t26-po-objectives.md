@@ -5,7 +5,7 @@
 ## Document reçu
 
 - Source locale : `C:/Users/trist/Downloads/t26-monotype-equal-cost-acceptance-zones.json`, export du 9 septembre à 00:48.
-- [Copie exacte conservée](../var/waar-micro-combat/objectives/20260909-po-draft/acceptance-zones.json).
+- [Copie exacte conservée](../experiments/objectives/20260909-po-draft/acceptance-zones.json).
 - Validation par `WaarAcceptanceZonesModel.validateAndClassify()` contre le calque T26 courant : format `waar-acceptance-zones/0.2` valide, provenance compatible, aucune zone absente ou périmée.
 - 96 zones présentes et activées, toutes en brouillon ; aucune confirmée.
 - Comparaison géométrique avec le document T26 initial : 16 zones retouchées, exclusivement les pointes attaquantes sur l'axe `survivors`. Les 80 autres zones sont inchangées.

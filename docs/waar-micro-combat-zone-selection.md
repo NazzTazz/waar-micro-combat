@@ -1,6 +1,6 @@
 # Sélection directe des zones — 9 septembre 2026
 
-[Rapport autonome](../var/waar-micro-combat/t26-zone-selection/report.html).
+Rapport autonome (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-zone-selection/report.html`).
 
 - Cliquer au centre d'une zone sélectionne son camp et met à jour le panneau « Zone sélectionnée », en lecture comme en édition.
 - Le survol renforce légèrement le remplissage et le contour dans la couleur du camp : turquoise pour l'attaquant, corail pour le défenseur.

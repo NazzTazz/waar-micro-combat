@@ -1,6 +1,11 @@
 # Relais T34 — observation des compositions mixtes T24
 
-9 septembre 2026 — livraison terminée, prête pour contre-recette Astra.
+9 septembre 2026 — état à la livraison : prête pour contre-recette Astra.
+
+Mise à jour du point de reprise : la [contre-recette légère Astra](waar-micro-combat-t34-astra-review.md)
+a depuis reproduit les mesures et posé la réserve R1 de provenance avant clôture.
+Voir le [handoff actualisé](waar-micro-combat-t34-handoff.md). Les commandes et
+chemins ci-dessous restent ceux de la livraison dans Waar v3.
 
 ## Décision d’entrée
 

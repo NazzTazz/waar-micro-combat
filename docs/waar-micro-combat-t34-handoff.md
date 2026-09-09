@@ -1,8 +1,19 @@
 # Handoff T34 — point de reprise
 
-T34 est livrée et prête pour contre-recette Astra. Le relais autoritaire est
-`docs/waar-micro-combat-t34-relay.md`; la spécification reste
-`docs/waar-micro-combat-t30-t34-spec.md`.
+T34 est livrée et sa contre-recette légère Astra a reproduit les mesures
+officielles, avec une réserve R1 de provenance avant clôture. Voir la
+[contre-recette](waar-micro-combat-t34-astra-review.md), le
+[relais de livraison](waar-micro-combat-t34-relay.md) et la
+[spécification](waar-micro-combat-t30-t34-spec.md).
+
+## Reprise prioritaire — réserve R1 ouverte
+
+Le builder T34 vérifie les identifiants du plan et du résultat T33, mais ne
+compare pas l'empreinte du plan reçu à `result.planSha256`. La revue demande de
+vérifier ce lien, de recouper les empreintes des variantes entre plan, résultat
+et copies, puis de couvrir le rejet d'un plan altéré avant toute mesure.
+Cette correction reste à réaliser ; aucune clôture ni approbation de candidat
+ne découle de la reproduction des mesures officielles.
 
 ## État à préserver
 
@@ -18,7 +29,9 @@ T34 est livrée et prête pour contre-recette Astra. Le relais autoritaire est
   conservés exactement. Les quatre variantes utilisent le départage défenseur
   et les coûts figés.
 - La sortie officielle contient 24 000 combats et dix renversements de majorité.
-  Elle est `var/waar-micro-combat/t34-mixed-composition-observation/`.
+  Elle est conservée dans
+  `experiments/references/t34-mixed-composition-observation/` ; ouvrir le
+  [rapport figé](../experiments/references/t34-mixed-composition-observation/report.html).
 - Aucun score T24, objectif mixte, ellipse, verdict Legacy, classement ou choix
   automatique n’a été ajouté.
 - Les rapports historiques T24 restent intacts et utilisent le départage nul

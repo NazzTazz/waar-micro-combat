@@ -4,7 +4,7 @@
 
 ## Livrable
 
-[Rapport autonome](../var/waar-micro-combat/t26-pair-view/report.html). T26c reste disponible à son chemin historique. Les JSON T26 déjà exportés restent importables, sans changement de provenance ou de statut.
+Rapport autonome (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-pair-view/report.html`). T26c reste disponible à son chemin historique. Les JSON T26 déjà exportés restent importables, sans changement de provenance ou de statut.
 
 - La vue ouvre uniquement la paire sélectionnée, avec les deux camps et leurs deux zones sur l'axe courant.
 - Attaquant turquoise, défenseur corail ; les points défenseurs utilisent aussi un losange, contre un cercle pour l'attaquant. La poignée centrale reprend la couleur du camp édité.

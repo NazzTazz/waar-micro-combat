@@ -4,7 +4,7 @@
 
 ## Interface livrée
 
-[Rapport autonome](../var/waar-micro-combat/t26-linked-targets/report.html).
+Rapport autonome (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-linked-targets/report.html`).
 
 - Déplacer ou saisir X pour un camp impose `X adverse = 1 - X`.
 - Le taux de victoire est commun aux trois vues d'une même confrontation : la liaison met à jour les six zones existantes (deux camps × trois axes), même masquées. Elle ne touche pas une autre confrontation ni le scénario aux rôles inversés.

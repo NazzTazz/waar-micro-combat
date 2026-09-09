@@ -2,7 +2,7 @@
 
 8 septembre 2026. Cadrage issu des précisions de Tristan après T17. Ce document distingue les exigences exprimées des propositions techniques ; il ne livre ni n'active un nouveau moteur.
 
-Voir les [frontières de projet](combat-project-boundaries.md) : Arbestra est un jeu indépendant et n'hérite pas des règles de Waar.
+Voir les frontières de projet (`combat-project-boundaries.md`, document du dépôt Waar v3 non inclus ici) : Arbestra est un jeu indépendant et n'hérite pas des règles de Waar.
 
 **Précision PO après T24 :** l'interface principale de la soufflerie devient un calque Legacy et des zones d'acceptabilité pour les extrémités des vecteurs, plutôt qu'un tableau de coefficients à régler. Les paramètres restent un détail expert. La [spec de livraison pour Sol](waar-micro-combat-acceptance-overlay-spec.md) définit le rendu professionnel, les conventions de comparaison et deux livraisons bornées : calque lisible, puis édition/sauvegarde des zones. Le solveur inverse reste une tranche ultérieure ; cette direction ne rétablit pas la fidélité au Legacy comme objectif.
 

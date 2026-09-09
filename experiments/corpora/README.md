@@ -44,6 +44,6 @@ La précision du PO postérieure à la première spec de calque est : **un segme
 
 Le corpus ci-dessus fournit 25 profils pour ces segments. Les adversaires, leurs poids et la politique de taille/budget doivent être définis explicitement et appliqués de la même manière aux moteurs comparés. Les profils Legacy et micro pourront être superposés ; leurs zones A/B portent sur les rôles attaque/défense.
 
-La première [spec de calque](../../../../docs/waar-micro-combat-acceptance-overlay-spec.md) précède ce changement de convention : ses mentions base = témoin et pointe = candidat ne doivent pas guider le branchement de ce nouveau corpus. L'adaptation de l'évaluateur et de la spec n'est pas réalisée par cette simple extraction.
+La première [spec de calque](../../docs/waar-micro-combat-acceptance-overlay-spec.md) précède ce changement de convention : ses mentions base = témoin et pointe = candidat ne doivent pas guider le branchement de ce nouveau corpus. L'adaptation de l'évaluateur et de la spec n'est pas réalisée par cette simple extraction.
 
 Les compositions observées servent à l'exploration de gameplay locale. Ne pas les brancher comme fixtures dans la base Legacy ni lancer des tests applicatifs contre la copie de production. Aucun moteur, résultat T23/T24 ou ruleset n'est changé par cette livraison.

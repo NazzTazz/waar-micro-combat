@@ -29,7 +29,7 @@ Les deux défauts sont reproduits deux fois avec interactions navigateur. Ils so
 - Mobile 390 px sans débordement ; audit axe : 0 violation, 0 contrôle incomplet, 41 contrôles réussis.
 - HTML et rapport micro T26 conformes aux empreintes livrées ; rapport T24 et HTML T25B inchangés.
 
-[Rapport détaillé et captures](../var/waar-micro-combat/t26-review/report.md). Les vidéos n'ont pas pu être produites (ffmpeg absent). Les limites de la recette sont explicitées dans ce rapport ; les mesures de performance et toutes les poignées de rayon revendiquées par Sol n'ont pas été intégralement rejouées.
+Rapport détaillé et captures (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-review/report.md`). Les vidéos n'ont pas pu être produites (ffmpeg absent). Les limites de la recette sont explicitées dans ce rapport ; les mesures de performance et toutes les poignées de rayon revendiquées par Sol n'ont pas été intégralement rejouées.
 
 Aucune correction applicative effectuée lors de cette recette. Retester les deux gestes après correction ; ne pas confondre leur correction avec une tranche solveur.
 
@@ -37,9 +37,9 @@ Aucune correction applicative effectuée lors de cette recette. Retester les deu
 
 Les deux gestes ont été rejoués dans une session Chrome isolée sur le HTML corrigé `A2EACE2C89F1E3C1F0CA89F655B1DF41218442FB10068675FA8B6AF28B764B50`.
 
-- **Cercle : corrigé.** Après activation sur Lancier attaque Chevalier puis sélection de Soldat attaque Soldat, la case est décochée et les rayons restent à 0,05 / 0,10. Modifier Centre X à 0,55 préserve les rayons. Changer d'axe et de camp resynchronise aussi le mode. Annuler restaure l'ellipse et décoche la case ; Rétablir restaure le cercle et la coche. [Capture](../var/waar-micro-combat/t26-recheck/circle-selection.png).
-- **Échap : corrigé.** Un drag réel fait passer X de 0,50 à 0,586681. Échap suivi d'un mouvement résiduel et du relâchement conserve X/Y = 0,50/0,50. Annuler reprend bien la saisie antérieure de Y (0,22775), sans geste parasite dans l'historique. Un nouveau drag normal fonctionne et s'annule normalement. [Avant](../var/waar-micro-combat/t26-recheck/escape-before.png), [après](../var/waar-micro-combat/t26-recheck/escape-after.png).
+- **Cercle : corrigé.** Après activation sur Lancier attaque Chevalier puis sélection de Soldat attaque Soldat, la case est décochée et les rayons restent à 0,05 / 0,10. Modifier Centre X à 0,55 préserve les rayons. Changer d'axe et de camp resynchronise aussi le mode. Annuler restaure l'ellipse et décoche la case ; Rétablir restaure le cercle et la coche. Capture (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-recheck/circle-selection.png`).
+- **Échap : corrigé.** Un drag réel fait passer X de 0,50 à 0,586681. Échap suivi d'un mouvement résiduel et du relâchement conserve X/Y = 0,50/0,50. Annuler reprend bien la saisie antérieure de Y (0,22775), sans geste parasite dans l'historique. Un nouveau drag normal fonctionne et s'annule normalement. Avant (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-recheck/escape-before.png`), après (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-recheck/escape-after.png`).
 - 19 tests PHP, 9 142 assertions, et test Node du modèle : réussis. Le rapport micro conserve son empreinte `5234BA9A117F82FC33F3F6238278A6C3A339006AD077A4ED9BB88677E1C9680F`.
-- Vérification supplémentaire après import du document initial : un drag annulé conserve exactement X/Y = 0,49/0,22775, le statut « Document exporté » et les deux boutons d'historique désactivés. [Capture](../var/waar-micro-combat/t26-recheck/escape-clean.png). Aucune erreur JavaScript remontée ; session de recette fermée.
+- Vérification supplémentaire après import du document initial : un drag annulé conserve exactement X/Y = 0,49/0,22775, le statut « Document exporté » et les deux boutons d'historique désactivés. Capture (archive non incluse dans ce dépôt : `var/waar-micro-combat/t26-recheck/escape-clean.png`). Aucune erreur JavaScript remontée ; session de recette fermée.
 
 Contre-recette ciblée sur les deux réserves et leurs interactions avec la sélection et l'historique ; la recette complète, les mesures de performance et l'audit d'accessibilité n'ont pas été répétés. Aucun changement applicatif effectué par Astra.
