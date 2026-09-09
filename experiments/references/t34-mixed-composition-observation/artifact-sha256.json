@@ -1,0 +1,11 @@
+{
+    "schemaVersion": "waar-t34-artifact-manifest/0.1",
+    "sha256": {
+        "observation-plan.json": "08d7ad8fc1cac621a59700de9ff9958e967b340c0d13ae29e18c3766fe41140a",
+        "result.json": "a01c70a0d6ef762965d3ef39c5360b96ee3c3fb4fa49877eac33517bc62c4bcd",
+        "presentation.json": "fa80b4ab5b34453933a33fac731d793f60554fc1a394fd3bc2456f5874af9fe8",
+        "report.md": "297f892d7f84aa0fe43580a40c834ef7a9bbbd1e02a00e3e5eeb050cff0e915e",
+        "report.html": "1dc9646378f3ac65788ac4687eb9c84a3c0773ae900c02d2dc22119ca3310237",
+        "execution-metadata.json": "157cb43b0e89f435699109143c7395f392b97c775c7b6ca026e9bda5b799d087"
+    }
+}

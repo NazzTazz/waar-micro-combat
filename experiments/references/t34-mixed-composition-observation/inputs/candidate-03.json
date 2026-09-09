@@ -1,0 +1,51 @@
+{
+    "id": "t31-candidate-0123-3805dc464a60",
+    "label": "T31 candidate 0123",
+    "version": "t31.0-0123",
+    "maxRounds": 3,
+    "randomSpread": "0.1",
+    "units": {
+        "soldier": {
+            "attack": "5.558",
+            "structure": "27.164",
+            "defendingEfficiency": "1.075",
+            "cost": 80
+        },
+        "spearman": {
+            "attack": "4.142",
+            "structure": "53.362",
+            "defendingEfficiency": "1.715",
+            "cost": 110
+        },
+        "archer": {
+            "attack": "29.779",
+            "structure": "20",
+            "defendingEfficiency": "0.253",
+            "cost": 130
+        },
+        "knight": {
+            "attack": "38.588",
+            "structure": "65.01",
+            "defendingEfficiency": "1.027",
+            "cost": 350
+        }
+    },
+    "counters": [
+        {
+            "acting": "spearman",
+            "target": "knight",
+            "factor": "2.474"
+        },
+        {
+            "acting": "archer",
+            "target": "spearman",
+            "factor": "2.277"
+        },
+        {
+            "acting": "knight",
+            "target": "archer",
+            "factor": "1.992"
+        }
+    ],
+    "tieBreakPolicy": "defender"
+}

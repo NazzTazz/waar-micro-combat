@@ -1,0 +1,913 @@
+{
+    "schemaVersion": "waar-monotype-search-objective/0.1",
+    "experimentId": "t26-monotype-equal-cost",
+    "candidate": {
+        "id": "roles-a",
+        "version": "t28.0",
+        "tieBreakPolicy": "defender"
+    },
+    "objectiveContract": {
+        "generationId": "canonical-monotype-survivors-v1",
+        "metric": "survivors",
+        "count": 32,
+        "oneContributionPerObjective": true,
+        "equalWeight": 0.03125,
+        "economicValueContributionCount": 0,
+        "structureContributionCount": 0
+    },
+    "continuousObjective": {
+        "kind": "mean-normalized-ellipse-boundary-excess",
+        "direction": "minimize",
+        "aggregation": "arithmetic-mean",
+        "boundaryToleranceSquared": 1.0e-12,
+        "value": 9.757326343723157,
+        "totalExcess": 312.23444299914104,
+        "worst": {
+            "objectiveId": "spearman-vs-knight-defender-tip-survivors",
+            "value": 19.953557618552598
+        }
+    },
+    "acceptance": {
+        "kind": "equal-objective-satisfaction",
+        "satisfied": 0,
+        "total": 32,
+        "rate": 0
+    },
+    "strictControls": {
+        "allObjectivesSatisfied": false,
+        "noDraws": true,
+        "passed": false
+    },
+    "draws": {
+        "count": 0,
+        "combatCount": 16000,
+        "rate": 0,
+        "scenarioCount": 0
+    },
+    "entries": [
+        {
+            "objectiveId": "soldier-vs-soldier-attacker-tip-survivors",
+            "scenarioId": "soldier-vs-soldier",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0.499,
+                "y": 0.22827852147852148
+            },
+            "target": {
+                "center": {
+                    "x": 0.5502409638554219,
+                    "y": 0.5047640022060453
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 8.694676656046058,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 2.9486737113566934,
+            "normalizedBoundaryExcess": 1.9486737113561936,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.06089605347988105
+        },
+        {
+            "objectiveId": "soldier-vs-soldier-defender-tip-survivors",
+            "scenarioId": "soldier-vs-soldier",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0.501,
+                "y": 0.22912527472527472
+            },
+            "target": {
+                "center": {
+                    "x": 0.44975903614457813,
+                    "y": 0.504262503704547
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 8.620304027772308,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 2.936035426859204,
+            "normalizedBoundaryExcess": 1.936035426858704,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.0605011070893345
+        },
+        {
+            "objectiveId": "soldier-vs-spearman-attacker-tip-survivors",
+            "scenarioId": "soldier-vs-spearman",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0.0027394605394605396
+            },
+            "target": {
+                "center": {
+                    "x": 0.117647058823529,
+                    "y": 0.24393800698319368
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 11.354006060587725,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 3.369570604778556,
+            "normalizedBoundaryExcess": 2.369570604778056,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.07404908139931425
+        },
+        {
+            "objectiveId": "soldier-vs-spearman-defender-tip-survivors",
+            "scenarioId": "soldier-vs-spearman",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.47801895604395606
+            },
+            "target": {
+                "center": {
+                    "x": 0.882352941176471,
+                    "y": 0.7521370280014681
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 13.05040391730113,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 3.612534279048592,
+            "normalizedBoundaryExcess": 2.6125342790480923,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.08164169622025289
+        },
+        {
+            "objectiveId": "soldier-vs-archer-attacker-tip-survivors",
+            "scenarioId": "soldier-vs-archer",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.7849442557442557
+            },
+            "target": {
+                "center": {
+                    "x": 0.24734231041814314,
+                    "y": 0.25009438498632997
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 255.2038774996565,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 15.975101799351906,
+            "normalizedBoundaryExcess": 14.975101799351407,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.46797193122973146
+        },
+        {
+            "objectiveId": "soldier-vs-archer-defender-tip-survivors",
+            "scenarioId": "soldier-vs-archer",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.7526576895818569,
+                    "y": 0.24950884086444003
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 232.82290524163113,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 15.258535488100787,
+            "normalizedBoundaryExcess": 14.258535488100287,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.445579234003134
+        },
+        {
+            "objectiveId": "soldier-vs-knight-attacker-tip-survivors",
+            "scenarioId": "soldier-vs-knight",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.44675564435564435
+            },
+            "target": {
+                "center": {
+                    "x": 0.7491141034727147,
+                    "y": 0.5006569736746553
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 25.468028560755535,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 5.046585832100305,
+            "normalizedBoundaryExcess": 4.046585832099805,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.12645580725311892
+        },
+        {
+            "objectiveId": "soldier-vs-knight-defender-tip-survivors",
+            "scenarioId": "soldier-vs-knight",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.2508858965272853,
+                    "y": 0.49508840864440073
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 49.688746467924396,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 7.049024504704491,
+            "normalizedBoundaryExcess": 6.049024504703991,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.1890320157719997
+        },
+        {
+            "objectiveId": "spearman-vs-soldier-attacker-tip-survivors",
+            "scenarioId": "spearman-vs-soldier",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0.905,
+                "y": 0.3608085164835165
+            },
+            "target": {
+                "center": {
+                    "x": 0.039617292700212636,
+                    "y": 0.252420264902092
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 300.7296933454916,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 17.341559714901415,
+            "normalizedBoundaryExcess": 16.341559714900914,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5106737410906536
+        },
+        {
+            "objectiveId": "spearman-vs-soldier-defender-tip-survivors",
+            "scenarioId": "spearman-vs-soldier",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0.095,
+                "y": 0.2895286713286713
+            },
+            "target": {
+                "center": {
+                    "x": 0.9603827072997874,
+                    "y": 0.9171825934379961
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 338.94983663132564,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 18.410590339022963,
+            "normalizedBoundaryExcess": 17.41059033902246,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5440809480944518
+        },
+        {
+            "objectiveId": "spearman-vs-spearman-attacker-tip-survivors",
+            "scenarioId": "spearman-vs-spearman",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0.1516478021978022
+            },
+            "target": {
+                "center": {
+                    "x": 0.25088589652728566,
+                    "y": 0.747551706643062
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 60.68763956383049,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 7.790227183069213,
+            "normalizedBoundaryExcess": 6.790227183068712,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.21219459947089725
+        },
+        {
+            "objectiveId": "spearman-vs-spearman-defender-tip-survivors",
+            "scenarioId": "spearman-vs-spearman",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.4988752747252747
+            },
+            "target": {
+                "center": {
+                    "x": 0.7491141034727143,
+                    "y": 0.7421832617284484
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 31.0973708844736,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 5.576501670803444,
+            "normalizedBoundaryExcess": 4.576501670802944,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.143015677212592
+        },
+        {
+            "objectiveId": "spearman-vs-archer-attacker-tip-survivors",
+            "scenarioId": "spearman-vs-archer",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.7616277472527473
+            },
+            "target": {
+                "center": {
+                    "x": 0.24875974486180008,
+                    "y": 0.7490871807465618
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 225.76049495687266,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 15.025328447553905,
+            "normalizedBoundaryExcess": 14.025328447553408,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.438291513986044
+        },
+        {
+            "objectiveId": "spearman-vs-archer-defender-tip-survivors",
+            "scenarioId": "spearman-vs-archer",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.7512402551381999,
+                    "y": 0.2396856581532416
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 231.48968984847832,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 15.21478523832914,
+            "normalizedBoundaryExcess": 14.214785238328641,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.44421203869777004
+        },
+        {
+            "objectiveId": "spearman-vs-knight-attacker-tip-survivors",
+            "scenarioId": "spearman-vs-knight",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.6268989010989011
+            },
+            "target": {
+                "center": {
+                    "x": 0.05244507441530821,
+                    "y": 0.7490804664392581
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 360.6369682908263,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 18.990444130952447,
+            "normalizedBoundaryExcess": 17.990444130951946,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5622013790922483
+        },
+        {
+            "objectiveId": "spearman-vs-knight-defender-tip-survivors",
+            "scenarioId": "spearman-vs-knight",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.9475549255846918,
+                    "y": 0.8939096267190569
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 439.0515768740247,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 20.953557618553102,
+            "normalizedBoundaryExcess": 19.953557618552598,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.6235486755797687
+        },
+        {
+            "objectiveId": "archer-vs-soldier-attacker-tip-survivors",
+            "scenarioId": "archer-vs-soldier",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.948972360028349,
+                    "y": 0.4931237721021611
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 384.53652150033605,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 19.609602787928573,
+            "normalizedBoundaryExcess": 18.609602787928072,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5815500871227522
+        },
+        {
+            "objectiveId": "archer-vs-soldier-defender-tip-survivors",
+            "scenarioId": "archer-vs-soldier",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.3847928071928072
+            },
+            "target": {
+                "center": {
+                    "x": 0.05102763997165109,
+                    "y": 0.10446876502672187
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 368.07757290074295,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 19.185347870204048,
+            "normalizedBoundaryExcess": 18.185347870203543,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5682921209438607
+        },
+        {
+            "objectiveId": "archer-vs-spearman-attacker-tip-survivors",
+            "scenarioId": "archer-vs-spearman",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.9099929128277818,
+                    "y": 0.23772102161100195
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 336.88596897029424,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 18.354453654911502,
+            "normalizedBoundaryExcess": 17.354453654911,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5423266767159688
+        },
+        {
+            "objectiveId": "archer-vs-spearman-defender-tip-survivors",
+            "scenarioId": "archer-vs-spearman",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.3573082417582418
+            },
+            "target": {
+                "center": {
+                    "x": 0.0900070871722182,
+                    "y": 0.7497930438912757
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 346.63927254925704,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 18.618251060431458,
+            "normalizedBoundaryExcess": 17.618251060430953,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5505703456384673
+        },
+        {
+            "objectiveId": "archer-vs-archer-attacker-tip-survivors",
+            "scenarioId": "archer-vs-archer",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.3698714285714286
+            },
+            "target": {
+                "center": {
+                    "x": 0.9482636428065204,
+                    "y": 0.109372521878907
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 7.856628301060427,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 2.802967766682383,
+            "normalizedBoundaryExcess": 1.8029677666818833,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.05634274270880885
+        },
+        {
+            "objectiveId": "archer-vs-archer-defender-tip-survivors",
+            "scenarioId": "archer-vs-archer",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.051736357193479535,
+                    "y": 0.0982318271119843
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 2.035609448036398,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 1.4267478572040675,
+            "normalizedBoundaryExcess": 0.42674785720356745,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.013335870537611483
+        },
+        {
+            "objectiveId": "archer-vs-knight-attacker-tip-survivors",
+            "scenarioId": "archer-vs-knight",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.24875974486180008,
+                    "y": 0.10805500982318272
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 25.920152780271955,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 5.0911838289608005,
+            "normalizedBoundaryExcess": 4.0911838289602995,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.12784949465500936
+        },
+        {
+            "objectiveId": "archer-vs-knight-defender-tip-survivors",
+            "scenarioId": "archer-vs-knight",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.002291083916083916
+            },
+            "target": {
+                "center": {
+                    "x": 0.7512402551381999,
+                    "y": 0.8955923190267493
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 104.55127393050715,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 10.225031732493898,
+            "normalizedBoundaryExcess": 9.225031732493397,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.28828224164041866
+        },
+        {
+            "objectiveId": "knight-vs-soldier-attacker-tip-survivors",
+            "scenarioId": "knight-vs-soldier",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.0510276399716514,
+                    "y": 0.7524557956777995
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 57.66050046134163,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 7.593451156183309,
+            "normalizedBoundaryExcess": 6.593451156182808,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.20604534863071275
+        },
+        {
+            "objectiveId": "knight-vs-soldier-defender-tip-survivors",
+            "scenarioId": "knight-vs-soldier",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.49714185814185813
+            },
+            "target": {
+                "center": {
+                    "x": 0.9489723600283486,
+                    "y": 0.493827767517355
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 1.0426263360973316,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 1.0210907580119073,
+            "normalizedBoundaryExcess": 0.021090758011407324,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.0006590861878564789
+        },
+        {
+            "objectiveId": "knight-vs-spearman-attacker-tip-survivors",
+            "scenarioId": "knight-vs-spearman",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.8802267895109853,
+                    "y": 0.7445972495088407
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 365.36218678673964,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 19.114449685689088,
+            "normalizedBoundaryExcess": 18.114449685688584,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5660765526777682
+        },
+        {
+            "objectiveId": "knight-vs-spearman-defender-tip-survivors",
+            "scenarioId": "knight-vs-spearman",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.7047546703296703
+            },
+            "target": {
+                "center": {
+                    "x": 0.11977321048901465,
+                    "y": 0.8916497360694315
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 313.41265694891354,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 17.703464546492405,
+            "normalizedBoundaryExcess": 16.7034645464919,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.5219832670778719
+        },
+        {
+            "objectiveId": "knight-vs-archer-attacker-tip-survivors",
+            "scenarioId": "knight-vs-archer",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 1,
+                "y": 0.6233811188811189
+            },
+            "target": {
+                "center": {
+                    "x": 0.9482636428065204,
+                    "y": 0.8938077798920134
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 8.383718160810648,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 2.895465102675328,
+            "normalizedBoundaryExcess": 1.8954651026748282,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.05923328445858838
+        },
+        {
+            "objectiveId": "knight-vs-archer-defender-tip-survivors",
+            "scenarioId": "knight-vs-archer",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0,
+                "y": 0
+            },
+            "target": {
+                "center": {
+                    "x": 0.05173635719347962,
+                    "y": 0.11001964636542239
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 2.2810925208977837,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 1.5103286135466625,
+            "normalizedBoundaryExcess": 0.5103286135461623,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.015947769173317573
+        },
+        {
+            "objectiveId": "knight-vs-knight-attacker-tip-survivors",
+            "scenarioId": "knight-vs-knight",
+            "side": "attacker",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0.091,
+                "y": 0.0063006993006993
+            },
+            "target": {
+                "center": {
+                    "x": 0.5494046775336644,
+                    "y": 0.8646956444832181
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 157.73812754538704,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 12.559384043231859,
+            "normalizedBoundaryExcess": 11.55938404323136,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.36123075135098
+        },
+        {
+            "objectiveId": "knight-vs-knight-defender-tip-survivors",
+            "scenarioId": "knight-vs-knight",
+            "side": "defender",
+            "objectiveMetric": "survivors",
+            "observed": {
+                "x": 0.909,
+                "y": 0.13525786713286714
+            },
+            "target": {
+                "center": {
+                    "x": 0.4505953224663356,
+                    "y": 0.7474531681481584
+                },
+                "radii": {
+                    "x": 0.05,
+                    "y": 0.1
+                }
+            },
+            "normalizedSquaredDistance": 121.53224801241743,
+            "state": "outside",
+            "scoreContribution": 0,
+            "normalizedRadialDistance": 11.024166545023593,
+            "normalizedBoundaryExcess": 10.024166545023093,
+            "objectiveWeight": 0.03125,
+            "lossContribution": 0.31325520453197164
+        }
+    ]
+}

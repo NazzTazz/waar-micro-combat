@@ -1,0 +1,11 @@
+{
+    "schemaVersion": "waar-t33-artifact-manifest/0.1",
+    "sha256": {
+        "validation-plan.json": "e878d8e4208dae322726e52033d0c18192adc2311d8c520321b5ee682e1449b9",
+        "result.json": "0fc05d32cc28d3add12b5cd19d1db069179c76aee63c2328fdda4328c28c50e8",
+        "presentation.json": "f339932da16e256d88321624cda5d9db6c7ddbce94889bcad1a0e529ef30cad0",
+        "report.md": "d4313e5629cda618db2b8aad8d94524310e480c0ae683fa700644f3c8c9c703b",
+        "report.html": "636f82d87860dba34ffeb98a07a343b8c78c47cac56da932284d10d2ae74db85",
+        "execution-metadata.json": "24ee677977c739c1ff5700fb3beb16603312a92e8c360c199e85096177eb4bdb"
+    }
+}

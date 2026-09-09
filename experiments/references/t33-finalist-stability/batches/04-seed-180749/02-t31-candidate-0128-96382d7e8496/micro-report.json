@@ -1,0 +1,3339 @@
+{
+    "schemaVersion": "waar-micro-wind-tunnel-report/0.1",
+    "experiment": {
+        "id": "t26-monotype-equal-cost",
+        "label": "T28 — monotypes à coût égal avec départage défensif",
+        "iterations": 1000,
+        "baseSeed": 180749,
+        "scenarioCount": 16,
+        "combatCount": 32000,
+        "pairedSeeds": true,
+        "selectionPerformed": false
+    },
+    "axes": {
+        "x": {
+            "id": "winRate",
+            "label": "Taux de victoire"
+        },
+        "y": [
+            {
+                "id": "survivors",
+                "label": "Effectifs survivants"
+            },
+            {
+                "id": "structure",
+                "label": "Structure restante"
+            },
+            {
+                "id": "economicValue",
+                "label": "Valeur économique restante"
+            }
+        ]
+    },
+    "baseline": {
+        "id": "neutral-reference",
+        "label": "TÃ©moin : mÃªmes unitÃ©s, rÃ´les neutres",
+        "version": "t28.0",
+        "maxRounds": 3,
+        "randomSpread": "0.1",
+        "units": {
+            "soldier": {
+                "attack": "7",
+                "structure": "18",
+                "defendingEfficiency": "1",
+                "cost": 80
+            },
+            "spearman": {
+                "attack": "8",
+                "structure": "32",
+                "defendingEfficiency": "1",
+                "cost": 110
+            },
+            "archer": {
+                "attack": "18",
+                "structure": "10",
+                "defendingEfficiency": "1",
+                "cost": 130
+            },
+            "knight": {
+                "attack": "30",
+                "structure": "45",
+                "defendingEfficiency": "1",
+                "cost": 350
+            }
+        },
+        "counters": [],
+        "tieBreakPolicy": "defender"
+    },
+    "candidate": {
+        "id": "t31-candidate-0128-96382d7e8496",
+        "label": "T31 candidate 0128",
+        "version": "t31.0-0128",
+        "maxRounds": 3,
+        "randomSpread": "0.1",
+        "units": {
+            "soldier": {
+                "attack": "4.856",
+                "structure": "28.009",
+                "defendingEfficiency": "0.966",
+                "cost": 80
+            },
+            "spearman": {
+                "attack": "5.176",
+                "structure": "46.21",
+                "defendingEfficiency": "1.69",
+                "cost": 110
+            },
+            "archer": {
+                "attack": "32.92",
+                "structure": "18.691",
+                "defendingEfficiency": "0.282",
+                "cost": 130
+            },
+            "knight": {
+                "attack": "33.92",
+                "structure": "62.325",
+                "defendingEfficiency": "1.174",
+                "cost": 350
+            }
+        },
+        "counters": [
+            {
+                "acting": "spearman",
+                "target": "knight",
+                "factor": "2.219"
+            },
+            {
+                "acting": "archer",
+                "target": "spearman",
+                "factor": "2.247"
+            },
+            {
+                "acting": "knight",
+                "target": "archer",
+                "factor": "1.846"
+            }
+        ],
+        "tieBreakPolicy": "defender"
+    },
+    "scenarios": [
+        {
+            "id": "soldier-vs-soldier",
+            "label": "Soldat attaque Soldat",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "soldier-vs-spearman",
+            "label": "Soldat attaque Lancier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "soldier-vs-archer",
+            "label": "Soldat attaque Archer",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            }
+        },
+        {
+            "id": "soldier-vs-knight",
+            "label": "Soldat attaque Chevalier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            }
+        },
+        {
+            "id": "spearman-vs-soldier",
+            "label": "Lancier attaque Soldat",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "spearman-vs-spearman",
+            "label": "Lancier attaque Lancier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "spearman-vs-archer",
+            "label": "Lancier attaque Archer",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            }
+        },
+        {
+            "id": "spearman-vs-knight",
+            "label": "Lancier attaque Chevalier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            }
+        },
+        {
+            "id": "archer-vs-soldier",
+            "label": "Archer attaque Soldat",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "archer-vs-spearman",
+            "label": "Archer attaque Lancier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "archer-vs-archer",
+            "label": "Archer attaque Archer",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            }
+        },
+        {
+            "id": "archer-vs-knight",
+            "label": "Archer attaque Chevalier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            }
+        },
+        {
+            "id": "knight-vs-soldier",
+            "label": "Chevalier attaque Soldat",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "defender": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "knight-vs-spearman",
+            "label": "Chevalier attaque Lancier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            }
+        },
+        {
+            "id": "knight-vs-archer",
+            "label": "Chevalier attaque Archer",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            }
+        },
+        {
+            "id": "knight-vs-knight",
+            "label": "Chevalier attaque Chevalier",
+            "focusSide": "attacker",
+            "attacker": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "defender": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            }
+        }
+    ],
+    "rows": [
+        {
+            "scenarioId": "soldier-vs-soldier",
+            "scenarioLabel": "Soldat attaque Soldat",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 482,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 482,
+                    "denominator": 1000,
+                    "value": 0.482
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1138938,
+                        "denominator": 5005000,
+                        "value": 0.22756003996003996
+                    },
+                    "structure": {
+                        "numerator": 20491963981958,
+                        "denominator": 90090000000000,
+                        "value": 0.22746102766076146
+                    },
+                    "economicValue": {
+                        "numerator": 91115040,
+                        "denominator": 400400000,
+                        "value": 0.22756003996003996
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 755,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 755,
+                    "denominator": 1000,
+                    "value": 0.755
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2900870,
+                        "denominator": 5005000,
+                        "value": 0.5795944055944056
+                    },
+                    "structure": {
+                        "numerator": 81236792398939,
+                        "denominator": 140185045000000,
+                        "value": 0.5794968528842646
+                    },
+                    "economicValue": {
+                        "numerator": 232069600,
+                        "denominator": 400400000,
+                        "value": 0.5795944055944056
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.482,
+                    "to": 0.755,
+                    "delta": 0.273
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.22756003996003996,
+                        "to": 0.5795944055944056,
+                        "delta": 0.35203436563436563
+                    },
+                    "structure": {
+                        "from": 0.22746102766076146,
+                        "to": 0.5794968528842646,
+                        "delta": 0.3520358252235031
+                    },
+                    "economicValue": {
+                        "from": 0.22756003996003996,
+                        "to": 0.5795944055944056,
+                        "delta": 0.35203436563436563
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-soldier",
+            "scenarioLabel": "Soldat attaque Soldat",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 518,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 518,
+                    "denominator": 1000,
+                    "value": 0.518
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1146032,
+                        "denominator": 5005000,
+                        "value": 0.22897742257742257
+                    },
+                    "structure": {
+                        "numerator": 20619568725728,
+                        "denominator": 90090000000000,
+                        "value": 0.22887744173302255
+                    },
+                    "economicValue": {
+                        "numerator": 91682560,
+                        "denominator": 400400000,
+                        "value": 0.22897742257742257
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 245,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 245,
+                    "denominator": 1000,
+                    "value": 0.245
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2814487,
+                        "denominator": 5005000,
+                        "value": 0.5623350649350649
+                    },
+                    "structure": {
+                        "numerator": 78816969918241,
+                        "denominator": 140185045000000,
+                        "value": 0.5622352221539823
+                    },
+                    "economicValue": {
+                        "numerator": 225158960,
+                        "denominator": 400400000,
+                        "value": 0.5623350649350649
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.518,
+                    "to": 0.245,
+                    "delta": -0.273
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.22897742257742257,
+                        "to": 0.5623350649350649,
+                        "delta": 0.3333576423576423
+                    },
+                    "structure": {
+                        "from": 0.22887744173302255,
+                        "to": 0.5622352221539823,
+                        "delta": 0.3333577804209597
+                    },
+                    "economicValue": {
+                        "from": 0.22897742257742257,
+                        "to": 0.5623350649350649,
+                        "delta": 0.3333576423576423
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-spearman",
+            "scenarioLabel": "Soldat attaque Lancier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 87,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 87,
+                    "denominator": 1000,
+                    "value": 0.087
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1452160,
+                        "denominator": 5005000,
+                        "value": 0.29014185814185817
+                    },
+                    "structure": {
+                        "numerator": 26129822266384,
+                        "denominator": 90090000000000,
+                        "value": 0.2900413171981796
+                    },
+                    "economicValue": {
+                        "numerator": 116172800,
+                        "denominator": 400400000,
+                        "value": 0.29014185814185817
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2049418,
+                        "denominator": 5005000,
+                        "value": 0.40947412587412585
+                    },
+                    "structure": {
+                        "numerator": 57387674212866,
+                        "denominator": 140185045000000,
+                        "value": 0.4093708727123211
+                    },
+                    "economicValue": {
+                        "numerator": 163953440,
+                        "denominator": 400400000,
+                        "value": 0.40947412587412585
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.087,
+                    "to": 0,
+                    "delta": -0.087
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.29014185814185817,
+                        "to": 0.40947412587412585,
+                        "delta": 0.11933226773226768
+                    },
+                    "structure": {
+                        "from": 0.2900413171981796,
+                        "to": 0.4093708727123211,
+                        "delta": 0.11932955551414148
+                    },
+                    "economicValue": {
+                        "from": 0.29014185814185817,
+                        "to": 0.40947412587412585,
+                        "delta": 0.11933226773226768
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-spearman",
+            "scenarioLabel": "Soldat attaque Lancier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 913,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 913,
+                    "denominator": 1000,
+                    "value": 0.913
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1313755,
+                        "denominator": 3640000,
+                        "value": 0.3609217032967033
+                    },
+                    "structure": {
+                        "numerator": 42024059868693,
+                        "denominator": 116480000000000,
+                        "value": 0.3607834810155649
+                    },
+                    "economicValue": {
+                        "numerator": 144513050,
+                        "denominator": 400400000,
+                        "value": 0.3609217032967033
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2404999,
+                        "denominator": 3640000,
+                        "value": 0.660714010989011
+                    },
+                    "structure": {
+                        "numerator": 111110891368667,
+                        "denominator": 168204400000000,
+                        "value": 0.6605706590830382
+                    },
+                    "economicValue": {
+                        "numerator": 264549890,
+                        "denominator": 400400000,
+                        "value": 0.660714010989011
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.913,
+                    "to": 1,
+                    "delta": 0.08699999999999997
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.3609217032967033,
+                        "to": 0.660714010989011,
+                        "delta": 0.29979230769230764
+                    },
+                    "structure": {
+                        "from": 0.3607834810155649,
+                        "to": 0.6605706590830382,
+                        "delta": 0.29978717806747335
+                    },
+                    "economicValue": {
+                        "from": 0.3609217032967033,
+                        "to": 0.660714010989011,
+                        "delta": 0.29979230769230764
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-archer",
+            "scenarioLabel": "Soldat attaque Archer",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1925704,
+                        "denominator": 5005000,
+                        "value": 0.38475604395604396
+                    },
+                    "structure": {
+                        "numerator": 34653602324880,
+                        "denominator": 90090000000000,
+                        "value": 0.38465537046153847
+                    },
+                    "economicValue": {
+                        "numerator": 154056320,
+                        "denominator": 400400000,
+                        "value": 0.38475604395604396
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 3149446,
+                        "denominator": 5005000,
+                        "value": 0.62925994005994
+                    },
+                    "structure": {
+                        "numerator": 88198898601919,
+                        "denominator": 140185045000000,
+                        "value": 0.6291605399272012
+                    },
+                    "economicValue": {
+                        "numerator": 251955680,
+                        "denominator": 400400000,
+                        "value": 0.62925994005994
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 1,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.38475604395604396,
+                        "to": 0.62925994005994,
+                        "delta": 0.24450389610389606
+                    },
+                    "structure": {
+                        "from": 0.38465537046153847,
+                        "to": 0.6291605399272012,
+                        "delta": 0.24450516946566275
+                    },
+                    "economicValue": {
+                        "from": 0.38475604395604396,
+                        "to": 0.62925994005994,
+                        "delta": 0.24450389610389606
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-archer",
+            "scenarioLabel": "Soldat attaque Archer",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 6628,
+                        "denominator": 3080000,
+                        "value": 0.002151948051948052
+                    },
+                    "structure": {
+                        "numerator": 122769679364,
+                        "denominator": 57568280000000,
+                        "value": 0.0021325924513291
+                    },
+                    "economicValue": {
+                        "numerator": 861640,
+                        "denominator": 400400000,
+                        "value": 0.002151948051948052
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.002151948051948052,
+                        "delta": 0.002151948051948052
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.0021325924513291,
+                        "delta": 0.0021325924513291
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.002151948051948052,
+                        "delta": 0.002151948051948052
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-knight",
+            "scenarioLabel": "Soldat attaque Chevalier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2.011,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2490364,
+                        "denominator": 5005000,
+                        "value": 0.49757522477522476
+                    },
+                    "structure": {
+                        "numerator": 44817355336860,
+                        "denominator": 90090000000000,
+                        "value": 0.49747314171228774
+                    },
+                    "economicValue": {
+                        "numerator": 199229120,
+                        "denominator": 400400000,
+                        "value": 0.49757522477522476
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 811,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 811,
+                    "denominator": 1000,
+                    "value": 0.811
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1610200,
+                        "denominator": 5005000,
+                        "value": 0.3217182817182817
+                    },
+                    "structure": {
+                        "numerator": 45086129979562,
+                        "denominator": 140185045000000,
+                        "value": 0.321618686069987
+                    },
+                    "economicValue": {
+                        "numerator": 128816000,
+                        "denominator": 400400000,
+                        "value": 0.3217182817182817
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 0.811,
+                    "delta": -0.18899999999999995
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.49757522477522476,
+                        "to": 0.3217182817182817,
+                        "delta": -0.17585694305694305
+                    },
+                    "structure": {
+                        "from": 0.49747314171228774,
+                        "to": 0.321618686069987,
+                        "delta": -0.17585445564230073
+                    },
+                    "economicValue": {
+                        "from": 0.49757522477522476,
+                        "to": 0.3217182817182817,
+                        "delta": -0.17585694305694305
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-vs-knight",
+            "scenarioLabel": "Soldat attaque Chevalier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2.011,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 51480000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 189,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 189,
+                    "denominator": 1000,
+                    "value": 0.189
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 311806,
+                        "denominator": 1144000,
+                        "value": 0.27255769230769233
+                    },
+                    "structure": {
+                        "numerator": 19401811969329,
+                        "denominator": 71299800000000,
+                        "value": 0.27211593818396407
+                    },
+                    "economicValue": {
+                        "numerator": 109132100,
+                        "denominator": 400400000,
+                        "value": 0.27255769230769233
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0.189,
+                    "delta": 0.189
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.27255769230769233,
+                        "delta": 0.27255769230769233
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.27211593818396407,
+                        "delta": 0.27211593818396407
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.27255769230769233,
+                        "delta": 0.27255769230769233
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-soldier",
+            "scenarioLabel": "Lancier attaque Soldat",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 921,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 921,
+                    "denominator": 1000,
+                    "value": 0.921
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1315510,
+                        "denominator": 3640000,
+                        "value": 0.36140384615384613
+                    },
+                    "structure": {
+                        "numerator": 42080203928287,
+                        "denominator": 116480000000000,
+                        "value": 0.3612654870216947
+                    },
+                    "economicValue": {
+                        "numerator": 144706100,
+                        "denominator": 400400000,
+                        "value": 0.36140384615384613
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 226,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 226,
+                    "denominator": 1000,
+                    "value": 0.226
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2313406,
+                        "denominator": 3640000,
+                        "value": 0.635551098901099
+                    },
+                    "structure": {
+                        "numerator": 106880244893043,
+                        "denominator": 168204400000000,
+                        "value": 0.6354188409639878
+                    },
+                    "economicValue": {
+                        "numerator": 254474660,
+                        "denominator": 400400000,
+                        "value": 0.635551098901099
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.921,
+                    "to": 0.226,
+                    "delta": -0.6950000000000001
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.36140384615384613,
+                        "to": 0.635551098901099,
+                        "delta": 0.2741472527472528
+                    },
+                    "structure": {
+                        "from": 0.3612654870216947,
+                        "to": 0.6354188409639878,
+                        "delta": 0.2741533539422931
+                    },
+                    "economicValue": {
+                        "from": 0.36140384615384613,
+                        "to": 0.635551098901099,
+                        "delta": 0.2741472527472528
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-soldier",
+            "scenarioLabel": "Lancier attaque Soldat",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 79,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 79,
+                    "denominator": 1000,
+                    "value": 0.079
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1448323,
+                        "denominator": 5005000,
+                        "value": 0.28937522477522476
+                    },
+                    "structure": {
+                        "numerator": 26060892796760,
+                        "denominator": 90090000000000,
+                        "value": 0.2892761993202353
+                    },
+                    "economicValue": {
+                        "numerator": 115865840,
+                        "denominator": 400400000,
+                        "value": 0.28937522477522476
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 774,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 774,
+                    "denominator": 1000,
+                    "value": 0.774
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 3254226,
+                        "denominator": 5005000,
+                        "value": 0.650195004995005
+                    },
+                    "structure": {
+                        "numerator": 91133373092537,
+                        "denominator": 140185045000000,
+                        "value": 0.6500934039899691
+                    },
+                    "economicValue": {
+                        "numerator": 260338080,
+                        "denominator": 400400000,
+                        "value": 0.650195004995005
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.079,
+                    "to": 0.774,
+                    "delta": 0.6950000000000001
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.28937522477522476,
+                        "to": 0.650195004995005,
+                        "delta": 0.3608197802197803
+                    },
+                    "structure": {
+                        "from": 0.2892761993202353,
+                        "to": 0.6500934039899691,
+                        "delta": 0.36081720466973377
+                    },
+                    "economicValue": {
+                        "from": 0.28937522477522476,
+                        "to": 0.650195004995005,
+                        "delta": 0.3608197802197803
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-spearman",
+            "scenarioLabel": "Lancier attaque Lancier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 501,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 501,
+                    "denominator": 1000,
+                    "value": 0.501
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1538114,
+                        "denominator": 3640000,
+                        "value": 0.4225587912087912
+                    },
+                    "structure": {
+                        "numerator": 49203303880760,
+                        "denominator": 116480000000000,
+                        "value": 0.42241847425103024
+                    },
+                    "economicValue": {
+                        "numerator": 169192540,
+                        "denominator": 400400000,
+                        "value": 0.4225587912087912
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1792265,
+                        "denominator": 3640000,
+                        "value": 0.4923804945054945
+                    },
+                    "structure": {
+                        "numerator": 82797225661322,
+                        "denominator": 168204400000000,
+                        "value": 0.49224173482573585
+                    },
+                    "economicValue": {
+                        "numerator": 197149150,
+                        "denominator": 400400000,
+                        "value": 0.4923804945054945
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.501,
+                    "to": 0,
+                    "delta": -0.501
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.4225587912087912,
+                        "to": 0.4923804945054945,
+                        "delta": 0.06982170329670329
+                    },
+                    "structure": {
+                        "from": 0.42241847425103024,
+                        "to": 0.49224173482573585,
+                        "delta": 0.06982326057470561
+                    },
+                    "economicValue": {
+                        "from": 0.4225587912087912,
+                        "to": 0.4923804945054945,
+                        "delta": 0.06982170329670329
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-spearman",
+            "scenarioLabel": "Lancier attaque Lancier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 499,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 499,
+                    "denominator": 1000,
+                    "value": 0.499
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1536099,
+                        "denominator": 3640000,
+                        "value": 0.42200521978021976
+                    },
+                    "structure": {
+                        "numerator": 49139510682520,
+                        "denominator": 116480000000000,
+                        "value": 0.42187079912877745
+                    },
+                    "economicValue": {
+                        "numerator": 168970890,
+                        "denominator": 400400000,
+                        "value": 0.42200521978021976
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2640256,
+                        "denominator": 3640000,
+                        "value": 0.725345054945055
+                    },
+                    "structure": {
+                        "numerator": 121982727023457,
+                        "denominator": 168204400000000,
+                        "value": 0.7252053277052027
+                    },
+                    "economicValue": {
+                        "numerator": 290428160,
+                        "denominator": 400400000,
+                        "value": 0.725345054945055
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.499,
+                    "to": 1,
+                    "delta": 0.501
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.42200521978021976,
+                        "to": 0.725345054945055,
+                        "delta": 0.3033398351648352
+                    },
+                    "structure": {
+                        "from": 0.42187079912877745,
+                        "to": 0.7252053277052027,
+                        "delta": 0.3033345285764253
+                    },
+                    "economicValue": {
+                        "from": 0.42200521978021976,
+                        "to": 0.725345054945055,
+                        "delta": 0.3033398351648352
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-archer",
+            "scenarioLabel": "Lancier attaque Archer",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1.794,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1814156,
+                        "denominator": 3640000,
+                        "value": 0.4983945054945055
+                    },
+                    "structure": {
+                        "numerator": 58037267246708,
+                        "denominator": 116480000000000,
+                        "value": 0.4982595058955014
+                    },
+                    "economicValue": {
+                        "numerator": 199557160,
+                        "denominator": 400400000,
+                        "value": 0.4983945054945055
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1,
+                    "denominator": 1000,
+                    "value": 0.001
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 668221,
+                        "denominator": 3640000,
+                        "value": 0.1835771978021978
+                    },
+                    "structure": {
+                        "numerator": 30855577665776,
+                        "denominator": 168204400000000,
+                        "value": 0.18344096626352224
+                    },
+                    "economicValue": {
+                        "numerator": 73504310,
+                        "denominator": 400400000,
+                        "value": 0.1835771978021978
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 0.001,
+                    "delta": -0.999
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.4983945054945055,
+                        "to": 0.1835771978021978,
+                        "delta": -0.31481730769230765
+                    },
+                    "structure": {
+                        "from": 0.4982595058955014,
+                        "to": 0.18344096626352224,
+                        "delta": -0.31481853963197914
+                    },
+                    "economicValue": {
+                        "from": 0.4983945054945055,
+                        "to": 0.1835771978021978,
+                        "delta": -0.31481730769230765
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-archer",
+            "scenarioLabel": "Lancier attaque Archer",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1.794,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 999,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 999,
+                    "denominator": 1000,
+                    "value": 0.999
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1080581,
+                        "denominator": 3080000,
+                        "value": 0.350837987012987
+                    },
+                    "structure": {
+                        "numerator": 20187955849860,
+                        "denominator": 57568280000000,
+                        "value": 0.3506784612960471
+                    },
+                    "economicValue": {
+                        "numerator": 140475530,
+                        "denominator": 400400000,
+                        "value": 0.350837987012987
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0.999,
+                    "delta": 0.999
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.350837987012987,
+                        "delta": 0.350837987012987
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.3506784612960471,
+                        "delta": 0.3506784612960471
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.350837987012987,
+                        "delta": 0.350837987012987
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-knight",
+            "scenarioLabel": "Lancier attaque Chevalier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2.772,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2063724,
+                        "denominator": 3640000,
+                        "value": 0.5669571428571428
+                    },
+                    "structure": {
+                        "numerator": 66022796445170,
+                        "denominator": 116480000000000,
+                        "value": 0.5668165903603194
+                    },
+                    "economicValue": {
+                        "numerator": 227009640,
+                        "denominator": 400400000,
+                        "value": 0.5669571428571428
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2.373,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2238778,
+                        "denominator": 3640000,
+                        "value": 0.6150489010989011
+                    },
+                    "structure": {
+                        "numerator": 103430537437205,
+                        "denominator": 168204400000000,
+                        "value": 0.6149098206539484
+                    },
+                    "economicValue": {
+                        "numerator": 246265580,
+                        "denominator": 400400000,
+                        "value": 0.6150489010989011
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 1,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.5669571428571428,
+                        "to": 0.6150489010989011,
+                        "delta": 0.048091758241758265
+                    },
+                    "structure": {
+                        "from": 0.5668165903603194,
+                        "to": 0.6149098206539484,
+                        "delta": 0.048093230293629
+                    },
+                    "economicValue": {
+                        "from": 0.5669571428571428,
+                        "to": 0.6150489010989011,
+                        "delta": 0.048091758241758265
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-vs-knight",
+            "scenarioLabel": "Lancier attaque Chevalier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2.772,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 51480000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2.373,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 71299800000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-soldier",
+            "scenarioLabel": "Archer attaque Soldat",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1481433,
+                        "denominator": 3080000,
+                        "value": 0.48098474025974025
+                    },
+                    "structure": {
+                        "numerator": 27680173164079,
+                        "denominator": 57568280000000,
+                        "value": 0.4808233486232175
+                    },
+                    "economicValue": {
+                        "numerator": 192586290,
+                        "denominator": 400400000,
+                        "value": 0.48098474025974025
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 1,
+                    "delta": 1
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.48098474025974025,
+                        "delta": 0.48098474025974025
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.4808233486232175,
+                        "delta": 0.4808233486232175
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.48098474025974025,
+                        "delta": 0.48098474025974025
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-soldier",
+            "scenarioLabel": "Archer attaque Soldat",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1915029,
+                        "denominator": 5005000,
+                        "value": 0.3826231768231768
+                    },
+                    "structure": {
+                        "numerator": 34461640216080,
+                        "denominator": 90090000000000,
+                        "value": 0.38252458892307695
+                    },
+                    "economicValue": {
+                        "numerator": 153202320,
+                        "denominator": 400400000,
+                        "value": 0.3826231768231768
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 5005000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 140185045000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 0,
+                    "delta": -1
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.3826231768231768,
+                        "to": 0,
+                        "delta": -0.3826231768231768
+                    },
+                    "structure": {
+                        "from": 0.38252458892307695,
+                        "to": 0,
+                        "delta": -0.38252458892307695
+                    },
+                    "economicValue": {
+                        "from": 0.3826231768231768,
+                        "to": 0,
+                        "delta": -0.3826231768231768
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-spearman",
+            "scenarioLabel": "Archer attaque Lancier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1.773,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1373450,
+                        "denominator": 3080000,
+                        "value": 0.4459253246753247
+                    },
+                    "structure": {
+                        "numerator": 25661501316117,
+                        "denominator": 57568280000000,
+                        "value": 0.4457576518894954
+                    },
+                    "economicValue": {
+                        "numerator": 178548500,
+                        "denominator": 400400000,
+                        "value": 0.4459253246753247
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 1,
+                    "delta": 1
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.4459253246753247,
+                        "delta": 0.4459253246753247
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.4457576518894954,
+                        "delta": 0.4457576518894954
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.4459253246753247,
+                        "delta": 0.4459253246753247
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-spearman",
+            "scenarioLabel": "Archer attaque Lancier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1.773,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1808975,
+                        "denominator": 3640000,
+                        "value": 0.49697115384615387
+                    },
+                    "structure": {
+                        "numerator": 57870827859422,
+                        "denominator": 116480000000000,
+                        "value": 0.49683059632058724
+                    },
+                    "economicValue": {
+                        "numerator": 198987250,
+                        "denominator": 400400000,
+                        "value": 0.49697115384615387
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3640000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 168204400000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 0,
+                    "delta": -1
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.49697115384615387,
+                        "to": 0,
+                        "delta": -0.49697115384615387
+                    },
+                    "structure": {
+                        "from": 0.49683059632058724,
+                        "to": 0,
+                        "delta": -0.49683059632058724
+                    },
+                    "economicValue": {
+                        "from": 0.49697115384615387,
+                        "to": 0,
+                        "delta": -0.49697115384615387
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-archer",
+            "scenarioLabel": "Archer attaque Archer",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1557121,
+                        "denominator": 3080000,
+                        "value": 0.5055587662337663
+                    },
+                    "structure": {
+                        "numerator": 29094678711501,
+                        "denominator": 57568280000000,
+                        "value": 0.5053942676679067
+                    },
+                    "economicValue": {
+                        "numerator": 202425730,
+                        "denominator": 400400000,
+                        "value": 0.5055587662337663
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 1,
+                    "delta": 1
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.5055587662337663,
+                        "delta": 0.5055587662337663
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.5053942676679067,
+                        "delta": 0.5053942676679067
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.5055587662337663,
+                        "delta": 0.5055587662337663
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-archer",
+            "scenarioLabel": "Archer attaque Archer",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 57568280000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 0,
+                    "delta": -1
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-knight",
+            "scenarioLabel": "Archer attaque Chevalier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 57568280000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "archer-vs-knight",
+            "scenarioLabel": "Archer attaque Chevalier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2410,
+                        "denominator": 1144000,
+                        "value": 0.002106643356643357
+                    },
+                    "structure": {
+                        "numerator": 105367323600,
+                        "denominator": 51480000000000,
+                        "value": 0.0020467623076923075
+                    },
+                    "economicValue": {
+                        "numerator": 843500,
+                        "denominator": 400400000,
+                        "value": 0.002106643356643357
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 71299800000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 1,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.002106643356643357,
+                        "to": 0,
+                        "delta": -0.002106643356643357
+                    },
+                    "structure": {
+                        "from": 0.0020467623076923075,
+                        "to": 0,
+                        "delta": -0.0020467623076923075
+                    },
+                    "economicValue": {
+                        "from": 0.002106643356643357,
+                        "to": 0,
+                        "delta": -0.002106643356643357
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-soldier",
+            "scenarioLabel": "Chevalier attaque Soldat",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2.007,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 51480000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 291854,
+                        "denominator": 1144000,
+                        "value": 0.2551171328671329
+                    },
+                    "structure": {
+                        "numerator": 18158545513335,
+                        "denominator": 71299800000000,
+                        "value": 0.2546787720769904
+                    },
+                    "economicValue": {
+                        "numerator": 102148900,
+                        "denominator": 400400000,
+                        "value": 0.2551171328671329
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0.2551171328671329,
+                        "delta": 0.2551171328671329
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0.2546787720769904,
+                        "delta": 0.2546787720769904
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0.2551171328671329,
+                        "delta": 0.2551171328671329
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-soldier",
+            "scenarioLabel": "Chevalier attaque Soldat",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 5005,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2.007,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2491175,
+                        "denominator": 5005000,
+                        "value": 0.49773726273726276
+                    },
+                    "structure": {
+                        "numerator": 44831969862660,
+                        "denominator": 90090000000000,
+                        "value": 0.49763536311088913
+                    },
+                    "economicValue": {
+                        "numerator": 199294000,
+                        "denominator": 400400000,
+                        "value": 0.49773726273726276
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 3,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2093803,
+                        "denominator": 5005000,
+                        "value": 0.41834225774225775
+                    },
+                    "structure": {
+                        "numerator": 58631765660137,
+                        "denominator": 140185045000000,
+                        "value": 0.4182455101408071
+                    },
+                    "economicValue": {
+                        "numerator": 167504240,
+                        "denominator": 400400000,
+                        "value": 0.41834225774225775
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 1,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.49773726273726276,
+                        "to": 0.41834225774225775,
+                        "delta": -0.07939500499500501
+                    },
+                    "structure": {
+                        "from": 0.49763536311088913,
+                        "to": 0.4182455101408071,
+                        "delta": -0.07938985297008205
+                    },
+                    "economicValue": {
+                        "from": 0.49773726273726276,
+                        "to": 0.41834225774225775,
+                        "delta": -0.07939500499500501
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-spearman",
+            "scenarioLabel": "Chevalier attaque Lancier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2.811,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 51480000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1.551,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 1144000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 71299800000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0,
+                    "to": 0,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-spearman",
+            "scenarioLabel": "Chevalier attaque Lancier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 3640,
+                "archer": 0,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2.811,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2051312,
+                        "denominator": 3640000,
+                        "value": 0.5635472527472527
+                    },
+                    "structure": {
+                        "numerator": 65625869830250,
+                        "denominator": 116480000000000,
+                        "value": 0.5634089099437671
+                    },
+                    "economicValue": {
+                        "numerator": 225644320,
+                        "denominator": 400400000,
+                        "value": 0.5635472527472527
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1.551,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2772526,
+                        "denominator": 3640000,
+                        "value": 0.761682967032967
+                    },
+                    "structure": {
+                        "numerator": 128095207254155,
+                        "denominator": 168204400000000,
+                        "value": 0.7615449254249889
+                    },
+                    "economicValue": {
+                        "numerator": 304977860,
+                        "denominator": 400400000,
+                        "value": 0.761682967032967
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 1,
+                    "to": 1,
+                    "delta": 0
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.5635472527472527,
+                        "to": 0.761682967032967,
+                        "delta": 0.1981357142857143
+                    },
+                    "structure": {
+                        "from": 0.5634089099437671,
+                        "to": 0.7615449254249889,
+                        "delta": 0.19813601548122173
+                    },
+                    "economicValue": {
+                        "from": 0.5635472527472527,
+                        "to": 0.761682967032967,
+                        "delta": 0.1981357142857143
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-archer",
+            "scenarioLabel": "Chevalier attaque Archer",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 144,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 144,
+                    "denominator": 1000,
+                    "value": 0.144
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 2444,
+                        "denominator": 1144000,
+                        "value": 0.0021363636363636363
+                    },
+                    "structure": {
+                        "numerator": 106832254320,
+                        "denominator": 51480000000000,
+                        "value": 0.0020752186153846154
+                    },
+                    "economicValue": {
+                        "numerator": 855400,
+                        "denominator": 400400000,
+                        "value": 0.0021363636363636363
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 685966,
+                        "denominator": 1144000,
+                        "value": 0.5996206293706293
+                    },
+                    "structure": {
+                        "numerator": 42721585434197,
+                        "denominator": 71299800000000,
+                        "value": 0.5991824021132879
+                    },
+                    "economicValue": {
+                        "numerator": 240088100,
+                        "denominator": 400400000,
+                        "value": 0.5996206293706293
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.144,
+                    "to": 1,
+                    "delta": 0.856
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.0021363636363636363,
+                        "to": 0.5996206293706293,
+                        "delta": 0.5974842657342657
+                    },
+                    "structure": {
+                        "from": 0.0020752186153846154,
+                        "to": 0.5991824021132879,
+                        "delta": 0.5971071834979033
+                    },
+                    "economicValue": {
+                        "from": 0.0021363636363636363,
+                        "to": 0.5996206293706293,
+                        "delta": 0.5974842657342657
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-archer",
+            "scenarioLabel": "Chevalier attaque Archer",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 3080,
+                "knight": 0
+            },
+            "baseline": {
+                "wins": 856,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 856,
+                    "denominator": 1000,
+                    "value": 0.856
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 30800000000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 1,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 0,
+                        "denominator": 3080000,
+                        "value": 0
+                    },
+                    "structure": {
+                        "numerator": 0,
+                        "denominator": 57568280000000,
+                        "value": 0
+                    },
+                    "economicValue": {
+                        "numerator": 0,
+                        "denominator": 400400000,
+                        "value": 0
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.856,
+                    "to": 0,
+                    "delta": -0.856
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "structure": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    },
+                    "economicValue": {
+                        "from": 0,
+                        "to": 0,
+                        "delta": 0
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-knight",
+            "scenarioLabel": "Chevalier attaque Chevalier",
+            "side": "attacker",
+            "focus": true,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 502,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 502,
+                    "denominator": 1000,
+                    "value": 0.502
+                },
+                "meanRounds": 2.994,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 59214,
+                        "denominator": 1144000,
+                        "value": 0.05176048951048951
+                    },
+                    "structure": {
+                        "numerator": 2650011841020,
+                        "denominator": 51480000000000,
+                        "value": 0.05147653148834499
+                    },
+                    "economicValue": {
+                        "numerator": 20724900,
+                        "denominator": 400400000,
+                        "value": 0.05176048951048951
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 0,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 0,
+                    "denominator": 1000,
+                    "value": 0
+                },
+                "meanRounds": 2.934,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 1875,
+                        "denominator": 1144000,
+                        "value": 0.001638986013986014
+                    },
+                    "structure": {
+                        "numerator": 114397693360,
+                        "denominator": 71299800000000,
+                        "value": 0.0016044602279389282
+                    },
+                    "economicValue": {
+                        "numerator": 656250,
+                        "denominator": 400400000,
+                        "value": 0.001638986013986014
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.502,
+                    "to": 0,
+                    "delta": -0.502
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.05176048951048951,
+                        "to": 0.001638986013986014,
+                        "delta": -0.050121503496503496
+                    },
+                    "structure": {
+                        "from": 0.05147653148834499,
+                        "to": 0.0016044602279389282,
+                        "delta": -0.04987207126040606
+                    },
+                    "economicValue": {
+                        "from": 0.05176048951048951,
+                        "to": 0.001638986013986014,
+                        "delta": -0.050121503496503496
+                    }
+                }
+            }
+        },
+        {
+            "scenarioId": "knight-vs-knight",
+            "scenarioLabel": "Chevalier attaque Chevalier",
+            "side": "defender",
+            "focus": false,
+            "army": {
+                "soldier": 0,
+                "spearman": 0,
+                "archer": 0,
+                "knight": 1144
+            },
+            "baseline": {
+                "wins": 498,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 498,
+                    "denominator": 1000,
+                    "value": 0.498
+                },
+                "meanRounds": 2.994,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 61635,
+                        "denominator": 1144000,
+                        "value": 0.05387674825174825
+                    },
+                    "structure": {
+                        "numerator": 2757745092330,
+                        "denominator": 51480000000000,
+                        "value": 0.05356925198776224
+                    },
+                    "economicValue": {
+                        "numerator": 21572250,
+                        "denominator": 400400000,
+                        "value": 0.05387674825174825
+                    }
+                }
+            },
+            "candidate": {
+                "wins": 1000,
+                "draws": 0,
+                "iterations": 1000,
+                "winRate": {
+                    "numerator": 1000,
+                    "denominator": 1000,
+                    "value": 1
+                },
+                "meanRounds": 2.934,
+                "metrics": {
+                    "survivors": {
+                        "numerator": 254219,
+                        "denominator": 1144000,
+                        "value": 0.2222194055944056
+                    },
+                    "structure": {
+                        "numerator": 15813887639921,
+                        "denominator": 71299800000000,
+                        "value": 0.22179427768270038
+                    },
+                    "economicValue": {
+                        "numerator": 88976650,
+                        "denominator": 400400000,
+                        "value": 0.2222194055944056
+                    }
+                }
+            },
+            "vector": {
+                "x": {
+                    "from": 0.498,
+                    "to": 1,
+                    "delta": 0.502
+                },
+                "y": {
+                    "survivors": {
+                        "from": 0.05387674825174825,
+                        "to": 0.2222194055944056,
+                        "delta": 0.16834265734265735
+                    },
+                    "structure": {
+                        "from": 0.05356925198776224,
+                        "to": 0.22179427768270038,
+                        "delta": 0.16822502569493814
+                    },
+                    "economicValue": {
+                        "from": 0.05387674825174825,
+                        "to": 0.2222194055944056,
+                        "delta": 0.16834265734265735
+                    }
+                }
+            }
+        }
+    ]
+}

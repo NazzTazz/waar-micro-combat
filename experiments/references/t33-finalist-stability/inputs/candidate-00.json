@@ -1,0 +1,51 @@
+{
+    "id": "roles-a",
+    "label": "Point de dÃ©part : rÃ´les et contres explicites",
+    "version": "t28.0",
+    "maxRounds": 3,
+    "randomSpread": "0.1",
+    "units": {
+        "soldier": {
+            "attack": "7",
+            "structure": "18",
+            "defendingEfficiency": "1",
+            "cost": 80
+        },
+        "spearman": {
+            "attack": "8",
+            "structure": "32",
+            "defendingEfficiency": "1.45",
+            "cost": 110
+        },
+        "archer": {
+            "attack": "18",
+            "structure": "10",
+            "defendingEfficiency": "0.35",
+            "cost": 130
+        },
+        "knight": {
+            "attack": "30",
+            "structure": "45",
+            "defendingEfficiency": "1.1",
+            "cost": 350
+        }
+    },
+    "counters": [
+        {
+            "acting": "spearman",
+            "target": "knight",
+            "factor": "1.5"
+        },
+        {
+            "acting": "archer",
+            "target": "spearman",
+            "factor": "1.35"
+        },
+        {
+            "acting": "knight",
+            "target": "archer",
+            "factor": "1.4"
+        }
+    ],
+    "tieBreakPolicy": "defender"
+}

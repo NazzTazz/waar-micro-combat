@@ -1,0 +1,257 @@
+{
+    "schemaVersion": "waar-mixed-composition-observation-plan/0.1",
+    "id": "t34-mixed-composition-observation",
+    "slice": "T34",
+    "state": "planned-before-measurement",
+    "measurementStarted": false,
+    "purpose": "descriptive comparison on the frozen mixed-composition T24 corpus",
+    "sampling": {
+        "iterationsPerScenarioAndVariant": 1000,
+        "baseSeed": 32452843,
+        "pairedSeeds": true,
+        "derivation": "ExperimentRunner::deriveSeed(baseSeed, scenarioId, iteration)",
+        "reservedForT34": true
+    },
+    "corpus": {
+        "id": "t24-astra-vector-corrections",
+        "sourcePath": "inputs/t24-corpus.json",
+        "sha256": "551b41923a588e01cd3cb5a2a38d822e4e01a231ca2818f90b5dc7e623e761fb",
+        "scenarioCount": 6,
+        "exactIdsCompositionsAndBudgetsPreserved": true,
+        "scenarios": [
+            {
+                "id": "soldier-control",
+                "label": "Soldats seuls — témoin de stabilité",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 30,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "defender": {
+                    "soldier": 30,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "budgets": {
+                    "attacker": 2400,
+                    "defender": 2400
+                }
+            },
+            {
+                "id": "spearman-screen",
+                "label": "Écran de Lanciers en défense",
+                "focusSide": "defender",
+                "attacker": {
+                    "soldier": 22,
+                    "spearman": 0,
+                    "archer": 8,
+                    "knight": 0
+                },
+                "defender": {
+                    "soldier": 20,
+                    "spearman": 8,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "budgets": {
+                    "attacker": 2800,
+                    "defender": 2480
+                }
+            },
+            {
+                "id": "spears-against-knights",
+                "label": "Lanciers contre Chevaliers",
+                "focusSide": "defender",
+                "attacker": {
+                    "soldier": 12,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 10
+                },
+                "defender": {
+                    "soldier": 12,
+                    "spearman": 18,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "budgets": {
+                    "attacker": 4460,
+                    "defender": 2940
+                }
+            },
+            {
+                "id": "archers-against-spears",
+                "label": "Archers contre Lanciers",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 12,
+                    "spearman": 0,
+                    "archer": 22,
+                    "knight": 0
+                },
+                "defender": {
+                    "soldier": 12,
+                    "spearman": 18,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "budgets": {
+                    "attacker": 3820,
+                    "defender": 2940
+                }
+            },
+            {
+                "id": "knights-against-archers",
+                "label": "Chevaliers contre Archers",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 10,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 10
+                },
+                "defender": {
+                    "soldier": 10,
+                    "spearman": 0,
+                    "archer": 18,
+                    "knight": 0
+                },
+                "budgets": {
+                    "attacker": 4300,
+                    "defender": 3140
+                }
+            },
+            {
+                "id": "mixed-armies",
+                "label": "Armées mixtes",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 18,
+                    "spearman": 8,
+                    "archer": 8,
+                    "knight": 4
+                },
+                "defender": {
+                    "soldier": 18,
+                    "spearman": 8,
+                    "archer": 8,
+                    "knight": 4
+                },
+                "budgets": {
+                    "attacker": 4760,
+                    "defender": 4760
+                }
+            }
+        ]
+    },
+    "variants": [
+        {
+            "kind": "initial",
+            "t31Order": null,
+            "id": "roles-a",
+            "version": "t28.0",
+            "parameterFingerprint": "27730df89607e20ccea616d1044c5fa46352043db88a9a4765fbb70cee88ad05",
+            "t33Status": "objectifs-non-atteints",
+            "sourcePath": "inputs/candidate-00.json",
+            "sha256": "ba3f6e075e95a5636d6ee561e8a685745ca3e1a0942a3850cad33b9c0e7057d3"
+        },
+        {
+            "kind": "finalist",
+            "t31Order": 1,
+            "id": "t31-candidate-0116-d0c5f6473d05",
+            "version": "t31.0-0116",
+            "parameterFingerprint": "d0c5f6473d05c033cfb623731ae0fc5ba95fa9846c5e84c5634270ca0f5fa88c",
+            "t33Status": "objectifs-non-atteints",
+            "sourcePath": "inputs/candidate-01.json",
+            "sha256": "14b78a6c9b85fc265d2722f35c8374f1dd0bbe7a85f80043b16fa831b6d2fbe1"
+        },
+        {
+            "kind": "finalist",
+            "t31Order": 2,
+            "id": "t31-candidate-0128-96382d7e8496",
+            "version": "t31.0-0128",
+            "parameterFingerprint": "96382d7e8496c7de0883f74ca29c76d76938d7b98804efae456c6ca93f268652",
+            "t33Status": "objectifs-non-atteints",
+            "sourcePath": "inputs/candidate-02.json",
+            "sha256": "6a2218c642c2f293b4a868e246d885cd72ede5173abec57287cc9f9cfe7a6a25"
+        },
+        {
+            "kind": "finalist",
+            "t31Order": 3,
+            "id": "t31-candidate-0123-3805dc464a60",
+            "version": "t31.0-0123",
+            "parameterFingerprint": "3805dc464a600de1b6c03ea203bb3129b13ee036c951dcbb889cee60cf93e923",
+            "t33Status": "objectifs-non-atteints",
+            "sourcePath": "inputs/candidate-03.json",
+            "sha256": "6af71d0d69b969db3af8ff747e5d114c5fb5f5b299bd8aeb337a992e1c4e5e28"
+        }
+    ],
+    "combatPolicy": {
+        "tieBreakPolicy": "defender",
+        "sameForInitialAndFinalists": true,
+        "costs": {
+            "soldier": 80,
+            "spearman": 110,
+            "archer": 130,
+            "knight": 350
+        },
+        "parameterMutationAllowed": false
+    },
+    "historicalReference": {
+        "id": "t24-astra-vector-corrections",
+        "iterations": 200,
+        "baseSeed": 42,
+        "tieBreakPolicy": "draw",
+        "policyProvenance": "implicit default because tieBreakPolicy is absent from both historical variants",
+        "displayedAsMeasurement": false,
+        "parametersAttributionAllowed": false
+    },
+    "t33": {
+        "planId": "t33-finalist-stability-t31-standard-seed-314159-budget-128",
+        "acceptedWithoutReservation": true,
+        "statusDisplayRequired": true,
+        "planSha256": "e878d8e4208dae322726e52033d0c18192adc2311d8c520321b5ee682e1449b9",
+        "resultSha256": "0fc05d32cc28d3add12b5cd19d1db069179c76aee63c2328fdda4328c28c50e8"
+    },
+    "interpretation": {
+        "descriptiveOnly": true,
+        "t24AcceptanceScoringAllowed": false,
+        "legacyFidelityVerdictAllowed": false,
+        "rankingOrSelectionAllowed": false,
+        "t24CorpusExcludedFromT31Scoring": true,
+        "monotypeFailureErasedByT34": false
+    },
+    "frozenCopies": {
+        "t24-corpus.json": {
+            "path": "inputs/t24-corpus.json",
+            "sha256": "551b41923a588e01cd3cb5a2a38d822e4e01a231ca2818f90b5dc7e623e761fb"
+        },
+        "candidate-00.json": {
+            "path": "inputs/candidate-00.json",
+            "sha256": "ba3f6e075e95a5636d6ee561e8a685745ca3e1a0942a3850cad33b9c0e7057d3"
+        },
+        "candidate-01.json": {
+            "path": "inputs/candidate-01.json",
+            "sha256": "14b78a6c9b85fc265d2722f35c8374f1dd0bbe7a85f80043b16fa831b6d2fbe1"
+        },
+        "candidate-02.json": {
+            "path": "inputs/candidate-02.json",
+            "sha256": "6a2218c642c2f293b4a868e246d885cd72ede5173abec57287cc9f9cfe7a6a25"
+        },
+        "candidate-03.json": {
+            "path": "inputs/candidate-03.json",
+            "sha256": "6af71d0d69b969db3af8ff747e5d114c5fb5f5b299bd8aeb337a992e1c4e5e28"
+        },
+        "t33-validation-plan.json": {
+            "path": "inputs/t33-validation-plan.json",
+            "sha256": "e878d8e4208dae322726e52033d0c18192adc2311d8c520321b5ee682e1449b9"
+        },
+        "t33-result.json": {
+            "path": "inputs/t33-result.json",
+            "sha256": "0fc05d32cc28d3add12b5cd19d1db069179c76aee63c2328fdda4328c28c50e8"
+        }
+    }
+}

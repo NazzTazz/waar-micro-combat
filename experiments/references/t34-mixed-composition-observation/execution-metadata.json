@@ -1,0 +1,14 @@
+{
+    "schemaVersion": "waar-mixed-composition-observation-execution-metadata/0.1",
+    "planId": "t34-mixed-composition-observation",
+    "planSha256": "08d7ad8fc1cac621a59700de9ff9958e967b340c0d13ae29e18c3766fe41140a",
+    "startedAtUtc": "2026-09-09T17:23:14+00:00",
+    "finishedAtUtc": "2026-09-09T17:23:26+00:00",
+    "durationSeconds": 11.3742349,
+    "runtime": {
+        "phpVersion": "8.2.33",
+        "os": "Windows",
+        "architecture": "AMD64"
+    },
+    "manualRoute": "php packages/waar-micro-combat/bin/observe-mixed-compositions.php"
+}

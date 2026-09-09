@@ -1,0 +1,581 @@
+{
+    "label": "variation entre lots",
+    "objectives": [
+        {
+            "objectiveId": "soldier-vs-soldier-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.745,
+                "maximum": 0.757
+            },
+            "survivors": {
+                "minimum": 0.5795944055944056,
+                "maximum": 0.5807752247752248
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-soldier-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.243,
+                "maximum": 0.255
+            },
+            "survivors": {
+                "minimum": 0.5616899100899101,
+                "maximum": 0.5625634365634365
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-spearman-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0.4091028971028971,
+                "maximum": 0.4106699300699301
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-spearman-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.659645054945055,
+                "maximum": 0.660714010989011
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-archer-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.6279350649350649,
+                "maximum": 0.62925994005994
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-archer-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0.002000974025974026,
+                "maximum": 0.0025512987012987014
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-knight-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.798,
+                "maximum": 0.832
+            },
+            "survivors": {
+                "minimum": 0.3207706293706294,
+                "maximum": 0.32233526473526475
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "soldier-vs-knight-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.168,
+                "maximum": 0.202
+            },
+            "survivors": {
+                "minimum": 0.2716048951048951,
+                "maximum": 0.2726722027972028
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-soldier-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.222,
+                "maximum": 0.24
+            },
+            "survivors": {
+                "minimum": 0.6350802197802198,
+                "maximum": 0.6356307692307692
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-soldier-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.76,
+                "maximum": 0.778
+            },
+            "survivors": {
+                "minimum": 0.6494185814185814,
+                "maximum": 0.6507072927072927
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-spearman-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0.4912434065934066,
+                "maximum": 0.4923804945054945
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-spearman-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.7251942307692307,
+                "maximum": 0.7258590659340659
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-archer-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0.001
+            },
+            "survivors": {
+                "minimum": 0.17966923076923078,
+                "maximum": 0.1835771978021978
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-archer-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.999,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.350837987012987,
+                "maximum": 0.3540525974025974
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-knight-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.6123824175824176,
+                "maximum": 0.6151090659340659
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "spearman-vs-knight-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-soldier-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.47796883116883115,
+                "maximum": 0.48098474025974025
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-soldier-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-spearman-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.44444935064935065,
+                "maximum": 0.44801753246753245
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-spearman-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-archer-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.5027756493506493,
+                "maximum": 0.5055587662337663
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-archer-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-knight-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "archer-vs-knight-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-soldier-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0.001
+            },
+            "survivors": {
+                "minimum": 0.2551171328671329,
+                "maximum": 0.2568828671328671
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-soldier-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.999,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.41697342657342656,
+                "maximum": 0.41834225774225775
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-spearman-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-spearman-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.761682967032967,
+                "maximum": 0.7630337912087912
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-archer-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 1,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.5980646853146853,
+                "maximum": 0.5998662587412588
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-archer-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "survivors": {
+                "minimum": 0,
+                "maximum": 0
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-knight-attacker-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0,
+                "maximum": 0.002
+            },
+            "survivors": {
+                "minimum": 0.001638986013986014,
+                "maximum": 0.00243006993006993
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        },
+        {
+            "objectiveId": "knight-vs-knight-defender-tip-survivors",
+            "label": "variation entre lots",
+            "winRate": {
+                "minimum": 0.998,
+                "maximum": 1
+            },
+            "survivors": {
+                "minimum": 0.21797377622377623,
+                "maximum": 0.2245681818181818
+            },
+            "batchesSatisfied": 0,
+            "batchCount": 5,
+            "states": [
+                "outside"
+            ],
+            "stateChanged": false
+        }
+    ]
+}
