@@ -1,0 +1,6 @@
+experiments/references/** -text
+experiments/references/manifest.sha256 text eol=lf
+experiments/objectives/** -text
+experiments/*.json -text
+experiments/corpora/** -text
+resources/vendor/** -text

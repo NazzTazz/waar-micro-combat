@@ -1,0 +1,50 @@
+{
+    "schemaVersion": "waar-monotype-search-plan/0.1",
+    "id": "t31-standard-seed-314159-budget-128",
+    "slice": "T31",
+    "profile": "standard",
+    "inputs": {
+        "experimentId": "t26-monotype-equal-cost",
+        "objectiveGenerationId": "canonical-monotype-survivors-v1",
+        "searchSpaceId": "t30-proposed-15-parameters",
+        "searchSpaceVersion": "t30.1-proposed",
+        "searchSpaceBoundsDecision": "accepted-for-t31-by-counter-review",
+        "sha256": {
+            "experiment": "9e0b0b42071c5b4684e5ed596a470868ad2819e67670a486db052179983c8835",
+            "objectives": "f4399119a6a82abfe7fd14965cfe125d5645fbbc2cf5311d3b78f86f76db8c79",
+            "searchSpace": "97421dea05db731fc1b7d1388fbb0714978e67cb77a1766f79d9b3225b94ea9e",
+            "candidateInitial": "ba3f6e075e95a5636d6ee561e8a685745ca3e1a0942a3850cad33b9c0e7057d3"
+        }
+    },
+    "sampling": {
+        "iterationsPerScenario": 200,
+        "combatBaseSeed": 42,
+        "pairedCombatSeeds": true,
+        "searchSeed": 314159
+    },
+    "limits": {
+        "uniqueEvaluationBudget": 128,
+        "proposalLimit": 1280
+    },
+    "strategy": {
+        "initialCandidateFirst": true,
+        "globalUniqueTarget": 64,
+        "globalSampling": "For each parameter, one Lcg31 state modulo the inclusive quantized grid size.",
+        "localSampling": "From the current best, one Lcg31 state per parameter reduced modulo an offset width of twice ceil(10% of the grid span) plus one, then clamp.",
+        "deduplication": "After quantization, SHA-256 of the ordered 15-value JSON object; candidate metadata excluded.",
+        "ranking": "T29c continuous loss ascending, then canonical parameter SHA-256 ascending on exact ties.",
+        "stop": "Unique evaluation budget or proposal limit, whichever occurs first."
+    },
+    "baselineCache": {
+        "enabled": true,
+        "keyCanonicalization": "compact-json-v1",
+        "keySha256": "0d703f49cfc186f342dff926f0f64f98b1fad1fb941710eed4734395fe9c0918",
+        "includes": [
+            "baselineVariant",
+            "iterations",
+            "baseSeed",
+            "orderedScenarios"
+        ]
+    },
+    "strictAcceptance": "32/32 objectives and zero draws"
+}

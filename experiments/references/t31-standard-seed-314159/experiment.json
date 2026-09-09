@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "waar-micro-wind-tunnel/0.1",
+  "id": "t26-monotype-equal-cost",
+  "label": "T28 — monotypes à coût égal avec départage défensif",
+  "iterations": 200,
+  "baseSeed": 42,
+  "baseline": {
+    "id": "neutral-reference",
+    "label": "TÃ©moin : mÃªmes unitÃ©s, rÃ´les neutres",
+    "version": "t28.0",
+    "maxRounds": 3,
+    "randomSpread": "0.1",
+    "units": {
+      "soldier": {
+        "attack": "7",
+        "structure": "18",
+        "defendingEfficiency": "1",
+        "cost": 80
+      },
+      "spearman": {
+        "attack": "8",
+        "structure": "32",
+        "defendingEfficiency": "1",
+        "cost": 110
+      },
+      "archer": {
+        "attack": "18",
+        "structure": "10",
+        "defendingEfficiency": "1",
+        "cost": 130
+      },
+      "knight": {
+        "attack": "30",
+        "structure": "45",
+        "defendingEfficiency": "1",
+        "cost": 350
+      }
+    },
+    "counters": [],
+    "tieBreakPolicy": "defender"
+  },
+  "candidate": {
+    "id": "roles-a",
+    "label": "Point de dÃ©part : rÃ´les et contres explicites",
+    "version": "t28.0",
+    "maxRounds": 3,
+    "randomSpread": "0.1",
+    "units": {
+      "soldier": {
+        "attack": "7",
+        "structure": "18",
+        "defendingEfficiency": "1",
+        "cost": 80
+      },
+      "spearman": {
+        "attack": "8",
+        "structure": "32",
+        "defendingEfficiency": "1.45",
+        "cost": 110
+      },
+      "archer": {
+        "attack": "18",
+        "structure": "10",
+        "defendingEfficiency": "0.35",
+        "cost": 130
+      },
+      "knight": {
+        "attack": "30",
+        "structure": "45",
+        "defendingEfficiency": "1.1",
+        "cost": 350
+      }
+    },
+    "counters": [
+      {
+        "acting": "spearman",
+        "target": "knight",
+        "factor": "1.5"
+      },
+      {
+        "acting": "archer",
+        "target": "spearman",
+        "factor": "1.35"
+      },
+      {
+        "acting": "knight",
+        "target": "archer",
+        "factor": "1.4"
+      }
+    ],
+    "tieBreakPolicy": "defender"
+  },
+  "scenarios": [
+    {
+      "id": "soldier-vs-soldier",
+      "label": "Soldat attaque Soldat",
+      "focusSide": "attacker",
+      "attacker": {
+        "soldier": 5005
+      },
+      "defender": {
+        "soldier": 5005
+      }
+    },
+    {
+      "id": "soldier-vs-spearman",
+      "label": "Soldat attaque Lancier",
+      "focusSide": "attacker",
+      "attacker": {
+        "soldier": 5005
+      },
+      "defender": {
+        "spearman": 3640
+      }
+    },
+    {
+      "id": "soldier-vs-archer",
+      "label": "Soldat attaque Archer",
+      "focusSide": "attacker",
+      "attacker": {
+        "soldier": 5005
+      },
+      "defender": {
+        "archer": 3080
+      }
+    },
+    {
+      "id": "soldier-vs-knight",
+      "label": "Soldat attaque Chevalier",
+      "focusSide": "attacker",
+      "attacker": {
+        "soldier": 5005
+      },
+      "defender": {
+        "knight": 1144
+      }
+    },
+    {
+      "id": "spearman-vs-soldier",
+      "label": "Lancier attaque Soldat",
+      "focusSide": "attacker",
+      "attacker": {
+        "spearman": 3640
+      },
+      "defender": {
+        "soldier": 5005
+      }
+    },
+    {
+      "id": "spearman-vs-spearman",
+      "label": "Lancier attaque Lancier",
+      "focusSide": "attacker",
+      "attacker": {
+        "spearman": 3640
+      },
+      "defender": {
+        "spearman": 3640
+      }
+    },
+    {
+      "id": "spearman-vs-archer",
+      "label": "Lancier attaque Archer",
+      "focusSide": "attacker",
+      "attacker": {
+        "spearman": 3640
+      },
+      "defender": {
+        "archer": 3080
+      }
+    },
+    {
+      "id": "spearman-vs-knight",
+      "label": "Lancier attaque Chevalier",
+      "focusSide": "attacker",
+      "attacker": {
+        "spearman": 3640
+      },
+      "defender": {
+        "knight": 1144
+      }
+    },
+    {
+      "id": "archer-vs-soldier",
+      "label": "Archer attaque Soldat",
+      "focusSide": "attacker",
+      "attacker": {
+        "archer": 3080
+      },
+      "defender": {
+        "soldier": 5005
+      }
+    },
+    {
+      "id": "archer-vs-spearman",
+      "label": "Archer attaque Lancier",
+      "focusSide": "attacker",
+      "attacker": {
+        "archer": 3080
+      },
+      "defender": {
+        "spearman": 3640
+      }
+    },
+    {
+      "id": "archer-vs-archer",
+      "label": "Archer attaque Archer",
+      "focusSide": "attacker",
+      "attacker": {
+        "archer": 3080
+      },
+      "defender": {
+        "archer": 3080
+      }
+    },
+    {
+      "id": "archer-vs-knight",
+      "label": "Archer attaque Chevalier",
+      "focusSide": "attacker",
+      "attacker": {
+        "archer": 3080
+      },
+      "defender": {
+        "knight": 1144
+      }
+    },
+    {
+      "id": "knight-vs-soldier",
+      "label": "Chevalier attaque Soldat",
+      "focusSide": "attacker",
+      "attacker": {
+        "knight": 1144
+      },
+      "defender": {
+        "soldier": 5005
+      }
+    },
+    {
+      "id": "knight-vs-spearman",
+      "label": "Chevalier attaque Lancier",
+      "focusSide": "attacker",
+      "attacker": {
+        "knight": 1144
+      },
+      "defender": {
+        "spearman": 3640
+      }
+    },
+    {
+      "id": "knight-vs-archer",
+      "label": "Chevalier attaque Archer",
+      "focusSide": "attacker",
+      "attacker": {
+        "knight": 1144
+      },
+      "defender": {
+        "archer": 3080
+      }
+    },
+    {
+      "id": "knight-vs-knight",
+      "label": "Chevalier attaque Chevalier",
+      "focusSide": "attacker",
+      "attacker": {
+        "knight": 1144
+      },
+      "defender": {
+        "knight": 1144
+      }
+    }
+  ]
+}

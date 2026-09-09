@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "waar-monotype-search-space/0.1",
+  "id": "t30-proposed-15-parameters",
+  "version": "t30.1-proposed",
+  "status": "proposed",
+  "source": {
+    "experimentId": "t26-monotype-equal-cost",
+    "candidateId": "roles-a",
+    "candidateVersion": "t28.0",
+    "reference": {
+      "canonicalization": "experiment-definition-json-v1",
+      "sha256": "4ba491716061f41ccb90a72e94a33e909716fb3acc9b4c2408a85b85a9922e06"
+    }
+  },
+  "quantization": {
+    "step": "0.001",
+    "rounding": "nearest-half-up",
+    "appliedBeforeCandidateIdentity": true
+  },
+  "parameters": [
+    {"path": "units.soldier.attack", "label": "Soldat attaque", "unit": "attack-points", "initial": "7", "minimum": "3.5", "maximum": "14", "quantization": "0.001"},
+    {"path": "units.soldier.structure", "label": "Soldat structure", "unit": "structure-points", "initial": "18", "minimum": "9", "maximum": "36", "quantization": "0.001"},
+    {"path": "units.soldier.defendingEfficiency", "label": "Soldat efficacité défensive", "unit": "multiplier", "initial": "1", "minimum": "0.5", "maximum": "2", "quantization": "0.001"},
+    {"path": "units.spearman.attack", "label": "Lancier attaque", "unit": "attack-points", "initial": "8", "minimum": "4", "maximum": "16", "quantization": "0.001"},
+    {"path": "units.spearman.structure", "label": "Lancier structure", "unit": "structure-points", "initial": "32", "minimum": "16", "maximum": "64", "quantization": "0.001"},
+    {"path": "units.spearman.defendingEfficiency", "label": "Lancier efficacité défensive", "unit": "multiplier", "initial": "1.45", "minimum": "0.725", "maximum": "2.9", "quantization": "0.001"},
+    {"path": "units.archer.attack", "label": "Archer attaque", "unit": "attack-points", "initial": "18", "minimum": "9", "maximum": "36", "quantization": "0.001"},
+    {"path": "units.archer.structure", "label": "Archer structure", "unit": "structure-points", "initial": "10", "minimum": "5", "maximum": "20", "quantization": "0.001"},
+    {"path": "units.archer.defendingEfficiency", "label": "Archer efficacité défensive", "unit": "multiplier", "initial": "0.35", "minimum": "0.175", "maximum": "0.7", "quantization": "0.001"},
+    {"path": "units.knight.attack", "label": "Chevalier attaque", "unit": "attack-points", "initial": "30", "minimum": "15", "maximum": "60", "quantization": "0.001"},
+    {"path": "units.knight.structure", "label": "Chevalier structure", "unit": "structure-points", "initial": "45", "minimum": "22.5", "maximum": "90", "quantization": "0.001"},
+    {"path": "units.knight.defendingEfficiency", "label": "Chevalier efficacité défensive", "unit": "multiplier", "initial": "1.1", "minimum": "0.55", "maximum": "2.2", "quantization": "0.001"},
+    {"path": "counters.spearman.knight.factor", "label": "Contre Lancier → Chevalier", "unit": "multiplier", "initial": "1.5", "minimum": "0.75", "maximum": "3", "quantization": "0.001"},
+    {"path": "counters.archer.spearman.factor", "label": "Contre Archer → Lancier", "unit": "multiplier", "initial": "1.35", "minimum": "0.675", "maximum": "2.7", "quantization": "0.001"},
+    {"path": "counters.knight.archer.factor", "label": "Contre Chevalier → Archer", "unit": "multiplier", "initial": "1.4", "minimum": "0.7", "maximum": "2.8", "quantization": "0.001"}
+  ],
+  "frozen": {
+    "experiment": {
+      "iterations": 200,
+      "baseSeed": 42,
+      "scenarioCount": 16
+    },
+    "baseline": "entire-variant",
+    "candidate": {
+      "maxRounds": 3,
+      "randomSpread": "0.1",
+      "tieBreakPolicy": "defender",
+      "costs": {"soldier": 80, "spearman": 110, "archer": 130, "knight": 350},
+      "counterIdentities": ["spearman->knight", "archer->spearman", "knight->archer"],
+      "implicitCounterFactor": "1"
+    }
+  },
+  "caveats": [
+    "The proposed ranges allow a counter factor below 1 and can invert an initial bonus.",
+    "The ranges do not guarantee the intended unit roles.",
+    "No hidden role constraint contributes to the T29c objective."
+  ]
+}

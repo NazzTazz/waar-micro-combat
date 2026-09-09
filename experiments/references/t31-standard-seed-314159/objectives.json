@@ -1,0 +1,944 @@
+{
+  "schemaVersion": "waar-acceptance-zones/0.2",
+  "experimentId": "t26-monotype-equal-cost",
+  "corpusFingerprint": "fe04b09795eed9760e4c75f0b4ecb8840a0857554a6ed090049c041e9f98c48f",
+  "comparisonProfileId": "monotype-equal-cost-v1",
+  "valuationId": "t24-common-valuation-v1",
+  "generation": {
+    "id": "canonical-monotype-survivors-v1",
+    "label": "Objectifs monotypes uniques — survivants",
+    "radiusX": 0.05,
+    "radiusY": 0.1,
+    "readOnly": false
+  },
+  "zones": [
+    {
+      "id": "soldier-vs-soldier-attacker-tip-survivors",
+      "scenarioId": "soldier-vs-soldier",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.5502409638554219,
+        "y": 0.5047640022060453
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-soldier/attacker/tip",
+        "originalCenter": {
+          "x": 0.49,
+          "y": 0.22775024975024974
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-soldier-defender-tip-survivors",
+      "scenarioId": "soldier-vs-soldier",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.44975903614457813,
+        "y": 0.504262503704547
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-soldier/defender/tip",
+        "originalCenter": {
+          "x": 0.51,
+          "y": 0.22724875124875124
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-spearman-attacker-tip-survivors",
+      "scenarioId": "soldier-vs-spearman",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.117647058823529,
+        "y": 0.24393800698319368
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-spearman/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0.002287712287712288
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-spearman-defender-tip-survivors",
+      "scenarioId": "soldier-vs-spearman",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.882352941176471,
+        "y": 0.7521370280014681
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-spearman/defender/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.47708791208791207
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-archer-attacker-tip-survivors",
+      "scenarioId": "soldier-vs-archer",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.24734231041814314,
+        "y": 0.25009438498632997
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-archer/attacker/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.7844755244755245
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-archer-defender-tip-survivors",
+      "scenarioId": "soldier-vs-archer",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.7526576895818569,
+        "y": 0.24950884086444003
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-archer/defender/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-knight-attacker-tip-survivors",
+      "scenarioId": "soldier-vs-knight",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.7491141034727147,
+        "y": 0.5006569736746553
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-knight/attacker/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.4495764235764236
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "soldier-vs-knight-defender-tip-survivors",
+      "scenarioId": "soldier-vs-knight",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.2508858965272853,
+        "y": 0.49508840864440073
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "soldier-vs-knight/defender/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-soldier-attacker-tip-survivors",
+      "scenarioId": "spearman-vs-soldier",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.039617292700212636,
+        "y": 0.252420264902092
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-soldier/attacker/tip",
+        "originalCenter": {
+          "x": 0.9,
+          "y": 0.36047527472527474
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-soldier-defender-tip-survivors",
+      "scenarioId": "spearman-vs-soldier",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.9603827072997874,
+        "y": 0.9171825934379961
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-soldier/defender/tip",
+        "originalCenter": {
+          "x": 0.1,
+          "y": 0.29046353646353645
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-spearman-attacker-tip-survivors",
+      "scenarioId": "spearman-vs-spearman",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.25088589652728566,
+        "y": 0.747551706643062
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-spearman/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0.1503021978021978
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-spearman-defender-tip-survivors",
+      "scenarioId": "spearman-vs-spearman",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.7491141034727143,
+        "y": 0.7421832617284484
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-spearman/defender/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.500532967032967
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-archer-attacker-tip-survivors",
+      "scenarioId": "spearman-vs-archer",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.24875974486180008,
+        "y": 0.7490871807465618
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-archer/attacker/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.760875
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-archer-defender-tip-survivors",
+      "scenarioId": "spearman-vs-archer",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.7512402551381999,
+        "y": 0.2396856581532416
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-archer/defender/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-knight-attacker-tip-survivors",
+      "scenarioId": "spearman-vs-knight",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.05244507441530821,
+        "y": 0.7490804664392581
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-knight/attacker/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.6292376373626374
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "spearman-vs-knight-defender-tip-survivors",
+      "scenarioId": "spearman-vs-knight",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.9475549255846918,
+        "y": 0.8939096267190569
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "spearman-vs-knight/defender/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-soldier-attacker-tip-survivors",
+      "scenarioId": "archer-vs-soldier",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.948972360028349,
+        "y": 0.4931237721021611
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-soldier/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-soldier-defender-tip-survivors",
+      "scenarioId": "archer-vs-soldier",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.05102763997165109,
+        "y": 0.10446876502672187
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-soldier/defender/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.3814825174825175
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-spearman-attacker-tip-survivors",
+      "scenarioId": "archer-vs-spearman",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.9099929128277818,
+        "y": 0.23772102161100195
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-spearman/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-spearman-defender-tip-survivors",
+      "scenarioId": "archer-vs-spearman",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.0900070871722182,
+        "y": 0.7497930438912757
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-spearman/defender/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.3549010989010989
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-archer-attacker-tip-survivors",
+      "scenarioId": "archer-vs-archer",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.9482636428065204,
+        "y": 0.109372521878907
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-archer/attacker/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.36870454545454545
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-archer-defender-tip-survivors",
+      "scenarioId": "archer-vs-archer",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.051736357193479535,
+        "y": 0.0982318271119843
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-archer/defender/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-knight-attacker-tip-survivors",
+      "scenarioId": "archer-vs-knight",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.24875974486180008,
+        "y": 0.10805500982318272
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-knight/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "archer-vs-knight-defender-tip-survivors",
+      "scenarioId": "archer-vs-knight",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.7512402551381999,
+        "y": 0.8955923190267493
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "archer-vs-knight/defender/tip",
+        "originalCenter": {
+          "x": 0.13,
+          "y": 0.0016826923076923078
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-soldier-attacker-tip-survivors",
+      "scenarioId": "knight-vs-soldier",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.0510276399716514,
+        "y": 0.7524557956777995
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-soldier/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-soldier-defender-tip-survivors",
+      "scenarioId": "knight-vs-soldier",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.9489723600283486,
+        "y": 0.493827767517355
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-soldier/defender/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.5016863136863137
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-spearman-attacker-tip-survivors",
+      "scenarioId": "knight-vs-spearman",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.8802267895109853,
+        "y": 0.7445972495088407
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-spearman/attacker/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-spearman-defender-tip-survivors",
+      "scenarioId": "knight-vs-spearman",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.11977321048901465,
+        "y": 0.8916497360694315
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-spearman/defender/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.7069739010989011
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-archer-attacker-tip-survivors",
+      "scenarioId": "knight-vs-archer",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.9482636428065204,
+        "y": 0.8938077798920134
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-archer/attacker/tip",
+        "originalCenter": {
+          "x": 1,
+          "y": 0.622687937062937
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-archer-defender-tip-survivors",
+      "scenarioId": "knight-vs-archer",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.05173635719347962,
+        "y": 0.11001964636542239
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-archer/defender/tip",
+        "originalCenter": {
+          "x": 0,
+          "y": 0
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-knight-attacker-tip-survivors",
+      "scenarioId": "knight-vs-knight",
+      "side": "attacker",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.5494046775336644,
+        "y": 0.8646956444832181
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-knight/attacker/tip",
+        "originalCenter": {
+          "x": 0.11,
+          "y": 0.006149475524475524
+        },
+        "modifiedManually": true
+      }
+    },
+    {
+      "id": "knight-vs-knight-defender-tip-survivors",
+      "scenarioId": "knight-vs-knight",
+      "side": "defender",
+      "endpoint": "tip",
+      "xMetric": "winRate",
+      "yMetric": "survivors",
+      "shape": "ellipse",
+      "center": {
+        "x": 0.4505953224663356,
+        "y": 0.7474531681481584
+      },
+      "radii": {
+        "x": 0.05,
+        "y": 0.1
+      },
+      "enabled": true,
+      "approval": "confirmed",
+      "source": {
+        "kind": "observation",
+        "referenceId": "roles-a@t23.0",
+        "referencePointId": "knight-vs-knight/defender/tip",
+        "originalCenter": {
+          "x": 0.89,
+          "y": 0.12859265734265735
+        },
+        "modifiedManually": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,1113 @@
+{
+    "schemaVersion": "waar-legacy-reference/0.1",
+    "reference": {
+        "id": "waar-v2-legacy-aggregate-current",
+        "rulesetVersion": "waar-v2-legacy-infirmary-5",
+        "resolutionModel": "legacy-aggregate-v2",
+        "sourceFingerprint": "221ae93e8488fd3dfacb6b3d010aa0304e881eba0f0372bbdd62002fa5bfd6f4",
+        "sourceFiles": [
+            {
+                "path": "src/Game/Army/UnitType.php",
+                "sha256": "0817425b296d72c37f194222985f41f1f1adbaad63be1e08f5fce62709e91836"
+            },
+            {
+                "path": "src/Game/Combat/CombatArmy.php",
+                "sha256": "ba41174188e1f4a33d4bac8541ea9b314f4a91b4a3a329bca8abd930a3f93956"
+            },
+            {
+                "path": "src/Game/Combat/LegacyAggregateCombatResolver.php",
+                "sha256": "b4e0387a7649fd79950013511509004c02e116527ca0a6b4ec17594ac164e9d8"
+            },
+            {
+                "path": "src/Game/Combat/UnitCohort.php",
+                "sha256": "86e44a52ea96c08b5c05c41d2472250e395da244237b25dd646489c2eef70e60"
+            },
+            {
+                "path": "src/Game/Combat/UnitState.php",
+                "sha256": "2b5b7bdcd0ac6d6e4762b053be439b8360f38dfc5c09bc1b22ac58cee5f9165a"
+            },
+            {
+                "path": "src/Game/Combat/Numeric/CombatFixedPoint.php",
+                "sha256": "9306ce258ffad5d5e6d5fe335e032cc52ac7ea23efda4db6067872f57d1bef18"
+            },
+            {
+                "path": "src/Game/Combat/Rules/CombatRuleset.php",
+                "sha256": "106f773ce435a786e9562390964ca7da547834011b6ebd80c55c7f362247a3bb"
+            },
+            {
+                "path": "src/Game/Combat/Rules/LegacyCombatRuleset.php",
+                "sha256": "6c8258b6fa6f054a89f5cd5dd41ddc35ef50c4ef7d6b24f3a75e2e4dcde6e60d"
+            },
+            {
+                "path": "src/Game/Combat/Rules/LegacyAggregateParameters.php",
+                "sha256": "3551db6476e715ea6f62a2cb7c98ea755bcb8ac8129ac24f7e49d80933adcd6f"
+            },
+            {
+                "path": "src/Game/Combat/Rules/UnitDefinition.php",
+                "sha256": "1a7817bf519ca897ca2446edc2338a416943ab1a72314f2b4c48d98902ac8797"
+            },
+            {
+                "path": "src/Game/Random/SeededRandomSource.php",
+                "sha256": "514114e14376d1f1080b82f506f1970c3f8f641f0adf16da48284d23252c76a7"
+            },
+            {
+                "path": "src/Game/Combat/Research/LegacyOperationalProjection.php",
+                "sha256": "a7da468da041a6185aa0171b6a63eadd036e6da14958e7e7aa2046025aa0d937"
+            },
+            {
+                "path": "src/Game/Combat/Research/LegacyReferenceExporter.php",
+                "sha256": "382eb85d7136e3a32d72ea981be3871013d10c473e1fc3397698ad1a22daadc8"
+            }
+        ]
+    },
+    "corpus": {
+        "experimentSchemaVersion": "waar-micro-wind-tunnel/0.1",
+        "experimentId": "t24-astra-vector-corrections",
+        "fingerprint": "f9285586b585c9db9e4d88cb3756885a7af9e12fba0a072c8033e675f4474ce4",
+        "scenarioCount": 6,
+        "scenarios": [
+            {
+                "id": "soldier-control",
+                "label": "Soldats seuls — témoin de stabilité",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 30,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "defender": {
+                    "soldier": 30,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            {
+                "id": "spearman-screen",
+                "label": "Écran de Lanciers en défense",
+                "focusSide": "defender",
+                "attacker": {
+                    "soldier": 22,
+                    "spearman": 0,
+                    "archer": 8,
+                    "knight": 0
+                },
+                "defender": {
+                    "soldier": 20,
+                    "spearman": 8,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            {
+                "id": "spears-against-knights",
+                "label": "Lanciers contre Chevaliers",
+                "focusSide": "defender",
+                "attacker": {
+                    "soldier": 12,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 10
+                },
+                "defender": {
+                    "soldier": 12,
+                    "spearman": 18,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            {
+                "id": "archers-against-spears",
+                "label": "Archers contre Lanciers",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 12,
+                    "spearman": 0,
+                    "archer": 22,
+                    "knight": 0
+                },
+                "defender": {
+                    "soldier": 12,
+                    "spearman": 18,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            {
+                "id": "knights-against-archers",
+                "label": "Chevaliers contre Archers",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 10,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 10
+                },
+                "defender": {
+                    "soldier": 10,
+                    "spearman": 0,
+                    "archer": 18,
+                    "knight": 0
+                }
+            },
+            {
+                "id": "mixed-armies",
+                "label": "Armées mixtes",
+                "focusSide": "attacker",
+                "attacker": {
+                    "soldier": 18,
+                    "spearman": 8,
+                    "archer": 8,
+                    "knight": 4
+                },
+                "defender": {
+                    "soldier": 18,
+                    "spearman": 8,
+                    "archer": 8,
+                    "knight": 4
+                }
+            }
+        ]
+    },
+    "context": {
+        "id": "neutral-duel-v1",
+        "modifiers": {
+            "attacker": {},
+            "defender": {}
+        },
+        "consequenceScope": "post-duel-pre-hospital-operational",
+        "hospitalTreatmentIncludedInMetrics": false
+    },
+    "sampling": {
+        "baseSeed": 42,
+        "repetitions": 200,
+        "seedDerivationId": "sha256-scenario-iteration-first31-v1",
+        "randomSourceId": "lcg31-normal-approximation-v1",
+        "crossEnginePairingClaimed": false,
+        "winnerIsDeterministicAtFixedCompositionAndContext": true
+    },
+    "comparisonProfile": {
+        "id": "operational-common-value-v1",
+        "valuationId": "t24-common-valuation-v1",
+        "valuation": {
+            "soldier": 80,
+            "spearman": 110,
+            "archer": 130,
+            "knight": 350
+        },
+        "operationalProjection": "Legacy category valid after duel; wounded and dead are raw losses; hospital treatment is excluded.",
+        "metrics": {
+            "winRate": "Wins divided by all repetitions, draws included in the denominator.",
+            "operationalSurvivorsRatio": "Sum of valid units after the duel divided by initial units times repetitions.",
+            "operationalEconomicValueRatio": "Sum of valid units weighted by the common valuation divided by initial common value times repetitions."
+        },
+        "legacyAvailability": {
+            "operationalSurvivorsRatio": true,
+            "operationalEconomicValueRatio": true,
+            "structureRatio": false
+        }
+    },
+    "rows": [
+        {
+            "scenarioId": "soldier-control",
+            "scenarioLabel": "Soldats seuls — témoin de stabilité",
+            "side": "attacker",
+            "isFocusSide": true,
+            "repetitions": 200,
+            "wins": 0,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 30,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "count": 30,
+                "commonValue": 2400
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 5910,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 90,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 90,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 0,
+                "denominator": 200,
+                "value": 0,
+                "averageAbsolute": 0
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5910,
+                    "denominator": 6000,
+                    "value": 0.985,
+                    "averageAbsolute": 29.55,
+                    "initialAbsolute": 30
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 472800,
+                    "denominator": 480000,
+                    "value": 0.985,
+                    "averageAbsolute": 2364,
+                    "initialAbsolute": 2400
+                }
+            },
+            "coordinates": {
+                "x": 0,
+                "y": {
+                    "operationalSurvivorsRatio": 0.985,
+                    "operationalEconomicValueRatio": 0.985,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "soldier-control",
+            "scenarioLabel": "Soldats seuls — témoin de stabilité",
+            "side": "defender",
+            "isFocusSide": false,
+            "repetitions": 200,
+            "wins": 200,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 30,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "count": 30,
+                "commonValue": 2400
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 5884,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 116,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 116,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 200,
+                "denominator": 200,
+                "value": 1,
+                "averageAbsolute": 1
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5884,
+                    "denominator": 6000,
+                    "value": 0.9806666666666667,
+                    "averageAbsolute": 29.42,
+                    "initialAbsolute": 30
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 470720,
+                    "denominator": 480000,
+                    "value": 0.9806666666666667,
+                    "averageAbsolute": 2353.6,
+                    "initialAbsolute": 2400
+                }
+            },
+            "coordinates": {
+                "x": 1,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9806666666666667,
+                    "operationalEconomicValueRatio": 0.9806666666666667,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-screen",
+            "scenarioLabel": "Écran de Lanciers en défense",
+            "side": "attacker",
+            "isFocusSide": false,
+            "repetitions": 200,
+            "wins": 200,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 22,
+                    "spearman": 0,
+                    "archer": 8,
+                    "knight": 0
+                },
+                "count": 30,
+                "commonValue": 2800
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 4306,
+                    "spearman": 0,
+                    "archer": 1517,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 94,
+                    "spearman": 0,
+                    "archer": 83,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 94,
+                    "spearman": 0,
+                    "archer": 83,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 200,
+                "denominator": 200,
+                "value": 1,
+                "averageAbsolute": 1
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5823,
+                    "denominator": 6000,
+                    "value": 0.9705,
+                    "averageAbsolute": 29.115,
+                    "initialAbsolute": 30
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 541690,
+                    "denominator": 560000,
+                    "value": 0.9673035714285714,
+                    "averageAbsolute": 2708.45,
+                    "initialAbsolute": 2800
+                }
+            },
+            "coordinates": {
+                "x": 1,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9705,
+                    "operationalEconomicValueRatio": 0.9673035714285714,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "spearman-screen",
+            "scenarioLabel": "Écran de Lanciers en défense",
+            "side": "defender",
+            "isFocusSide": true,
+            "repetitions": 200,
+            "wins": 0,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 20,
+                    "spearman": 8,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "count": 28,
+                "commonValue": 2480
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 3895,
+                    "spearman": 1497,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 105,
+                    "spearman": 103,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 105,
+                    "spearman": 103,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 0,
+                "denominator": 200,
+                "value": 0,
+                "averageAbsolute": 0
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5392,
+                    "denominator": 5600,
+                    "value": 0.9628571428571429,
+                    "averageAbsolute": 26.96,
+                    "initialAbsolute": 28
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 476270,
+                    "denominator": 496000,
+                    "value": 0.9602217741935484,
+                    "averageAbsolute": 2381.35,
+                    "initialAbsolute": 2480
+                }
+            },
+            "coordinates": {
+                "x": 0,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9628571428571429,
+                    "operationalEconomicValueRatio": 0.9602217741935484,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "spears-against-knights",
+            "scenarioLabel": "Lanciers contre Chevaliers",
+            "side": "attacker",
+            "isFocusSide": false,
+            "repetitions": 200,
+            "wins": 200,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 12,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 10
+                },
+                "count": 22,
+                "commonValue": 4460
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 2305,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 1907
+                },
+                "rawLossesByType": {
+                    "soldier": 95,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 93
+                },
+                "woundedByType": {
+                    "soldier": 95,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 93
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 200,
+                "denominator": 200,
+                "value": 1,
+                "averageAbsolute": 1
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 4212,
+                    "denominator": 4400,
+                    "value": 0.9572727272727273,
+                    "averageAbsolute": 21.06,
+                    "initialAbsolute": 22
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 851850,
+                    "denominator": 892000,
+                    "value": 0.9549887892376682,
+                    "averageAbsolute": 4259.25,
+                    "initialAbsolute": 4460
+                }
+            },
+            "coordinates": {
+                "x": 1,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9572727272727273,
+                    "operationalEconomicValueRatio": 0.9549887892376682,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "spears-against-knights",
+            "scenarioLabel": "Lanciers contre Chevaliers",
+            "side": "defender",
+            "isFocusSide": true,
+            "repetitions": 200,
+            "wins": 0,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 12,
+                    "spearman": 18,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "count": 30,
+                "commonValue": 2940
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 2302,
+                    "spearman": 3505,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 98,
+                    "spearman": 95,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 98,
+                    "spearman": 95,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 0,
+                "denominator": 200,
+                "value": 0,
+                "averageAbsolute": 0
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5807,
+                    "denominator": 6000,
+                    "value": 0.9678333333333333,
+                    "averageAbsolute": 29.035,
+                    "initialAbsolute": 30
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 569710,
+                    "denominator": 588000,
+                    "value": 0.9688945578231293,
+                    "averageAbsolute": 2848.55,
+                    "initialAbsolute": 2940
+                }
+            },
+            "coordinates": {
+                "x": 0,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9678333333333333,
+                    "operationalEconomicValueRatio": 0.9688945578231293,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "archers-against-spears",
+            "scenarioLabel": "Archers contre Lanciers",
+            "side": "attacker",
+            "isFocusSide": true,
+            "repetitions": 200,
+            "wins": 200,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 12,
+                    "spearman": 0,
+                    "archer": 22,
+                    "knight": 0
+                },
+                "count": 34,
+                "commonValue": 3820
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 2296,
+                    "spearman": 0,
+                    "archer": 4310,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 104,
+                    "spearman": 0,
+                    "archer": 90,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 104,
+                    "spearman": 0,
+                    "archer": 90,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 200,
+                "denominator": 200,
+                "value": 1,
+                "averageAbsolute": 1
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 6606,
+                    "denominator": 6800,
+                    "value": 0.9714705882352941,
+                    "averageAbsolute": 33.03,
+                    "initialAbsolute": 34
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 743980,
+                    "denominator": 764000,
+                    "value": 0.9737958115183246,
+                    "averageAbsolute": 3719.9,
+                    "initialAbsolute": 3820
+                }
+            },
+            "coordinates": {
+                "x": 1,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9714705882352941,
+                    "operationalEconomicValueRatio": 0.9737958115183246,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "archers-against-spears",
+            "scenarioLabel": "Archers contre Lanciers",
+            "side": "defender",
+            "isFocusSide": false,
+            "repetitions": 200,
+            "wins": 0,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 12,
+                    "spearman": 18,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "count": 30,
+                "commonValue": 2940
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 2306,
+                    "spearman": 3494,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 94,
+                    "spearman": 106,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 94,
+                    "spearman": 106,
+                    "archer": 0,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 0,
+                "denominator": 200,
+                "value": 0,
+                "averageAbsolute": 0
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5800,
+                    "denominator": 6000,
+                    "value": 0.9666666666666667,
+                    "averageAbsolute": 29,
+                    "initialAbsolute": 30
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 568820,
+                    "denominator": 588000,
+                    "value": 0.9673809523809523,
+                    "averageAbsolute": 2844.1,
+                    "initialAbsolute": 2940
+                }
+            },
+            "coordinates": {
+                "x": 0,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9666666666666667,
+                    "operationalEconomicValueRatio": 0.9673809523809523,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "knights-against-archers",
+            "scenarioLabel": "Chevaliers contre Archers",
+            "side": "attacker",
+            "isFocusSide": true,
+            "repetitions": 200,
+            "wins": 200,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 10,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 10
+                },
+                "count": 20,
+                "commonValue": 4300
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 1896,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 1903
+                },
+                "rawLossesByType": {
+                    "soldier": 104,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 97
+                },
+                "woundedByType": {
+                    "soldier": 104,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 97
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 200,
+                "denominator": 200,
+                "value": 1,
+                "averageAbsolute": 1
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 3799,
+                    "denominator": 4000,
+                    "value": 0.94975,
+                    "averageAbsolute": 18.995,
+                    "initialAbsolute": 20
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 817730,
+                    "denominator": 860000,
+                    "value": 0.9508488372093024,
+                    "averageAbsolute": 4088.65,
+                    "initialAbsolute": 4300
+                }
+            },
+            "coordinates": {
+                "x": 1,
+                "y": {
+                    "operationalSurvivorsRatio": 0.94975,
+                    "operationalEconomicValueRatio": 0.9508488372093024,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "knights-against-archers",
+            "scenarioLabel": "Chevaliers contre Archers",
+            "side": "defender",
+            "isFocusSide": false,
+            "repetitions": 200,
+            "wins": 0,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 10,
+                    "spearman": 0,
+                    "archer": 18,
+                    "knight": 0
+                },
+                "count": 28,
+                "commonValue": 3140
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 1905,
+                    "spearman": 0,
+                    "archer": 3503,
+                    "knight": 0
+                },
+                "rawLossesByType": {
+                    "soldier": 95,
+                    "spearman": 0,
+                    "archer": 97,
+                    "knight": 0
+                },
+                "woundedByType": {
+                    "soldier": 95,
+                    "spearman": 0,
+                    "archer": 97,
+                    "knight": 0
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 0,
+                "denominator": 200,
+                "value": 0,
+                "averageAbsolute": 0
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 5408,
+                    "denominator": 5600,
+                    "value": 0.9657142857142857,
+                    "averageAbsolute": 27.04,
+                    "initialAbsolute": 28
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 607790,
+                    "denominator": 628000,
+                    "value": 0.9678184713375796,
+                    "averageAbsolute": 3038.95,
+                    "initialAbsolute": 3140
+                }
+            },
+            "coordinates": {
+                "x": 0,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9657142857142857,
+                    "operationalEconomicValueRatio": 0.9678184713375796,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "mixed-armies",
+            "scenarioLabel": "Armées mixtes",
+            "side": "attacker",
+            "isFocusSide": true,
+            "repetitions": 200,
+            "wins": 200,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 18,
+                    "spearman": 8,
+                    "archer": 8,
+                    "knight": 4
+                },
+                "count": 38,
+                "commonValue": 4760
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 3507,
+                    "spearman": 1500,
+                    "archer": 1504,
+                    "knight": 702
+                },
+                "rawLossesByType": {
+                    "soldier": 93,
+                    "spearman": 100,
+                    "archer": 96,
+                    "knight": 98
+                },
+                "woundedByType": {
+                    "soldier": 93,
+                    "spearman": 100,
+                    "archer": 96,
+                    "knight": 98
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 200,
+                "denominator": 200,
+                "value": 1,
+                "averageAbsolute": 1
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 7213,
+                    "denominator": 7600,
+                    "value": 0.949078947368421,
+                    "averageAbsolute": 36.065,
+                    "initialAbsolute": 38
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 886780,
+                    "denominator": 952000,
+                    "value": 0.9314915966386554,
+                    "averageAbsolute": 4433.9,
+                    "initialAbsolute": 4760
+                }
+            },
+            "coordinates": {
+                "x": 1,
+                "y": {
+                    "operationalSurvivorsRatio": 0.949078947368421,
+                    "operationalEconomicValueRatio": 0.9314915966386554,
+                    "structureRatio": null
+                }
+            }
+        },
+        {
+            "scenarioId": "mixed-armies",
+            "scenarioLabel": "Armées mixtes",
+            "side": "defender",
+            "isFocusSide": false,
+            "repetitions": 200,
+            "wins": 0,
+            "draws": 0,
+            "initial": {
+                "byType": {
+                    "soldier": 18,
+                    "spearman": 8,
+                    "archer": 8,
+                    "knight": 4
+                },
+                "count": 38,
+                "commonValue": 4760
+            },
+            "aggregates": {
+                "operationalByType": {
+                    "soldier": 3490,
+                    "spearman": 1505,
+                    "archer": 1507,
+                    "knight": 701
+                },
+                "rawLossesByType": {
+                    "soldier": 110,
+                    "spearman": 95,
+                    "archer": 93,
+                    "knight": 99
+                },
+                "woundedByType": {
+                    "soldier": 110,
+                    "spearman": 95,
+                    "archer": 93,
+                    "knight": 99
+                },
+                "deadByType": {
+                    "soldier": 0,
+                    "spearman": 0,
+                    "archer": 0,
+                    "knight": 0
+                }
+            },
+            "winRate": {
+                "numerator": 0,
+                "denominator": 200,
+                "value": 0,
+                "averageAbsolute": 0
+            },
+            "metrics": {
+                "operationalSurvivorsRatio": {
+                    "numerator": 7203,
+                    "denominator": 7600,
+                    "value": 0.9477631578947369,
+                    "averageAbsolute": 36.015,
+                    "initialAbsolute": 38
+                },
+                "operationalEconomicValueRatio": {
+                    "numerator": 886010,
+                    "denominator": 952000,
+                    "value": 0.9306827731092437,
+                    "averageAbsolute": 4430.05,
+                    "initialAbsolute": 4760
+                }
+            },
+            "coordinates": {
+                "x": 0,
+                "y": {
+                    "operationalSurvivorsRatio": 0.9477631578947369,
+                    "operationalEconomicValueRatio": 0.9306827731092437,
+                    "structureRatio": null
+                }
+            }
+        }
+    ]
+}
