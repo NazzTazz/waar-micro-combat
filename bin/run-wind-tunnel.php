@@ -7,7 +7,7 @@ use Waar\MicroCombat\Experiment\ReportRenderer;
 require dirname(__DIR__).'/autoload.php';
 
 $configPath = $argv[1] ?? dirname(__DIR__).'/experiments/t24-astra-vector-corrections.json';
-$outputDirectory = $argv[2] ?? dirname(__DIR__, 3).'/var/waar-micro-combat/t24';
+$outputDirectory = $argv[2] ?? dirname(__DIR__).'/reports/t24';
 
 try {
     $experiment = ExperimentDefinition::fromFile($configPath);

@@ -5,10 +5,10 @@ use Waar\MicroCombat\Experiment\FinalistComparisonBuilder;
 
 require dirname(__DIR__).'/autoload.php';
 
-$projectRoot = dirname(__DIR__, 3);
-$runDirectory = $argv[1] ?? $projectRoot.'/var/waar-micro-combat/t31-standard-seed-314159';
-$initialReportPath = $argv[2] ?? $projectRoot.'/var/waar-micro-combat/t28-defender-tie-break/micro-report.json';
-$outputDirectory = $argv[3] ?? $projectRoot.'/var/waar-micro-combat/t32-finalist-comparison';
+$projectRoot = dirname(__DIR__);
+$runDirectory = $argv[1] ?? $projectRoot.'/experiments/references/t31-standard-seed-314159';
+$initialReportPath = $argv[2] ?? $projectRoot.'/experiments/references/t28-defender-tie-break/micro-report.json';
+$outputDirectory = $argv[3] ?? $projectRoot.'/reports/t32-finalist-comparison';
 
 try {
     if (is_dir($outputDirectory) && [] !== array_values(array_diff(scandir($outputDirectory) ?: [], ['.', '..']))) {

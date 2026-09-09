@@ -7,9 +7,9 @@ use Waar\MicroCombat\Experiment\MonotypeObjectiveOverlayBuilder;
 
 require dirname(__DIR__).'/autoload.php';
 
-$projectRoot = dirname(__DIR__, 3);
+$projectRoot = dirname(__DIR__);
 $experimentPath = $argv[1] ?? dirname(__DIR__).'/experiments/t26-monotype-equal-cost.json';
-$outputDirectory = $argv[2] ?? $projectRoot.'/var/waar-micro-combat/t26-canonical-objectives';
+$outputDirectory = $argv[2] ?? $projectRoot.'/reports/t26-canonical-objectives';
 
 try {
     $experiment = ExperimentDefinition::fromFile($experimentPath);

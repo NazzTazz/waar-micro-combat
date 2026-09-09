@@ -7,16 +7,16 @@ use Waar\MicroCombat\Experiment\ExperimentRunner;
 
 require dirname(__DIR__).'/autoload.php';
 
-$projectRoot = dirname(__DIR__, 3);
+$projectRoot = dirname(__DIR__);
 $experimentPath = $argv[1] ?? dirname(__DIR__).'/experiments/t24-astra-vector-corrections.json';
-$legacyPath = $argv[2] ?? $projectRoot.'/var/waar-micro-combat/t25a1/legacy-reference.json';
-$outputDirectory = $argv[3] ?? $projectRoot.'/var/waar-micro-combat/t25b';
+$legacyPath = $argv[2] ?? $projectRoot.'/experiments/references/t25a1/legacy-reference.json';
+$outputDirectory = $argv[3] ?? $projectRoot.'/reports/t25b';
 
 try {
     $experiment = ExperimentDefinition::fromFile($experimentPath);
     $legacyJson = @file_get_contents($legacyPath);
     if (false === $legacyJson) {
-        throw new RuntimeException(sprintf('Unable to read Legacy reference "%s". Run tools/export-waar-micro-legacy-reference.php first.', $legacyPath));
+        throw new RuntimeException(sprintf('Unable to read frozen Legacy reference "%s".', $legacyPath));
     }
     $legacy = json_decode($legacyJson, true, 512, JSON_THROW_ON_ERROR);
     if (!is_array($legacy)) {

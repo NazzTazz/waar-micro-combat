@@ -16,9 +16,9 @@ final class FinalistComparisonTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->projectRoot = dirname(__DIR__, 3);
-        $this->runDirectory = $this->projectRoot.'/var/waar-micro-combat/t31-standard-seed-314159';
-        $this->initialReport = $this->projectRoot.'/var/waar-micro-combat/t28-defender-tie-break/micro-report.json';
+        $this->projectRoot = dirname(__DIR__);
+        $this->runDirectory = $this->projectRoot.'/experiments/references/t31-standard-seed-314159';
+        $this->initialReport = $this->projectRoot.'/experiments/references/t28-defender-tie-break/micro-report.json';
     }
 
     public function testBuildsReadOnlyComparisonFromFrozenT31ArtifactsWithoutMutation(): void

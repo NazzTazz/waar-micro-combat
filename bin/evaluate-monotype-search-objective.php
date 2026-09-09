@@ -6,10 +6,10 @@ use Waar\MicroCombat\Experiment\ExperimentRunner;
 
 require dirname(__DIR__).'/autoload.php';
 
-$projectRoot = dirname(__DIR__, 3);
-$objectivePath = $argv[1] ?? $projectRoot.'/var/waar-micro-combat/objectives/20260909-po-design-01-canonical/acceptance-zones.json';
+$projectRoot = dirname(__DIR__);
+$objectivePath = $argv[1] ?? $projectRoot.'/experiments/objectives/20260909-po-design-01-canonical/acceptance-zones.json';
 $experimentPath = $argv[2] ?? dirname(__DIR__).'/experiments/t28-defender-tie-break.json';
-$outputDirectory = $argv[3] ?? $projectRoot.'/var/waar-micro-combat/t29-search-objective';
+$outputDirectory = $argv[3] ?? $projectRoot.'/reports/t29-search-objective';
 
 try {
     $objectiveJson = @file_get_contents($objectivePath);

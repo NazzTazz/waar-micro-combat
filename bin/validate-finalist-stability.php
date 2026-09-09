@@ -7,9 +7,9 @@ use Waar\MicroCombat\Experiment\FinalistStabilityRunner;
 
 require dirname(__DIR__).'/autoload.php';
 
-$projectRoot = dirname(__DIR__, 3);
-$t31Directory = $argv[1] ?? $projectRoot.'/var/waar-micro-combat/t31-standard-seed-314159';
-$outputDirectory = $argv[2] ?? $projectRoot.'/var/waar-micro-combat/t33-finalist-stability';
+$projectRoot = dirname(__DIR__);
+$t31Directory = $argv[1] ?? $projectRoot.'/experiments/references/t31-standard-seed-314159';
+$outputDirectory = $argv[2] ?? $projectRoot.'/reports/t33-finalist-stability';
 $iterations = isset($argv[3]) ? (int) $argv[3] : 1000;
 $baseSeeds = isset($argv[4]) ? array_map('intval', explode(',', $argv[4])) : [104729, 130363, 155921, 180749, 205759];
 

@@ -20,7 +20,7 @@ final class FinalistStabilityTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->runDirectory = dirname(__DIR__, 3).'/var/waar-micro-combat/t31-standard-seed-314159';
+        $this->runDirectory = dirname(__DIR__).'/experiments/references/t31-standard-seed-314159';
     }
 
     public function testOfficialPlanFreezesOrderedCandidatesAndSeparatesEverySeed(): void
@@ -194,7 +194,7 @@ final class FinalistStabilityTest extends TestCase
         file_put_contents($source.'/search-plan.json', json_encode($searchPlan, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
         $command = [PHP_BINARY, dirname(__DIR__).'/bin/validate-finalist-stability.php', $source, $output, '1', '42'];
         $pipes = [];
-        $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes, dirname(__DIR__, 3));
+        $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes, dirname(__DIR__));
         self::assertIsResource($process);
         fclose($pipes[0]);
         $stdout = stream_get_contents($pipes[1]);

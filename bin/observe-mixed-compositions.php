@@ -7,10 +7,10 @@ use Waar\MicroCombat\Experiment\MixedCompositionObservationRunner;
 
 require dirname(__DIR__).'/autoload.php';
 
-$projectRoot = dirname(__DIR__, 3);
-$t24Path = $argv[1] ?? $projectRoot.'/packages/waar-micro-combat/experiments/t24-astra-vector-corrections.json';
-$t33Directory = $argv[2] ?? $projectRoot.'/var/waar-micro-combat/t33-finalist-stability';
-$outputDirectory = $argv[3] ?? $projectRoot.'/var/waar-micro-combat/t34-mixed-composition-observation';
+$projectRoot = dirname(__DIR__);
+$t24Path = $argv[1] ?? $projectRoot.'/experiments/t24-astra-vector-corrections.json';
+$t33Directory = $argv[2] ?? $projectRoot.'/experiments/references/t33-finalist-stability';
+$outputDirectory = $argv[3] ?? $projectRoot.'/reports/t34-mixed-composition-observation';
 $iterations = isset($argv[4]) ? (int) $argv[4] : MixedCompositionObservationPlanBuilder::ITERATIONS;
 $baseSeed = isset($argv[5]) ? (int) $argv[5] : MixedCompositionObservationPlanBuilder::BASE_SEED;
 
@@ -96,7 +96,7 @@ try {
         'finishedAtUtc' => gmdate('c'),
         'durationSeconds' => (hrtime(true) - $startedNanoseconds) / 1_000_000_000,
         'runtime' => ['phpVersion' => PHP_VERSION, 'os' => PHP_OS_FAMILY, 'architecture' => php_uname('m')],
-        'manualRoute' => 'php packages/waar-micro-combat/bin/observe-mixed-compositions.php',
+        'manualRoute' => 'php bin/observe-mixed-compositions.php',
     ];
     $write($outputDirectory.'/execution-metadata.json', $encode($metadata));
     $artifacts = [];

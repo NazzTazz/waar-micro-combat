@@ -18,9 +18,9 @@ final class MixedCompositionObservationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->root = dirname(__DIR__, 3);
+        $this->root = dirname(__DIR__);
         $this->t24 = dirname(__DIR__).'/experiments/t24-astra-vector-corrections.json';
-        $this->t33 = $this->root.'/var/waar-micro-combat/t33-finalist-stability';
+        $this->t33 = $this->root.'/experiments/references/t33-finalist-stability';
     }
 
     public function testPlanPreservesExactT24CorpusBudgetsCandidatesAndPolicies(): void
