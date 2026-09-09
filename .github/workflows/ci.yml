@@ -26,4 +26,4 @@ jobs:
       - name: Generate short offline report
         run: php bin/run-wind-tunnel.php experiments/t24-astra-vector-corrections.json reports/ci-smoke
       - name: Verify report files
-        run: test -s reports/ci-smoke/micro-report.json && test -s reports/ci-smoke/report.html
+        run: test -s reports/ci-smoke/report.json && test -s reports/ci-smoke/report.html
