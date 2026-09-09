@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waar.example/schema/waar-micro-combat/legacy-reference-0.1.json",
+  "title": "Waar micro-combat Legacy reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "reference", "corpus", "context", "sampling", "comparisonProfile", "rows"],
+  "properties": {
+    "schemaVersion": { "const": "waar-legacy-reference/0.1" },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "rulesetVersion", "resolutionModel", "sourceFingerprint", "sourceFiles"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "rulesetVersion": { "type": "string", "minLength": 1 },
+        "resolutionModel": { "type": "string", "minLength": 1 },
+        "sourceFingerprint": { "$ref": "#/$defs/sha256" },
+        "sourceFiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "sha256": { "$ref": "#/$defs/sha256" }
+            }
+          }
+        }
+      }
+    },
+    "corpus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["experimentSchemaVersion", "experimentId", "fingerprint", "scenarioCount", "scenarios"],
+      "properties": {
+        "experimentSchemaVersion": { "const": "waar-micro-wind-tunnel/0.1" },
+        "experimentId": { "type": "string", "minLength": 1 },
+        "fingerprint": { "$ref": "#/$defs/sha256" },
+        "scenarioCount": { "type": "integer", "minimum": 1 },
+        "scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/scenario" }
+        }
+      }
+    },
+    "context": { "$ref": "#/$defs/context" },
+    "sampling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseSeed", "repetitions", "seedDerivationId", "randomSourceId", "crossEnginePairingClaimed", "winnerIsDeterministicAtFixedCompositionAndContext"],
+      "properties": {
+        "baseSeed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
+        "repetitions": { "type": "integer", "minimum": 1 },
+        "seedDerivationId": { "type": "string", "minLength": 1 },
+        "randomSourceId": { "type": "string", "minLength": 1 },
+        "crossEnginePairingClaimed": { "const": false },
+        "winnerIsDeterministicAtFixedCompositionAndContext": { "const": true }
+      }
+    },
+    "comparisonProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "valuationId", "valuation", "operationalProjection", "metrics", "legacyAvailability"],
+      "properties": {
+        "id": { "const": "operational-common-value-v1" },
+        "valuationId": { "const": "t24-common-valuation-v1" },
+        "valuation": { "$ref": "#/$defs/unitIntegers" },
+        "operationalProjection": { "type": "string", "minLength": 1 },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 1 },
+          "required": ["winRate", "operationalSurvivorsRatio", "operationalEconomicValueRatio"]
+        },
+        "legacyAvailability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operationalSurvivorsRatio", "operationalEconomicValueRatio", "structureRatio"],
+          "properties": {
+            "operationalSurvivorsRatio": { "const": true },
+            "operationalEconomicValueRatio": { "const": true },
+            "structureRatio": { "const": false }
+          }
+        }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/row" }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "side": { "enum": ["attacker", "defender"] },
+    "nullableRatio": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "unitIntegers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["soldier", "spearman", "archer", "knight"],
+      "properties": {
+        "soldier": { "type": "integer", "minimum": 0 },
+        "spearman": { "type": "integer", "minimum": 0 },
+        "archer": { "type": "integer", "minimum": 0 },
+        "knight": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "modifiers", "consequenceScope", "hospitalTreatmentIncludedInMetrics"],
+      "properties": {
+        "id": { "const": "neutral-duel-v1" },
+        "modifiers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["attacker", "defender"],
+          "properties": {
+            "attacker": { "type": "object", "maxProperties": 0 },
+            "defender": { "type": "object", "maxProperties": 0 }
+          }
+        },
+        "consequenceScope": { "const": "post-duel-pre-hospital-operational" },
+        "hospitalTreatmentIncludedInMetrics": { "const": false }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "focusSide", "attacker", "defender"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "focusSide": { "$ref": "#/$defs/side" },
+        "attacker": { "$ref": "#/$defs/unitIntegers" },
+        "defender": { "$ref": "#/$defs/unitIntegers" }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator", "value", "averageAbsolute"],
+      "properties": {
+        "numerator": { "type": "integer", "minimum": 0 },
+        "denominator": { "type": "integer", "minimum": 0 },
+        "value": { "$ref": "#/$defs/nullableRatio" },
+        "averageAbsolute": { "type": "number", "minimum": 0 },
+        "initialAbsolute": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenarioId", "scenarioLabel", "side", "isFocusSide", "repetitions", "wins", "draws", "initial", "aggregates", "winRate", "metrics", "coordinates"],
+      "properties": {
+        "scenarioId": { "type": "string", "minLength": 1 },
+        "scenarioLabel": { "type": "string", "minLength": 1 },
+        "side": { "$ref": "#/$defs/side" },
+        "isFocusSide": { "type": "boolean" },
+        "repetitions": { "type": "integer", "minimum": 1 },
+        "wins": { "type": "integer", "minimum": 0 },
+        "draws": { "type": "integer", "minimum": 0 },
+        "initial": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["byType", "count", "commonValue"],
+          "properties": {
+            "byType": { "$ref": "#/$defs/unitIntegers" },
+            "count": { "type": "integer", "minimum": 1 },
+            "commonValue": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "aggregates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operationalByType", "rawLossesByType", "woundedByType", "deadByType"],
+          "properties": {
+            "operationalByType": { "$ref": "#/$defs/unitIntegers" },
+            "rawLossesByType": { "$ref": "#/$defs/unitIntegers" },
+            "woundedByType": { "$ref": "#/$defs/unitIntegers" },
+            "deadByType": { "$ref": "#/$defs/unitIntegers" }
+          }
+        },
+        "winRate": { "$ref": "#/$defs/metric" },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operationalSurvivorsRatio", "operationalEconomicValueRatio"],
+          "properties": {
+            "operationalSurvivorsRatio": { "$ref": "#/$defs/metric" },
+            "operationalEconomicValueRatio": { "$ref": "#/$defs/metric" }
+          }
+        },
+        "coordinates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "$ref": "#/$defs/nullableRatio" },
+            "y": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["operationalSurvivorsRatio", "operationalEconomicValueRatio", "structureRatio"],
+              "properties": {
+                "operationalSurvivorsRatio": { "$ref": "#/$defs/nullableRatio" },
+                "operationalEconomicValueRatio": { "$ref": "#/$defs/nullableRatio" },
+                "structureRatio": { "type": "null" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

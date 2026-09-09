@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "waar-micro-wind-tunnel/0.1",
+  "id": "t23-first-quadruplet",
+  "label": "T23 — premier quadruplet de rôles",
+  "iterations": 200,
+  "baseSeed": 42,
+  "baseline": {
+    "id": "neutral-reference",
+    "label": "Témoin : mêmes unités, rôles neutres",
+    "version": "t23.0",
+    "maxRounds": 3,
+    "randomSpread": "0.1",
+    "units": {
+      "soldier": { "attack": "7", "structure": "18", "defendingEfficiency": "1", "cost": 80 },
+      "spearman": { "attack": "8", "structure": "32", "defendingEfficiency": "1", "cost": 110 },
+      "archer": { "attack": "18", "structure": "10", "defendingEfficiency": "1", "cost": 130 },
+      "knight": { "attack": "30", "structure": "45", "defendingEfficiency": "1", "cost": 350 }
+    },
+    "counters": []
+  },
+  "candidate": {
+    "id": "roles-a",
+    "label": "Candidat A : rôles et contres explicites",
+    "version": "t23.0",
+    "maxRounds": 3,
+    "randomSpread": "0.1",
+    "units": {
+      "soldier": { "attack": "7", "structure": "18", "defendingEfficiency": "1", "cost": 80 },
+      "spearman": { "attack": "8", "structure": "32", "defendingEfficiency": "1.45", "cost": 110 },
+      "archer": { "attack": "18", "structure": "10", "defendingEfficiency": "0.35", "cost": 130 },
+      "knight": { "attack": "30", "structure": "45", "defendingEfficiency": "1.1", "cost": 350 }
+    },
+    "counters": [
+      { "acting": "spearman", "target": "knight", "factor": "1.5" },
+      { "acting": "archer", "target": "spearman", "factor": "1.35" },
+      { "acting": "knight", "target": "archer", "factor": "1.4" }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "soldier-control",
+      "label": "Soldats seuls — témoin de stabilité",
+      "focusSide": "attacker",
+      "attacker": { "soldier": 30 },
+      "defender": { "soldier": 30 }
+    },
+    {
+      "id": "spearman-screen",
+      "label": "Écran de Lanciers en défense",
+      "focusSide": "defender",
+      "attacker": { "soldier": 18, "archer": 8 },
+      "defender": { "soldier": 20, "spearman": 8 }
+    },
+    {
+      "id": "spears-against-knights",
+      "label": "Lanciers contre Chevaliers",
+      "focusSide": "defender",
+      "attacker": { "soldier": 12, "knight": 10 },
+      "defender": { "soldier": 12, "spearman": 18 }
+    },
+    {
+      "id": "archers-against-spears",
+      "label": "Archers contre Lanciers",
+      "focusSide": "attacker",
+      "attacker": { "soldier": 12, "archer": 18 },
+      "defender": { "soldier": 12, "spearman": 18 }
+    },
+    {
+      "id": "knights-against-archers",
+      "label": "Chevaliers contre Archers",
+      "focusSide": "attacker",
+      "attacker": { "soldier": 10, "knight": 10 },
+      "defender": { "soldier": 10, "archer": 18 }
+    },
+    {
+      "id": "mixed-armies",
+      "label": "Armées mixtes",
+      "focusSide": "attacker",
+      "attacker": { "soldier": 18, "spearman": 8, "archer": 8, "knight": 4 },
+      "defender": { "soldier": 18, "spearman": 8, "archer": 8, "knight": 4 }
+    }
+  ]
+}

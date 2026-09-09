@@ -1,0 +1,342 @@
+{
+  "schemaVersion": "waar-army-profile-corpus/0.1",
+  "id": "human-snapshot-21-plus-4-v1",
+  "label": "21 armées humaines observées et 4 profils mono-unité",
+  "extractedOn": "2026-09-08",
+  "unitOrder": [
+    "soldier",
+    "spearman",
+    "archer",
+    "knight"
+  ],
+  "compositionSemantics": "Integer relative weights. Observed profiles retain exact snapshot counts; synthetic monotypes use a unit weight and have no observed size.",
+  "provenance": {
+    "source": "Local development copy of Waar Legacy production, supplied by the PO",
+    "snapshotDate": null,
+    "snapshotDateNote": "Reported as approximately one month old; exact snapshot date not verified.",
+    "selection": "joueur.is_bot = 0; current army via joueur.armee_id; total count > 0",
+    "ordering": "Ascending total, then soldier, spearman, archer, knight",
+    "excluded": [
+      "Player identifiers and personal data",
+      "Bots",
+      "Empty armies",
+      "Infirmary troops",
+      "Combat report loss records"
+    ],
+    "databaseAccess": "Read-only transaction; no database writes"
+  },
+  "usage": {
+    "observedProfiles": 21,
+    "syntheticProfiles": 4,
+    "preserveAllObservedProfiles": true,
+    "automaticOptimization": false,
+    "benchmarkSizePolicy": "Not selected. Preserve observed sizes; explicitly choose sizes or budgets before comparing scaled profiles.",
+    "segmentSemantics": {
+      "A": "Attack performance of this army profile",
+      "B": "Defense performance of this same army profile",
+      "opponentCorpus": "Must be explicit and shared across compared engines; not defined by this extraction."
+    }
+  },
+  "profiles": [
+    {
+      "id": "human-01",
+      "label": "Profil humain 01",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 14,
+        "spearman": 0,
+        "archer": 0,
+        "knight": 0
+      },
+      "observedTotal": 14
+    },
+    {
+      "id": "human-02",
+      "label": "Profil humain 02",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 28,
+        "spearman": 3,
+        "archer": 0,
+        "knight": 0
+      },
+      "observedTotal": 31
+    },
+    {
+      "id": "human-03",
+      "label": "Profil humain 03",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 119,
+        "spearman": 26,
+        "archer": 18,
+        "knight": 3
+      },
+      "observedTotal": 166
+    },
+    {
+      "id": "human-04",
+      "label": "Profil humain 04",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 1636,
+        "spearman": 98,
+        "archer": 98,
+        "knight": 24
+      },
+      "observedTotal": 1856
+    },
+    {
+      "id": "human-05",
+      "label": "Profil humain 05",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 661,
+        "spearman": 0,
+        "archer": 2172,
+        "knight": 50
+      },
+      "observedTotal": 2883
+    },
+    {
+      "id": "human-06",
+      "label": "Profil humain 06",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 3597,
+        "spearman": 633,
+        "archer": 623,
+        "knight": 30
+      },
+      "observedTotal": 4883
+    },
+    {
+      "id": "human-07",
+      "label": "Profil humain 07",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 5019,
+        "spearman": 377,
+        "archer": 376,
+        "knight": 21
+      },
+      "observedTotal": 5793
+    },
+    {
+      "id": "human-08",
+      "label": "Profil humain 08",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 9284,
+        "spearman": 900,
+        "archer": 1400,
+        "knight": 22
+      },
+      "observedTotal": 11606
+    },
+    {
+      "id": "human-09",
+      "label": "Profil humain 09",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 10384,
+        "spearman": 811,
+        "archer": 963,
+        "knight": 100
+      },
+      "observedTotal": 12258
+    },
+    {
+      "id": "human-10",
+      "label": "Profil humain 10",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 10136,
+        "spearman": 1203,
+        "archer": 1085,
+        "knight": 0
+      },
+      "observedTotal": 12424
+    },
+    {
+      "id": "human-11",
+      "label": "Profil humain 11",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 14294,
+        "spearman": 409,
+        "archer": 2151,
+        "knight": 100
+      },
+      "observedTotal": 16954
+    },
+    {
+      "id": "human-12",
+      "label": "Profil humain 12",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 18661,
+        "spearman": 1172,
+        "archer": 1134,
+        "knight": 0
+      },
+      "observedTotal": 20967
+    },
+    {
+      "id": "human-13",
+      "label": "Profil humain 13",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 16536,
+        "spearman": 0,
+        "archer": 4869,
+        "knight": 0
+      },
+      "observedTotal": 21405
+    },
+    {
+      "id": "human-14",
+      "label": "Profil humain 14",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 21720,
+        "spearman": 700,
+        "archer": 3000,
+        "knight": 918
+      },
+      "observedTotal": 26338
+    },
+    {
+      "id": "human-15",
+      "label": "Profil humain 15",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 21254,
+        "spearman": 0,
+        "archer": 5825,
+        "knight": 0
+      },
+      "observedTotal": 27079
+    },
+    {
+      "id": "human-16",
+      "label": "Profil humain 16",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 26584,
+        "spearman": 1466,
+        "archer": 0,
+        "knight": 145
+      },
+      "observedTotal": 28195
+    },
+    {
+      "id": "human-17",
+      "label": "Profil humain 17",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 26900,
+        "spearman": 500,
+        "archer": 2700,
+        "knight": 30
+      },
+      "observedTotal": 30130
+    },
+    {
+      "id": "human-18",
+      "label": "Profil humain 18",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 30110,
+        "spearman": 888,
+        "archer": 5050,
+        "knight": 400
+      },
+      "observedTotal": 36448
+    },
+    {
+      "id": "human-19",
+      "label": "Profil humain 19",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 43790,
+        "spearman": 2222,
+        "archer": 2222,
+        "knight": 0
+      },
+      "observedTotal": 48234
+    },
+    {
+      "id": "human-20",
+      "label": "Profil humain 20",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 70296,
+        "spearman": 0,
+        "archer": 0,
+        "knight": 0
+      },
+      "observedTotal": 70296
+    },
+    {
+      "id": "human-21",
+      "label": "Profil humain 21",
+      "source": "observed-human",
+      "composition": {
+        "soldier": 85027,
+        "spearman": 0,
+        "archer": 0,
+        "knight": 0
+      },
+      "observedTotal": 85027
+    },
+    {
+      "id": "full-soldier",
+      "label": "Full Soldats",
+      "source": "synthetic-monotype",
+      "composition": {
+        "soldier": 1,
+        "spearman": 0,
+        "archer": 0,
+        "knight": 0
+      },
+      "observedTotal": null
+    },
+    {
+      "id": "full-spearman",
+      "label": "Full Lanciers",
+      "source": "synthetic-monotype",
+      "composition": {
+        "soldier": 0,
+        "spearman": 1,
+        "archer": 0,
+        "knight": 0
+      },
+      "observedTotal": null
+    },
+    {
+      "id": "full-archer",
+      "label": "Full Archers",
+      "source": "synthetic-monotype",
+      "composition": {
+        "soldier": 0,
+        "spearman": 0,
+        "archer": 1,
+        "knight": 0
+      },
+      "observedTotal": null
+    },
+    {
+      "id": "full-knight",
+      "label": "Full Chevaliers",
+      "source": "synthetic-monotype",
+      "composition": {
+        "soldier": 0,
+        "spearman": 0,
+        "archer": 0,
+        "knight": 1
+      },
+      "observedTotal": null
+    }
+  ]
+}

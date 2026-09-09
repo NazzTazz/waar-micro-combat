@@ -1,0 +1,14 @@
+{
+    "name": "waar/micro-combat",
+    "description": "Pure PHP 8.2 micro combat resolver for Waar",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Waar\\MicroCombat\\": "src/"
+        }
+    }
+}

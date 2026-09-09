@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waar.example/schema/waar-micro-combat/acceptance-zones-0.2.json",
+  "title": "Waar micro-combat acceptance zones",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "experimentId", "corpusFingerprint", "comparisonProfileId", "valuationId", "generation", "zones"],
+  "properties": {
+    "schemaVersion": { "const": "waar-acceptance-zones/0.2" },
+    "experimentId": { "type": "string", "minLength": 1 },
+    "corpusFingerprint": { "$ref": "#/$defs/sha256" },
+    "comparisonProfileId": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "valuationId": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "generation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "radiusX", "radiusY", "readOnly"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "label": { "type": "string", "minLength": 1 },
+        "radiusX": { "type": "number", "minimum": 0.005, "maximum": 1 },
+        "radiusY": { "type": "number", "minimum": 0.005, "maximum": 1 },
+        "readOnly": { "const": false }
+      }
+    },
+    "zones": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/zone" }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0, "maximum": 1 },
+        "y": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "radii": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "number", "minimum": 0.005, "maximum": 1 },
+        "y": { "type": "number", "minimum": 0.005, "maximum": 1 }
+      }
+    },
+    "zone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scenarioId", "side", "endpoint", "xMetric", "yMetric", "shape", "center", "radii", "enabled", "approval", "source"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "scenarioId": { "type": "string", "minLength": 1 },
+        "side": { "enum": ["attacker", "defender"] },
+        "endpoint": { "enum": ["base", "tip"] },
+        "xMetric": { "const": "winRate" },
+        "yMetric": { "enum": ["survivors", "structure", "economicValue"] },
+        "shape": { "const": "ellipse" },
+        "center": { "$ref": "#/$defs/point" },
+        "radii": { "$ref": "#/$defs/radii" },
+        "enabled": { "type": "boolean" },
+        "approval": { "enum": ["draft", "confirmed"] },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "referenceId", "referencePointId", "originalCenter", "modifiedManually"],
+          "properties": {
+            "kind": { "enum": ["legacy", "observation"] },
+            "referenceId": { "type": "string", "minLength": 1 },
+            "referencePointId": { "type": "string", "minLength": 1 },
+            "originalCenter": { "$ref": "#/$defs/point" },
+            "modifiedManually": { "type": "boolean" }
+          }
+        }
+      }
+    }
+  }
+}

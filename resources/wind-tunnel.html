@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soufflerie micro-combat Waar</title>
+  <style>
+    :root { color-scheme: dark; --ink:#f4ead7; --muted:#b9ae9c; --panel:#171d20; --line:#465157; --gold:#f2b84b; --cyan:#63d6c5; --red:#ff746c; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 20% 0,#263337 0,#101517 45rem); color:var(--ink); font-family:Inter,system-ui,sans-serif; }
+    main { width:min(1180px,calc(100% - 32px)); margin:0 auto; padding:42px 0 72px; }
+    header { display:grid; grid-template-columns:1fr auto; align-items:end; gap:24px; margin-bottom:22px; }
+    h1 { margin:0 0 8px; font:700 clamp(2rem,5vw,4.8rem)/.93 Georgia,serif; letter-spacing:-.04em; }
+    h2 { margin:0 0 14px; font-size:1.05rem; }
+    p { margin:.35rem 0; color:var(--muted); }
+    .badge { align-self:start; padding:7px 10px; border:1px solid #6e5a31; border-radius:999px; color:#ffd783; background:#2b2417; font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; }
+    .panel { background:color-mix(in srgb,var(--panel) 94%,transparent); border:1px solid #323d42; border-radius:16px; box-shadow:0 20px 55px #0006; }
+    .controls { display:flex; flex-wrap:wrap; align-items:end; gap:14px 24px; padding:16px 18px; }
+    label { display:grid; gap:6px; color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; }
+    select { min-width:220px; border:1px solid #4b585e; border-radius:8px; padding:9px 34px 9px 10px; background:#101719; color:var(--ink); font:inherit; }
+    .motion { display:flex; align-items:center; gap:8px; padding-bottom:9px; text-transform:none; letter-spacing:0; font-size:.9rem; }
+    .plot { margin-top:14px; padding:14px; overflow:hidden; }
+    svg { display:block; width:100%; height:auto; min-height:420px; }
+    .grid { stroke:#364147; stroke-width:1; }
+    .axis { fill:var(--muted); font-size:12px; }
+    .axis-title { fill:var(--ink); font-size:13px; font-weight:700; }
+    .vector { fill:none; stroke-width:3.5; stroke-linecap:round; filter:drop-shadow(0 0 5px #000); }
+    .vector.defender { stroke-dasharray:8 6; }
+    .origin { fill:#121719; stroke-width:3; }
+    .origin.same { fill:var(--point-color); }
+    .destination { stroke:#121719; stroke-width:2; }
+    .vector-label { fill:var(--ink); font-size:12px; paint-order:stroke; stroke:#121719; stroke-width:4px; stroke-linejoin:round; }
+    .vector-row:focus .vector,.vector-row:hover .vector { stroke-width:6; }
+    .legend { display:flex; flex-wrap:wrap; gap:10px 18px; padding:0 8px 8px; color:var(--muted); font-size:.82rem; }
+    .legend span { display:inline-flex; align-items:center; gap:7px; }
+    .swatch { width:10px; height:10px; border-radius:50%; background:var(--swatch); }
+    .stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:14px; }
+    .stats section { padding:18px; }
+    table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+    th,td { padding:9px 8px; border-bottom:1px solid #303a3f; text-align:right; }
+    th:first-child,td:first-child { text-align:left; }
+    th { color:var(--muted); font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; }
+    .positive { color:var(--cyan); } .negative { color:var(--red); } .neutral { color:var(--muted); }
+    .note { margin-top:14px; padding:15px 18px; border-left:3px solid var(--gold); }
+    code { color:#ffd783; }
+    @media (max-width:760px) { header,.stats { grid-template-columns:1fr; } main { width:min(100% - 18px,1180px); padding-top:24px; } .plot { padding:4px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div><h1>Soufflerie<br>micro-combat</h1><p id="subtitle"></p></div>
+    <span class="badge" id="badge">Prototype exploratoire</span>
+  </header>
+
+  <section class="panel controls" aria-label="Contrôles du graphique">
+    <label>Axe vertical<select id="axis"></select></label>
+    <label>Camp observé<select id="side"><option value="focus">Camp prévu par le scénario</option><option value="attacker">Tous les attaquants</option><option value="defender">Tous les défenseurs</option><option value="both">Les deux camps</option></select></label>
+    <label class="motion"><input id="motion" type="checkbox" checked> Animer les déplacements</label>
+  </section>
+
+  <section class="panel plot">
+    <svg id="chart" viewBox="0 0 960 540" role="img" aria-labelledby="chart-title chart-desc">
+      <title id="chart-title">Déplacement du témoin vers le candidat</title>
+      <desc id="chart-desc">Chaque flèche relie les résultats du témoin aux résultats du candidat pour un scénario.</desc>
+    </svg>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <div class="stats">
+    <section class="panel"><h2>Lecture exacte de l’axe choisi</h2><div id="table"></div></section>
+    <section class="panel"><h2>Paramètres qui changent</h2><div id="parameters"></div></section>
+  </div>
+
+  <aside class="panel note"><strong>Ce que montre une flèche.</strong> Son départ est le témoin neutre, sa pointe le candidat A. Une coordonnée identique reste un point unique. L’axe X reste le taux de victoire. Changer l’axe Y réutilise les mêmes combats et leurs agrégats bruts. Les nuls comptent dans le dénominateur.</aside>
+</main>
+<script id="report-data" type="application/json">__REPORT_JSON__</script>
+<script>
+(() => {
+  const report = JSON.parse(document.querySelector('#report-data').textContent);
+  const chart = document.querySelector('#chart');
+  const axisSelect = document.querySelector('#axis');
+  const sideSelect = document.querySelector('#side');
+  const motionInput = document.querySelector('#motion');
+  const colors = ['#63d6c5','#f2b84b','#ff746c','#a98cf5','#78aaf2','#e88bc3'];
+  const labels = Object.fromEntries(report.axes.y.map(axis => [axis.id, axis.label]));
+  const ns = 'http://www.w3.org/2000/svg';
+  const plot = { left:76, right:925, top:28, bottom:474 };
+  const previousPositions = new Map();
+  const animationFrames = new Set();
+
+  document.querySelector('#subtitle').textContent = `${report.experiment.label} · ${report.experiment.iterations} itérations appariées · seed ${report.experiment.baseSeed}`;
+  document.querySelector('#badge').textContent = `${report.experiment.id.split('-')[0].toUpperCase()} · prototype exploratoire`;
+  report.axes.y.forEach(axis => axisSelect.add(new Option(axis.label, axis.id)));
+
+  function el(name, attrs = {}, text = '') {
+    const node = document.createElementNS(ns, name);
+    Object.entries(attrs).forEach(([key,value]) => node.setAttribute(key, value));
+    if (text) node.textContent = text;
+    return node;
+  }
+  function pct(value) { return value == null ? 'n/a' : `${(value * 100).toFixed(1)} %`; }
+  function delta(value) { return value == null ? 'n/a' : `${value >= 0 ? '+' : ''}${(value * 100).toFixed(1)} pts`; }
+  function x(value) { return plot.left + value * (plot.right - plot.left); }
+  function y(value) { return plot.bottom - value * (plot.bottom - plot.top); }
+  function visibleRows() {
+    return report.rows.filter(row => sideSelect.value === 'focus' ? row.focus : sideSelect.value === 'both' || row.side === sideSelect.value);
+  }
+  function baseChart() {
+    chart.replaceChildren();
+    const defs = el('defs');
+    colors.forEach((color,index) => {
+      const marker = el('marker',{id:`arrow-${index}`,viewBox:'0 0 10 10',refX:'8',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'});
+      marker.append(el('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:color})); defs.append(marker);
+    });
+    chart.append(defs);
+    for (let i=0;i<=4;i++) {
+      const value=i/4, px=x(value), py=y(value);
+      chart.append(el('line',{class:'grid',x1:px,y1:plot.top,x2:px,y2:plot.bottom}));
+      chart.append(el('line',{class:'grid',x1:plot.left,y1:py,x2:plot.right,y2:py}));
+      chart.append(el('text',{class:'axis',x:px,y:plot.bottom+22,'text-anchor':'middle'},`${value*100} %`));
+      chart.append(el('text',{class:'axis',x:plot.left-12,y:py+4,'text-anchor':'end'},`${value*100} %`));
+    }
+    chart.append(el('text',{class:'axis-title',x:(plot.left+plot.right)/2,y:526,'text-anchor':'middle'},report.axes.x.label));
+    chart.append(el('text',{class:'axis-title',x:18,y:(plot.top+plot.bottom)/2,transform:`rotate(-90 18 ${(plot.top+plot.bottom)/2})`,'text-anchor':'middle'},labels[axisSelect.value]));
+  }
+  function cancelAnimations() {
+    animationFrames.forEach(frame => cancelAnimationFrame(frame));
+    animationFrames.clear();
+  }
+  function animateGeometry(nodes, start, end) {
+    const duration = motionInput.checked && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 200 : 0;
+    const started = performance.now();
+    const draw = now => {
+      const progress = duration === 0 ? 1 : Math.min(1,(now-started)/duration);
+      const ease = 1-Math.pow(1-progress,3);
+      const current = start.map((value,index) => value+(end[index]-value)*ease);
+      const [x1,y1,x2,y2,labelX,labelY] = current;
+      nodes.line.setAttribute('x1',x1); nodes.line.setAttribute('y1',y1); nodes.line.setAttribute('x2',x2); nodes.line.setAttribute('y2',y2);
+      nodes.origin.setAttribute('cx',x1); nodes.origin.setAttribute('cy',y1);
+      nodes.destination.setAttribute('cx',x2); nodes.destination.setAttribute('cy',y2);
+      nodes.label.setAttribute('x',labelX); nodes.label.setAttribute('y',labelY);
+      if (progress<1) {
+        const frame=requestAnimationFrame(draw); animationFrames.add(frame);
+      }
+    };
+    const frame=requestAnimationFrame(draw); animationFrames.add(frame);
+  }
+  function renderChart() {
+    cancelAnimations();
+    baseChart();
+    const rows=visibleRows();
+    const legend=document.querySelector('#legend'); legend.replaceChildren();
+    const labelsPlaced=[];
+    rows.forEach((row,index) => {
+      const colorIndex=report.scenarios.findIndex(scenario=>scenario.id===row.scenarioId)%colors.length;
+      const color=colors[colorIndex], metric=row.vector.y[axisSelect.value];
+      if (metric.from == null || metric.to == null) return;
+      const x1=x(row.vector.x.from), y1=y(metric.from), x2=x(row.vector.x.to), y2=y(metric.to);
+      const key=`${row.scenarioId}:${row.side}`;
+      const same=Math.abs(x1-x2)<0.001&&Math.abs(y1-y2)<0.001;
+      const group=el('g',{class:'vector-row',tabindex:'0'});
+      const line=el('line',{class:`vector ${row.side}`,stroke:color,'marker-end':`url(#arrow-${colorIndex})`,visibility:same?'hidden':'visible'});
+      const origin=el('circle',{class:`origin${same?' same':''}`,r:'6',stroke:color,style:`--point-color:${color}`});
+      const destination=el('circle',{class:'destination',r:'5',fill:color});
+      if (same) destination.setAttribute('visibility','hidden');
+      const role='attacker'===row.side?'Att.':'Déf.';
+      const fullLabel=`${row.scenarioLabel}${sideSelect.value==='both'?` · ${role}`:''}`;
+      const labelText=fullLabel.length>38?`${fullLabel.slice(0,35)}…`:fullLabel;
+      const label=el('text',{class:'vector-label'},labelText);
+      const labelOnLeft=x2>plot.right-175;
+      const labelX=labelOnLeft?x2-12:x2+12;
+      const baseLabelY=Math.max(plot.top+14,Math.min(plot.bottom-8,y2-10));
+      let labelY=baseLabelY;
+      for (let attempt=1;attempt<=20;attempt++) {
+        if (!labelsPlaced.some(placed=>Math.abs(placed.x-labelX)<180&&Math.abs(placed.y-labelY)<18)) break;
+        const distance=Math.ceil(attempt/2)*20;
+        const direction=attempt%2===1?1:-1;
+        labelY=Math.max(plot.top+14,Math.min(plot.bottom-8,baseLabelY+direction*distance));
+      }
+      labelsPlaced.push({x:labelX,y:labelY});
+      label.setAttribute('text-anchor',labelOnLeft?'end':'start');
+      group.append(el('title',{},`${row.scenarioLabel} — ${role} — ${pct(row.vector.x.from)} → ${pct(row.vector.x.to)} victoires, ${pct(metric.from)} → ${pct(metric.to)} ${labels[axisSelect.value].toLowerCase()}, n=${row.baseline.iterations}`),line,origin,destination,label);
+      chart.append(group);
+      const target=[x1,y1,x2,y2,labelX,labelY];
+      const start=previousPositions.get(key)??[x1,y1,x1,y1,labelX,labelY];
+      animateGeometry({line,origin,destination,label},start,target);
+      previousPositions.set(key,target);
+      const item=document.createElement('span'); item.innerHTML=`<i class="swatch" style="--swatch:${color}"></i>${fullLabel}`; legend.append(item);
+    });
+  }
+  function renderTable() {
+    const metricId=axisSelect.value;
+    const rows=visibleRows().map(row => {
+      const metric=row.vector.y[metricId];
+      return `<tr><td>${row.scenarioLabel}</td><td>${row.side==='attacker'?'Att.':'Déf.'}</td><td>${row.baseline.iterations}</td><td>${pct(row.vector.x.from)} → ${pct(row.vector.x.to)} <span class="${row.vector.x.delta>0?'positive':row.vector.x.delta<0?'negative':'neutral'}">${delta(row.vector.x.delta)}</span></td><td>${pct(metric.from)} → ${pct(metric.to)} <span class="${metric.delta>0?'positive':metric.delta<0?'negative':'neutral'}">${delta(metric.delta)}</span></td></tr>`;
+    }).join('');
+    document.querySelector('#table').innerHTML=`<table><thead><tr><th>Scénario</th><th>Camp</th><th>n</th><th>Victoires</th><th>${labels[metricId]}</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  function renderParameters() {
+    const b=report.baseline.units,c=report.candidate.units;
+    const names={soldier:'Soldat',spearman:'Lancier',archer:'Archer',knight:'Chevalier'};
+    const unitRows=Object.keys(c).map(id=>`<tr><td>${names[id]}</td><td>${b[id].defendingEfficiency} → ${c[id].defendingEfficiency}</td></tr>`).join('');
+    const counters=report.candidate.counters.map(counter=>`${names[counter.acting]} → ${names[counter.target]} × ${counter.factor}`).join('<br>');
+    document.querySelector('#parameters').innerHTML=`<table><thead><tr><th>Unité</th><th>Efficacité en défense</th></tr></thead><tbody>${unitRows}</tbody></table><p><strong>Contres candidat :</strong><br>${counters || 'Aucun'}</p><p>Attaque, structure, coût, trois rounds et aléa ±10 % sont identiques.</p>`;
+  }
+  function render() { renderChart(); renderTable(); }
+  axisSelect.addEventListener('change',render);
+  sideSelect.addEventListener('change',render);
+  motionInput.addEventListener('change',renderChart);
+  renderParameters(); render();
+})();
+</script>
+</body>
+</html>
