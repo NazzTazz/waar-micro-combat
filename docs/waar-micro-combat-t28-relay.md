@@ -67,3 +67,13 @@ SHA-256 T28 :
 
 Aucun paramètre de combat n'a été exploré et aucun optimiseur n'a été lancé.
 La formule continue de recherche reste une tranche distincte.
+
+## État courant après T34
+
+T28 reste la source de la politique `defender`. Après acceptation de T31, T32 et
+T33, T34 a rejoué l'initial T28 et les trois finalistes sur les six compositions
+T24 figées, avec 1 000 répétitions et la seed `32452843`. Cette observation ne
+modifie pas les résultats historiques ci-dessus ni le constat T33 à 0/32.
+
+Relais courant : `docs/waar-micro-combat-t34-relay.md`. Handoff :
+`docs/waar-micro-combat-t34-handoff.md`.

@@ -136,9 +136,139 @@ Le manifeste déclare `tieBreakPolicy = defender` sur le témoin et le candidat.
 Le rapport doit alors compter zéro nul, tout en conservant les pertes mesurées
 avant le départage.
 
+## Objectif continu de recherche T29
+
+Le calcul continu destiné à guider une future recherche se rejoue avec :
+
+```powershell
+php packages/waar-micro-combat/bin/evaluate-monotype-search-objective.php
+```
+
+La commande conserve les 32 objectifs canoniques et les contrôles stricts du
+prévol. Pour chaque ellipse, elle normalise les écarts X et Y par leurs rayons,
+attribue une pénalité nulle à tout point accepté, puis mesure l'excès radial au-delà
+de la frontière. La perte à minimiser est la moyenne arithmétique des 32 excès ;
+le pire écart et son objectif sont publiés séparément. Valeur économique et
+structure ne contribuent pas au calcul.
+
+Hors de la zone, la différence des racines est calculée sous sa forme
+rationalisée `(q - frontière) / (√q + √frontière)`. Cette forme conserve une
+pénalité strictement positive au voisin flottant immédiat de la frontière.
+
+La sortie est écrite dans `var/waar-micro-combat/t29-search-objective/`. Cette
+commande mesure le candidat T28 courant ; elle ne cherche et ne modifie aucun
+paramètre.
+
+## Validation de l'espace proposé T30
+
+Le manifeste T30 décrit les 15 paramètres proposés, leurs bornes inclusives et
+le pas `0.001`. La commande exige un répertoire de sortie explicite et vide :
+
+```powershell
+php packages/waar-micro-combat/bin/validate-monotype-search-space.php packages/waar-micro-combat/experiments/t28-defender-tie-break.json var/waar-micro-combat/objectives/20260909-po-design-01-canonical/acceptance-zones.json packages/waar-micro-combat/experiments/t30-proposed-search-space.json var/waar-micro-combat/t30-search-space-proposed
+```
+
+Elle contrôle l'aller-retour du candidat initial, les minima et maxima, les
+champs figés, la quantification et les identités dirigées des contres. Le rapport
+T30 conserve le statut historique `proposed-awaiting-review` ; la contre-recette
+T30d a ensuite accepté ces bornes pour T31. Les sondes min/max servent uniquement
+à détecter un dépassement numérique ; aucun candidat n'est recherché par cette
+commande.
+
+Le manifeste `t30.1-proposed` lie aussi l'expérience T28 complète à une
+empreinte canonique vérifiée avant toute simulation. La mise en forme JSON et
+l'ordre des contres n'affectent pas cette empreinte ; toute valeur modifiée dans
+le témoin, le candidat initial ou le corpus est rejetée. La validation complète
+compare elle aussi les identités dirigées sans dépendre de l'ordre des contres.
+
+## Recherche bornée T31
+
+La contre-recette T30d autorise l'utilisation du manifeste `t30.1-proposed`
+dans le premier run borné. Les recettes smoke et standard utilisent la seed de
+recherche `314159` et respectivement 8 et 128 candidats uniques :
+
+```powershell
+php packages/waar-micro-combat/bin/search-monotype-candidates.php packages/waar-micro-combat/experiments/t28-defender-tie-break.json var/waar-micro-combat/objectives/20260909-po-design-01-canonical/acceptance-zones.json packages/waar-micro-combat/experiments/t30-proposed-search-space.json 314159 8 var/waar-micro-combat/t31-smoke-seed-314159
+
+php packages/waar-micro-combat/bin/search-monotype-candidates.php packages/waar-micro-combat/experiments/t28-defender-tie-break.json var/waar-micro-combat/objectives/20260909-po-design-01-canonical/acceptance-zones.json packages/waar-micro-combat/experiments/t30-proposed-search-space.json 314159 128 var/waar-micro-combat/t31-standard-seed-314159
+```
+
+Un argument final facultatif remplace le plafond de propositions, fixé sinon à
+dix fois le budget. La commande refuse une sortie non vide. Elle évalue
+l'initial, effectue un échantillonnage global puis des perturbations locales du
+meilleur, déduplique après quantification et classe par perte T29c puis empreinte
+paramétrique. Les métadonnées de temps et de machine sont isolées de ses sorties
+déterministes. Elle exporte jusqu'à trois finalistes sans nul et les rejoue avec
+le runner autoritaire complet. Voir `docs/waar-micro-combat-t31-relay.md`.
+
+## Comparaison visuelle T32
+
+T32 transforme les artefacts standard T31 et le rapport micro T28 de l'initial
+en un rapport autonome. La commande ne lance aucun combat et exige une sortie
+absente ou vide :
+
+```powershell
+php packages/waar-micro-combat/bin/render-finalist-comparison.php var/waar-micro-combat/t31-standard-seed-314159 var/waar-micro-combat/t28-defender-tie-break/micro-report.json var/waar-micro-combat/t32-finalist-comparison
+```
+
+Ouvrir ensuite
+`var/waar-micro-combat/t32-finalist-comparison/report.html`. Le rapport compare
+toujours l'initial au finaliste sélectionné, expose les 32 objectifs, les trois
+axes Y, le témoin neutre facultatif et les valeurs exactes dans un tableau. Les
+objectifs restent en lecture seule. Les téléchargements de variante et
+d'évaluation embarquent la provenance T31. Voir
+`docs/waar-micro-combat-t32-relay.md`.
+
+## Validation de stabilité T33
+
+T33 gèle l'initial et les trois finalistes dans leur ordre T31, écrit le plan
+et ses empreintes avant la première simulation, puis exécute les cinq lots
+réservés de 1 000 répétitions :
+
+```powershell
+php packages/waar-micro-combat/bin/validate-finalist-stability.php var/waar-micro-combat/t31-standard-seed-314159 var/waar-micro-combat/t33-finalist-stability
+```
+
+La commande refuse une sortie non vide. Elle audite les seeds dérivées contre
+la recherche T31 et entre lots, conserve les mêmes seeds pour l'initial, le
+témoin et les finalistes, puis agrège les compteurs exacts avant de réévaluer
+les 32 ellipses. Les résultats par lot, les agrégats, la « variation entre
+lots », le JSON, le Markdown et le rapport HTML autonome sont écrits sous
+`var/waar-micro-combat/t33-finalist-stability/`. Le rapport permet d'exporter
+localement une décision PO sans lancer de combat ni modifier les objectifs.
+Voir `docs/waar-micro-combat-t33-relay.md`.
+
+Avant de construire le plan T33, l'expérience T31 vérifiée est l'autorité pour
+la seed de combat et les répétitions. Le plan et le résultat T31 doivent confirmer
+ces valeurs, leur identifiant commun, leurs empreintes d'entrée, leurs budgets
+et la clé du cache témoin. Tout désaccord est rejeté sans plan ni mesure. Les
+durées de lot commencent avant l'initial et son témoin, puis se terminent après
+le troisième finaliste.
+
+## Observation des compositions mixtes T34
+
+T34 rejoue l'initial T28 et les trois finalistes figÃ©s sur les six scÃ©narios
+T24, avec 1 000 rÃ©pÃ©titions et la seed rÃ©servÃ©e `32452843` :
+
+```powershell
+php packages/waar-micro-combat/bin/observe-mixed-compositions.php
+```
+
+La commande refuse une sortie non vide et Ã©crit son manifeste avant toute
+simulation. Elle conserve les compositions et budgets T24 exacts, applique le
+dÃ©partage `defender` aux quatre variantes et calcule sÃ©parÃ©ment effectifs,
+structure et valeur Ã©conomique. Le JSON publie aussi survivants et pertes par
+type, victoires, dÃ©faites, nuls et rounds. Le rapport HTML autonome permet de
+changer finaliste, scÃ©nario et axe, puis d'exporter les valeurs mesurÃ©es. Aucun
+score ou verdict d'acceptation T24 n'est calculÃ©. Voir
+`docs/waar-micro-combat-t34-relay.md`.
+
 ## Tests
 
 ```powershell
 php vendor/bin/phpunit packages/waar-micro-combat/tests
 node packages/waar-micro-combat/tests/acceptance-zones-model.test.js
+node packages/waar-micro-combat/tests/finalist-comparison-model.test.js
+node packages/waar-micro-combat/tests/finalist-stability-model.test.js
+node packages/waar-micro-combat/tests/mixed-composition-observation-model.test.js
 ```

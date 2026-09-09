@@ -42,8 +42,7 @@ final readonly class CanonicalMonotypeObjectiveEvaluator
                 'objectiveMetric' => $zone['yMetric'],
                 'observed' => ['x' => $x, 'y' => $y],
                 'target' => ['center' => $zone['center'], 'radii' => $zone['radii']],
-                'normalizedSquaredDistance' => (($x - $zone['center']['x']) / $zone['radii']['x']) ** 2
-                    + (($y - $zone['center']['y']) / $zone['radii']['y']) ** 2,
+                'normalizedSquaredDistance' => $this->zoneEvaluator->normalizedSquaredDistance($x, $y, $zone),
                 'state' => $state,
                 'scoreContribution' => 'inside' === $state ? 1 : 0,
             ];

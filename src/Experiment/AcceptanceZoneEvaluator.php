@@ -12,6 +12,17 @@ final class AcceptanceZoneEvaluator
         if (null === $x || null === $y) {
             return 'not-applicable';
         }
+        $distance = $this->normalizedSquaredDistance($x, $y, $zone);
+        if ($x < 0 || $x > 1 || $y < 0 || $y > 1) {
+            return 'outside';
+        }
+
+        return $distance <= 1 + self::BOUNDARY_TOLERANCE ? 'inside' : 'outside';
+    }
+
+    /** @param array<string, mixed> $zone */
+    public function normalizedSquaredDistance(float $x, float $y, array $zone): float
+    {
         $centerX = $zone['center']['x'] ?? null;
         $centerY = $zone['center']['y'] ?? null;
         $radiusX = $zone['radii']['x'] ?? null;
@@ -24,12 +35,6 @@ final class AcceptanceZoneEvaluator
         if ($centerX < 0 || $centerX > 1 || $centerY < 0 || $centerY > 1 || $radiusX <= 0 || $radiusY <= 0) {
             throw new \InvalidArgumentException('Acceptance-zone center or radii are outside their valid domain.');
         }
-        if ($x < 0 || $x > 1 || $y < 0 || $y > 1) {
-            return 'outside';
-        }
-
-        $distance = (($x - $centerX) / $radiusX) ** 2 + (($y - $centerY) / $radiusY) ** 2;
-
-        return $distance <= 1 + self::BOUNDARY_TOLERANCE ? 'inside' : 'outside';
+        return (($x - $centerX) / $radiusX) ** 2 + (($y - $centerY) / $radiusY) ** 2;
     }
 }

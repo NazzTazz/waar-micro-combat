@@ -104,6 +104,36 @@ final class ExperimentRunnerTest extends TestCase
         self::assertEquals($historical->scenarios, $t28->scenarios);
     }
 
+    public function testCachedBaselineProducesTheExactAuthoritativeReport(): void
+    {
+        $values = ExperimentDefinition::fromFile(dirname(__DIR__).'/experiments/t28-defender-tie-break.json')->toArray();
+        $values['iterations'] = 4;
+        $values['scenarios'] = array_slice($values['scenarios'], 0, 2);
+        $reference = ExperimentDefinition::fromJson(json_encode($values, JSON_THROW_ON_ERROR));
+        $runner = new ExperimentRunner();
+        $baselineReport = $runner->run($reference);
+
+        $values['candidate']['units']['soldier']['attack'] = '8';
+        $candidate = ExperimentDefinition::fromJson(json_encode($values, JSON_THROW_ON_ERROR));
+
+        self::assertSame(
+            $runner->run($candidate),
+            $runner->runWithBaselineReport($candidate, $baselineReport),
+        );
+    }
+
+    public function testCachedBaselineRejectsAnotherSamplingContract(): void
+    {
+        $experiment = ExperimentDefinition::fromFile(dirname(__DIR__).'/experiments/t28-defender-tie-break.json');
+        $runner = new ExperimentRunner();
+        $report = $runner->run($experiment);
+        $report['experiment']['baseSeed'] = 43;
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('does not match the experiment sampling contract');
+        $runner->runWithBaselineReport($experiment, $report);
+    }
+
     /** @param list<array<string, mixed>> $rows @return array<string, mixed> */
     private function row(array $rows, string $scenarioId, string $side): array
     {
