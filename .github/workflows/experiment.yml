@@ -1,0 +1,51 @@
+name: Bounded experiment
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: Deterministic search seed
+        required: true
+        type: choice
+        default: '314159'
+        options: ['314159', '271828', '161803']
+      budget:
+        description: Unique candidate evaluation budget
+        required: true
+        type: choice
+        default: '8'
+        options: ['4', '8', '16']
+permissions:
+  contents: read
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SEARCH_SEED: ${{ inputs.seed }}
+      SEARCH_BUDGET: ${{ inputs.budget }}
+      OUTPUT_DIR: reports/action-search
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run bounded search
+        run: >-
+          php bin/search-monotype-candidates.php
+          experiments/t28-defender-tie-break.json
+          experiments/objectives/20260909-po-design-01-canonical/acceptance-zones.json
+          experiments/t30-proposed-search-space.json
+          "$SEARCH_SEED" "$SEARCH_BUDGET" "$OUTPUT_DIR"
+      - name: Record workflow provenance
+        run: |
+          printf 'commit=%s\nseed=%s\nbudget=%s\nrun_id=%s\n' "$GITHUB_SHA" "$SEARCH_SEED" "$SEARCH_BUDGET" "$GITHUB_RUN_ID" > "$OUTPUT_DIR/workflow-provenance.txt"
+          sha256sum "$OUTPUT_DIR"/* > "$OUTPUT_DIR/workflow-manifest.sha256"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: micro-combat-search-${{ github.run_id }}
+          path: reports/action-search/
+          if-no-files-found: error
+          retention-days: 14

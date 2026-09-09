@@ -1,0 +1,31 @@
+name: Bounded combat task
+description: Define a reviewable gameplay or experiment task.
+title: "[combat] "
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: State the concrete question or defect.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Name allowed code, data, and outputs.
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+  - type: input
+    id: budget
+    attributes:
+      label: Experiment budget
+      description: State seeds, candidates, iterations, and time limit; use N/A for no experiment.
+    validations:
+      required: true
