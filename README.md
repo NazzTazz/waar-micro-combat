@@ -85,3 +85,30 @@ T34 observations do not approve a candidate.
 
 Historical documents retain paths and commands from the original Waar v3 host.
 Use the commands above for this repository. See `docs/historical-documents.md`.
+
+## Compare candidate 116 with Legacy
+
+```bash
+php bin/render-candidate-legacy-comparison.php
+```
+
+Open `reports/t31-candidate-0116-legacy-comparison/report.html` for twelve
+Legacy → candidate 116 vectors on the archived T24 compositions. The default
+view multiplies Legacy losses by 20; a second view shows actual percentages.
+Both operational headcount and common economic value are available. Negative
+transformed indices are preserved. This descriptive report changes no acceptance
+zones or objectives and runs no simulations. Pass a new empty output directory
+as the sole argument to regenerate. Input hashes are checked before generation.
+
+## Présentation du candidat 116 — monotypes
+
+Le [guide de génération](docs/waar-candidate-116-presentation.md) décrit le HTML
+autonome `reports/candidate-116-final/report.html` : 16 duels, ellipses centrées
+sur les mesures Legacy (pertes ×20), vecteurs vers le candidat 116 et gameplay
+narratif des quatre unités. Les ellipses sont descriptives, sans verdict PO.
+
+La génération de nouvelles observations Legacy est une commande manuelle qui
+requiert le dépôt frère `../waar-v3`. Les rendus et les tests courants ne chargent
+pas ce moteur. Les [comparaisons à budgets natifs](docs/waar-micro-combat-native-budget-comparison.md)
+restent une expérience locale distincte ; les rapports générés sous `reports/`
+sont conservés localement et ne sont pas versionnés.

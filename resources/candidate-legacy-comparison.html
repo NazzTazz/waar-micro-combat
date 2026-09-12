@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Candidat 116 / Legacy — T24</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101719;color:#e8e6df}*{box-sizing:border-box}body{margin:0}main{max-width:1280px;margin:auto;padding:24px}h1{font-size:1.7rem;margin:0 0 8px}p{line-height:1.5;color:#bac5c7}.controls{display:flex;flex-wrap:wrap;gap:16px;padding:16px;background:#1b272b;border-radius:10px}label{display:grid;gap:6px;font-size:.85rem}select{padding:9px;border:1px solid #61747c;border-radius:6px;background:#101719;color:inherit;max-width:100%}#chart{height:580px;background:#182125;border-radius:10px;margin-top:16px}.legend{display:flex;gap:20px;flex-wrap:wrap;margin:12px 0}.legacy{color:#f0bc65}.candidate{color:#68d6c4}.note{padding:12px;border-left:3px solid #f0bc65;background:#202b2e}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:.85rem;font-variant-numeric:tabular-nums}th,td{padding:10px;border-bottom:1px solid #35444a;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}summary{cursor:pointer;padding:12px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.75rem}#error{color:#ff9999}@media(max-width:600px){main{padding:12px}h1{font-size:1.3rem}.controls{gap:10px}label{width:100%}#chart{height:450px}}
+</style></head><body><main>
+<h1>Candidat 116 / Legacy — compositions T24</h1>
+<p>Six scénarios, deux camps : douze vecteurs. Chaque flèche part du Legacy et pointe vers le candidat 116.</p>
+<section aria-label="Conformité globale"><h2>Conformité globale candidat / Legacy</h2><p>Ensemble des 6 scénarios et des 12 lignes, indépendamment des filtres.</p><div id="scores" class="controls"></div><p>Scores descriptifs sur 100. Victoire attribuée : même camp majoritaire (&gt; 50 %), sinon désaccord. Taux et effectifs : max(0, 100 − écart absolu moyen). Chaque ligne a le même poids ; aucune compensation entre écarts positifs et négatifs. Le score et le delta d’effectifs utilisent toujours le Legacy dilaté ×20, même dans la vue des valeurs réelles.</p><p class="note">Le Legacy utilise généralement un arrondi à pile ou face (50/50) entre les entiers voisins. Sur les petites cohortes, cet arrondi peut produire des pertes supérieures à 5 %, y compris en moyenne. Les indices négatifs après dilatation sont conservés.</p></section><div class="controls">
+<label>Vue<select id="view"><option value="dilated">Legacy dilaté ×20</option><option value="raw">Valeurs réelles</option></select></label>
+<label>Mesure<select id="metric"><option value="survivors">Effectifs opérationnels restants</option><option value="economicValue">Valeur économique opérationnelle restante</option></select></label>
+<label>Scénario<select id="scenario"><option value="all">Tous les scénarios</option></select></label>
+<label>Camp<select id="side"><option value="all">Les deux camps</option><option value="attacker">Attaquant</option><option value="defender">Défenseur</option></select></label>
+</div>
+<div class="legend"><span class="legacy">◇ Origine : Legacy</span><span class="candidate">● Pointe : candidat 116</span><span>Trait plein : attaquant · pointillé : défenseur</span></div>
+<p id="view-note" class="note" role="status"></p><div id="error" role="alert"></div>
+<div id="chart" role="img" aria-label="Vecteurs Legacy vers candidat 116 ; valeurs accessibles dans le tableau ci-dessous"></div>
+<p id="count"></p>
+<div class="table-wrap"><table><caption>Valeurs réelles et indice Legacy dilaté — valeurs réelles en % ; Δ victoire en points de pourcentage ; Δ effectifs par rapport au Legacy ×20 en points d’indice</caption><thead><tr><th>Scénario / camp</th><th>Victoire Legacy</th><th>Victoire 116</th><th>Y réel Legacy</th><th>Y réel 116</th><th>Indice Legacy ×20</th><th>Δ victoire (points)</th><th>Δ effectifs / Legacy ×20 (points d’indice)</th></tr></thead><tbody id="rows"></tbody></table></div>
+<section aria-label="Lecture des confrontations"><h2>Lecture des confrontations</h2><p>Compositions en pourcentage des effectifs initiaux, avec les nombres d’unités entre parenthèses. « Issue » désigne le camp majoritaire, pas une garantie à chaque combat. La variation des pertes est relative au Legacy dilaté ×20 : (pertes 116 − pertes Legacy ×20) / pertes Legacy ×20. Elle n’est pas un écart de pertes réelles entre moteurs.</p><div id="scenario-notes"></div></section><details><summary>Méthode, échantillonnage et limites</summary>
+<p>En vue dilatée : indice Legacy = 100 × [1 − 20 × (1 − ratio restant)]. Le candidat garde sa valeur brute ; le taux de victoire reste inchangé. Le facteur 20 est constant. Un indice négatif signifie que les pertes Legacy observées dépassent 5 %, pas qu’il reste un effectif négatif. Les écarts entre les points transformés ne sont pas des écarts de pertes réelles.</p>
+<p>Le Legacy arrondit les pertes par type d’unité ; sur les petites cohortes, son choix généralement 50/50 entre les entiers voisins peut amplifier les pertes moyennes. Aucun critère μ − 2σ n’est évalué à partir de ces seules moyennes.</p>
+<p>Legacy : 200 répétitions, seed 42. Candidat 116 sur T24 : 1 000 répétitions, seed 32452843. Aucun appariement statistique inter-moteurs. Le vainqueur Legacy est déterministe à composition et contexte fixes. Les unités opérationnelles Legacy excluent les blessés avant traitement hospitalier ; le micro inclut les survivants partiellement endommagés. Barème commun : 80 / 110 / 130 / 350. La structure Legacy n’a pas de mesure comparable.</p>
+<p>Mesures archivées, aucune simulation relancée. Candidat exploratoire : T33 reste à 0/32 objectifs. La correction technique R1 ne vaut pas approbation du candidat. Aucun objectif ni rayon d’acceptance modifié.</p>
+</details><details><summary>Provenance des données — SHA-256</summary><pre id="provenance"></pre></details>
+<section aria-label="Rappel T24"><h2>Rappel : T24 et l’équilibrage à coûts égaux</h2><p>La recherche T31 dont est issu le candidat 116 a été menée sur la matrice des 16 confrontations monotypes des quatre unités, à <strong>coûts égaux : 400 400 par camp</strong>, avec le barème Soldat 80, Lancier 110, Archer 130, Chevalier 350. Des coûts égaux ne signifient pas des effectifs égaux.</p><p>T24 est le corpus historique de six compositions : soldats seuls, écran de lanciers, lanciers contre chevaliers, archers contre lanciers, chevaliers contre archers et armées mixtes. T34 a observé le candidat 116 sur ces compositions inchangées. Ce rapport compare ces mesures T34 à la référence Legacy sur le même corpus T24.</p><p>Les armées de T24 conservent leurs effectifs et leurs budgets d’origine, parfois inégaux : elles n’ont pas été remises à coûts égaux pour cette comparaison. T24 sert à observer les effets de l’équilibrage ; il ne fournit ni objectifs ni score à la recherche T31. Le candidat reste exploratoire : cette comparaison ne vaut pas validation des objectifs PO.</p></section></main><script>__ECHARTS__</script><script type="application/json" id="data">__DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('data').textContent);
+const $=id=>document.getElementById(id);
+const names={attacker:'attaquant',defender:'défenseur'};
+const fmt=value=>value.toLocaleString('fr-FR',{maximumFractionDigits:3});
+const signed=value=>value.toLocaleString('fr-FR',{maximumFractionDigits:3,signDisplay:'exceptZero'});
+const unique=new Map(data.rows.map(row=>[row.scenarioId,row.label]));
+for(const [id,label] of unique){const option=document.createElement('option');option.value=id;option.textContent=label;$('scenario').append(option);}
+$('provenance').textContent=JSON.stringify(data.inputSha256,null,2);
+const scores=data.globalConformity;
+const scoreEntries=[
+ ['Victoire attribuée',scores.winner.score,scores.winner.matchingScenarios+' / '+scores.winner.totalScenarios+' scénarios · '+scores.winner.withoutMajority+' sans majorité'],
+ ['Taux de victoire',scores.winRate.score,'Écart moyen : '+fmt(scores.winRate.meanAbsoluteErrorPoints)+' points'],
+ ['Effectifs — Legacy ×20',scores.survivors.dilated.score,'Écart moyen : '+fmt(scores.survivors.dilated.meanAbsoluteErrorPoints)+' points d’indice']
+];
+for(const [label,value,detail] of scoreEntries){const card=document.createElement('div');const title=document.createElement('strong');title.textContent=label;const number=document.createElement('p');number.textContent=fmt(value)+' / 100';const note=document.createElement('small');note.textContent=detail;card.append(title);card.append(number);card.append(note);$('scores').append(card);}
+const chart=echarts.init($('chart'));
+function render(){
+ const view=$('view').value,metric=$('metric').value;
+ const rows=data.rows.filter(row=>($('scenario').value==='all'||row.scenarioId===$('scenario').value)&&($('side').value==='all'||row.side===$('side').value));
+ $('view-note').textContent=view==='dilated'?'Legacy : pertes ×20 ; candidat 116 : valeur brute. Y est un indice de comparaison, avec une échelle fixe de −40 à 100.':'Pourcentages réels pour les deux moteurs. Échelle fixe de 0 à 100 %.';
+ $('count').textContent=rows.length+' vecteurs affichés. Survolez les points ou consultez le tableau.';
+ $('scenario-notes').replaceChildren();
+ for(const note of data.scenarioNotes.filter(note=>$('scenario').value==='all'||note.scenarioId===$('scenario').value)){const article=document.createElement('article');const heading=document.createElement('h3');heading.textContent=note.label;const paragraph=document.createElement('p');paragraph.textContent=note.text;article.append(heading);article.append(paragraph);$('scenario-notes').append(article);} const series=[];
+ for(const row of rows){
+  const points=row.metrics[metric][view],raw=row.metrics[metric].raw;
+  const label=row.label+' / '+names[row.side];
+  const tip=()=>label+'<br>Victoire Legacy : '+fmt(raw.legacy[0])+' % · 116 : '+fmt(raw.candidate[0])+' %<br>Y réel Legacy : '+fmt(raw.legacy[1])+' % · 116 : '+fmt(raw.candidate[1])+' %<br>Indice Legacy ×20 : '+fmt(row.metrics[metric].dilated.legacy[1])+'<br>Δ victoire (116 − Legacy réel) : '+signed(row.deltaPercentagePoints.winRate)+' points<br>Δ effectifs restants (116 − Legacy ×20) : '+signed(row.deltaPercentagePoints.survivorsDilated)+' points d’indice<br>Répétitions : '+row.repetitions.legacy+' / '+row.repetitions.candidate;
+  series.push({type:'line',name:label,data:[points.legacy,points.candidate],symbol:'none',lineStyle:{color:'#81999e',width:2,type:row.side==='attacker'?'solid':'dotted'},tooltip:{show:false},markLine:{silent:true,animation:false,symbol:['none','arrow'],symbolSize:10,label:{show:false},lineStyle:{color:'#81999e',width:2,type:row.side==='attacker'?'solid':'dotted'},data:[[{coord:points.legacy},{coord:points.candidate}]]}});
+  series.push({type:'scatter',name:'Legacy — '+label,data:[points.legacy],symbol:'diamond',symbolSize:12,itemStyle:{color:'#f0bc65'},tooltip:{formatter:tip},z:4});
+  series.push({type:'scatter',name:'116 — '+label,data:[points.candidate],symbol:'circle',symbolSize:10,itemStyle:{color:'#68d6c4'},tooltip:{formatter:tip},z:5});
+ }
+ chart.setOption({animation:false,grid:{left:64,right:36,top:52,bottom:64},tooltip:{trigger:'item',confine:true},xAxis:{type:'value',min:data.axes.x[0],max:data.axes.x[1],name:'Victoires (%)',nameLocation:'middle',nameGap:38,axisLabel:{color:'#bac5c7'},splitLine:{lineStyle:{color:'#334146'}}},yAxis:{type:'value',min:data.axes[view][0],max:data.axes[view][1],name:view==='raw'?'Restants (%)':'Indice de comparaison',nameTextStyle:{color:'#bac5c7'},axisLabel:{color:'#bac5c7'},splitLine:{lineStyle:{color:'#334146'}}},series},true);
+ $('rows').replaceChildren();
+ for(const row of rows){const m=row.metrics[metric];const tr=document.createElement('tr');for(const value of [row.label+' / '+names[row.side],... [m.raw.legacy[0],m.raw.candidate[0],m.raw.legacy[1],m.raw.candidate[1],m.dilated.legacy[1]].map(fmt),signed(row.deltaPercentagePoints.winRate),signed(row.deltaPercentagePoints.survivorsDilated)]){const td=document.createElement('td');td.textContent=value;tr.append(td);}$('rows').append(tr);}
+}
+for(const id of ['view','metric','scenario','side'])$(id).addEventListener('change',render);
+window.addEventListener('resize',()=>chart.resize());
+try{render();}catch(error){$('error').textContent=error.message;throw error;}
+</script></body></html>
