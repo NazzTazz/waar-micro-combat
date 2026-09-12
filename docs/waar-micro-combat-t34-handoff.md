@@ -8,12 +8,57 @@ officielles, avec une réserve R1 de provenance avant clôture. Voir la
 
 ## Reprise prioritaire — réserve R1 ouverte
 
-Le builder T34 vérifie les identifiants du plan et du résultat T33, mais ne
-compare pas l'empreinte du plan reçu à `result.planSha256`. La revue demande de
+Avant correction, le builder T34 vérifiait les identifiants du plan et du résultat
+T33, mais pas l'empreinte du plan reçu contre `result.planSha256`. La revue demande de
 vérifier ce lien, de recouper les empreintes des variantes entre plan, résultat
 et copies, puis de couvrir le rejet d'un plan altéré avant toute mesure.
-Cette correction reste à réaliser ; aucune clôture ni approbation de candidat
+Une correction locale est préparée ci-dessous ; aucune clôture ni approbation de candidat
 ne découle de la reproduction des mesures officielles.
+
+## Correction R1 préparée — 12 septembre 2026
+
+La branche `fix/t34-r1-provenance` contrôle le SHA-256 des octets réellement lus
+pour le plan T33 contre `result.planSha256`. Pour chacun des quatre candidats,
+elle recoupe les déclarations du plan, du résultat et de `frozenCopies` avec
+les octets de la copie consommée. Les empreintes absentes, non textuelles,
+non hexadécimales ou divergentes sont rejetées explicitement. Les empreintes
+`parameterFingerprint` conservent leur contrat distinct.
+
+La non-régression couvre un plan modifié (seed ou simple saut de ligne), les
+empreintes invalides aux quatre emplacements, les quatre positions de candidat,
+et une copie modifiée avec son hash de copie. Les mutations du plan destinées
+aux contrôles des candidats actualisent le lien plan/résultat pour atteindre
+ces contrôles. Le test CLI vérifie un échec sans aucun artefact ni démarrage de
+mesure. Le témoin officiel compare le plan complet après normalisation des
+seuls chemins de provenance et exclusion du manifeste ajouté par la CLI.
+
+Preuve discriminante : les tests rejettent le code antérieur ; retirer le
+contrôle plan/résultat dans une copie isolée refait échouer la régression.
+Les tests corrigés passent. Aucun run T31, T33 complet ou T34 officiel n'est
+lancé ; les tests de mesure existants restent bornés et le smoke reste celui
+d'AGENTS.md. Les 107 fichiers des références sont identiques avant/après.
+
+Vérification locale sous PHP 8.2.33 : `composer validate --strict`,
+`composer install --no-interaction --prefer-dist --no-progress`, `composer test`
+(75 tests, 10 509 assertions), `composer test:js` (quatre suites),
+`composer smoke` (2 400 combats), `php bin/render-finalist-comparison.php`,
+les deux lints PHP et `git diff --check` réussis. Composer a été appelé via
+`php ../waar-micro-combat/composer.phar` ; les dépendances et l'autoload sont
+propres au worktree R1. PHP 8.4 et la CI GitHub ne sont pas vérifiés localement.
+
+La contre-recette indépendante locale a réussi 152 contrôles, dont 149 rejets
+et six essais CLI sans artefact ni démarrage de mesure. Le témoin officiel
+produit le même plan que le code antérieur et le plan figé après normalisation
+des chemins. L'ancien code et une copie avec le contrôle plan/résultat désactivé
+acceptent la seed altérée que le correctif rejette. Un témoin CLI borné à
+24 combats réussit également. Les 107 références de chaque worktree et le
+chantier Legacy sont inchangés. La suite PHP a réussi malgré un avertissement
+d'écriture du cache PHPUnit ; le smoke a été rejoué dans une copie temporaire
+des sources vérifiée identique, et le rendu dans une nouvelle sortie temporaire.
+
+Cette correction ne clôt pas T34 : intégration et décision PO restent requises.
+La revue historique est conservée intacte ; aucun candidat n'est approuvé.
+Les résultats de CI de la PR doivent être vérifiés séparément.
 
 ## État à préserver
 

@@ -26,11 +26,12 @@ final class MixedCompositionObservationPlanBuilder
         $directory = rtrim($t33Directory, '/\\');
         $t33PlanPath = $directory.'/validation-plan.json';
         $t33ResultPath = $directory.'/result.json';
-        $t33Plan = $this->readJson($t33PlanPath);
-        $t33Result = $this->readJson($t33ResultPath);
+        $t33Plan = $this->readJson($t33PlanPath, $t33PlanHash);
+        $t33Result = $this->readJson($t33ResultPath, $t33ResultHash);
         $this->expect('waar-monotype-finalist-stability-plan/0.1' === ($t33Plan['schemaVersion'] ?? null), 'Unsupported T33 plan.');
         $this->expect('waar-monotype-finalist-stability-result/0.1' === ($t33Result['schemaVersion'] ?? null) && 'completed' === ($t33Result['state'] ?? null), 'T33 result must be complete.');
         $this->expect(($t33Plan['id'] ?? null) === ($t33Result['planId'] ?? null), 'T33 plan and result do not match.');
+        $this->expect(hash_equals($this->sha256($t33Result['planSha256'] ?? null, 'T33 plan SHA-256'), $t33PlanHash), 'T33 plan SHA-256 does not match the received plan bytes.');
         $this->expect(4 === count($t33Plan['candidates'] ?? []) && 4 === count($t33Result['candidates'] ?? []), 'T34 requires the initial variant and three frozen finalists.');
 
         $candidates = [];
@@ -40,9 +41,12 @@ final class MixedCompositionObservationPlanBuilder
             $this->expect(is_array($resultCandidate) && is_array($copy), 'T33 candidate provenance is incomplete.');
             $this->expect(($candidate['id'] ?? null) === ($resultCandidate['id'] ?? null), 'T33 candidate order changed.');
             $sourcePath = $directory.'/'.($copy['path'] ?? '');
-            $sourceHash = hash_file('sha256', $sourcePath);
-            $this->expect(is_string($sourceHash) && is_string($copy['sha256'] ?? null) && hash_equals($copy['sha256'], $sourceHash), 'A frozen T33 candidate changed.');
-            $variant = ExperimentVariant::fromArray($this->readJson($sourcePath));
+            $source = $this->readJson($sourcePath, $sourceHash);
+            foreach (['plan' => $candidate, 'result' => $resultCandidate, 'frozen copy' => $copy] as $origin => $declaration) {
+                $expected = $this->sha256($declaration['sha256'] ?? null, 'T33 candidate SHA-256 ('.$origin.', index '.$index.')');
+                $this->expect(hash_equals($expected, $sourceHash), 'T33 candidate SHA-256 differs from the received file ('.$origin.', index '.$index.').');
+            }
+            $variant = ExperimentVariant::fromArray($source);
             $this->expect(CombatTieBreakPolicy::Defender === $variant->ruleset->tieBreakPolicy, 'Every T34 variant must use defender tie-break.');
             $variantCosts = array_map(static fn (array $profile): int => $profile['cost'], $variant->catalog->toArray());
             $this->expect(['soldier' => 80, 'spearman' => 110, 'archer' => 130, 'knight' => 350] === $variantCosts, 'T34 unit costs must remain frozen.');
@@ -109,8 +113,8 @@ final class MixedCompositionObservationPlanBuilder
                 'planId' => $t33Plan['id'],
                 'acceptedWithoutReservation' => true,
                 'statusDisplayRequired' => true,
-                'planSha256' => hash_file('sha256', $t33PlanPath),
-                'resultSha256' => hash_file('sha256', $t33ResultPath),
+                'planSha256' => $t33PlanHash,
+                'resultSha256' => $t33ResultHash,
             ],
             'interpretation' => [
                 'descriptiveOnly' => true,
@@ -124,18 +128,26 @@ final class MixedCompositionObservationPlanBuilder
     }
 
     /** @return array<string, mixed> */
-    private function readJson(string $path): array
+    private function readJson(string $path, ?string &$sha256 = null): array
     {
         $contents = @file_get_contents($path);
         if (false === $contents) {
             throw new \RuntimeException(sprintf('Unable to read "%s".', $path));
         }
+        $sha256 = hash('sha256', $contents);
         $decoded = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         if (!is_array($decoded) || array_is_list($decoded)) {
             throw new \InvalidArgumentException(sprintf('JSON root in "%s" must be an object.', $path));
         }
 
         return $decoded;
+    }
+
+    private function sha256(mixed $value, string $label): string
+    {
+        $this->expect(is_string($value) && 1 === preg_match('/\A[0-9a-fA-F]{64}\z/', $value), $label.' must be a 64-character hexadecimal string.');
+
+        return strtolower($value);
     }
 
     private function expect(bool $condition, string $message): void
