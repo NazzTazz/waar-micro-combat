@@ -148,6 +148,143 @@ final class MixedCompositionObservationTest extends TestCase
         }
     }
 
+    public function testOfficialPlanSemanticsRemainUnchanged(): void
+    {
+        $plan = (new MixedCompositionObservationPlanBuilder())->build($this->t24, $this->t33);
+        $expected = $this->json($this->root.'/experiments/references/t34-mixed-composition-observation/observation-plan.json');
+        unset($expected['frozenCopies']);
+        $plan['corpus']['sourcePath'] = $expected['corpus']['sourcePath'];
+        foreach ($plan['variants'] as $index => &$variant) $variant['sourcePath'] = $expected['variants'][$index]['sourcePath'];
+        unset($variant);
+        self::assertSame($expected, $plan);
+    }
+
+    public function testAlteredT33PlanBytesAreRejected(): void
+    {
+        foreach (["\n", 'seed'] as $mutation) {
+            $directory = $this->copyT33();
+            try {
+                $path = $directory.'/validation-plan.json';
+                if ('seed' === $mutation) {
+                    $plan = $this->json($path);
+                    $plan['sampling']['baseSeeds'][0] = 42;
+                    $this->writeJson($path, $plan);
+                } else {
+                    file_put_contents($path, $mutation, FILE_APPEND);
+                }
+                $this->assertProvenanceRejected($directory, 'T33 plan SHA-256');
+            } finally {
+                $this->removeDirectory($directory);
+            }
+        }
+    }
+
+    public function testRequiredProvenanceHashesAreValidated(): void
+    {
+        foreach (['planLink', 'candidatePlan', 'candidateResult', 'copy'] as $location) {
+            foreach ([null, 123, [], '', str_repeat('g', 64), str_repeat('a', 63), str_repeat('a', 64)] as $invalid) {
+                foreach ('planLink' === $location ? [0] : [0, 1, 2, 3] as $index) {
+                    $directory = $this->copyT33();
+                    try {
+                        $plan = $this->json($directory.'/validation-plan.json');
+                        $result = $this->json($directory.'/result.json');
+                        if ('candidatePlan' === $location) {
+                            $field = &$plan['candidates'][$index];
+                        } elseif ('candidateResult' === $location) {
+                            $field = &$result['candidates'][$index];
+                        } elseif ('copy' === $location) {
+                            $field = &$plan['frozenCopies'][sprintf('candidate-%02d', $index)];
+                        } else {
+                            $field = &$result;
+                        }
+                        $key = 'planLink' === $location ? 'planSha256' : 'sha256';
+                        if (null === $invalid) unset($field[$key]);
+                        else $field[$key] = $invalid;
+                        unset($field);
+                        $this->writeJson($directory.'/validation-plan.json', $plan);
+                        if ('planLink' !== $location) $result['planSha256'] = hash_file('sha256', $directory.'/validation-plan.json');
+                        $this->writeJson($directory.'/result.json', $result);
+                        $this->assertProvenanceRejected($directory, 'planLink' === $location ? 'T33 plan SHA-256' : 'candidate SHA-256');
+                    } finally {
+                        $this->removeDirectory($directory);
+                    }
+                }
+            }
+        }
+    }
+
+    public function testCopyAndCopyHashCannotOverrideCandidateDeclarations(): void
+    {
+        $directory = $this->copyT33();
+        try {
+            $plan = $this->json($directory.'/validation-plan.json');
+            $copy = &$plan['frozenCopies']['candidate-01'];
+            file_put_contents($directory.'/'.$copy['path'], "\n", FILE_APPEND);
+            $copy['sha256'] = hash_file('sha256', $directory.'/'.$copy['path']);
+            unset($copy);
+            $this->writeJson($directory.'/validation-plan.json', $plan);
+            $result = $this->json($directory.'/result.json');
+            $result['planSha256'] = hash_file('sha256', $directory.'/validation-plan.json');
+            $this->writeJson($directory.'/result.json', $result);
+            $this->assertProvenanceRejected($directory, 'candidate SHA-256');
+        } finally {
+            $this->removeDirectory($directory);
+        }
+    }
+
+    public function testCliRejectsInconsistentT33BeforeProducingArtifacts(): void
+    {
+        $directory = $this->copyT33();
+        try {
+            file_put_contents($directory.'/validation-plan.json', "\n", FILE_APPEND);
+            $process = proc_open([PHP_BINARY, $this->root.'/bin/observe-mixed-compositions.php', $this->t24, $directory, $directory.'/output', '1', '7'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, $this->root);
+            self::assertIsResource($process);
+            $stdout = stream_get_contents($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[1]); fclose($pipes[2]);
+            self::assertNotSame(0, proc_close($process));
+            self::assertStringContainsString('T33 plan SHA-256', $stderr);
+            self::assertStringNotContainsString('manifeste', $stderr);
+            self::assertSame('', $stdout);
+            self::assertSame([], array_values(array_diff(scandir($directory.'/output') ?: [], ['.', '..'])));
+        } finally {
+            $this->removeDirectory($directory);
+        }
+    }
+
+    private function copyT33(): string
+    {
+        $directory = sys_get_temp_dir().'/waar-r1-'.bin2hex(random_bytes(6));
+        mkdir($directory, 0777, true);
+        foreach (['validation-plan.json', 'result.json'] as $name) copy($this->t33.'/'.$name, $directory.'/'.$name);
+        foreach ($this->json($directory.'/validation-plan.json')['frozenCopies'] as $copy) {
+            $path = $directory.'/'.$copy['path'];
+            if (!is_dir(dirname($path))) mkdir(dirname($path), 0777, true);
+            copy($this->t33.'/'.$copy['path'], $path);
+        }
+        return $directory;
+    }
+
+    private function json(string $path): array
+    {
+        return json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    private function writeJson(string $path, array $value): void
+    {
+        file_put_contents($path, json_encode($value, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)."\n");
+    }
+
+    private function assertProvenanceRejected(string $directory, string $message): void
+    {
+        try {
+            (new MixedCompositionObservationPlanBuilder())->build($this->t24, $directory, 1, 7);
+            self::fail('Inconsistent provenance was accepted.');
+        } catch (\InvalidArgumentException $exception) {
+            self::assertStringContainsString($message, $exception->getMessage());
+        }
+    }
+
     private function removeDirectory(string $directory): void
     {
         if (!is_dir($directory)) {
