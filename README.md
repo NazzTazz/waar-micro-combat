@@ -8,6 +8,11 @@ The repository is public, but the project metadata remains `proprietary`. No
 open-source license is granted by this repository. ECharts 5.6.0 is bundled for
 offline reports under its own license in `resources/vendor/`.
 
+La [note historique de reprise ergonomique](docs/ergonomie-creation-profil-2026-09-12.md)
+décrit le parcours envisagé : créer un profil d’unités, essayer deux armées dans
+les deux sens, puis affiner dans la soufflerie ou revenir aux réglages.
+L’interface locale décrite plus bas en propose maintenant une première version.
+
 ## Install and verify
 
 Requires PHP 8.2+, Composer, and Node.js for the JavaScript tests.
@@ -112,3 +117,19 @@ requiert le dépôt frère `../waar-v3`. Les rendus et les tests courants ne cha
 pas ce moteur. Les [comparaisons à budgets natifs](docs/waar-micro-combat-native-budget-comparison.md)
 restent une expérience locale distincte ; les rapports générés sous `reports/`
 sont conservés localement et ne sont pas versionnés.
+
+## Soufflerie guidée
+
+La soufflerie locale permet de créer un profil, essayer deux armées dans les
+deux sens, mesurer les 16 confrontations monotypes, dessiner 32 zones et lancer
+une recherche bornée à huit candidats :
+
+```bash
+php bin/run-workshop.php
+```
+
+Ouvrir ensuite `http://127.0.0.1:8080`. Le serveur ne publie que
+`public/workshop/`. Le brouillon et les compositions sont enregistrés dans le
+navigateur ; l’export JSON reste disponible si ce stockage ne l’est pas. Il
+s’agit d’un atelier local : aucun résultat n’est appliqué aux armées du jeu et
+aucun candidat n’est approuvé automatiquement.

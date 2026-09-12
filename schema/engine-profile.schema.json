@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waar.example/schema/engine-profile.schema.json",
+  "title": "Waar engine profile 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "label", "units", "relations", "weather", "combat"],
+  "properties": {
+    "schemaVersion": {"const": "waar-engine-profile/0.1"},
+    "id": {"type": "string", "minLength": 1},
+    "label": {"type": "string", "minLength": 1},
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["soldier", "spearman", "archer", "knight"],
+      "properties": {
+        "soldier": {"$ref": "#/$defs/unit"},
+        "spearman": {"$ref": "#/$defs/unit"},
+        "archer": {"$ref": "#/$defs/unit"},
+        "knight": {"$ref": "#/$defs/unit"}
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["acting", "target", "factor"],
+        "properties": {
+          "acting": {"$ref": "#/$defs/unitType"},
+          "target": {"$ref": "#/$defs/unitType"},
+          "factor": {"$ref": "#/$defs/decimal"}
+        }
+      }
+    },
+    "weather": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["neutral", "rain", "snow", "heat"],
+      "properties": {
+        "neutral": {"$ref": "#/$defs/weatherRow"},
+        "rain": {"$ref": "#/$defs/weatherRow"},
+        "snow": {"$ref": "#/$defs/weatherRow"},
+        "heat": {"$ref": "#/$defs/weatherRow"}
+      }
+    },
+    "combat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxRounds", "randomSpread", "tieBreakPolicy", "lossCompressionPercent", "capturePercent"],
+      "properties": {
+        "maxRounds": {"type": "integer", "minimum": 1, "maximum": 30},
+        "randomSpread": {"$ref": "#/$defs/decimal"},
+        "tieBreakPolicy": {"enum": ["draw", "defender"]},
+        "lossCompressionPercent": {"type": "integer", "minimum": 0, "maximum": 100},
+        "capturePercent": {"type": "integer", "minimum": 0, "maximum": 10}
+      }
+    }
+  },
+  "$defs": {
+    "unitType": {"enum": ["soldier", "spearman", "archer", "knight"]},
+    "decimal": {"oneOf": [{"type": "integer"}, {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]{1,6})?$"}]},
+    "unit": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["attack", "structure", "defendingEfficiency", "cost", "capturable"],
+      "properties": {
+        "attack": {"$ref": "#/$defs/decimal"},
+        "structure": {"$ref": "#/$defs/decimal"},
+        "defendingEfficiency": {"$ref": "#/$defs/decimal"},
+        "cost": {"enum": [80, 110, 130, 350]},
+        "capturable": {"type": "boolean"}
+      }
+    },
+    "weatherRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["soldier", "spearman", "archer", "knight"],
+      "properties": {
+        "soldier": {"$ref": "#/$defs/decimal"},
+        "spearman": {"$ref": "#/$defs/decimal"},
+        "archer": {"$ref": "#/$defs/decimal"},
+        "knight": {"$ref": "#/$defs/decimal"}
+      }
+    }
+  }
+}

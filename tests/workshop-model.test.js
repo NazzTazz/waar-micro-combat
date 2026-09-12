@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict');
+require('../public/workshop/model.js');
+const model=globalThis.WaarWorkshopModel;
+assert.equal(model.cost({soldier:100,knight:2},{soldier:80,knight:350}),8700);
+assert.equal(model.responseIsCurrent({requestId:'2'},2,'same','same'),true);
+assert.equal(model.responseIsCurrent({requestId:'1'},2,'same','same'),false,'late response must be ignored');
+assert.equal(model.responseIsCurrent({requestId:'2'},2,'old','new'),false,'response for edited configuration must be ignored');
+assert.equal(model.stale('old','new'),true);
+assert.equal(model.stale('same','same'),false);
+console.log('workshop-model: ok');
