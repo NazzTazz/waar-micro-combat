@@ -16,7 +16,7 @@ function resolvePhpBatch(array $batch): array
     $types=['soldier','spearman','archer','knight'];$categories=['healthy','wounded','dead','prisoners'];$engine=new CombatEngine();$results=[];$seen=[];
     foreach($scenarios as $scenario){
         if(!is_array($scenario)||!is_string($scenario['id']??null)||trim($scenario['id'])===''||isset($seen[$scenario['id']]))throw new InvalidArgumentException('Scenario id missing or duplicated.');
-        $seen[$scenario['id']]=true;$wins=['attacker'=>0,'defender'=>0,'draw'=>0];$roundSum=0;$deaths=['attacker'=>array_fill(0,4,0),'defender'=>array_fill(0,4,0)];$projected=['attacker'=>array_fill(0,4,array_fill(0,4,0)),'defender'=>array_fill(0,4,array_fill(0,4,0))];
+        $seen[$scenario['id']]=true;$wins=['attacker'=>0,'defender'=>0,'draw'=>0];$roundSum=0;$wounded=['attacker'=>array_fill(0,4,0),'defender'=>array_fill(0,4,0)];$deaths=['attacker'=>array_fill(0,4,0),'defender'=>array_fill(0,4,0)];$projected=['attacker'=>array_fill(0,4,array_fill(0,4,0)),'defender'=>array_fill(0,4,array_fill(0,4,0))];
         foreach(range($start,$start+$iterations-1) as $iteration){
             $key=$scenario['seedKey']??null;
             if($key!==null){if(!is_int($key)||$key<0||$key>2147)throw new InvalidArgumentException('Invalid scenario seedKey.');$seed=($baseSeed+$key*1000003+$iteration)%2147483647;}
@@ -24,11 +24,12 @@ function resolvePhpBatch(array $batch): array
             $request=['schemaVersion'=>'waar-combat-request/2','ruleset'=>$batch['ruleset'],'attacker'=>$scenario['attacker'],'defender'=>$scenario['defender'],'seed'=>$seed,'traceLevel'=>'none'];
             if(isset($batch['consequences']))$request['consequences']=$batch['consequences'];
             $report=$engine->resolveRequest($request);$winner=$report['result']['winner'];$wins[$winner??'draw']++;$roundSum+=count($report['result']['rounds']);
-            foreach(['attacker','defender'] as $side)foreach($types as $typeIndex=>$type){$deaths[$side][$typeIndex]+=$report['result'][$side]['dead'][$type];if(isset($report['consequences']))foreach($categories as $categoryIndex=>$category)$projected[$side][$typeIndex][$categoryIndex]+=$report['consequences'][$side]['types'][$type]['projected'][$category];}
+            foreach(['attacker','defender'] as $side)foreach($types as $typeIndex=>$type){$wounded[$side][$typeIndex]+=$report['result'][$side]['wounded'][$type];$deaths[$side][$typeIndex]+=$report['result'][$side]['dead'][$type];if(isset($report['consequences']))foreach($categories as $categoryIndex=>$category)$projected[$side][$typeIndex][$categoryIndex]+=$report['consequences'][$side]['types'][$type]['projected'][$category];}
         }
         $initial=static fn(string $side):array=>array_map(static fn(string $type):int=>(int)($scenario[$side]['units'][$type]??0),$types);
         $results[]=['id'=>$scenario['id'],'result'=>['samples'=>$iterations,'attackerWins'=>$wins['attacker'],'defenderWins'=>$wins['defender'],'draws'=>$wins['draw'],'roundSum'=>$roundSum,
             'attackerInitialByType'=>$initial('attacker'),'defenderInitialByType'=>$initial('defender'),'attackerRawDeathsByType'=>$deaths['attacker'],'defenderRawDeathsByType'=>$deaths['defender'],
+            'attackerRawWoundedByType'=>$wounded['attacker'],'defenderRawWoundedByType'=>$wounded['defender'],
             'attackerProjectedByType'=>isset($batch['consequences'])?$projected['attacker']:null,'defenderProjectedByType'=>isset($batch['consequences'])?$projected['defender']:null]];
     }
     return ['schemaVersion'=>'waar-combat-batch-result/2','modelVersion'=>'waar-cohort-v2','unitOrder'=>$types,'projectedCategoryOrder'=>$categories,'iterations'=>$iterations,'startIteration'=>$start,

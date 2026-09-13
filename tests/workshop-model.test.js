@@ -18,7 +18,7 @@ const original={label:'Keep',combat:{capturePercent:9},weather:{rain:'.5'},relat
 const prefilled=model.prefillUnits(original,{units:{soldier:{attack:'7'}}});
 assert.equal(prefilled.label,'Keep');assert.deepEqual(prefilled.combat,original.combat);assert.deepEqual(prefilled.relations,original.relations);
 assert.equal(original.units.soldier,null);assert.equal(prefilled.units.soldier.attack,'7');
-const reference={rows:[{id:'a',winRate:.51,rawLossRatio:.06}]};
-const candidate={rows:[{id:'a',winRate:.8,rawLossRatio:.04}]};
+const reference={rows:[{id:'a',winRate:.51,rawCasualtyRatio:.06}]};
+const candidate={rows:[{id:'a',winRate:.8,rawCasualtyRatio:.04}]};
 assert.deepEqual(model.plotRows(reference,candidate),[{id:'a',reference:{x:.51,y:.06},candidate:{x:.8,y:.04}}]);
 assert.equal(model.stable({a:{b:1}})===model.stable({a:{b:2}}),false);

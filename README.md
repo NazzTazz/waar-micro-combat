@@ -1,5 +1,19 @@
 # Waar Micro Combat
 
+Dans la soufflerie, l'axe des pertes mesure désormais **blessés + morts avant
+compression**, sous l'identifiant `rawCasualtyRatio`. Les prisonniers sont un
+indicateur séparé ; ils ne sont pas ajoutés aux blessés bruts. En monotype, le
+ratio d'effectifs est aussi le ratio du coût perdu ou immobilisé. Les anciens
+objectifs `rawLossRatio` (morts seuls) doivent être remesurés ; la géométrie peut
+être réassociée explicitement. Reconstruire le runtime Rust après mise à jour.
+
+La soufflerie dispose aussi d'un premier optimiseur évolutif : jusqu'à quatre
+générations de huit profils, avec descendants issus des résultats précédents,
+mutations combinées et export du candidat. La recherche historique à huit profils
+reste disponible côté API. Voir
+[`docs/spec-generateur-optimiseur-candidats.md`](docs/spec-generateur-optimiseur-candidats.md)
+pour le contrat, les preuves attendues et les fonctions encore différées.
+
 Standalone deterministic micro-combat workbench for Waar's soldier, spearman,
 archer, and knight. The package is pure PHP 8.2+, with offline HTML reports and
 small dependency-free JavaScript presentation tests.
@@ -162,3 +176,12 @@ la seed de recherche (314159) n’est pas une seed de mesure.
 Modifier les objectifs ou réglages invalide les résultats, y compris une réponse
 encore en cours. La dernière recherche reste exportable en JSON, avec son profil
 de référence, après adoption d’un candidat comme nouveau brouillon.
+
+Le duel accepte jusqu’à 1 000 000 d’unités par type et par camp, dans la saisie
+comme dans l’API. Son coût économique perdu est la somme des morts et blessés
+après compression, valorisés au coût du profil ; les prisonniers sont exclus.
+Cette correction est identifiée par `wounded-capture-then-compress/2` dans les
+rapports PHP et Rust (recompiler le binaire Rust après mise à jour). Les anciens
+rapports conservent leur ancien calcul. Les ellipses continuent à mesurer les
+blessés + morts avant compression. Ni les vainqueurs ni les règles de combat
+ne changent avec cette correction de valorisation.

@@ -11,7 +11,7 @@ const RULESET_SCHEMA: &str = "waar-cohort-ruleset/2";
 const MODEL_VERSION: &str = "waar-cohort-v2";
 const SNAPSHOT_SCHEMA: &str = "waar-combat-snapshot/2";
 const ACCURACY_VERSION: &str = "waar-accuracy-uniform-v1";
-const CONSEQUENCE_VERSION: &str = "wounded-capture-then-compress/1";
+const CONSEQUENCE_VERSION: &str = "wounded-capture-then-compress/2";
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -1230,7 +1230,7 @@ fn consequence_side(
         let h_out = initial - d_out - w_out - p_out;
         let cost = prepared.units[i].cost;
         initial_cost += initial as u64 * cost as u64;
-        lost += (d_out + p_out) as u64 * cost as u64;
+        lost += (d_out + w_out) as u64 * cost as u64;
         types.insert(type_name(t).into(),json!({"initial":initial,"raw":{"healthy":healthy,"wounded":wounded,"dead":dead},"projected":{"healthy":h_out,"wounded":w_out,"dead":d_out,"prisoners":p_out,"freeSurvivors":h_out+w_out},"capturable":prepared.units[i].capturable,"prisonersSelectedBeforeCompression":selected,"unitCost":cost}));
     }
     let percent = if initial_cost == 0 {
@@ -1401,6 +1401,8 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
         let mut round_sum = 0u64;
         let mut ad = [0u64; 4];
         let mut dd = [0u64; 4];
+        let mut aw = [0u64; 4];
+        let mut dw = [0u64; 4];
         let mut projected_a = [[0u64; 4]; 4];
         let mut projected_d = [[0u64; 4]; 4];
         for offset in 0..batch.iterations {
@@ -1423,6 +1425,8 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
             for i in 0..4 {
                 ad[i] += a.dead[i] as u64;
                 dd[i] += d.dead[i] as u64;
+                aw[i] += a.wounded(i, &ap) as u64;
+                dw[i] += d.wounded(i, &dp) as u64;
             }
             if let Some(settings) = &batch.consequences {
                 for i in 0..4 {
@@ -1449,7 +1453,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                 .get(type_name(UnitType::ALL[i]))
                 .unwrap_or(&0)
         });
-        scenarios.push(json!({"id":scenario.id,"result":{"samples":batch.iterations,"attackerWins":wins[0],"defenderWins":wins[1],"draws":wins[2],"roundSum":round_sum,"attackerInitialByType":attacker_initial,"defenderInitialByType":defender_initial,"attackerRawDeathsByType":ad,"defenderRawDeathsByType":dd,"attackerProjectedByType":if batch.consequences.is_some(){json!(projected_a)}else{Value::Null},"defenderProjectedByType":if batch.consequences.is_some(){json!(projected_d)}else{Value::Null}}}));
+        scenarios.push(json!({"id":scenario.id,"result":{"samples":batch.iterations,"attackerWins":wins[0],"defenderWins":wins[1],"draws":wins[2],"roundSum":round_sum,"attackerInitialByType":attacker_initial,"defenderInitialByType":defender_initial,"attackerRawDeathsByType":ad,"defenderRawDeathsByType":dd,"attackerRawWoundedByType":aw,"defenderRawWoundedByType":dw,"attackerProjectedByType":if batch.consequences.is_some(){json!(projected_a)}else{Value::Null},"defenderProjectedByType":if batch.consequences.is_some(){json!(projected_d)}else{Value::Null}}}));
     }
     Ok(
         json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":batch.start_iteration+batch.iterations,"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios}),

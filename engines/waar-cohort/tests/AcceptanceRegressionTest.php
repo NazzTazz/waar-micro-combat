@@ -24,6 +24,7 @@ final class AcceptanceRegressionTest extends TestCase
             $expected = ['attackerWins'=>0, 'defenderWins'=>0, 'draws'=>0, 'roundSum'=>0];
             foreach (['attacker', 'defender'] as $side) {
                 $expected[$side.'RawDeathsByType'] = array_fill(0, 4, 0);
+                $expected[$side.'RawWoundedByType'] = array_fill(0, 4, 0);
                 $expected[$side.'ProjectedByType'] = array_fill(0, 4, array_fill(0, 4, 0));
             }
             for ($iteration = 0; $iteration < 3; ++$iteration) {
@@ -40,6 +41,7 @@ final class AcceptanceRegressionTest extends TestCase
                 $expected['roundSum'] += count($report['result']['rounds']);
                 foreach (['attacker', 'defender'] as $side) {
                     foreach (['soldier', 'spearman', 'archer', 'knight'] as $typeIndex => $type) {
+                        $expected[$side.'RawWoundedByType'][$typeIndex] += $report['result'][$side]['wounded'][$type];
                         $expected[$side.'RawDeathsByType'][$typeIndex] += $report['result'][$side]['dead'][$type];
                         foreach (['healthy', 'wounded', 'dead', 'prisoners'] as $categoryIndex => $category) {
                             $expected[$side.'ProjectedByType'][$typeIndex][$categoryIndex] += $report['consequences'][$side]['types'][$type]['projected'][$category];

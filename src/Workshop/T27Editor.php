@@ -9,6 +9,7 @@ final class T27Editor
     {
         $p=EngineProfile::fromArray($profile);
         $context=$measurement['context']??[];
+        if (($context['objectiveMetric']??null)!=='rawCasualtyRatio') throw new \InvalidArgumentException('Mesure obsolète : remesurez les blessés et morts avant compression.');
         (new ConsequenceObjectives())->validate($profile,$zones,$context['weather']??'', $context['baseSeed']??-1,$context['iterations']??0);
         if (($measurement['profileFingerprint']??null)!==$p->semanticFingerprint() || ($measurement['modelVersion']??null)!==EngineProfile::MODEL_VERSION) throw new \InvalidArgumentException('Mesure incompatible.');
         $fingerprint=hash('sha256',json_encode([$p->semanticFingerprint(),$context],JSON_THROW_ON_ERROR));
@@ -18,12 +19,12 @@ final class T27Editor
             $type=$r['side']==='attacker'?$r['attackerType']:$r['defenderType'];
             $rows[]=['scenarioId'=>$r['scenarioId'],'scenarioLabel'=>$labels[$r['attackerType']].' / '.$labels[$r['defenderType']], 'side'=>$r['side'],'focus'=>$r['side']==='attacker',
                 'army'=>[$type=>intdiv(MonotypeMeasurementService::BUDGET,$p->costs()[$type])],
-                'micro'=>['baseline'=>['iterations'=>$context['iterations']],'vector'=>['x'=>['from'=>$r['winRate'],'to'=>$r['winRate']],'y'=>['rawLossRatio'=>['from'=>$r['rawLossRatio'],'to'=>$r['rawLossRatio']]]]],
-                'legacy'=>['coordinates'=>['x'=>null,'y'=>['rawLossRatio'=>null]]]];
+                'micro'=>['baseline'=>['iterations'=>$context['iterations']],'vector'=>['x'=>['from'=>$r['winRate'],'to'=>$r['winRate']],'y'=>['rawCasualtyRatio'=>['from'=>$r['rawCasualtyRatio'],'to'=>$r['rawCasualtyRatio']]]]],
+                'legacy'=>['coordinates'=>['x'=>null,'y'=>['rawCasualtyRatio'=>null]]]];
         }
-        foreach ($zones as $z) $editorZones[]=['id'=>$z['id'],'scenarioId'=>$z['scenarioId'],'side'=>$z['side'],'endpoint'=>'tip','xMetric'=>'winRate','yMetric'=>'rawLossRatio','shape'=>'ellipse','center'=>$z['center'],'radii'=>$z['radii'],'enabled'=>true,'approval'=>'draft',
+        foreach ($zones as $z) $editorZones[]=['id'=>$z['id'],'scenarioId'=>$z['scenarioId'],'side'=>$z['side'],'endpoint'=>'tip','xMetric'=>'winRate','yMetric'=>'rawCasualtyRatio','shape'=>'ellipse','center'=>$z['center'],'radii'=>$z['radii'],'enabled'=>true,'approval'=>'draft',
             'source'=>['kind'=>'observation','referenceId'=>$p->semanticFingerprint(),'referencePointId'=>$z['id'],'originalCenter'=>$z['center'],'modifiedManually'=>false]];
-        $data=['experiment'=>['id'=>$p->id],'axes'=>['y'=>[['id'=>'rawLossRatio','label'=>'Pertes brutes']]],
+        $data=['experiment'=>['id'=>$p->id],'axes'=>['y'=>[['id'=>'rawCasualtyRatio','label'=>'Blessés + morts (avant compression)']]],
             'comparisonProfile'=>['id'=>'workshop-consequences-v1','valuationId'=>'waar-profile-costs-v1','valuation'=>$p->costs(),'commonBudget'=>MonotypeMeasurementService::BUDGET],
             'legacyReference'=>['available'=>false,'id'=>$p->semanticFingerprint(),'sourceFingerprint'=>$p->semanticFingerprint(),'corpusFingerprint'=>$fingerprint],
             'objectiveReference'=>['id'=>$p->semanticFingerprint(),'label'=>$p->label],

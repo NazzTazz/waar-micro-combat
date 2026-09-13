@@ -13,7 +13,7 @@ final class T27WorkshopEditorTest extends TestCase
     {
         $profile=EngineProfile::defaults();
         $measurement=(new MonotypeMeasurementService())->measure($profile,'neutral',42,1);
-        $zones=array_map(static fn($r)=>['id'=>$r['id'],'scenarioId'=>$r['scenarioId'],'side'=>$r['side'],'center'=>['x'=>$r['winRate'],'y'=>$r['rawLossRatio']],'radii'=>['x'=>.05,'y'=>.1],'sourceFingerprint'=>$measurement['profileFingerprint'],'modelVersion'=>$measurement['modelVersion'],'context'=>$measurement['context']],$measurement['rows']);
+        $zones=array_map(static fn($r)=>['id'=>$r['id'],'scenarioId'=>$r['scenarioId'],'side'=>$r['side'],'center'=>['x'=>$r['winRate'],'y'=>$r['rawCasualtyRatio']],'radii'=>['x'=>.05,'y'=>.1],'sourceFingerprint'=>$measurement['profileFingerprint'],'modelVersion'=>$measurement['modelVersion'],'context'=>$measurement['context']],$measurement['rows']);
         $result=(new T27Editor())->render($profile,$measurement,$zones);
         self::assertStringContainsString('/editor/app.js',$result['html']);
         self::assertStringContainsString('id="undo"',$result['html']);
@@ -21,9 +21,9 @@ final class T27WorkshopEditorTest extends TestCase
         preg_match('/<script id="overlay-data" type="application\/json">(.*?)<\/script>/s',$result['html'],$match);
         $data=json_decode($match[1],true,512,JSON_THROW_ON_ERROR);
         self::assertSame('waar-consequence-editor-zones/0.1',$data['zonesDocument']['schemaVersion']);
-        self::assertSame('rawLossRatio',$data['axes']['y'][0]['id']);
+        self::assertSame('rawCasualtyRatio',$data['axes']['y'][0]['id']);
         self::assertCount(32,$data['rows']);
-        self::assertSame($measurement['rows'][0]['rawLossRatio'],$data['rows'][0]['micro']['vector']['y']['rawLossRatio']['from']);
+        self::assertSame($measurement['rows'][0]['rawCasualtyRatio'],$data['rows'][0]['micro']['vector']['y']['rawCasualtyRatio']['from']);
         self::assertSame($result['fingerprint'],$data['zonesDocument']['corpusFingerprint']);
         self::assertFalse($data['legacyReference']['available']);
     }

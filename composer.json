@@ -18,6 +18,7 @@
         "test": "phpunit",
         "test:js": [
             "node tests/acceptance-zones-model.test.js",
+            "node tests/workshop-casualty-zones.test.js",
             "node tests/finalist-comparison-model.test.js",
             "node tests/finalist-stability-model.test.js",
             "node tests/mixed-composition-observation-model.test.js",

@@ -16,7 +16,7 @@ final class ConsequenceObjectives
         if (!in_array($weather, EngineProfile::WEATHER, true) || $seed < 0 || $seed > 2147483647 || $iterations < 1 || $iterations > 100) {
             throw new \InvalidArgumentException('Contexte de mesure invalide.');
         }
-        $context = ['weather'=>$weather, 'baseSeed'=>$seed, 'iterations'=>$iterations, 'budget'=>MonotypeMeasurementService::BUDGET, 'objectiveMetric'=>'rawLossRatio',
+        $context = ['weather'=>$weather, 'baseSeed'=>$seed, 'iterations'=>$iterations, 'budget'=>MonotypeMeasurementService::BUDGET, 'objectiveMetric'=>'rawCasualtyRatio',
             'modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$profile->ruleset()['version'],
             'consequences'=>['lossCompressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent]];
         $expected = [];

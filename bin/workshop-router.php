@@ -4,6 +4,7 @@ use Waar\MicroCombat\Workshop\BoundedProfileSearch;
 use Waar\MicroCombat\Workshop\DuelService;
 use Waar\MicroCombat\Workshop\EngineProfile;
 use Waar\MicroCombat\Workshop\EngineProfileMigrator;
+use Waar\MicroCombat\Workshop\EvolutionaryProfileOptimizer;
 use Waar\MicroCombat\Workshop\MonotypeMeasurementService;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
 use Waar\MicroCombat\Workshop\ConsequenceObjectives;
@@ -31,6 +32,7 @@ if(str_starts_with($path,'/api/')){
             ['/api/duel','POST']=>(new DuelService())->simulate($request),
             ['/api/measure','POST']=>(new MonotypeMeasurementService())->measure($request['profile']??[],(string)($request['weather']??'neutral'),$request['seed']??42,$request['iterations']??100),
             ['/api/search','POST']=>(new BoundedProfileSearch())->search($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??8,$request['iterations']??100,$request['bounds']??[],$request['measurementBaseSeed']??42),
+            ['/api/optimize','POST']=>(new EvolutionaryProfileOptimizer())->optimize($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??32,$request['iterations']??100,$request['bounds']??[],$request['measurementBaseSeed']??42),
             default=>throw new RuntimeException('Route API inconnue.',404),
         };
         echo json_encode(['ok'=>true,'data'=>$result],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);

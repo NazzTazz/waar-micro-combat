@@ -37,7 +37,7 @@ class Element {
   const units=Object.fromEntries(['soldier','spearman','archer','knight'].map(type=>[type,{attack:'7',structure:'18',baseAccuracy:'0.15',accuracySpread:'0.02',strikesPerAttack:1,defendingEfficiency:'1',cost:80,capturable:false}]));
   const weatherIds=['neutral','cloudy','snow','blizzard','heat','canicule','wind','storm','rain','thunderstorm'];
   const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0}};
-  const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawLossRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawLossRatio:.06}]};
+  const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawCasualtyRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawCasualtyRatio:.06}]};
   let pendingSearch,searchBody,confirmResult=true,malformedResponse=false;
   const storage=new Map(),messages=[],listeners={};
   element('#t27-editor').contentWindow={postMessage:message=>messages.push(message)};
@@ -60,7 +60,7 @@ class Element {
     else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
     else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
     else if(url.endsWith('/measure'))data=structuredClone(measurement);
-    else if(url.endsWith('/search')){searchBody=body;data=await new Promise(resolve=>{pendingSearch=resolve})}
+    else if(url.endsWith('/optimize')){searchBody=body;data=await new Promise(resolve=>{pendingSearch=resolve})}
     else data={errors:[]};
     return {ok:true,json:async()=>({data})};
   }});
@@ -72,6 +72,12 @@ class Element {
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
   assert.equal(typeof element('#measure').onclick,'function');
+  const armyRow=element('#army-a').children[0];
+  assert.match(armyRow.innerHTML,/max="1000000"/);
+  armyRow.children[2].value='25000';armyRow.children[2].oninput();
+  assert.equal(Number(armyRow.children[1].value),25000);
+  armyRow.children[2].value='1000001';armyRow.children[2].oninput();
+  assert.equal(Number(armyRow.children[2].value),1000000);
   const rounds=element('[data-combat=maxRounds]');
   assert.equal(rounds['aria-label'],'Rounds');
   rounds.value='5';rounds.oninput();
@@ -81,11 +87,12 @@ class Element {
   assert.equal(element('#t27-editor').srcdoc,'T27 fixture');
   editZones(.8);
   assert.equal(measurement.rows[0].winRate,.51,'editing T27 does not alter observations');
-  const searchResult=()=>({referenceProfile:structuredClone(profile),candidates:[{rank:1,fingerprint:'candidate',inside:32,score:0,worst:{id:'a'},profile:structuredClone(profile),observations:{rows:[{id:measurement.rows[0].id,winRate:.8,rawLossRatio:.04}]}}]});
+  const searchResult=()=>({referenceProfile:structuredClone(profile),evaluated:1,candidateBudget:32,stopReason:'objectives_satisfied',generations:[{number:1,improved:true,best:{metrics:{inside:32,score:0}}}],candidates:[{rank:1,generation:1,operator:'reference',fingerprint:'candidate',inside:32,score:0,worst:{id:'a'},profile:structuredClone(profile),observations:{rows:[{id:measurement.rows[0].id,winRate:.8,rawCasualtyRatio:.04}]}}]});
 
   const run=element('#search').onclick();
   assert.equal(searchBody.measurementBaseSeed,42);
   assert.equal(searchBody.seed,314159);
+  assert.equal(searchBody.budget,32);
   pendingSearch(searchResult());await run;
   element('[data-compare]1').onclick();
   assert.equal(messages.at(-1).rows[0].winRate,.8,'candidate observations sent to T27');

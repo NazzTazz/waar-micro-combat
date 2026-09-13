@@ -13,6 +13,7 @@ async function ready(url){for(let i=0;i<100;i++){try{if((await fetch(url)).ok)re
     assert.equal((await (await fetch(origin+'/api/probe')).json()).limit,1,'short routes retain the host limit');
     assert.equal((await (await fetch(origin+'/api/measure')).json()).limit,600);
     assert.equal((await (await fetch(origin+'/api/search')).json()).limit,4800);
+    assert.equal((await (await fetch(origin+'/api/optimize')).json()).limit,4800);
     const fatal=await fetch(origin+'/api/fatal');
     assert.equal(fatal.status,500);
     assert.match(fatal.headers.get('content-type'),/application\/json/);

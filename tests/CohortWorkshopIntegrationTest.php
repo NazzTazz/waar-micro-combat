@@ -41,7 +41,7 @@ final class CohortWorkshopIntegrationTest extends TestCase
         $archer=array_values(array_filter($direction['result']['snapshot']['prepared']['attacker']['units'],static fn(array $unit):bool=>$unit['type']==='archer'))[0];
         self::assertSame('0.144',$archer['baseAccuracy']);self::assertSame(['training','weather'],array_column($archer['effects'],'source'));
         self::assertArrayHasKey('matrix',$direction['result']['rounds'][0]['attackerAction']);self::assertCount(4,$direction['result']['rounds'][0]['attackerAction']['matrix']);
-        self::assertSame('wounded-capture-then-compress/1',$direction['consequences']['policyVersion']);
+        self::assertSame('wounded-capture-then-compress/2',$direction['consequences']['policyVersion']);
     }
 
     public function testPhpDiagnosticRuntimeUsesTheSameVersionedBoundary():void

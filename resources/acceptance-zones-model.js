@@ -143,7 +143,7 @@ globalThis.WaarAcceptanceZonesModel = (() => {
       assert(expected, `Identifiant de zone inconnu : ${zone.id}.`);
       assert(typeof zone.scenarioId === 'string' && zone.scenarioId.length > 0, `Scénario invalide pour ${zone.id}.`);
       assert(SIDES.has(zone.side) && ENDPOINTS.has(zone.endpoint), `Camp ou extrémité invalide pour ${zone.id}.`);
-      assert(zone.xMetric === 'winRate' && (consequenceEditor?zone.yMetric==='rawLossRatio':Y_METRICS.has(zone.yMetric)), `Paire de métriques invalide pour ${zone.id}.`);
+      assert(zone.xMetric === 'winRate' && (consequenceEditor?zone.yMetric==='rawCasualtyRatio':Y_METRICS.has(zone.yMetric)), `Paire de métriques invalide pour ${zone.id}.`);
       assert(zone.shape === 'ellipse', `Forme non prise en charge pour ${zone.id}.`);
       assert(zoneKey(zone) === zoneKey(expected), `Association modifiée ou inconnue pour ${zone.id}.`);
       assert(!associations.has(zoneKey(zone)), `Association de zone dupliquée pour ${zone.id}.`); associations.add(zoneKey(zone));

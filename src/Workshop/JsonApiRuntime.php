@@ -9,7 +9,7 @@ final class JsonApiRuntime
     {
         // Keep finite timeouts; do not change php.ini or the budgets/seeds of the calculation.
         if($path==='/api/measure')set_time_limit(600);
-        if($path==='/api/search')set_time_limit(4800);
+        if(in_array($path,['/api/search','/api/optimize'],true))set_time_limit(4800);
         ini_set('display_errors','0');
         ini_set('log_errors','1');
         header('Content-Type: application/json; charset=utf-8');

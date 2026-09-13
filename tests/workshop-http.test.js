@@ -63,9 +63,12 @@ async function waitFor(url) {
     assert.equal(duel.modelVersion,'waar-cohort-v2');assert.equal(duel.runtime.kind,'rust');assert.equal(duel.directions.length,2);assert.equal(duel.directions[0].result.schemaVersion,'waar-combat-result/2');
     const measure=await post('measure',{profile,weather:'neutral',seed:42,iterations:1});
     assert.equal(measure.modelVersion,'waar-cohort-v2');assert.equal(measure.context.runtime.kind,'rust');assert.equal(measure.batch.totalCombats,16);assert.equal(measure.rows.length,32);
+    const zones=measure.rows.map(row=>({id:row.id,center:{x:row.winRate,y:row.rawCasualtyRatio},radii:{x:.05,y:.1},sourceFingerprint:measure.profileFingerprint,modelVersion:measure.modelVersion,context:measure.context}));
+    const optimized=await post('optimize',{profile,zones,weather:'neutral',seed:314159,measurementBaseSeed:42,budget:8,iterations:1});
+    assert.equal(optimized.schemaVersion,'waar-optimizer-report/1');assert.equal(optimized.algorithm,'waar-profile-evolution/1');assert.equal(optimized.evaluated,8);assert.equal(optimized.selectionPerformed,false);assert.equal(optimized.stopReason,'objectives_satisfied');
     const legacy=structuredClone(profile);legacy.schemaVersion='waar-engine-profile/0.1';for(const unit of Object.values(legacy.units)){delete unit.baseAccuracy;delete unit.accuracySpread;delete unit.strikesPerAttack}legacy.weather=Object.fromEntries(['neutral','rain','snow','heat'].map(id=>[id,Object.fromEntries(Object.entries(legacy.weather[id]).map(([type,value])=>[type,value.attack]))]));legacy.combat={maxRounds:3,randomSpread:'0.1',tieBreakPolicy:'defender',lossCompressionPercent:8,capturePercent:0};
     const migrated=await post('migrate-profile',{profile:legacy});assert.equal(migrated.migration.performed,true);assert.equal(migrated.migration.measurementsObsolete,true);assert.equal(migrated.profile.units.archer.baseAccuracy,'0.15');
-    console.log('workshop-http: ok (native duel, one-call batch, explicit migration)');
+    console.log('workshop-http: ok (native duel, one-call batch, evolutionary optimizer, explicit migration)');
   } finally {
     server.kill();
   }

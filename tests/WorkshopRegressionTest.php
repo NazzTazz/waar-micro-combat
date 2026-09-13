@@ -16,7 +16,7 @@ final class WorkshopRegressionTest extends TestCase
     private function zones(array $measurement): array
     {
         return array_map(static fn(array $row):array => [
-            'id'=>$row['id'], 'center'=>['x'=>$row['winRate'],'y'=>$row['rawLossRatio']],
+            'id'=>$row['id'], 'center'=>['x'=>$row['winRate'],'y'=>$row['rawCasualtyRatio']],
             'radii'=>['x'=>.05,'y'=>.1], 'sourceFingerprint'=>$measurement['profileFingerprint'],
             'modelVersion'=>$measurement['modelVersion'], 'context'=>$measurement['context'],
         ], $measurement['rows']);

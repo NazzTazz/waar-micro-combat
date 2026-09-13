@@ -23,7 +23,7 @@ final class WorkshopEconomyTest extends TestCase
         self::assertSame(['A'=>16000,'B'=>19200],$duel['costs']);
         foreach($duel['directions'] as $direction) foreach(['attacker','defender'] as $sideName){$side=$direction['consequences'][$sideName];
             $unit=$side['types']['soldier'];
-            self::assertSame(($unit['projected']['dead']+$unit['projected']['prisoners'])*160,$side['economicLoss']);
+            self::assertSame(($unit['projected']['dead']+$unit['projected']['wounded'])*160,$side['economicLoss']);
         }
         $measurement=(new MonotypeMeasurementService())->measure($profile,'neutral',42,1);
         $zones=array_map(static fn($r)=>['id'=>$r['id'],'scenarioId'=>$r['scenarioId'],'side'=>$r['side'],'center'=>['x'=>$r['winRate'],'y'=>$r['rawLossRatio']],'radii'=>['x'=>.05,'y'=>.1],'sourceFingerprint'=>$measurement['profileFingerprint'],'modelVersion'=>$measurement['modelVersion'],'context'=>$measurement['context']],$measurement['rows']);

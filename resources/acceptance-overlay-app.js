@@ -291,7 +291,7 @@
       for(const row of data.rows){
         const candidate=event.data.rows?.find(item=>item.scenarioId===row.scenarioId&&item.side===row.side);
         row.micro.vector.x.to=candidate?.winRate??row.micro.vector.x.from;
-        row.micro.vector.y.rawLossRatio.to=candidate?.rawLossRatio??row.micro.vector.y.rawLossRatio.from;
+        row.micro.vector.y.rawCasualtyRatio.to=candidate?.rawCasualtyRatio??row.micro.vector.y.rawCasualtyRatio.from;
       }
       renderChart('comparison',false);
     });

@@ -19,6 +19,27 @@
         "total": { "type": "integer" }, "complete": { "type": "boolean" }
       }
     },
-    "scenarios": { "type": "array" }
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "object",
+            "properties": {
+              "attackerRawWoundedByType": { "$ref": "#/$defs/rawCounts" },
+              "defenderRawWoundedByType": { "$ref": "#/$defs/rawCounts" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "rawCounts": {
+      "description": "Somme des blessés avant capture et compression, dans unitOrder. Extension additive ; requise par la métrique de soufflerie rawCasualtyRatio.",
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": { "type": "integer", "minimum": 0 }
+    }
   }
 }
