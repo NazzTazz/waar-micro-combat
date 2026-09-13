@@ -5,6 +5,7 @@ use Waar\MicroCombat\Workshop\DuelService;
 use Waar\MicroCombat\Workshop\EngineProfile;
 use Waar\MicroCombat\Workshop\MonotypeMeasurementService;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
+use Waar\MicroCombat\Workshop\ConsequenceObjectives;
 
 require dirname(__DIR__).'/autoload.php';
 $public=dirname(__DIR__).'/public/workshop';$path=parse_url($_SERVER['REQUEST_URI']??'/',PHP_URL_PATH)?:'/';
@@ -19,10 +20,11 @@ if(str_starts_with($path,'/api/')){
         $raw=file_get_contents('php://input');$request=($raw===false||trim($raw)==='')?[]:json_decode($raw,true,128,JSON_THROW_ON_ERROR);if(!is_array($request)||($request!==[]&&array_is_list($request)))throw new InvalidArgumentException('Objet JSON attendu.');
         $result=match([$path,$_SERVER['REQUEST_METHOD']??'GET']){
             ['/api/default-profile','GET']=>['profile'=>EngineProfile::defaults()],
-            ['/api/validate','POST']=>['errors'=>EngineProfile::validate($request['profile']??[])],
+            ['/api/validate','POST']=>['errors'=>EngineProfile::validate($request['profile']??[],match($request['mode']??'complete'){'draft'=>[],'complete'=>null,default=>throw new InvalidArgumentException('Mode de validation inconnu.')})],
+            ['/api/validate-zones','POST']=>['zones'=>(new ConsequenceObjectives())->validate($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['measurementBaseSeed']??42,$request['iterations']??100)],
             ['/api/duel','POST']=>(new DuelService())->simulate($request),
             ['/api/measure','POST']=>(new MonotypeMeasurementService())->measure($request['profile']??[],(string)($request['weather']??'neutral'),$request['seed']??42,$request['iterations']??100),
-            ['/api/search','POST']=>(new BoundedProfileSearch())->search($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??8,$request['iterations']??100,$request['bounds']??[]),
+            ['/api/search','POST']=>(new BoundedProfileSearch())->search($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??8,$request['iterations']??100,$request['bounds']??[],$request['measurementBaseSeed']??42),
             default=>throw new RuntimeException('Route API inconnue.',404),
         };
         echo json_encode(['ok'=>true,'data'=>$result],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);

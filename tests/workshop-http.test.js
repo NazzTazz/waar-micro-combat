@@ -46,6 +46,16 @@ async function waitFor(url) {
       body: JSON.stringify({profile: profilePayload.data.profile}),
     });
     assert.equal(foreignOrigin.status, 403);
+    const draft = structuredClone(profilePayload.data.profile);
+    draft.units.archer = null;
+    const validate = async mode => (await (await fetch(origin + '/api/validate', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({profile: draft, mode}),
+    })).json()).data;
+    assert.deepEqual((await validate('draft')).errors, []);
+    assert.equal((await validate('complete')).errors[0].code, 'missing_unit');
+    draft.units.soldier.attack = 'invalid';
+    assert.equal((await validate('draft')).errors[0].code, 'invalid_decimal');
     console.log('workshop-http: ok');
   } finally {
     server.kill();

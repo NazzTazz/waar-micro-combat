@@ -133,3 +133,20 @@ Ouvrir ensuite `http://127.0.0.1:8080`. Le serveur ne publie que
 navigateur ; l’export JSON reste disponible si ce stockage ne l’est pas. Il
 s’agit d’un atelier local : aucun résultat n’est appliqué aux armées du jeu et
 aucun candidat n’est approuvé automatiquement.
+
+Les JSON de brouillon peuvent contenir des fiches absentes (`null`) : seules les
+unités présentes dans un duel sont requises pour le simuler, tandis que
+l’affinage exige les quatre fiches. Un champ explicitement invalide reste refusé.
+« Valeurs proposées » demande confirmation et ne remplace que les fiches,
+en préservant le nom, les relations, la météo et les paramètres de combat.
+
+En affinage, les carrés représentent les observations de référence, les ellipses
+les objectifs éditables et les flèches violettes les observations du candidat
+explicitement choisi pour comparaison. Dessiner une ellipse ne déplace pas une
+observation. Les zones sont importables uniquement pour le même profil, modèle
+et contexte de mesure ; PHP contrôle cette provenance avant toute recherche.
+La seed de mesure (42 par défaut) reste commune à la référence et aux candidats ;
+la seed de recherche (314159) n’est pas une seed de mesure.
+Modifier les objectifs ou réglages invalide les résultats, y compris une réponse
+encore en cours. La dernière recherche reste exportable en JSON, avec son profil
+de référence, après adoption d’un candidat comme nouveau brouillon.
