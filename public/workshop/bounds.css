@@ -1,0 +1,1 @@
+.bounds{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;align-items:center;margin:12px 0}.bounds label{display:contents}.bounds input{width:100%}@media(max-width:720px){.bounds{grid-template-columns:1fr 1fr}.bounds span{grid-column:1/-1}}
