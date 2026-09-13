@@ -10,6 +10,7 @@ use Waar\MicroCombat\SideOutcome;
 use Waar\MicroCombat\UnitOutcome;
 use Waar\MicroCombat\UnitType;
 use Waar\MicroCombat\Workshop\BattleConsequences;
+use Waar\MicroCombat\Workshop\CohortRequestFactory;
 use Waar\MicroCombat\Workshop\DuelService;
 use Waar\MicroCombat\Workshop\EngineProfile;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
@@ -34,7 +35,8 @@ final class WorkshopCoreTest extends TestCase
         $profile=EngineProfile::defaults();$profile['combat']['lossCompressionPercent']=8;$profile['combat']['capturePercent']=10;$profile['units']['soldier']['capturable']=true;
         $raw=$this->fixtureResult(1000,CombatSide::Defender,1000);$before=$raw->toArray();$result=(new BattleConsequences())->apply($raw,EngineProfile::fromArray($profile));
         $soldier=$result['consequences']['attacker']['units']['soldier'];
-        self::assertSame(['initial'=>1000,'rawLosses'=>1000,'appliedLosses'=>80,'survivorsBeforeCapture'=>920,'prisoners'=>92,'free'=>828,'capturable'=>true],$soldier);
+        self::assertSame(['initial'=>1000,'rawLosses'=>1000,'economicLoss'=>13760,'appliedLosses'=>80,'survivorsBeforeCapture'=>920,'prisoners'=>92,'free'=>828,'capturable'=>true],$soldier);
+        self::assertSame(13760,$result['consequences']['attacker']['totals']['economicLoss']);
         self::assertSame(0,$result['consequences']['defender']['units']['soldier']['prisoners']);
         self::assertSame(1000,$soldier['appliedLosses']+$soldier['prisoners']+$soldier['free']);
         self::assertSame($before,$raw->toArray());
@@ -49,10 +51,14 @@ final class WorkshopCoreTest extends TestCase
 
     public function testNeutralWeatherIsBitExactAndWeatherOnlyChangesPreparedAttack():void
     {
-        $values=EngineProfile::defaults();$profile=EngineProfile::fromArray($values);$neutral=$profile->prepareArmy(['soldier'=>10],'neutral')->unit(UnitType::Soldier);
-        $values['weather']['rain']['soldier']='0.5';$rainProfile=EngineProfile::fromArray($values);$rain=$rainProfile->prepareArmy(['soldier'=>10],'rain')->unit(UnitType::Soldier);
-        self::assertSame($neutral->structureMicro,$rain->structureMicro);self::assertSame($neutral->defendingEfficiencyMicro,$rain->defendingEfficiencyMicro);self::assertSame(intdiv($neutral->attackMicro,2),$rain->attackMicro);
-        self::assertSame((new DuelService())->simulate(['requestId'=>'1','profile'=>$profile->toArray(),'armies'=>['A'=>['soldier'=>100],'B'=>['soldier'=>100]],'weather'=>'neutral','seed'=>42]),(new DuelService())->simulate(['requestId'=>'1','profile'=>$profile->toArray(),'armies'=>['A'=>['soldier'=>100],'B'=>['soldier'=>100]],'weather'=>'neutral','seed'=>42]));
+        $values=EngineProfile::defaults();$values['weather']['rain']['soldier']['attack']='0.5';$values['weather']['rain']['soldier']['baseAccuracy']='0.8';$profile=EngineProfile::fromArray($values);$factory=new CohortRequestFactory();
+        $request=$factory->combat($profile,['soldier'=>10],['soldier'=>10],42,'neutral','rain');
+        self::assertSame([],$request['attacker']['modifiers']);
+        self::assertSame(['attack','baseAccuracy'],array_column($request['defender']['modifiers'],'parameter'));
+        self::assertSame(['0.5','0.8'],array_column($request['defender']['modifiers'],'value'));
+        self::assertNotContains('accuracySpread',array_column($request['defender']['modifiers'],'parameter'));
+        $duel=['requestId'=>'1','profile'=>$profile->toArray(),'armies'=>['A'=>['soldier'=>100],'B'=>['soldier'=>100]],'weather'=>['A'=>'neutral','B'=>'rain'],'seed'=>42];
+        self::assertSame((new DuelService())->simulate($duel),(new DuelService())->simulate($duel));
     }
 
     public function testDuelPreservesLabelsCostsAndAllowsUnusedMissingProfiles():void
@@ -65,7 +71,7 @@ final class WorkshopCoreTest extends TestCase
     public function testDuelReportsEveryIdentifiableError():void
     {
         $profile=EngineProfile::defaults();$profile['units']['archer']=null;
-        try{(new DuelService())->simulate(['profile'=>$profile,'armies'=>['A'=>['archer'=>1],'B'=>[]],'weather'=>'storm','seed'=>-1]);self::fail();}catch(ProfileValidationException $e){$codes=array_column($e->errors,'code');self::assertContains('missing_unit',$codes);self::assertContains('empty_army',$codes);self::assertContains('unknown_weather',$codes);self::assertContains('invalid_seed',$codes);}
+        try{(new DuelService())->simulate(['profile'=>$profile,'armies'=>['A'=>['archer'=>1],'B'=>[]],'weather'=>['A'=>'unknown','B'=>'neutral'],'seed'=>-1]);self::fail();}catch(ProfileValidationException $e){$codes=array_column($e->errors,'code');self::assertContains('missing_unit',$codes);self::assertContains('empty_army',$codes);self::assertContains('unknown_weather',$codes);self::assertContains('invalid_seed',$codes);}
     }
 
     public function testProfileRejectsDuplicateUnknownDiagonalAndBadBounds():void
@@ -82,9 +88,9 @@ final class WorkshopCoreTest extends TestCase
 
     public function testProfileRejectsUnknownNestedFields():void
     {
-        $profile=EngineProfile::defaults();$profile['units']['soldier']['magic']=1;$profile['relations'][]=['acting'=>'soldier','target'=>'archer','factor'=>'1.2','inverse'=>true];$profile['weather']['storm']=$profile['weather']['rain'];$profile['weather']['rain']['dragon']='1';$profile['combat']['initiative']=2;
+        $profile=EngineProfile::defaults();$profile['units']['soldier']['magic']=1;$profile['relations'][]=['acting'=>'soldier','target'=>'archer','factor'=>'1.2','inverse'=>true];$profile['weather']['rain']['dragon']=['attack'=>'1','baseAccuracy'=>'1'];$profile['weather']['rain']['soldier']['accuracySpread']='1';$profile['combat']['initiative']=2;
         $paths=array_column(EngineProfile::validate($profile),'path');
-        foreach(['units.soldier.magic','relations.0.inverse','weather.storm','weather.rain.dragon','combat.initiative'] as $path)self::assertContains($path,$paths);
+        foreach(['units.soldier.magic','relations.0.inverse','weather.rain.dragon','weather.rain.soldier.accuracySpread','combat.initiative'] as $path)self::assertContains($path,$paths);
     }
 
     public function testMalformedRelationReturnsErrorsInsteadOfCrashing():void

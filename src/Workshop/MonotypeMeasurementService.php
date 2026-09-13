@@ -2,32 +2,27 @@
 
 namespace Waar\MicroCombat\Workshop;
 
-use Waar\MicroCombat\CombatResolver;
-use Waar\MicroCombat\CombatSide;
-use Waar\MicroCombat\Experiment\ExperimentRunner;
-use Waar\MicroCombat\PreparedBattle;
-use Waar\MicroCombat\UnitType;
-
-final readonly class MonotypeMeasurementService
+final class MonotypeMeasurementService
 {
     public const BUDGET=400400;
-    public function __construct(private CombatResolver $resolver=new CombatResolver(),private BattleConsequences $consequences=new BattleConsequences()){}
+    private CohortRuntime $runtime;
+    public function __construct(?CohortRuntime $runtime=null,private readonly CohortRequestFactory $requests=new CohortRequestFactory()){$this->runtime=$runtime??new ProcessCohortRuntime();}
 
     /** @param array<string,mixed> $profileValues @return array<string,mixed> */
     public function measure(array $profileValues,string $weather='neutral',int $baseSeed=42,int $iterations=100):array
     {
-        if($iterations<1||$iterations>100)throw new \InvalidArgumentException('La mesure V1 accepte de 1 à 100 répétitions.');
+        if($iterations<1||$iterations>100)throw new \InvalidArgumentException('La mesure accepte de 1 à 100 répétitions.');
         if($baseSeed<0||$baseSeed>2147483647)throw new \InvalidArgumentException('Seed invalide.');
-        $profile=EngineProfile::fromArray($profileValues);$rows=[];
-        foreach(UnitType::cases() as $attacking)foreach(UnitType::cases() as $defending){
-            $scenario=$attacking->value.'-vs-'.$defending->value;$countsA=[$attacking->value=>intdiv(self::BUDGET,EngineProfile::UNIT_COSTS[$attacking->value])];$countsB=[$defending->value=>intdiv(self::BUDGET,EngineProfile::UNIT_COSTS[$defending->value])];
-            $sums=['attacker'=>['wins'=>0,'losses'=>0,'initial'=>0,'captured'=>0,'free'=>0],'defender'=>['wins'=>0,'losses'=>0,'initial'=>0,'captured'=>0,'free'=>0]];
-            for($iteration=0;$iteration<$iterations;++$iteration){
-                $seed=ExperimentRunner::deriveSeed($baseSeed,$scenario,$iteration);$raw=$this->resolver->resolve(new PreparedBattle($profile->ruleset(),$profile->prepareArmy($countsA,$weather),$profile->prepareArmy($countsB,$weather),$seed));$result=$this->consequences->apply($raw,$profile);
-                foreach([CombatSide::Attacker,CombatSide::Defender] as $side){$key=$side->value;$sums[$key]['wins']+=(int)($raw->winner===$side);foreach($result['consequences'][$key]['units'] as $unit){$sums[$key]['losses']+=$unit['appliedLosses'];$sums[$key]['initial']+=$unit['initial'];$sums[$key]['captured']+=$unit['prisoners'];$sums[$key]['free']+=$unit['free'];}}
+        if(!in_array($weather,EngineProfile::WEATHER,true))throw new \InvalidArgumentException('Condition météo inconnue.');
+        $profile=EngineProfile::fromArray($profileValues);$request=$this->requests->monotypes($profile,$weather,$baseSeed,$iterations);$batch=$this->runtime->batch($request);
+        if(($batch['unitOrder']??null)!==array_keys(EngineProfile::UNIT_COSTS)||($batch['projectedCategoryOrder']??null)!==['healthy','wounded','dead','prisoners'])throw new \RuntimeException('Ordre d’agrégation du batch cohortes incompatible.');
+        $rows=[];
+        foreach($batch['scenarios']as$scenario){$id=$scenario['id'];$result=$scenario['result'];[$attacking,$defending]=explode('-vs-',$id,2);
+            foreach(['attacker','defender']as$side){$prefix=$side==='attacker'?'attacker':'defender';$initialByType=$result[$prefix.'InitialByType'];$rawByType=$result[$prefix.'RawDeathsByType'];$projected=$result[$prefix.'ProjectedByType'];$type=$side==='attacker'?$attacking:$defending;$index=array_search($type,$batch['unitOrder'],true);if($index===false)throw new \RuntimeException('Type monotype absent du batch.');$initial=$initialByType[$index]*$iterations;$raw=$rawByType[$index];$p=$projected[$index];$wins=$result[$prefix.'Wins'];
+                $rows[]=['id'=>$id.'/'.$side,'scenarioId'=>$id,'attackerType'=>$attacking,'defenderType'=>$defending,'side'=>$side,'winRate'=>$wins/$iterations,'drawRate'=>$result['draws']/$iterations,'rawLossRatio'=>$initial?$raw/$initial:0.0,'appliedLossRatio'=>$initial?$p[2]/$initial:0.0,'woundedRatio'=>$initial?$p[1]/$initial:0.0,'captureRatio'=>$initial?$p[3]/$initial:0.0,'freeRatio'=>$initial?($p[0]+$p[1])/$initial:0.0,'iterations'=>$iterations];
             }
-            foreach($sums as $side=>$sum)$rows[]=['id'=>$scenario.'/'.$side,'scenarioId'=>$scenario,'attackerType'=>$attacking->value,'defenderType'=>$defending->value,'side'=>$side,'winRate'=>$sum['wins']/$iterations,'appliedLossRatio'=>$sum['initial']?($sum['losses']/$sum['initial']):0.0,'captureRatio'=>$sum['initial']?($sum['captured']/$sum['initial']):0.0,'freeRatio'=>$sum['initial']?($sum['free']/$sum['initial']):0.0,'iterations'=>$iterations];
         }
-        return ['schemaVersion'=>'waar-monotype-consequence-observations/0.1','profileFingerprint'=>$profile->semanticFingerprint(),'modelVersion'=>EngineProfile::MODEL_VERSION,'context'=>['weather'=>$weather,'baseSeed'=>$baseSeed,'iterations'=>$iterations,'budget'=>self::BUDGET,'consequences'=>['lossCompressionPercent'=>$profile->lossCompressionPercent,'capturePercent'=>$profile->capturePercent]],'rows'=>$rows];
+        $context=['weather'=>$weather,'baseSeed'=>$baseSeed,'iterations'=>$iterations,'budget'=>self::BUDGET,'objectiveMetric'=>'rawLossRatio','modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$request['ruleset']['version'],'runtime'=>$this->runtime->provenance(),'consequences'=>['lossCompressionPercent'=>$profile->lossCompressionPercent,'capturePercent'=>$profile->capturePercent]];
+        return ['schemaVersion'=>'waar-monotype-consequence-observations/0.2','profileFingerprint'=>$profile->semanticFingerprint(),'modelVersion'=>EngineProfile::MODEL_VERSION,'context'=>$context,'batch'=>['schemaVersion'=>$batch['schemaVersion'],'iterationRange'=>$batch['iterationRange'],'totalCombats'=>$batch['totalCombats']],'rows'=>$rows];
     }
 }

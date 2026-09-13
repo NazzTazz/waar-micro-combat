@@ -7,6 +7,6 @@ function responseIsCurrent(response,requestId,configurationSignature,currentSign
 function stale(resultSignature,currentSignature){return Boolean(resultSignature&&resultSignature!==currentSignature)}
 function createRevisionGate(){let revision=0;return {invalidate(){revision++},capture(signature){return {revision,signature}},accept(token,signature){return token.revision===revision&&token.signature===signature}}}
 function prefillUnits(profile,defaults){return {...structuredClone(profile),units:structuredClone(defaults.units)}}
-function plotRows(reference,candidate){return reference.rows.map(row=>({id:row.id,reference:{x:row.winRate,y:row.appliedLossRatio},candidate:candidate?.rows.find(other=>other.id===row.id)})).map(row=>({...row,candidate:row.candidate?{x:row.candidate.winRate,y:row.candidate.appliedLossRatio}:null}))}
+function plotRows(reference,candidate){return reference.rows.map(row=>({id:row.id,reference:{x:row.winRate,y:row.rawLossRatio},candidate:candidate?.rows.find(other=>other.id===row.id)})).map(row=>({...row,candidate:row.candidate?{x:row.candidate.winRate,y:row.candidate.rawLossRatio}:null}))}
 globalThis.WaarWorkshopModel={stable,cost,responseIsCurrent,stale,createRevisionGate,prefillUnits,plotRows};
 })();

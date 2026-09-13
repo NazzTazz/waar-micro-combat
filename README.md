@@ -125,6 +125,7 @@ deux sens, mesurer les 16 confrontations monotypes, dessiner 32 zones et lancer
 une recherche bornée à huit candidats :
 
 ```bash
+cargo build --locked --release --manifest-path engines/waar-cohort/rust/Cargo.toml
 php bin/run-workshop.php
 ```
 
@@ -133,6 +134,17 @@ Ouvrir ensuite `http://127.0.0.1:8080`. Le serveur ne publie que
 navigateur ; l’export JSON reste disponible si ce stockage ne l’est pas. Il
 s’agit d’un atelier local : aucun résultat n’est appliqué aux armées du jeu et
 aucun candidat n’est approuvé automatiquement.
+
+Le duel, les mesures et la recherche utilisent le même moteur de cohortes Rust
+via un travail JSONL par appel. L'absence ou l'incompatibilité du binaire est une
+erreur explicite : il n'existe aucun repli silencieux vers l'ancien moteur. Le
+runtime PHP de référence est réservé au diagnostic et se sélectionne
+explicitement avec `WAAR_COHORT_RUNTIME=php`.
+
+Un profil `waar-engine-profile/0.1` doit passer par l'action de migration de
+l'interface avant son import. La migration crée un profil `0.2`, conserve les
+choix encore représentables et marque les anciennes mesures comme obsolètes ;
+elle ne réinterprète jamais silencieusement leur physique.
 
 Les JSON de brouillon peuvent contenir des fiches absentes (`null`) : seules les
 unités présentes dans un duel sont requises pour le simuler, tandis que
