@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Game\Combat;
+
+/** Reconstruct a public (initially healthy) request using only a saved report. */
+final class CombatReplay
+{
+    /** @param array<string,mixed> $report @return array<string,mixed> */
+    public static function request(array $report): array
+    {
+        $result = $report['result'] ?? [];
+        if (($result['schemaVersion'] ?? null) !== 'waar-combat-result/2'
+            || !is_array($result['ruleset'] ?? null) || !is_array($result['initialArmies'] ?? null)
+            || !is_array($result['snapshot'] ?? null)) {
+            throw new \InvalidArgumentException('Report lacks the complete replay inputs.');
+        }
+        $snapshot = $result['snapshot'];
+        $armies = $result['initialArmies'];
+        $hash = hash('sha256', CanonicalJson::encode([
+            'ruleset' => $result['ruleset'], 'snapshot' => $snapshot, 'armies' => $armies,
+        ]));
+        if ($hash !== ($result['replayHash'] ?? null)) {
+            throw new \InvalidArgumentException('Replay inputs do not match the report hash.');
+        }
+        $request = [
+            'schemaVersion' => CombatEngine::REQUEST_SCHEMA,
+            'ruleset' => $result['ruleset'],
+            'seed' => $snapshot['seed'],
+            'traceLevel' => $snapshot['traceLevel'],
+        ];
+        foreach (['attacker', 'defender'] as $side) {
+            $request[$side] = ['units' => $armies[$side], 'modifiers' => $snapshot['prepared'][$side]['modifiers']];
+        }
+        if (isset($report['consequences'])) {
+            $settings = $report['consequences'];
+            if (($settings['policyVersion'] ?? null) !== ConsequencePolicy::VERSION) {
+                throw new \InvalidArgumentException('Unsupported replay consequence policy.');
+            }
+            $request['consequences'] = ['compressionPercent' => $settings['compressionPercent'], 'capturePercent' => $settings['capturePercent']];
+        }
+        return $request;
+    }
+}

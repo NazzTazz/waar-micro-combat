@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "waar-cohort-benchmark/1",
+  "date": "2026-09-13",
+  "command": "php -d ffi.enable=1 engines/waar-cohort/bin/benchmark.php",
+  "build": "cargo release",
+  "runtime": {
+    "php": "8.2.33 NTS x64",
+    "rustc": "1.93.0",
+    "os": "Windows"
+  },
+  "duel": {
+    "samples": 100,
+    "seconds": 0.4985719,
+    "combatsPerSecond": 200.5728762491428,
+    "note": "cent appels FFI distincts avec rapport sans matrices"
+  },
+  "monotypesRaw": {
+    "combats": 1600,
+    "seconds": 0.3858559,
+    "combatsPerSecond": 4146.625722193182
+  },
+  "monotypesProjected": {
+    "combats": 1600,
+    "seconds": 0.3348778,
+    "combatsPerSecond": 4777.862253036779,
+    "note": "variation de mesure possible ; la projection est calculée combat par combat"
+  },
+  "mixedFinalCohorts": {
+    "attacker": 13,
+    "defender": 14
+  },
+  "peakPhpMemoryBytes": 2097152,
+  "limits": [
+    "mesure locale unique, non statistique",
+    "charge différente du benchmark historique annoncé à environ 70000 combats par seconde"
+  ]
+}
