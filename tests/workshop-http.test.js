@@ -43,6 +43,15 @@ async function waitFor(url) {
     assert.equal(profileResponse.status, 200);
     assert.equal(profilePayload.data.profile.combat.lossCompressionPercent, 8);
     assert.equal(profilePayload.data.profile.schemaVersion, 'waar-engine-profile/0.2');
+    assert.equal(profilePayload.data.profile.id, 'test-2');
+    assert.deepEqual(Object.values(profilePayload.data.profile.units).map(unit=>[unit.cost,unit.attack,unit.structure,unit.baseAccuracy,unit.strikesPerAttack,unit.defendingEfficiency,unit.capturable]),[
+      [10,'9','25','0.11',1,'1',true],
+      [70,'12','120','0.6',1,'2',false],
+      [70,'70','50','0.35',5,'1',false],
+      [550,'350','250','0.8',15,'1',false],
+    ]);
+    assert.deepEqual(profilePayload.data.profile.relations,[]);
+    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:10});
 
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
     assert.equal(traversal.status, 404);

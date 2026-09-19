@@ -36,7 +36,7 @@ if(str_starts_with($path,'/api/')){
             }
         }
         $result=match([$path,$_SERVER['REQUEST_METHOD']??'GET']){
-            ['/api/default-profile','GET']=>['profile'=>EngineProfile::defaults()],
+            ['/api/default-profile','GET']=>['profile'=>json_decode(file_get_contents(dirname(__DIR__).'/resources/workshop-default-profile.json'),true,128,JSON_THROW_ON_ERROR)],
             ['/api/migrate-profile','POST']=>(new EngineProfileMigrator())->migrate(is_array($request['profile']??null)?$request['profile']:[]),
             ['/api/editor','POST']=>(new T27Editor())->render($request['profile']??[],$request['measurement']??[],$request['zones']??[]),
             ['/api/validate','POST']=>['errors'=>EngineProfile::validate($request['profile']??[],match($request['mode']??'complete'){'draft'=>[],'complete'=>null,default=>throw new InvalidArgumentException('Mode de validation inconnu.')})],
