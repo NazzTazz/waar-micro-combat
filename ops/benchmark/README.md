@@ -1,5 +1,24 @@
 # Comparer PHP et Rust, en local et sur le VPS
 
+## Débit sur 20 secondes par moteur
+
+```powershell
+php bin/benchmark-cohort.php --duration=20 --output=reports/benchmark-20s.json
+```
+
+Ce mode mesure chaque moteur pendant environ 20 secondes réelles, sans cible
+de nombre de combats ni extrapolation. Chaque lot contient exactement les
+16 monotypes et les 16 confrontations mixtes : le mélange reste 50/50 quel que
+soit le nombre de lots terminés. Par défaut une répétition, soit 32 combats par
+lot, limite le dépassement final. Le dernier lot est terminé, pas interrompu ;
+le débit divise le nombre réellement terminé par la durée réelle, y compris le
+pilote et la vérification des empreintes. Échauffement exclu. Environ 40 secondes
+pour PHP puis Rust, hors préparation. Ne pas combiner `--duration` avec
+`--combats` ou `--seconds`. Sur le VPS, passer également `--duration=20` au
+conteneur décrit plus bas.
+
+## Volume cible avec budget de temps
+
 Depuis la racine du dépôt, PHP 8.2+ 64 bits et moteur Rust release compilé :
 
 ```powershell
