@@ -1,0 +1,28 @@
+name: waar-engine-demo
+services:
+  engine:
+    image: ${DEMO_IMAGE:?Set DEMO_IMAGE to the reviewed build tag}
+    restart: unless-stopped
+    environment:
+      WAAR_DEMO_SERIALIZE: '1'
+    networks:
+      wai-edge:
+        aliases: [waar-engine-demo]
+    # No host port: all access goes through the authenticated Caddy virtual host.
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 64
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+      - /var/run/apache2:size=4m
+      - /var/lock/apache2:size=4m
+    logging:
+      driver: local
+      options:
+        max-size: 10m
+        max-file: '3'
+networks:
+  wai-edge:
+    external: true
