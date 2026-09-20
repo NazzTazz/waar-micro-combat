@@ -72,6 +72,7 @@ class Element {
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
   assert.equal(typeof element('#measure').onclick,'function');
+  assert.equal(element('#profile-modified').hidden,true,'new profile starts unmodified');
   const armyRow=element('#army-a').children[0];
   assert.match(armyRow.innerHTML,/max="100000"/);
   armyRow.children[2].value='25000';armyRow.children[2].oninput();
@@ -92,6 +93,7 @@ class Element {
   assert.equal(rounds['aria-label'],'Rounds');
   rounds.value='5';rounds.oninput();
   assert.equal(element('#rounds-out').textContent,5);
+  assert.equal(element('#profile-modified').hidden,false,'engine changes mark the profile modified');
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.maxRounds,5);
   await element('#measure').onclick();
   assert.equal(element('#t27-editor').srcdoc,'T27 fixture');
