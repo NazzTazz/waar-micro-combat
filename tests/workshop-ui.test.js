@@ -77,10 +77,15 @@ class Element {
   armyRow.children[2].value='25000';armyRow.children[2].oninput();
   assert.equal(Number(armyRow.children[1].value),25000);
   armyRow.children[2].value='100001';armyRow.children[2].oninput();
-  assert.equal(Number(armyRow.children[2].value),100000);
+  assert.equal(Number(armyRow.children[2].value),100001);
   const mixedRow=element('#army-a').children[1];
   mixedRow.children[2].value='20000';mixedRow.children[2].oninput();
-  assert.equal(Number(mixedRow.children[2].value),0,'total camp cap includes all unit types');
+  assert.equal(Number(mixedRow.children[2].value),20000,'numeric counts are independent of slider and camp totals');
+  const beforeB=JSON.parse(storage.get('waar-workshop-draft-v1')).armies.B;
+  element('#composition-a').value='sl';element('#budget-a').value='250000';element('#apply-army-a').onclick();
+  const filled=JSON.parse(storage.get('waar-workshop-draft-v1')).armies;
+  assert.deepEqual(filled.A,{soldier:2500,spearman:625,archer:0,knight:0});
+  assert.deepEqual(filled.B,beforeB,'shortcut only replaces the chosen camp');
   element('#duel-weather').value='rain';element('#duel-weather').onchange();
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).duelWeather,'rain');
   const rounds=element('[data-combat=maxRounds]');
