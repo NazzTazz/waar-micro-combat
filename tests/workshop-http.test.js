@@ -64,7 +64,7 @@ async function waitFor(url) {
     assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
     assert.deepEqual(summary.rows.map(row=>[row.attacker,row.defender]),[['A','B'],['B','A']]);
     for(const row of summary.rows){assert.equal(row.camps.A.winRate+row.camps.B.winRate+row.drawRate,1);for(const camp of ['A','B'])assert.ok(row.camps[camp].valueLossRate>=0&&row.camps[camp].valueLossRate<=1)}
-    for(const row of summary.rows)for(const camp of ['A','B']){const c=row.camps[camp];assert.deepEqual(Object.keys(c.losses),['soldier']);assert.ok(c.losses.soldier.dead>=0&&c.losses.soldier.wounded>=0&&c.prisoners>=0);assert.ok(Math.abs((c.losses.soldier.dead+c.losses.soldier.wounded)/100-c.valueLossRate)<1e-9)}
+    for(const row of summary.rows)for(const camp of ['A','B']){const c=row.camps[camp];assert.deepEqual(Object.keys(c.losses),['soldier','spearman','archer','knight']);for(const type of ['spearman','archer','knight'])assert.deepEqual(c.losses[type],{dead:0,wounded:0});assert.ok(c.losses.soldier.dead>=0&&c.losses.soldier.wounded>=0&&c.prisoners>=0);assert.ok(Math.abs((c.losses.soldier.dead+c.losses.soldier.wounded)/100-c.valueLossRate)<1e-9)}
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
     assert.equal(traversal.status, 404);
 
