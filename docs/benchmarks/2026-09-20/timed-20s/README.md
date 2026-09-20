@@ -21,6 +21,11 @@ aucune extrapolation à 100 000 combats. On termine le dernier lot commencé
 avant 20 secondes ; le débit utilise la durée effective, dépassement compris.
 Un échauffement de 32 combats par moteur est exclu de la mesure.
 
+Ces fichiers ont été produits au commit `a4b0cc3` et conservent ses empreintes
+de provenance. La PR #9 a ensuite retiré l'identifiant et le libellé décoratifs
+de l'empreinte sémantique du profil ; elle ne change pas les valeurs de gameplay
+ni les résultats mesurés ici.
+
 Résultats entiers identiques sur tous les lots communs : 768 combats sur le PC,
 1 376 sur le VPS, plus les échauffements. Les autres combats exécutés seulement
 en Rust ne sont pas vérifiés en PHP. Les seeds progressent à chaque lot.

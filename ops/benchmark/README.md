@@ -1,5 +1,12 @@
 # Comparer PHP et Rust, en local et sur le VPS
 
+Les rapports versionnés dans `docs/benchmarks/2026-09-20/` ont été produits au
+commit `a4b0cc3`. Ils conservent donc les empreintes de provenance calculées par
+ce commit. Depuis la PR #9, l'identifiant et le libellé décoratifs sont exclus de
+l'empreinte sémantique du profil : une nouvelle exécution avec les mêmes valeurs
+de gameplay produit une autre empreinte de profil et, par propagation, une autre
+empreinte d'entrée, sans modifier les combats mesurés dans ces rapports.
+
 ## Débit sur 20 secondes par moteur
 
 ```powershell

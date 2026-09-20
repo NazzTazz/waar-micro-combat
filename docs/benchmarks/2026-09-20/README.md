@@ -7,6 +7,10 @@ php bin/benchmark-cohort.php --combats=100000 --seconds=30 --batch=5
 ```
 
 Résultats bruts : [PC Windows](local.json), [VPS Linux](vps.json).
+Ces fichiers ont été produits au commit `a4b0cc3` et conservent ses empreintes
+de provenance. La PR #9 a ensuite retiré l'identifiant et le libellé décoratifs
+de l'empreinte sémantique du profil ; elle ne change pas les valeurs de gameplay
+ni les résultats mesurés ici.
 Même empreinte de profil Test 2 et mêmes empreintes d'entrées sur les deux
 machines. Budget 400 400 par camp, 16 monotypes et 16 confrontations de quatre
 compositions mixtes, météo neutre, conséquences comprises. Lots de 80 combats.
