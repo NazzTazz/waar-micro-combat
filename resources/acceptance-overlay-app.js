@@ -57,6 +57,7 @@
   let zonesDocument=classified.document;
   let staleZoneIds=classified.staleZoneIds;
   let lastExported=model.serialize(zonesDocument);
+  let workshopComparison=false;
   let editMode=false, pendingRender=started, dragChanged=false;
   const editorState=model.createEditorInteractionState();
   const undoStack=[], redoStack=[];
@@ -101,7 +102,7 @@
     const point=params.data||{};if(!point.row)return '';
     const row=point.row,metric=axis.value;
     const y=point.kind==='legacy'?row.legacy.coordinates.y[metric]:point.value[1];
-    const pointEndpoint=point.kind==='base'?'Base témoin':point.kind==='tip'?'Pointe candidate':point.kind==='equal'?'Témoin = candidat':'Référence Legacy';
+    const pointEndpoint=ui.workshop?(point.kind==='base'?'Profil mesuré':point.kind==='tip'?'Candidat comparé':workshopComparison?'Mesure et candidat identiques':'Profil mesuré'):point.kind==='base'?'Base témoin':point.kind==='tip'?'Pointe candidate':point.kind==='equal'?'Témoin = candidat':'Référence Legacy';
     const zone=point.kind==='base'||point.kind==='tip'?findZone(row,point.kind):null;
     const status=zone?`<br>Contrainte : ${esc(approvalLabel(zone))}, ${esc(stateLabel(zoneState(zone)))}`:'';
     return `<strong>${esc(row.scenarioLabel)}</strong><br>${esc(role(row))} · ${esc(pointEndpoint)}<br>Victoires : ${esc(pct(point.value[0]))}<br>${esc(axisLabels[metric])} : ${esc(pct(y))}<br>Unités : ${esc(Object.entries(row.army).filter(([,n])=>n>0).map(([u,n])=>`${u} ${n}`).join(', '))}<br>n = ${esc(point.kind==='legacy'?row.legacy.repetitions:row.micro.baseline.iterations)}${point.kind==='legacy'?`<br>${esc(data.legacyReference.id)}`:''}${status}`;
@@ -150,7 +151,7 @@
     if(index>=0)chart.dispatchAction({type:highlight?'highlight':'downplay',seriesId:'acceptance-zones',dataIndex:index});
   }
   function pairLinkSeries(rows,metric){
-    if(!ui.pairView||!zonesLayer.checked)return [];
+    if(ui.workshop||!ui.pairView||!zonesLayer.checked)return [];
     const pair=rows.filter(row=>row.scenarioId===scenario.value);
     const attacker=pair.find(row=>row.side==='attacker'),defender=pair.find(row=>row.side==='defender');
     const attackZone=findZone(attacker,'tip'),defenseZone=findZone(defender,'tip');
@@ -197,7 +198,7 @@
     renderText(rows);requestAnimationFrame(renderHandles);
   }
 
-  function syncEditorValues(zone){for(const [input,value] of [[centerX,zone?.center.x],[centerY,zone?.center.y],[radiusX,zone?.radii.x],[radiusY,zone?.radii.y]])input.value=value==null?'':Number(value.toFixed(6));}
+  function syncEditorValues(zone){for(const [input,value] of [[centerX,zone?.center.x],[centerY,zone?.center.y],[radiusX,zone?.radii.x],[radiusY,zone?.radii.y]])input.value=value==null?'':Number((value*(ui.workshop?100:1)).toFixed(6));}
   function renderZoneStatus(row,zone){
     const status=$('#zone-status');status.replaceChildren();
     if(!zone){status.textContent=ui.canonicalMonotypeObjectives&&axis.value==='structure'?'Structure : diagnostic des dégâts partiels, sans objectif supplémentaire. Retrouvez votre zone dans les vues survivants ou valeur économique.':ui.editableEndpoints&&!ui.editableEndpoints.includes(endpoint.value)?'Cette extrémité sert de témoin et ne porte pas de contrainte.':'Cette zone a été supprimée.';return;}
@@ -229,15 +230,16 @@
     $('#selection-title').textContent=row.scenarioLabel;$('#selection-role').textContent=`${role(row)} · ${armyLabel(row)} · budget ${armyBudget(row).toLocaleString('fr-FR')} · ${row.micro.baseline.iterations} simulations micro`;
     const unavailable=!referenceAvailable||axis.value==='structure';$('#legacy-unavailable').style.display=unavailable?'block':'none';
     const cards=$('#metric-cards');cards.replaceChildren();
-    [['Base témoin',row.micro.vector.x.from,row.micro.vector.y[axis.value].from,'base'],['Pointe candidate',row.micro.vector.x.to,row.micro.vector.y[axis.value].to,'tip'],['Référence Legacy',row.legacy.coordinates.x,row.legacy.coordinates.y[axis.value],'legacy']].forEach(([label,x,y,which])=>{if(which==='legacy'&&!referenceAvailable)return;const card=document.createElement('div');card.className='metric-card';const strong=document.createElement('strong');strong.textContent=label;card.append(strong);const values=document.createElement('div');values.className='values';values.textContent=`X ${pct(x)} · Y ${pct(y)}`;card.append(values);if(which!=='legacy'){const zone=findZone(row,which);if(zone){const current=zoneState(zone),status=document.createElement('span');status.className=`state ${current}`;status.textContent=`${approvalLabel(zone)} · ${stateLabel(current)} · ±${pct(zone.radii.x,0)} / ±${pct(zone.radii.y,0)}`;card.append(status);}}cards.append(card);});
+    [['Base témoin',row.micro.vector.x.from,row.micro.vector.y[axis.value].from,'base'],['Pointe candidate',row.micro.vector.x.to,row.micro.vector.y[axis.value].to,'tip'],['Référence Legacy',row.legacy.coordinates.x,row.legacy.coordinates.y[axis.value],'legacy']].forEach(([label,x,y,which])=>{if(which==='legacy'&&!referenceAvailable||ui.workshop&&which==='tip'&&!workshopComparison)return;if(ui.workshop)label=which==='base'?'Profil mesuré':'Candidat comparé';const card=document.createElement('div');card.className='metric-card';const strong=document.createElement('strong');strong.textContent=label;card.append(strong);const values=document.createElement('div');values.className='values';values.textContent=`X ${pct(x)} · Y ${pct(y)}`;card.append(values);if(which!=='legacy'){const zone=findZone(row,which);if(zone){const current=zoneState(zone),status=document.createElement('span');status.className=`state ${current}`;status.textContent=`${approvalLabel(zone)} · ${stateLabel(current)} · ±${pct(zone.radii.x,0)} / ±${pct(zone.radii.y,0)}`;card.append(status);}}cards.append(card);});
     const list=$('#scenario-list');list.replaceChildren();scenarioRows.forEach(item=>{const button=document.createElement('button');button.type='button';button.textContent=item.scenarioLabel;button.title=item.scenarioLabel;button.setAttribute('aria-current',item.scenarioId===scenario.value?'true':'false');button.addEventListener('click',()=>{scenario.value=item.scenarioId;renderChart('scenario-list');});list.append(button);});
+    if(ui.workshop)renderMonotypes();
     renderEditor(row);renderGlobalSummary();renderTable(rows);renderProvenance();updateDirty();updateHistoryButtons();
   }
   function renderGlobalSummary(){if(ui.workshop){$('#summary').textContent='Les objectifs sont évalués côté PHP lors de la recherche.';return;}const totals=model.summary(zonesDocument,data.rows,staleZoneIds,context.initialZones.length);$('#summary').textContent=`Contraintes confirmées : ${totals.satisfied} / ${totals.confirmed} satisfaites · ${totals.drafts} brouillons · ${totals.disabled} désactivées · ${totals.stale} incompatibles · ${totals.notApplicable} non applicables · ${totals.missing} absentes. Estimations courantes, sans garantie statistique.`;}
   function renderTable(rows){const host=$('#table');host.replaceChildren();const table=document.createElement('table'),head=document.createElement('thead'),hr=document.createElement('tr');const headers=referenceAvailable?['Scénario','Camp','Armée','Base X/Y','Pointe X/Y','Legacy X/Y','Contrainte base','Contrainte pointe']:['Scénario','Camp','Armée','Base X/Y','Pointe X/Y','Budget exact','Base figée','Objectif pointe'];headers.forEach(label=>{const th=document.createElement('th');th.textContent=label;hr.append(th);});head.append(hr);table.append(head);const body=document.createElement('tbody');rows.forEach(row=>{const tr=document.createElement('tr'),base=findZone(row,'base'),tip=findZone(row,'tip'),ly=row.legacy.coordinates.y[axis.value];const zoneText=zone=>zone?`${approvalLabel(zone)} · ${stateLabel(zoneState(zone))}`:'Absente';const reference=referenceAvailable?(ly==null?'Indisponible':`${pct(row.legacy.coordinates.x)} / ${pct(ly)}`):armyBudget(row).toLocaleString('fr-FR');const values=[row.scenarioLabel,role(row),armyLabel(row),`${pct(row.micro.vector.x.from)} / ${pct(row.micro.vector.y[axis.value].from)}`,`${pct(row.micro.vector.x.to)} / ${pct(row.micro.vector.y[axis.value].to)}`,reference,referenceAvailable?zoneText(base):'Sans contrainte',zoneText(tip)];values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});body.append(tr);});table.append(body);host.append(table);}
   function renderProvenance(){const host=$('#provenance');host.replaceChildren();const title=document.createElement('strong');title.textContent='Provenance';const reference=referenceAvailable?`Référence ${data.legacyReference.id} · ruleset ${data.legacyReference.rulesetVersion}`:`Point de départ ${data.objectiveReference.label} · les centres initiaux ne sont pas des objectifs confirmés`;host.append(title,document.createElement('br'),document.createTextNode(reference),document.createElement('br'),document.createTextNode(`Sources ${data.legacyReference.sourceFingerprint}`),document.createElement('br'),document.createTextNode(`Corpus ${data.legacyReference.corpusFingerprint}`),document.createElement('br'),document.createTextNode(`Mesure ${data.comparisonProfile.id} / ${data.comparisonProfile.valuationId} · 80/110/130/350.`));}
 
-  function applyNumericInput(event){const row=selectedRow(),zone=findZone(row);if(!zone)return;const input=event.target,value=Number(input.value);if(input.value.trim()===''||!Number.isFinite(value)){importStatus.textContent='Valeur numérique invalide.';syncEditorValues(zone);return;}mutate('Saisie numérique',()=>{const previousX=zone.center.x,previousRadius=zone.radii.x;if(input===centerX)zone.center.x=clamp(value,0,1);else if(input===centerY)zone.center.y=clamp(value,0,1);else if(input===radiusX){zone.radii.x=clamp(value,model.MIN_RADIUS,model.MAX_RADIUS);if(editorState.isCircle())zone.radii.y=zone.radii.x;}else if(input===radiusY){zone.radii.y=clamp(value,model.MIN_RADIUS,model.MAX_RADIUS);if(editorState.isCircle())zone.radii.x=zone.radii.y;}markGeometryChanged(zone);linkHorizontalChange(zone,previousX,previousRadius);});}
+  function applyNumericInput(event){const row=selectedRow(),zone=findZone(row);if(!zone)return;const input=event.target,value=Number(input.value)/(ui.workshop?100:1);if(input.value.trim()===''||!Number.isFinite(value)){importStatus.textContent='Valeur numérique invalide.';syncEditorValues(zone);return;}mutate('Saisie numérique',()=>{const previousX=zone.center.x,previousRadius=zone.radii.x;if(input===centerX)zone.center.x=clamp(value,0,1);else if(input===centerY)zone.center.y=clamp(value,0,1);else if(input===radiusX){zone.radii.x=clamp(value,model.MIN_RADIUS,model.MAX_RADIUS);if(editorState.isCircle())zone.radii.y=zone.radii.x;}else if(input===radiusY){zone.radii.y=clamp(value,model.MIN_RADIUS,model.MAX_RADIUS);if(editorState.isCircle())zone.radii.x=zone.radii.y;}markGeometryChanged(zone);linkHorizontalChange(zone,previousX,previousRadius);});}
   function reanchor(){mutate('Réancrage de provenance',()=>{zonesDocument.experimentId=context.experimentId;zonesDocument.corpusFingerprint=context.corpusFingerprint;zonesDocument.comparisonProfileId=context.comparisonProfileId;zonesDocument.valuationId=context.valuationId;zonesDocument.zones.forEach(zone=>{const expected=expectedById.get(zone.id);zone.source.referenceId=context.referenceId;zone.source.referencePointId=expected.source.referencePointId;zone.source.originalCenter=model.clone(expected.source.originalCenter);zone.source.modifiedManually=true;});});importStatus.textContent='Provenance réancrée explicitement sur l’expérience courante.';}
   function exportZones(){const contents=currentSerialized(),blob=new Blob([contents],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a'),safeId=zonesDocument.experimentId.replace(/[^a-z0-9._-]+/gi,'-').slice(0,100)||'waar';link.href=url;link.download=`${safeId}-acceptance-zones.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),0);lastExported=contents;diagnostics.exports++;updateDirty();importStatus.textContent='Cahier des charges exporté.';}
   async function importZones(file){
@@ -268,7 +270,7 @@
   undoButton.addEventListener('click',undo);redoButton.addEventListener('click',redo);reanchorButton.addEventListener('click',reanchor);
   linkPairButton.addEventListener('click',()=>mutate('Liaison horizontale de la paire',()=>{const zone=findZone(selectedRow());if(zone)model.linkWinRate(zonesDocument,zone.id);}));
   exportButton.addEventListener('click',exportZones);importInput.addEventListener('change',()=>importZones(importInput.files?.[0]));
-  chart.on('click',params=>{if(params.data?.zone){if(params.seriesId==='zone-centers')selectCenterObjective(params.data.zone);else selectObjective(params.data.zone);return;}if(params.data?.scenarioId){scenario.value=params.data.scenarioId;if(params.data.row)zoneSide.value=params.data.row.side;if(params.data.kind==='base'||params.data.kind==='tip')endpoint.value=params.data.kind;renderChart('chart-selection',false);}});
+  chart.on('click',params=>{if(params.data?.zone){if(params.seriesId==='zone-centers')selectCenterObjective(params.data.zone);else selectObjective(params.data.zone);return;}if(params.data?.scenarioId){scenario.value=params.data.scenarioId;if(params.data.row)zoneSide.value=params.data.row.side;if((params.data.kind==='base'||params.data.kind==='tip')&&(!ui.editableEndpoints||ui.editableEndpoints.includes(params.data.kind)))endpoint.value=params.data.kind;renderChart('chart-selection',false);}});
   // The custom ellipse already receives its native emphasis on hover. Asking
   // ECharts to highlight that same custom item recursively makes its tooltip
   // controller look up a stale item model while the drag handles are redrawn.
@@ -280,14 +282,39 @@
   scenario.addEventListener('change',()=>renderChart('scenario'));reducedMotion.addEventListener?.('change',()=>renderChart('reduced-motion'));
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&editorState.hasActiveDrag()){event.preventDefault();cancelDrag();}else if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='z'){event.preventDefault();event.shiftKey?redo():undo();}else if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='y'){event.preventDefault();redo();}});
   const resizeObserver=new ResizeObserver(()=>{chart.resize({animation:{duration:0}});requestAnimationFrame(renderHandles);});resizeObserver.observe(chartNode);
+  function setupMonotypes(){
+    const overview=document.createElement('section');overview.className='panel monotype-overview';
+    overview.innerHTML='<h2>Choisir une confrontation</h2><p>Chaque case donne le taux de victoire du camp attaquant mesuré sur le profil de départ. Les lignes attaquent les colonnes, à budget de construction égal (effectifs arrondis).</p><div class="table-scroll" id="monotype-grid"></div><div id="monotype-reading" aria-live="polite"></div><p class="chart-guide"><strong>Lire le graphique :</strong> vers la droite, le camp gagne plus souvent ; vers le haut, il subit davantage de blessés et morts avant compression. Les points pleins sont des résultats mesurés. Les ellipses sont vos objectifs, pas une incertitude statistique. Une flèche apparaît uniquement pour comparer un candidat au profil de départ.</p>';
+    $('.workspace').before(overview);
+    new ResizeObserver(entries=>parent.postMessage({type:'waar-workshop-height',height:Math.ceil(entries[0].contentRect.height)+32},parent.location.origin)).observe($('main'));
+    $('#chart').setAttribute('aria-label','Taux de victoire et pertes des deux camps ; ellipses des objectifs de gameplay');
+    const legend=$('.semantic-legend');legend.innerHTML='<span>● / ◆ Résultats mesurés</span><span>Contour vide : départ d’une comparaison</span><span>Ellipse : objectif souhaité</span><span id="color-legend" hidden></span>';
+    $('#pair-link-label').parentElement.hidden=true;
+    endpoint.closest('label').hidden=true;
+    const names=['Victoires visées (%)','Blessés + morts visés (%)','Tolérance victoires (± points)','Tolérance pertes (± points)'];
+    [centerX,centerY,radiusX,radiusY].forEach((input,index)=>{input.parentElement.firstChild.textContent=names[index];input.min=index<2?'0':'0.5';input.max='100';input.step='0.1';});
+  }
+  function renderMonotypes(){
+    const grid=$('#monotype-grid');if(!grid)return;
+    if(!grid.children.length){
+      const order=data.designSurface.unitOrder;
+      grid.innerHTML='<table><caption>Victoires de l’attaquant · profil mesuré</caption><thead><tr><th scope="col">Attaque ↓ / Défense →</th>'+order.map(type=>'<th scope="col">'+esc(unitLabels[type])+'</th>').join('')+'</tr></thead><tbody>'+order.map(acting=>'<tr><th scope="row">'+esc(unitLabels[acting])+'</th>'+order.map(target=>{const row=data.rows.find(item=>item.scenarioId===acting+'-vs-'+target&&item.side==='attacker');return '<td>'+(row?'<button type="button" data-match="'+esc(row.scenarioId)+'" aria-label="'+esc(unitLabels[acting]+' attaquent '+unitLabels[target]+', '+pct(row.micro.vector.x.from)+' de victoires')+'">'+pct(row.micro.vector.x.from,0)+'</button>':'—')+'</td>';}).join('')+'</tr>').join('')+'</tbody></table>';
+      grid.querySelectorAll('[data-match]').forEach(button=>button.addEventListener('click',()=>{scenario.value=button.dataset.match;pairView.checked=true;side.value='both';zoneSide.value='attacker';renderChart('monotype-grid',false);}));
+    }
+    grid.querySelectorAll('[data-match]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.match===scenario.value)));
+    const pair=data.rows.filter(row=>row.scenarioId===scenario.value);
+    $('#monotype-reading').innerHTML=pair.map(row=>'<article class="reading-'+row.side+'"><strong>'+esc(role(row)+' : '+armyLabel(row))+'</strong><span>Profil mesuré : '+pct(row.micro.vector.x.from)+' de victoires · '+pct(row.micro.vector.y[axis.value].from)+' de blessés + morts</span>'+(workshopComparison?'<span>Candidat : '+pct(row.micro.vector.x.to)+' de victoires · '+pct(row.micro.vector.y[axis.value].to)+' de blessés + morts</span>':'')+'</article>').join('');
+  }
   function notifyWorkshop(){
     if(ui.workshop)parent.postMessage({type:'waar-t27-zones',fingerprint:context.corpusFingerprint,document:zonesDocument},parent.location.origin);
   }
   if(ui.workshop){
     editMode=true;
     document.body.classList.add('workshop-editor');
+    setupMonotypes();
     window.addEventListener('message',event=>{
       if(event.source!==parent||event.origin!==parent.location.origin||event.data?.type!=='waar-t27-comparison')return;
+      workshopComparison=Array.isArray(event.data.rows);
       for(const row of data.rows){
         const candidate=event.data.rows?.find(item=>item.scenarioId===row.scenarioId&&item.side===row.side);
         row.micro.vector.x.to=candidate?.winRate??row.micro.vector.x.from;

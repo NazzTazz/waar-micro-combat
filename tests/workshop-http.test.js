@@ -3,6 +3,10 @@
 const assert = require('node:assert/strict');
 const net = require('node:net');
 const {spawn} = require('node:child_process');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const {once} = require('node:events');
 
 function freePort() {
   return new Promise((resolve, reject) => {
@@ -29,7 +33,9 @@ async function waitFor(url) {
 (async () => {
   const port = await freePort();
   const origin = `http://127.0.0.1:${port}`;
-  const server = spawn('php', ['-S', `127.0.0.1:${port}`, '-t', 'public/workshop', 'bin/workshop-router.php'], {cwd: require('node:path').join(__dirname, '..'), stdio: 'ignore'});
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'waar-demo-http-'));
+  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', TMP:temporary, TEMP:temporary, TMPDIR:temporary};
+  const server = spawn('php', ['-S', `127.0.0.1:${port}`, '-t', 'public/workshop', 'bin/workshop-router.php'], {cwd: path.join(__dirname, '..'), env, stdio: 'ignore'});
   try {
     await waitFor(origin + '/');
     const profileResponse = await fetch(origin + '/api/default-profile');
@@ -37,6 +43,15 @@ async function waitFor(url) {
     assert.equal(profileResponse.status, 200);
     assert.equal(profilePayload.data.profile.combat.lossCompressionPercent, 8);
     assert.equal(profilePayload.data.profile.schemaVersion, 'waar-engine-profile/0.2');
+    assert.equal(profilePayload.data.profile.id, 'test-2');
+    assert.deepEqual(Object.values(profilePayload.data.profile.units).map(unit=>[unit.cost,unit.attack,unit.structure,unit.baseAccuracy,unit.strikesPerAttack,unit.defendingEfficiency,unit.capturable]),[
+      [10,'9','25','0.11',1,'1',true],
+      [70,'12','120','0.6',1,'2',false],
+      [70,'70','50','0.35',5,'1',false],
+      [550,'350','250','0.8',15,'1',false],
+    ]);
+    assert.deepEqual(profilePayload.data.profile.relations,[]);
+    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:10});
 
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
     assert.equal(traversal.status, 404);
@@ -58,6 +73,15 @@ async function waitFor(url) {
     draft.units.soldier.attack = 'invalid';
     assert.equal((await validate('draft')).errors[0].code, 'invalid_decimal');
     const profile=profilePayload.data.profile;
+    const locker=spawn('php',['-r',"$f=fopen(sys_get_temp_dir().'/waar-demo-compute.lock','c');flock($f,LOCK_EX);echo 'ready';fflush(STDOUT);sleep(30);"],{env});
+    try {
+      await once(locker.stdout,'data');
+      const busy=await fetch(origin+'/api/measure',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile,iterations:1})});
+      assert.equal(busy.status,429);
+      assert.equal(busy.headers.get('retry-after'),'10');
+      assert.match((await busy.json()).errors[0].message,/déjà en cours/);
+      assert.equal((await fetch(origin+'/api/default-profile')).status,200);
+    } finally { const exited=once(locker,'exit');locker.kill();await exited; }
     const post=async(path,body)=>{const response=await fetch(origin+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const payload=await response.json();assert.equal(response.status,200,JSON.stringify(payload));return payload.data};
     const duel=await post('duel',{requestId:'http',profile,armies:{A:{soldier:100},B:{archer:50}},weather:{A:'neutral',B:'wind'},seed:42});
     assert.equal(duel.modelVersion,'waar-cohort-v2');assert.equal(duel.runtime.kind,'rust');assert.equal(duel.directions.length,2);assert.equal(duel.directions[0].result.schemaVersion,'waar-combat-result/2');
@@ -70,7 +94,8 @@ async function waitFor(url) {
     const migrated=await post('migrate-profile',{profile:legacy});assert.equal(migrated.migration.performed,true);assert.equal(migrated.migration.measurementsObsolete,true);assert.equal(migrated.profile.units.archer.baseAccuracy,'0.15');
     console.log('workshop-http: ok (native duel, one-call batch, evolutionary optimizer, explicit migration)');
   } finally {
-    server.kill();
+    const exited=once(server,'exit');server.kill();await exited;
+    fs.rmSync(temporary,{recursive:true,force:true});
   }
 })().catch(error => {
   console.error(error);

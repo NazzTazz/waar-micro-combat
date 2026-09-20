@@ -22,9 +22,21 @@ if(str_starts_with($path,'/api/')){
             if($origin!==''&&!in_array($origin,['http://'.$host,'https://'.$host],true))throw new RuntimeException('Origine refusée.',403);
             if((int)($_SERVER['CONTENT_LENGTH']??0)>2_000_000)throw new RuntimeException('Requête trop volumineuse.',413);
         }
-        $raw=file_get_contents('php://input');$request=($raw===false||trim($raw)==='')?[]:json_decode($raw,true,128,JSON_THROW_ON_ERROR);if(!is_array($request)||($request!==[]&&array_is_list($request)))throw new InvalidArgumentException('Objet JSON attendu.');
+        $raw=file_get_contents('php://input',false,null,0,2_000_001);
+        if($raw!==false&&strlen($raw)>2_000_000)throw new RuntimeException('Requête trop volumineuse.',413);
+        $request=($raw===false||trim($raw)==='')?[]:json_decode($raw,true,128,JSON_THROW_ON_ERROR);if(!is_array($request)||($request!==[]&&array_is_list($request)))throw new InvalidArgumentException('Objet JSON attendu.');
+        // A private shared demo has a single compute slot; never queue costly jobs.
+        // The OS releases the lock even if PHP exits unexpectedly.
+        if(getenv('WAAR_DEMO_SERIALIZE')==='1'&&in_array($path,['/api/duel','/api/measure','/api/search','/api/optimize'],true)){
+            $computeLock=fopen(sys_get_temp_dir().'/waar-demo-compute.lock','c');
+            if($computeLock===false)throw new RuntimeException('Calcul temporairement indisponible.',503);
+            if(!flock($computeLock,LOCK_EX|LOCK_NB)){
+                header('Retry-After: 10');
+                throw new RuntimeException('Un calcul est déjà en cours dans la démonstration. Réessayez après sa fin.',429);
+            }
+        }
         $result=match([$path,$_SERVER['REQUEST_METHOD']??'GET']){
-            ['/api/default-profile','GET']=>['profile'=>EngineProfile::defaults()],
+            ['/api/default-profile','GET']=>['profile'=>json_decode(file_get_contents(dirname(__DIR__).'/resources/workshop-default-profile.json'),true,128,JSON_THROW_ON_ERROR)],
             ['/api/migrate-profile','POST']=>(new EngineProfileMigrator())->migrate(is_array($request['profile']??null)?$request['profile']:[]),
             ['/api/editor','POST']=>(new T27Editor())->render($request['profile']??[],$request['measurement']??[],$request['zones']??[]),
             ['/api/validate','POST']=>['errors'=>EngineProfile::validate($request['profile']??[],match($request['mode']??'complete'){'draft'=>[],'complete'=>null,default=>throw new InvalidArgumentException('Mode de validation inconnu.')})],
