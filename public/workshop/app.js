@@ -126,7 +126,7 @@ function renderSearch(result){
   drawZones();
 }
 function selectView(id){
-  if(!['units','relations','combat','trial','expert'].includes(id))id='units';
+  if(!['units','relations','combat','weather','trial','expert'].includes(id))id='units';
   window.scrollTo?.({top:0,behavior:'instant'});
   $$('[data-view]').forEach(section=>section.hidden=section.id!==id);
   $$('.journey button').forEach(button=>{if(button.dataset.step===id)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
