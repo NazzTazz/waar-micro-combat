@@ -5,7 +5,7 @@
 <header class="app-header">
   <a class="brand" href="#units"><span class="brand-mark">W</span> WAAR <span class="brand-sub">Soufflerie</span></a>
   <nav class="journey" aria-label="Configuration"><button data-step="units" aria-current="page">Unités</button><button data-step="relations">Contres</button><button data-step="weather">Météo</button><button data-step="combat">Combat</button><button data-step="trial">Armées de test</button><button data-step="expert" hidden>Zones</button></nav>
-  <div class="header-actions"><button id="open-duel" class="primary">Tester ↗</button><details id="ready"><summary>Profil</summary><div class="profile-menu"><label>Nom<input id="profile-label"></label><label>Identifiant<input id="profile-id"></label><span id="profile-version"></span><button id="download-profile">Exporter le profil</button><label class="file">Importer un profil<input id="import-profile" type="file" accept="application/json"></label><button id="reset-profile" class="danger">Repartir de Test 2</button></div></details></div>
+  <div class="header-actions"><details id="ready"><summary>Profil</summary><div class="profile-menu"><button id="save-profile" class="primary">Sauvegarder ce profil</button><div id="saved-profiles" class="saved-profiles"></div><p id="profile-menu-status" role="status"></p><button id="download-profile" class="profile-export">Exporter le profil en JSON</button></div></details></div>
 </header>
 <main>
 <section id="live-duel" class="panel live-duel" aria-label="Synthèse du combat test"><span id="live-duel-status" role="status">Calcul à venir…</span><div id="live-duel-results" class="live-duel-results"></div></section>
@@ -48,6 +48,7 @@
   <div id="search-archive" class="panel archive" hidden><span>Dernière recherche</span><button id="export-search">Exporter</button><button id="restore-reference">Reprendre le profil de référence</button></div>
 </section>
 </main>
+<dialog id="save-profile-dialog" aria-labelledby="save-profile-title"><form id="save-profile-form"><div class="dialog-head"><h2 id="save-profile-title">Sauvegarder ce profil</h2><button id="cancel-profile-x" type="button" aria-label="Fermer">✕</button></div><label for="saved-profile-name">Nom du profil</label><input id="saved-profile-name" name="name" required maxlength="100" autocomplete="off" placeholder="NomTesteur-Proposition-1" aria-describedby="profile-name-help"><p id="profile-name-help" class="hint">Pour retrouver facilement les propositions, utilisez de préférence : <strong>NomTesteur-Proposition-1</strong>.</p><p id="save-profile-error" role="alert"></p><div class="save-profile-actions"><button id="cancel-profile" type="button">Annuler</button><button id="confirm-save-profile" type="submit" class="primary">Sauvegarder</button></div></form></dialog>
 <dialog id="duel-dialog"><form method="dialog" class="dialog-head"><h2>Test</h2><button aria-label="Fermer">✕</button></form><div id="modal-test-host"></div></dialog>
 <script src="/model.js"></script><script src="/app.js"></script><script src="/guide.js"></script>
 </body></html>

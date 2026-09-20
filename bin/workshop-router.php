@@ -36,6 +36,9 @@ if(str_starts_with($path,'/api/')){
             }
         }
         $result=match([$path,$_SERVER['REQUEST_METHOD']??'GET']){
+            ['/api/profiles','GET']=>(new \Waar\MicroCombat\Workshop\SharedProfiles())->listing(),
+            ['/api/save-profile','POST']=>(new \Waar\MicroCombat\Workshop\SharedProfiles())->save(is_string($request['name']??null)?$request['name']:'',is_array($request['profile']??null)?$request['profile']:[]),
+            ['/api/load-profile','POST']=>(new \Waar\MicroCombat\Workshop\SharedProfiles())->load(is_string($request['id']??null)?$request['id']:''),
             ['/api/default-profile','GET']=>['profile'=>json_decode(file_get_contents(dirname(__DIR__).'/resources/workshop-default-profile.json'),true,128,JSON_THROW_ON_ERROR)],
             ['/api/migrate-profile','POST']=>(new EngineProfileMigrator())->migrate(is_array($request['profile']??null)?$request['profile']:[]),
             ['/api/editor','POST']=>(new T27Editor())->render($request['profile']??[],$request['measurement']??[],$request['zones']??[]),

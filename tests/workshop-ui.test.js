@@ -121,12 +121,9 @@ class Element {
   assert.equal(typeof element('#export-search').onclick,'function');
 
   // Prefill cancellation and confirmation preserve non-unit settings.
-  element('#profile-label').value='Retain this name';element('#profile-label').onchange();
   confirmResult=false;await element('#prefill').onclick();
-  assert.equal(element('#profile-label').value,'Retain this name');
   confirmResult=true;await element('#prefill').onclick();
-  assert.equal(element('#profile-label').value,'Retain this name');
-  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.label,'Retain this name');
+  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.label,'Keep me');
   const unitTypes=Object.keys(units);
   const emptyCell=()=>({sourceCount:0,strikesPerAttack:1,allocatedAttempts:0,consumedAttempts:0,reallocatedAttempts:0,sampledHits:0,appliedHits:0,attackPerStrike:'7',accuracy:'0.15',attackFactor:'1',defendingEfficiency:'1',damagePerHit:'7',damageEmitted:'0',damageAbsorbed:'0',overkill:'0'});
   const createMatrix=()=>Object.fromEntries(unitTypes.map(source=>[source,Object.fromEntries(unitTypes.map(target=>[target,emptyCell()]))]));

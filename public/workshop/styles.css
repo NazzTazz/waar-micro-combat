@@ -43,3 +43,5 @@ main{width:min(1440px,100%);margin:auto;padding:28px 32px 40px}.section-heading{
 .test-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px}.test-actions>.hint{font-size:11px;color:var(--muted)}.test-actions .duel-effects{max-width:100%}
 
 .live-loss-table .live-initial-row{background:#ffffff06}.live-loss-table .live-initial-row th{font-weight:500}.live-initial-row th small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.live-loss-table .live-initial-row td{font-weight:600;border-left:1px solid var(--line)}
+
+#save-profile-dialog{width:min(480px,calc(100% - 32px));padding:28px}#save-profile-dialog input{width:100%;margin:10px 0}#save-profile-dialog .hint{line-height:1.6}.save-profile-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}#save-profile-error{color:#ffb9b9;font-size:12px}.saved-profiles{display:grid;gap:7px;max-height:45vh;overflow-y:auto}.saved-profiles button{text-align:left;overflow-wrap:anywhere}.profile-export{border-top:1px solid var(--line);margin-top:6px}.profile-menu [role=status]{font-size:12px;color:var(--muted);margin:0}.profile-menu [role=status]:empty{display:none}

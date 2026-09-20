@@ -5,6 +5,9 @@ services:
     restart: unless-stopped
     environment:
       WAAR_DEMO_SERIALIZE: '1'
+      WAAR_PROFILE_DIRECTORY: /var/lib/waar-profiles
+    volumes:
+      - profile-saves:/var/lib/waar-profiles
     networks:
       wai-edge:
         aliases: [waar-engine-demo]
@@ -26,3 +29,6 @@ services:
 networks:
   wai-edge:
     external: true
+
+volumes:
+  profile-saves:
