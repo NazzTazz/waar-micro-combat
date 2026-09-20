@@ -27,7 +27,7 @@ if(str_starts_with($path,'/api/')){
         $request=($raw===false||trim($raw)==='')?[]:json_decode($raw,true,128,JSON_THROW_ON_ERROR);if(!is_array($request)||($request!==[]&&array_is_list($request)))throw new InvalidArgumentException('Objet JSON attendu.');
         // A private shared demo has a single compute slot; never queue costly jobs.
         // The OS releases the lock even if PHP exits unexpectedly.
-        if(getenv('WAAR_DEMO_SERIALIZE')==='1'&&in_array($path,['/api/duel','/api/measure','/api/search','/api/optimize'],true)){
+        if(getenv('WAAR_DEMO_SERIALIZE')==='1'&&in_array($path,['/api/duel','/api/duel-summary','/api/measure','/api/search','/api/optimize'],true)){
             $computeLock=fopen(sys_get_temp_dir().'/waar-demo-compute.lock','c');
             if($computeLock===false)throw new RuntimeException('Calcul temporairement indisponible.',503);
             if(!flock($computeLock,LOCK_EX|LOCK_NB)){
@@ -41,6 +41,7 @@ if(str_starts_with($path,'/api/')){
             ['/api/editor','POST']=>(new T27Editor())->render($request['profile']??[],$request['measurement']??[],$request['zones']??[]),
             ['/api/validate','POST']=>['errors'=>EngineProfile::validate($request['profile']??[],match($request['mode']??'complete'){'draft'=>[],'complete'=>null,default=>throw new InvalidArgumentException('Mode de validation inconnu.')})],
             ['/api/validate-zones','POST']=>['zones'=>(new ConsequenceObjectives())->validate($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['measurementBaseSeed']??42,$request['iterations']??100)],
+            ['/api/duel-summary','POST']=>(new DuelService())->simulate($request,true),
             ['/api/duel','POST']=>(new DuelService())->simulate($request),
             ['/api/measure','POST']=>(new MonotypeMeasurementService())->measure($request['profile']??[],(string)($request['weather']??'neutral'),$request['seed']??42,$request['iterations']??100),
             ['/api/search','POST']=>(new BoundedProfileSearch())->search($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??8,$request['iterations']??100,$request['bounds']??[],$request['measurementBaseSeed']??42),

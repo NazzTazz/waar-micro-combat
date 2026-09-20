@@ -10,7 +10,7 @@ final class DuelService
     public function __construct(?CohortRuntime $runtime=null,private readonly CohortRequestFactory $requests=new CohortRequestFactory()){$this->runtime=$runtime??new ProcessCohortRuntime();}
 
     /** @param array<string,mixed> $request @return array<string,mixed> */
-    public function simulate(array $request):array
+    public function simulate(array $request,bool $summary=false):array
     {
         $errors=[];$armies=[];
         foreach(['A','B']as$name){$army=$request['armies'][$name]??null;if(!is_array($army)||([]!==$army&&array_is_list($army))){$errors[]=['code'=>'invalid_army','path'=>'armies.'.$name,'message'=>'Armée invalide.'];continue;}foreach(array_diff(array_keys($army),array_keys(EngineProfile::UNIT_COSTS))as$type)$errors[]=['code'=>'unknown_unit','path'=>'armies.'.$name.'.'.$type,'message'=>'Type d’unité inconnu.'];$total=0;$normalized=[];foreach(EngineProfile::UNIT_COSTS as$type=>$cost){$value=$army[$type]??0;if(!is_int($value)||$value<0||$value>4294967295)$errors[]=['code'=>'out_of_range','path'=>'armies.'.$name.'.'.$type,'message'=>'Effectif entier attendu entre 0 et 4 294 967 295 (limite du moteur).'];else{$normalized[$type]=$value;$total=FixedPoint::checkedAdd($total,$value);}}if($total===0)$errors[]=['code'=>'empty_army','path'=>'armies.'.$name,'message'=>'Chaque camp doit contenir au moins une unité.'];$armies[$name]=$normalized;}
@@ -23,6 +23,21 @@ final class DuelService
         $active=[];foreach($armies as$army)foreach($army as$type=>$count)if($count>0)$active[$type]=true;
         try{$profile=EngineProfile::fromArray(is_array($request['profile']??null)?$request['profile']:[],array_keys($active));}catch(ProfileValidationException$e){$errors=[...$errors,...$e->errors];$profile=null;}
         if($errors)throw new ProfileValidationException($errors);
+        if($summary){
+            $scenarios=[];
+            foreach([['A','B'],['B','A']]as[$a,$b]){
+                $combat=$this->requests->combat($profile,$armies[$a],$armies[$b],$seed,$weather[$a],$weather[$b],$modifiers[$a]??[],$modifiers[$b]??[],'none');
+                $scenarios[]=['id'=>$a.'-'.$b,'seedKey'=>0,'attacker'=>$combat['attacker'],'defender'=>$combat['defender']];
+            }
+            $batch=$this->runtime->batch(['schemaVersion'=>'waar-combat-batch-request/2','ruleset'=>$profile->ruleset(),'baseSeed'=>$seed,'iterations'=>50,'startIteration'=>0,'totalIterations'=>50,'consequences'=>$combat['consequences'],'scenarios'=>$scenarios]);
+            if(($batch['unitOrder']??null)!==array_keys(EngineProfile::UNIT_COSTS)||($batch['projectedCategoryOrder']??null)!==['healthy','wounded','dead','prisoners'])throw new \RuntimeException('Ordre du résultat batch incompatible.');
+            $rows=[];
+            foreach($batch['scenarios']as$scenario){[$a,$b]=explode('-',$scenario['id']);$r=$scenario['result'];$row=['attacker'=>$a,'defender'=>$b,'drawRate'=>$r['draws']/50,'camps'=>[]];
+                foreach(['attacker'=>$a,'defender'=>$b]as$side=>$camp){$initialCost=0;$lostCost=0;foreach($batch['unitOrder']as$i=>$type){$cost=$profile->costs()[$type];$initialCost+=$r[$side.'InitialByType'][$i]*$cost;$projected=$r[$side.'ProjectedByType'][$i];$lostCost+=($projected[1]+$projected[2])*$cost;}$row['camps'][$camp]=['winRate'=>$r[$side.'Wins']/50,'valueLossRate'=>$initialCost>0?$lostCost/50/$initialCost:0];}
+                $rows[]=$row;
+            }
+            return ['requestId'=>(string)($request['requestId']??''),'iterations'=>50,'totalCombats'=>$batch['totalCombats'],'rows'=>$rows];
+        }
         $directions=[];
         foreach([['id'=>'a-attacks-b','attacker'=>'A','defender'=>'B'],['id'=>'b-attacks-a','attacker'=>'B','defender'=>'A']]as$direction){
             $engineRequest=$this->requests->combat($profile,$armies[$direction['attacker']],$armies[$direction['defender']],$seed,$weather[$direction['attacker']],$weather[$direction['defender']],$modifiers[$direction['attacker']]??[],$modifiers[$direction['defender']]??[],'full');

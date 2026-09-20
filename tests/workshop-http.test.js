@@ -58,6 +58,12 @@ async function waitFor(url) {
     assert.equal(profilePayload.data.profile.weather.snow.soldier.attack,'0.75');
     assert.equal(profilePayload.data.profile.weather.storm.archer.attack,'0.75');
     assert.equal(profilePayload.data.profile.weather.storm.archer.baseAccuracy,'1');
+    const summaryResponse=await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{soldier:100}},weather:'neutral',seed:42,requestId:'live-test'})});
+    assert.equal(summaryResponse.status,200);
+    const summary=(await summaryResponse.json()).data;
+    assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
+    assert.deepEqual(summary.rows.map(row=>[row.attacker,row.defender]),[['A','B'],['B','A']]);
+    for(const row of summary.rows){assert.equal(row.camps.A.winRate+row.camps.B.winRate+row.drawRate,1);for(const camp of ['A','B'])assert.ok(row.camps[camp].valueLossRate>=0&&row.camps[camp].valueLossRate<=1)}
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
     assert.equal(traversal.status, 404);
 
@@ -85,6 +91,7 @@ async function waitFor(url) {
       assert.equal(busy.status,429);
       assert.equal(busy.headers.get('retry-after'),'10');
       assert.match((await busy.json()).errors[0].message,/déjà en cours/);
+      assert.equal((await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,429);
       assert.equal((await fetch(origin+'/api/default-profile')).status,200);
     } finally { const exited=once(locker,'exit');locker.kill();await exited; }
     const post=async(path,body)=>{const response=await fetch(origin+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const payload=await response.json();assert.equal(response.status,200,JSON.stringify(payload));return payload.data};

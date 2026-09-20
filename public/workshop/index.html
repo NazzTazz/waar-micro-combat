@@ -8,6 +8,7 @@
   <div class="header-actions"><button id="open-duel" class="primary">Tester ↗</button><details id="ready"><summary>Profil</summary><div class="profile-menu"><label>Nom<input id="profile-label"></label><label>Identifiant<input id="profile-id"></label><span id="profile-version"></span><button id="download-profile">Exporter le profil</button><label class="file">Importer un profil<input id="import-profile" type="file" accept="application/json"></label><button id="reset-profile" class="danger">Repartir de Test 2</button></div></details></div>
 </header>
 <main>
+<section id="live-duel" class="panel live-duel" aria-label="Synthèse du combat test"><div class="live-duel-heading"><strong>Combat test · 50 simulations par sens</strong><span id="live-duel-status" role="status">Calcul à venir…</span><button id="live-duel-configure" type="button">Configurer dans Test</button></div><div id="live-duel-results" class="live-duel-results"></div></section>
 <div id="notice" role="status" aria-live="polite"></div>
 <section id="units" data-view>
   <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Unités</h1></div><button id="prefill" class="quiet">Unités de Test 2</button></div>
