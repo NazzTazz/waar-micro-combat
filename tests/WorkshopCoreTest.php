@@ -13,6 +13,7 @@ use Waar\MicroCombat\Workshop\BattleConsequences;
 use Waar\MicroCombat\Workshop\CohortRequestFactory;
 use Waar\MicroCombat\Workshop\DuelService;
 use Waar\MicroCombat\Workshop\EngineProfile;
+use Waar\MicroCombat\Workshop\JsonApiRuntime;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
 
 require_once dirname(__DIR__).'/autoload.php';
@@ -83,7 +84,20 @@ final class WorkshopCoreTest extends TestCase
     public function testFingerprintIsSemanticAndDeterministic():void
     {
         $a=EngineProfile::defaults();$a['relations']=[['acting'=>'knight','target'=>'archer','factor'=>'1.5'],['acting'=>'archer','target'=>'spearman','factor'=>'2']];$b=$a;$b['relations']=array_reverse($b['relations']);
-        self::assertSame(EngineProfile::fromArray($a)->semanticFingerprint(),EngineProfile::fromArray($b)->semanticFingerprint());
+        $b['id']='saved-proposal';$b['label']='Proposition renommée';
+        $first=EngineProfile::fromArray($a);$renamed=EngineProfile::fromArray($b);
+        self::assertSame($first->semanticFingerprint(),$renamed->semanticFingerprint());
+        self::assertSame($first->ruleset()['version'],$renamed->ruleset()['version']);
+        $b['units']['soldier']['attack']='8';
+        self::assertNotSame($first->semanticFingerprint(),EngineProfile::fromArray($b)->semanticFingerprint());
+    }
+
+    public function testJsonApiStatusDistinguishesClientAndServerFailures():void
+    {
+        self::assertSame(422,JsonApiRuntime::statusFor(new \InvalidArgumentException('invalid request')));
+        self::assertSame(422,JsonApiRuntime::statusFor(new \JsonException('invalid JSON')));
+        self::assertSame(404,JsonApiRuntime::statusFor(new \RuntimeException('missing route',404)));
+        self::assertSame(500,JsonApiRuntime::statusFor(new \RuntimeException('runtime failed')));
     }
 
     public function testProfileRejectsUnknownNestedFields():void
