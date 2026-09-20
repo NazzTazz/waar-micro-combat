@@ -16,7 +16,7 @@
 </section>
 <section id="relations" data-view hidden>
   <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Contres</h1></div></div>
-  <div class="panel relation-panel"><p class="hint">Multiplie les dégâts de l’unité vers cette cible, sans changer sa probabilité de la cibler. ×1 : neutre ; ×1,5 : +50 % ; ×0 : aucun dégât. Le sens inverse se règle séparément.</p><div class="relation-form"><label>Unité<select id="relation-acting"></select></label><span class="relation-arrow">→</span><label>Cible<select id="relation-target"></select></label><label>Dégâts ×<input id="relation-factor" type="number" min="0" max="10" step=".01" value="1.5"></label><button id="add-relation" class="primary">Appliquer</button></div><div id="relation-list" class="chips"></div></div>
+  <div class="unit-workspace"><nav id="relation-unit-selector" class="unit-selector" aria-label="Unité dont les contres sont à configurer"></nav><div class="panel relation-panel"><p class="hint">Multiplie les dégâts de l’unité vers cette cible, sans changer sa probabilité de la cibler. ×1 : neutre ; ×1,5 : +50 % ; ×0 : aucun dégât. Le sens inverse se règle séparément.</p><div class="relation-form"><label>Cible<select id="relation-target"></select></label><label>Dégâts ×<input id="relation-factor" type="number" min="0" max="10" step=".01" value="1.5"></label><button id="add-relation" class="primary">Appliquer</button></div><div id="relation-list" class="chips"></div></div></div>
   <div class="section-footer"><button data-go="units">← Unités</button><button data-go="combat">Combat →</button></div>
 </section>
 <section id="combat" data-view hidden>
