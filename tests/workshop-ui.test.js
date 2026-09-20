@@ -86,7 +86,7 @@ class Element {
   const filled=JSON.parse(storage.get('waar-workshop-draft-v1')).armies;
   assert.deepEqual(filled.A,{soldier:2500,spearman:625,archer:0,knight:0});
   assert.deepEqual(filled.B,beforeB,'shortcut only replaces the chosen camp');
-  element('#duel-weather').value='rain';element('#duel-weather').onchange();
+  element('#weather-tabs').children[3].children[1].onclick();
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).duelWeather,'rain');
   const rounds=element('[data-combat=maxRounds]');
   assert.equal(rounds['aria-label'],'Rounds');
