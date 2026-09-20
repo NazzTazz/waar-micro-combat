@@ -34,6 +34,12 @@ final class WorkshopDuelLimitsTest extends TestCase
     public function testCountsAboveGuardrailAreRejected(): void
     {
         $this->expectException(ProfileValidationException::class);
-        (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>4294967296],'B'=>['soldier'=>1]],'seed'=>42]);
+        (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>1000001],'B'=>['soldier'=>1]],'seed'=>42]);
+    }
+
+    public function testSummaryRejectsCountsAboveOneMillionPerType(): void
+    {
+        $this->expectException(ProfileValidationException::class);
+        (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>1],'B'=>['knight'=>1000001]],'seed'=>42],true);
     }
 }
