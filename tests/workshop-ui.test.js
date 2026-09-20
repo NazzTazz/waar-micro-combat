@@ -6,6 +6,7 @@ const assert=require('node:assert/strict');
 const vm=require('node:vm');
 const fs=require('node:fs');
 const path=require('node:path');
+const clock=require('./helpers/fake-clock')();
 
 class Element {
   constructor(){this.value='';this.dataset={};this.style={};this.children=[];this.textContent='';this.listeners={};this.width=900;this.height=440;this.classList={add(){},remove(){},toggle(){}}}
@@ -41,11 +42,14 @@ class Element {
   const overviewMeasurement={...structuredClone(measurement),context:{...structuredClone(measurement.context),iterations:50},rows:[]};
   for(const attackerType of Object.keys(units))for(const defenderType of Object.keys(units))for(const side of ['attacker','defender'])overviewMeasurement.rows.push({id:`${attackerType}-vs-${defenderType}/${side}`,scenarioId:`${attackerType}-vs-${defenderType}`,attackerType,defenderType,side,initialCount:5005,winRate:side==='attacker'?.6:.3,drawRate:.1,rawLossRatio:.1,rawWoundedRatio:.05,rawCasualtyRatio:.15,appliedLossRatio:.08,woundedRatio:.04,captureRatio:.01});
   let pendingSearch,searchBody,confirmResult=true,malformedResponse=false,overviewCalls=0;
+  let holdMeasurement=false,releaseMeasurement=null,busyMeasurement=false,invalidProfile=false;
+  class ClockDate extends Date {static now(){return 1700000000000+clock.now()}}
   const storage=new Map(),messages=[],listeners={};
   element('#t27-editor').contentWindow={postMessage:message=>messages.push(message)};
   const origin='http://localhost';
   const editZones=x=>listeners.message({source:element('#t27-editor').contentWindow,origin,data:{type:'waar-t27-zones',fingerprint:'editor-fp',document:{schemaVersion:'waar-consequence-editor-zones/0.1',corpusFingerprint:'editor-fp',zones:[{id:measurement.rows[0].id,center:{x,y:.06},radii:{x:.05,y:.1},enabled:true,source:{referenceId:'fp'}}]}}});
-  const document={querySelector:element,createElement:()=>new Element(),addEventListener(){},querySelectorAll(selector){
+  const documentListeners={};
+  const document={querySelector:element,createElement:()=>new Element(),addEventListener(name,fn){(documentListeners[name]??=[]).push(fn)},querySelectorAll(selector){
     if(selector==='[data-combat]')return ['maxRounds','surrenderEnabled','surrenderDeadPercent','tieBreakCriterion','equalityPolicy','lossCompressionPercent','capturePercent'].map(key=>{const input=element('[data-combat='+key+']');input.dataset.combat=key;input.type=key==='surrenderEnabled'?'checkbox':key.includes('Policy')||key.includes('Criterion')?'select':'range';return input});
     if(selector==='[data-pick]'||selector==='[data-compare]'){
       const attribute=selector.slice(1,-1),key=attribute==='data-pick'?'pick':'compare';
@@ -54,30 +58,60 @@ class Element {
     if(selector==='.journey button')return [Object.assign(new Element(),{dataset:{step:'units'}})];
     return [];
   }};
-  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{if(delay!==300&&delay!==10000)fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,Date:ClockDate,confirm:()=>confirmResult,clearTimeout:clock.clearTimeout,setTimeout:clock.setTimeout,Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
     if(malformedResponse)return {ok:false,status:500,json:async()=>{throw new SyntaxError('Unexpected token <')}};
     const body=options?.body?JSON.parse(options.body):null;
     let data;
     if(url.endsWith('default-profile'))data={profile:structuredClone(profile)};
     else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
     else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
-    else if(url.endsWith('/measure')){if(body.iterations===50){overviewCalls++;data=structuredClone(overviewMeasurement)}else data=structuredClone(measurement)}
+    else if(url.endsWith('/validate'))data={errors:invalidProfile?[{message:'Invalid'}]:[]};
+    else if(url.endsWith('/profile-feedback'))data={changes:[],interactions:[]};
+    else if(url.endsWith('/duel-summary'))data={requestId:body.requestId,rows:[]};
+    else if(url.endsWith('/measure')){
+      if(body.iterations===50){overviewCalls++;
+        if(busyMeasurement){busyMeasurement=false;return {ok:false,status:429,headers:{get:()=> '3'},json:async()=>({errors:[{message:'Occupé'}]})}}
+        if(holdMeasurement){holdMeasurement=false;await new Promise(resolve=>releaseMeasurement=resolve)}
+        data=structuredClone(overviewMeasurement);
+      }else data=structuredClone(measurement);
+    }
     else if(url.endsWith('/optimize')){searchBody=body;data=await new Promise(resolve=>{pendingSearch=resolve})}
     else data={errors:[]};
     return {ok:true,json:async()=>({data})};
   }});
-  for(const file of ['model.js','app.js']){
+  for(const file of ['model.js','bench.js','app.js']){
     let source=fs.readFileSync(path.join(__dirname,'../public/workshop',file),'utf8');
     if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary};\nfunction renderDuel(result){');
     vm.runInContext(source,context);
   }
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
-  element('#show-overview').onclick();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
+  element('#show-overview').onclick();await clock.tick(0);
   assert.equal(overviewCalls,1,'overview uses one 50-iteration monotype batch');
   assert.match(element('#live-duel-results').children[1].innerHTML,/Attaque ↓ \/ Défense →/);
   assert.equal((element('#live-duel-results').children[1].innerHTML.match(/data-overview=/g)||[]).length,16,'overview renders a 4 × 4 matrix');
   assert.match(element('#live-duel-results').children[2].innerHTML,/Brut : morts/);
+  const autoRounds=element('[data-combat=maxRounds]');
+  holdMeasurement=true;autoRounds.value='4';autoRounds.oninput();await clock.tick(500);
+  assert.equal(overviewCalls,2);assert.ok(releaseMeasurement);
+  autoRounds.value='5';autoRounds.oninput();autoRounds.value='4';autoRounds.oninput();
+  releaseMeasurement();await clock.tick(0);
+  assert.match(element('#live-duel-status').textContent,/précédent|actualisation/,'editing and returning cannot publish an old revision');
+  await clock.tick(500);assert.equal(overviewCalls,3,'discarded old response is not revived through the cache');
+  holdMeasurement=true;autoRounds.value='6';autoRounds.oninput();await clock.tick(500);
+  const beforeToggle=overviewCalls;element('#show-live-duel').onclick();element('#show-overview').onclick();await clock.tick(0);
+  assert.equal(overviewCalls,beforeToggle,'view toggle does not overlap a pending calculation');
+  releaseMeasurement();await clock.tick(500);assert.equal(overviewCalls,beforeToggle+1);
+  invalidProfile=true;autoRounds.value='7';autoRounds.oninput();await clock.tick(500);
+  assert.equal(overviewCalls,beforeToggle+1,'invalid profile never reaches the simulation endpoint');
+  invalidProfile=false;busyMeasurement=true;autoRounds.value='8';autoRounds.oninput();await clock.tick(500);
+  const beforeRetry=overviewCalls;autoRounds.value='9';autoRounds.oninput();await clock.tick(2999);
+  assert.equal(overviewCalls,beforeRetry,'editing cannot bypass Retry-After');await clock.tick(1);assert.equal(overviewCalls,beforeRetry+1);
+  autoRounds.value='10';autoRounds.oninput();document.hidden=true;
+  for(const fn of documentListeners.visibilitychange)fn();await clock.tick(1000);
+  assert.equal(overviewCalls,beforeRetry+1,'hidden document pauses automatic work');document.hidden=false;
+  for(const fn of documentListeners.visibilitychange)fn();await clock.tick(0);
+  autoRounds.value='3';autoRounds.oninput();await clock.tick(500);
   assert.equal(typeof element('#measure').onclick,'function');
   assert.equal(element('#profile-modified').hidden,true,'new profile starts unmodified');
   const armyRow=element('#army-a').children[0];
@@ -113,6 +147,7 @@ class Element {
   const searchResult=()=>({referenceProfile:structuredClone(profile),evaluated:1,candidateBudget:32,stopReason:'objectives_satisfied',generations:[{number:1,improved:true,best:{metrics:{inside:32,score:0}}}],candidates:[{rank:1,generation:1,operator:'reference',fingerprint:'candidate',inside:32,score:0,worst:{id:'a'},profile:structuredClone(profile),observations:{rows:[{id:measurement.rows[0].id,winRate:.8,rawCasualtyRatio:.04}]}}]});
 
   const run=element('#search').onclick();
+  await new Promise(resolve=>setImmediate(resolve));
   assert.equal(searchBody.measurementBaseSeed,42);
   assert.equal(searchBody.seed,314159);
   assert.equal(searchBody.budget,32);
@@ -123,12 +158,13 @@ class Element {
   assert.equal(document.querySelectorAll('[data-pick]').length,0,'edited zones remove candidate adoption');
 
   const late=element('#search').onclick();
+  await new Promise(resolve=>setImmediate(resolve));
   element('#search-bounds').listeners.input();
   pendingSearch(searchResult());await late;
   assert.match(element('#search-results').textContent,/ignoré/,'late result after bounds edit is rejected');
   assert.equal(document.querySelectorAll('[data-pick]').length,0);
 
-  const adopt=element('#search').onclick();pendingSearch(searchResult());await adopt;
+  const adopt=element('#search').onclick();await new Promise(resolve=>setImmediate(resolve));pendingSearch(searchResult());await adopt;
   element('[data-pick]1').onclick();
   assert.equal(element('#search-archive').hidden,false,'reference and report remain available after adoption');
   assert.equal(typeof element('#export-search').onclick,'function');

@@ -10,5 +10,9 @@ function prefillUnits(profile,defaults){return {...structuredClone(profile),unit
 function plotRows(reference,candidate){return reference.rows.map(row=>({id:row.id,reference:{x:row.winRate,y:row.rawCasualtyRatio},candidate:candidate?.rows.find(other=>other.id===row.id)})).map(row=>({...row,candidate:row.candidate?{x:row.candidate.winRate,y:row.candidate.rawCasualtyRatio}:null}))}
 function boundedAppend(items,item,limit=20){return [...items,item].slice(-limit)}
 function measurementKey(profile,weather,iterations=50,seed=42){return stable({profile,weather,iterations,seed})}
-globalThis.WaarWorkshopModel={stable,cost,responseIsCurrent,stale,createRevisionGate,prefillUnits,plotRows,boundedAppend,measurementKey};
+// A rejected request must release the lane too. Queued work is never cancelled by aborting HTTP.
+function createComputeLane(){let tail=Promise.resolve();return {run(task){const result=tail.then(task);tail=result.catch(()=>{});return result}}}
+function retryDelay(header,now=Date.now()){if(!header)return 10000;const seconds=Number(header);return Number.isFinite(seconds)?Math.max(0,seconds*1000):Math.max(0,Date.parse(header)-now)||10000}
+function profileKey(profile){const {id,label,...rules}=profile;return stable(rules)}
+globalThis.WaarWorkshopModel={stable,cost,responseIsCurrent,stale,createRevisionGate,prefillUnits,plotRows,boundedAppend,measurementKey,createComputeLane,retryDelay,profileKey};
 })();

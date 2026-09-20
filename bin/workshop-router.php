@@ -9,6 +9,7 @@ use Waar\MicroCombat\Workshop\MonotypeMeasurementService;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
 use Waar\MicroCombat\Workshop\ProfileFeedbackService;
 use Waar\MicroCombat\Workshop\ProfileInteractionExaminer;
+use Waar\MicroCombat\Workshop\MonotypeComparisonService;
 use Waar\MicroCombat\Workshop\ConsequenceObjectives;
 use Waar\MicroCombat\Workshop\T27Editor;
 
@@ -49,7 +50,8 @@ if(str_starts_with($path,'/api/')){
             ['/api/duel-summary','POST']=>(new DuelService())->simulate($request,true),
             ['/api/duel','POST']=>(new DuelService())->simulate($request),
             ['/api/measure','POST']=>(new MonotypeMeasurementService())->measure($request['profile']??[],(string)($request['weather']??'neutral'),$request['seed']??42,$request['iterations']??100),
-            ['/api/profile-feedback','POST']=>(new ProfileFeedbackService())->analyse($request['before']??[],$request['after']??[],is_array($request['beforeMeasurement']??null)?$request['beforeMeasurement']:null,is_array($request['afterMeasurement']??null)?$request['afterMeasurement']:null)+['interactions'=>(new ProfileFeedbackService())->interactions($request['branchBase']??($request['before']??[]),$request['after']??[])],
+            ['/api/profile-feedback','POST']=>(new ProfileFeedbackService())->analyse($request['before']??[],$request['after']??[])+['interactions'=>(new ProfileFeedbackService())->interactions($request['branchBase']??($request['before']??[]),$request['after']??[])],
+            ['/api/compare-monotypes','POST']=>(new MonotypeComparisonService())->compare($request['beforeProfile']??[],$request['afterProfile']??[],$request['before']??[],$request['after']??[],(string)($request['scenarioId']??'')),
             ['/api/examine-interaction','POST']=>(new ProfileInteractionExaminer())->examine($request['branchBase']??[],$request['profile']??[],(string)($request['interactionId']??''),(string)($request['weather']??'neutral')),
             ['/api/search','POST']=>(new BoundedProfileSearch())->search($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??8,$request['iterations']??100,$request['bounds']??[],$request['measurementBaseSeed']??42),
             ['/api/optimize','POST']=>(new EvolutionaryProfileOptimizer())->optimize($request['profile']??[],$request['zones']??[],(string)($request['weather']??'neutral'),$request['seed']??314159,$request['budget']??32,$request['iterations']??100,$request['bounds']??[],$request['measurementBaseSeed']??42),

@@ -24,6 +24,7 @@
             "node tests/mixed-composition-observation-model.test.js",
             "node tests/candidate-legacy-comparison.test.js",
             "node tests/workshop-model.test.js",
+            "node tests/workshop-bench.test.js",
             "node tests/workshop-ui.test.js",
             "node tests/workshop-http.test.js",
             "node tests/workshop-runtime.test.js",

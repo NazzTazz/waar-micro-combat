@@ -24,6 +24,8 @@ final class MonotypeMeasurementService
             }
         }
         $context=['weather'=>$weather,'baseSeed'=>$baseSeed,'iterations'=>$iterations,'budget'=>self::BUDGET,'objectiveMetric'=>'rawCasualtyRatio','modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$request['ruleset']['version'],'runtime'=>$this->runtime->provenance(),'consequences'=>['lossCompressionPercent'=>$profile->lossCompressionPercent,'capturePercent'=>$profile->capturePercent]];
-        return ['schemaVersion'=>'waar-monotype-consequence-observations/0.2','profileFingerprint'=>$profile->semanticFingerprint(),'modelVersion'=>EngineProfile::MODEL_VERSION,'context'=>$context,'batch'=>['schemaVersion'=>$batch['schemaVersion'],'iterationRange'=>$batch['iterationRange'],'totalCombats'=>$batch['totalCombats']],'rows'=>$rows];
+        $mechanisms=[];$description=new MonotypeMechanics();
+        foreach($request['scenarios'] as $scenario)$mechanisms[$scenario['id']]=$description->describe($profile,$weather,$scenario['id']);
+        return ['schemaVersion'=>'waar-monotype-consequence-observations/0.2','profileFingerprint'=>$profile->semanticFingerprint(),'modelVersion'=>EngineProfile::MODEL_VERSION,'context'=>$context,'batch'=>['schemaVersion'=>$batch['schemaVersion'],'iterationRange'=>$batch['iterationRange'],'totalCombats'=>$batch['totalCombats']],'rows'=>$rows,'mechanisms'=>$mechanisms];
     }
 }

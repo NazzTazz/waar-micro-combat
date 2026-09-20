@@ -9,9 +9,9 @@
 </header>
 <main>
 <section id="live-duel" class="panel live-duel" aria-label="Résultat du combat configuré et vue d’ensemble">
-  <div class="live-view-heading"><div class="live-view-toggle" role="group" aria-label="Résultat affiché"><button id="show-live-duel" type="button" aria-pressed="true">Combat configuré</button><button id="show-overview" type="button" aria-pressed="false">Vue d’ensemble</button></div><span id="live-duel-status" role="status">Calcul à venir…</span></div>
+  <div class="live-view-heading"><div class="live-view-toggle" role="group" aria-label="Résultat affiché"><button id="show-live-duel" type="button" aria-pressed="true">Combat configuré</button><button id="show-overview" type="button" aria-pressed="false">Vue d’ensemble</button></div><span id="live-duel-status" role="status">Calcul à venir…</span><button id="live-retry" type="button" hidden>Réessayer</button></div>
   <div id="live-duel-results" class="live-duel-results"></div>
-  <section id="profile-feedback" class="profile-feedback" aria-label="Aide aux réglages"><p class="muted">Modifiez un réglage moteur pour obtenir une explication.</p></section>
+  <section id="profile-feedback" class="profile-feedback" aria-label="Expérience sur une confrontation"></section>
 </section>
 <div id="notice" role="status" aria-live="polite"></div>
 <section id="units" data-view>
@@ -54,5 +54,5 @@
 </main>
 <dialog id="save-profile-dialog" aria-labelledby="save-profile-title"><form id="save-profile-form"><div class="dialog-head"><h2 id="save-profile-title">Sauvegarder ce profil</h2><button id="cancel-profile-x" type="button" aria-label="Fermer">✕</button></div><label for="saved-profile-name">Nom du profil</label><input id="saved-profile-name" name="name" required maxlength="100" autocomplete="off" placeholder="NomTesteur-Proposition-1" aria-describedby="profile-name-help"><p id="profile-name-help" class="hint">Pour retrouver facilement les propositions, utilisez de préférence : <strong>NomTesteur-Proposition-1</strong>.</p><p id="save-profile-error" role="alert"></p><div class="save-profile-actions"><button id="cancel-profile" type="button">Annuler</button><button id="confirm-save-profile" type="submit" class="primary">Sauvegarder</button></div></form></dialog>
 <dialog id="duel-dialog"><form method="dialog" class="dialog-head"><h2>Test</h2><button aria-label="Fermer">✕</button></form><div id="modal-test-host"></div></dialog>
-<script src="/model.js"></script><script src="/app.js"></script><script src="/guide.js"></script>
+<script src="/model.js"></script><script src="/bench.js"></script><script src="/app.js"></script><script src="/guide.js"></script>
 </body></html>

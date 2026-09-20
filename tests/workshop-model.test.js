@@ -24,3 +24,6 @@ assert.deepEqual(model.plotRows(reference,candidate),[{id:'a',reference:{x:.51,y
 assert.equal(model.stable({a:{b:1}})===model.stable({a:{b:2}}),false);
 assert.deepEqual(model.boundedAppend([1,2],3,2),[2,3]);
 assert.equal(model.measurementKey({b:2,a:1},'neutral'),model.measurementKey({a:1,b:2},'neutral'),'measurement cache keys are canonical');
+assert.equal(model.retryDelay('3'),3000);
+assert.equal(model.retryDelay('Wed, 21 Oct 2015 07:28:00 GMT',Date.parse('Wed, 21 Oct 2015 07:27:55 GMT')),5000);
+(async()=>{const lane=model.createComputeLane();let release,entered=false;const first=lane.run(()=>new Promise(resolve=>release=resolve));const second=lane.run(()=>{entered=true;return 2});await Promise.resolve();assert.equal(entered,false);release();await first;assert.equal(await second,2);await assert.rejects(lane.run(()=>Promise.reject(new Error('failed'))));assert.equal(await lane.run(()=>3),3)})().catch(e=>{console.error(e);process.exitCode=1});

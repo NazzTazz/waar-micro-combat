@@ -113,6 +113,17 @@ async function waitFor(url) {
     assert.equal(duel.modelVersion,'waar-cohort-v2');assert.equal(duel.runtime.kind,'rust');assert.equal(duel.directions.length,2);assert.equal(duel.directions[0].result.schemaVersion,'waar-combat-result/2');
     const measure=await post('measure',{profile,weather:'neutral',seed:42,iterations:1});
     assert.equal(measure.modelVersion,'waar-cohort-v2');assert.equal(measure.context.runtime.kind,'rust');assert.equal(measure.batch.totalCombats,16);assert.equal(measure.rows.length,32);
+    const reference=await post('measure',{profile,weather:'neutral',seed:42,iterations:50});
+    assert.equal(Object.keys(reference.mechanisms).length,16);
+    const changed=structuredClone(profile);changed.combat.capturePercent=0;
+    const current=await post('measure',{profile:changed,weather:'neutral',seed:42,iterations:50});
+    const compared=await post('compare-monotypes',{beforeProfile:profile,afterProfile:changed,before:reference,after:current,scenarioId:'soldier-vs-soldier'});
+    assert.match(compared.summary,/conséquences après compression et capture ont changé/);
+    assert.equal(compared.sides.attacker.deltas.winRate,0);
+    assert.notEqual(compared.sides.attacker.deltas.captureRatio,0);
+    assert.deepEqual(compared.mechanisms.before,compared.mechanisms.after);
+    const incompatible=await fetch(origin+'/api/compare-monotypes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({beforeProfile:profile,afterProfile:changed,before:measure,after:current,scenarioId:'soldier-vs-soldier'})});
+    assert.equal(incompatible.status,422,'partial measurements cannot be compared as the fixed reference');
     const zones=measure.rows.map(row=>({id:row.id,center:{x:row.winRate,y:row.rawCasualtyRatio},radii:{x:.05,y:.1},sourceFingerprint:measure.profileFingerprint,modelVersion:measure.modelVersion,context:measure.context}));
     const optimized=await post('optimize',{profile,zones,weather:'neutral',seed:314159,measurementBaseSeed:42,budget:8,iterations:1});
     assert.equal(optimized.schemaVersion,'waar-optimizer-report/1');assert.equal(optimized.algorithm,'waar-profile-evolution/1');assert.equal(optimized.evaluated,8);assert.equal(optimized.selectionPerformed,false);assert.equal(optimized.stopReason,'objectives_satisfied');
