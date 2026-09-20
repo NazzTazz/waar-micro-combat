@@ -5,8 +5,6 @@
     maxRounds: 'Limite la durée du combat. Si les deux camps sont encore en lice, le critère de départage désigne le vainqueur.',
     surrenderEnabled: 'Arrête le combat lorsqu’un camp atteint le seuil de morts. Désactivée, la résolution continue jusqu’à une autre condition de fin.',
     surrenderDeadPercent: 'Proportion cumulée de morts parmi les effectifs initiaux. Le seuil est inclusif ; les blessés ne le déclenchent pas.',
-    tieBreakCriterion: 'Compare les survivants à la fin du combat selon leur valeur économique ou la proportion de structure restante.',
-    equalityPolicy: 'Décide du résultat uniquement quand le départage donne une égalité exacte. Un match nul ne produit pas de prisonniers.',
     lossCompressionPercent: 'Part des conséquences brutes conservée en sortie, avec arrondi inférieur par catégorie. 10 % conserve un dixième des morts, blessés et prisonniers.',
     capturePercent: 'Part des blessés capturables du vaincu transformée en prisonniers avant compression. 0 % désactive les captures.'
   };
@@ -17,6 +15,7 @@
       if (!message) return;
       input.dataset.explained = 'true';
       const label = input.closest('label');
+      if (input.dataset.combat === 'surrenderEnabled') {label.title = message;input.title = message;return;}
       label.querySelectorAll('small').forEach(node => node.remove());
       const note = document.createElement('small');
       note.className = 'setting-help';
