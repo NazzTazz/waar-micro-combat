@@ -26,7 +26,8 @@
             "node tests/workshop-model.test.js",
             "node tests/workshop-ui.test.js",
             "node tests/workshop-http.test.js",
-            "node tests/workshop-runtime.test.js"
+            "node tests/workshop-runtime.test.js",
+            "node tests/cohort-benchmark.test.js"
         ],
         "test:all": ["@test", "@test:js"],
         "smoke": "php bin/run-wind-tunnel.php experiments/t24-astra-vector-corrections.json reports/smoke"

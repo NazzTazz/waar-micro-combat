@@ -1,0 +1,13 @@
+**
+!bin/
+!bin/benchmark-cohort.php
+!engines/
+!engines/waar-cohort/
+!engines/waar-cohort/autoload.php
+!engines/waar-cohort/src/
+!engines/waar-cohort/src/**
+!engines/waar-cohort/bin/
+!engines/waar-cohort/bin/php-runtime.php
+!ops/
+!ops/benchmark/
+!ops/benchmark/**

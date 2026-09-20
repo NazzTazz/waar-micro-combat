@@ -101,7 +101,7 @@ final readonly class EngineProfile
     {
         $units=[];$targeting=[];$engagements=[];$factors=[];foreach($this->relations as$r)$factors[$r['acting']][$r['target']]=$r['factor'];
         foreach(self::UNIT_COSTS as$type=>$defaultCost){$unit=$this->units[$type]??[...self::DEFAULT_STATS[$type],'cost'=>$defaultCost,'capturable'=>false];$units[]=['type'=>$type,'attack'=>self::decimal($unit['attack']),'structure'=>self::decimal($unit['structure']),'cost'=>$unit['cost'],'baseAccuracy'=>self::decimal($unit['baseAccuracy']),'accuracySpread'=>self::decimal($unit['accuracySpread']),'strikesPerAttack'=>$unit['strikesPerAttack'],'defendingEfficiency'=>self::decimal($unit['defendingEfficiency']),'capturable'=>$unit['capturable']];$targeting[$type]=['weights'=>array_fill_keys(array_keys(self::UNIT_COSTS),1)];foreach(self::UNIT_COSTS as$target=>$unused)$engagements[$type][$target]=['attackFactor'=>self::decimal($factors[$type][$target]??'1'),'isProvisional'=>false];}
-        return ['schemaVersion'=>'waar-cohort-ruleset/2','modelVersion'=>self::MODEL_VERSION,'version'=>$this->id.'@'.substr($this->semanticFingerprint(),0,16),'units'=>$units,'targetingMode'=>'proportional','targeting'=>$targeting,'engagements'=>$engagements,'maxRounds'=>$this->maxRounds,'surrender'=>['enabled'=>$this->surrenderEnabled,'deadRatio'=>self::decimal($this->surrenderDeadPercent/100)],'tieBreak'=>['criterion'=>$this->tieBreakCriterion,'equality'=>$this->equalityPolicy]];
+        return ['schemaVersion'=>'waar-cohort-ruleset/2','modelVersion'=>self::MODEL_VERSION,'version'=>self::MODEL_VERSION.'@'.substr($this->semanticFingerprint(),0,16),'units'=>$units,'targetingMode'=>'proportional','targeting'=>$targeting,'engagements'=>$engagements,'maxRounds'=>$this->maxRounds,'surrender'=>['enabled'=>$this->surrenderEnabled,'deadRatio'=>self::decimal($this->surrenderDeadPercent/100)],'tieBreak'=>['criterion'=>$this->tieBreakCriterion,'equality'=>$this->equalityPolicy]];
     }
 
     /** @return list<array<string,mixed>> */
@@ -110,6 +110,11 @@ final readonly class EngineProfile
 
     /** @return array<string,mixed> */
     public function toArray():array{return['schemaVersion'=>self::SCHEMA_VERSION,'id'=>$this->id,'label'=>$this->label,'units'=>$this->units,'relations'=>$this->relations,'weather'=>$this->weather,'combat'=>['maxRounds'=>$this->maxRounds,'surrenderEnabled'=>$this->surrenderEnabled,'surrenderDeadPercent'=>$this->surrenderDeadPercent,'tieBreakCriterion'=>$this->tieBreakCriterion,'equalityPolicy'=>$this->equalityPolicy,'lossCompressionPercent'=>$this->lossCompressionPercent,'capturePercent'=>$this->capturePercent]];}
-    public function semanticFingerprint():string{return hash('sha256',json_encode(['modelVersion'=>self::MODEL_VERSION,'profile'=>$this->toArray()],JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));}
+    public function semanticFingerprint():string
+    {
+        $profile=$this->toArray();
+        unset($profile['id'],$profile['label']);
+        return hash('sha256',json_encode(['modelVersion'=>self::MODEL_VERSION,'profile'=>$profile],JSON_THROW_ON_ERROR|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+    }
     private static function decimal(mixed $value):string{return FixedPoint::format(FixedPoint::parse(is_float($value)?(string)$value:$value));}
 }
