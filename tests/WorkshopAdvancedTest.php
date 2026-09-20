@@ -16,7 +16,7 @@ final class WorkshopAdvancedTest extends TestCase
         $profile=EngineProfile::defaults();$result=(new MonotypeMeasurementService())->measure($profile,'neutral',42,1);
         self::assertSame('waar-monotype-consequence-observations/0.2',$result['schemaVersion']);self::assertSame(EngineProfile::MODEL_VERSION,$result['modelVersion']);self::assertCount(32,$result['rows']);self::assertSame(16,array_sum(array_map(static fn(array $r):int=>$r['iterations'],$result['rows']))/2);
         self::assertSame(['weather'=>'neutral','baseSeed'=>42,'iterations'=>1,'budget'=>400400,'objectiveMetric'=>'rawCasualtyRatio'],array_intersect_key($result['context'],array_flip(['weather','baseSeed','iterations','budget','objectiveMetric'])));self::assertSame('rust',$result['context']['runtime']['kind']);self::assertSame(16,$result['batch']['totalCombats']);
-        foreach($result['rows'] as $row){self::assertArrayHasKey('rawCasualtyRatio',$row);self::assertArrayHasKey('drawRate',$row);self::assertArrayNotHasKey('survivors',$row);self::assertGreaterThanOrEqual(0,$row['rawCasualtyRatio']);self::assertLessThanOrEqual(1,$row['rawCasualtyRatio']);self::assertLessThanOrEqual(1,$row['winRate']+$row['drawRate']);}
+        foreach($result['rows'] as $row){self::assertArrayHasKey('rawCasualtyRatio',$row);self::assertArrayHasKey('drawRate',$row);self::assertArrayHasKey('initialCount',$row);self::assertGreaterThan(0,$row['initialCount']);self::assertArrayNotHasKey('survivors',$row);self::assertGreaterThanOrEqual(0,$row['rawCasualtyRatio']);self::assertLessThanOrEqual(1,$row['rawCasualtyRatio']);self::assertLessThanOrEqual(1,$row['winRate']+$row['drawRate']);}
     }
 
     public function testSearchIsBoundedDeterministicAndDoesNotSelect():void

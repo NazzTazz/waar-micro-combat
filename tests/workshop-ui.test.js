@@ -38,7 +38,9 @@ class Element {
   const weatherIds=['neutral','cloudy','snow','blizzard','heat','canicule','wind','storm','rain','thunderstorm'];
   const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0}};
   const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawCasualtyRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawCasualtyRatio:.06}]};
-  let pendingSearch,searchBody,confirmResult=true,malformedResponse=false;
+  const overviewMeasurement={...structuredClone(measurement),context:{...structuredClone(measurement.context),iterations:50},rows:[]};
+  for(const attackerType of Object.keys(units))for(const defenderType of Object.keys(units))for(const side of ['attacker','defender'])overviewMeasurement.rows.push({id:`${attackerType}-vs-${defenderType}/${side}`,scenarioId:`${attackerType}-vs-${defenderType}`,attackerType,defenderType,side,initialCount:5005,winRate:side==='attacker'?.6:.3,drawRate:.1,rawLossRatio:.1,rawWoundedRatio:.05,rawCasualtyRatio:.15,appliedLossRatio:.08,woundedRatio:.04,captureRatio:.01});
+  let pendingSearch,searchBody,confirmResult=true,malformedResponse=false,overviewCalls=0;
   const storage=new Map(),messages=[],listeners={};
   element('#t27-editor').contentWindow={postMessage:message=>messages.push(message)};
   const origin='http://localhost';
@@ -59,7 +61,7 @@ class Element {
     if(url.endsWith('default-profile'))data={profile:structuredClone(profile)};
     else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
     else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
-    else if(url.endsWith('/measure'))data=structuredClone(measurement);
+    else if(url.endsWith('/measure')){if(body.iterations===50){overviewCalls++;data=structuredClone(overviewMeasurement)}else data=structuredClone(measurement)}
     else if(url.endsWith('/optimize')){searchBody=body;data=await new Promise(resolve=>{pendingSearch=resolve})}
     else data={errors:[]};
     return {ok:true,json:async()=>({data})};
@@ -71,6 +73,11 @@ class Element {
   }
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
+  element('#show-overview').onclick();await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(overviewCalls,1,'overview uses one 50-iteration monotype batch');
+  assert.match(element('#live-duel-results').children[1].innerHTML,/Attaque ↓ \/ Défense →/);
+  assert.equal((element('#live-duel-results').children[1].innerHTML.match(/data-overview=/g)||[]).length,16,'overview renders a 4 × 4 matrix');
+  assert.match(element('#live-duel-results').children[2].innerHTML,/Brut : morts/);
   assert.equal(typeof element('#measure').onclick,'function');
   assert.equal(element('#profile-modified').hidden,true,'new profile starts unmodified');
   const armyRow=element('#army-a').children[0];
@@ -98,6 +105,7 @@ class Element {
   assert.equal(element('#rounds-out').textContent,5);
   assert.equal(element('#profile-modified').hidden,false,'engine changes mark the profile modified');
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.maxRounds,5);
+  await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
   await element('#measure').onclick();
   assert.equal(element('#t27-editor').srcdoc,'T27 fixture');
   editZones(.8);
@@ -162,6 +170,7 @@ class Element {
   assert.match(matrix,/Cohorte source vide/);assert.match(matrix,/Aucune tentative allouée/);
   assert.doesNotMatch(matrix,/NaN|Infinity/);
   assert.match(details,/Round 1/);assert.doesNotMatch(details,/<details[^>]* open/);
+  document.hidden=true;await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
   malformedResponse=true;
   await element('#measure').onclick();
   assert.match(element('#measure-progress').textContent,/Réponse serveur invalide \(HTTP 500\)/);

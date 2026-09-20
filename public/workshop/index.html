@@ -8,7 +8,11 @@
   <div class="header-actions"><div class="current-profile" aria-live="polite"><span id="current-profile-name"></span><span id="profile-modified" hidden>(modifié)</span></div><details id="ready"><summary>Profil<svg class="profile-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="profile-menu"><button id="save-profile" class="primary">Sauvegarder ce profil</button><div id="saved-profiles" class="saved-profiles"></div><p id="profile-menu-status" role="status"></p><button id="download-profile" class="profile-export">Exporter le profil en JSON</button></div></details></div>
 </header>
 <main>
-<section id="live-duel" class="panel live-duel" aria-label="Synthèse du combat test"><span id="live-duel-status" role="status">Calcul à venir…</span><div id="live-duel-results" class="live-duel-results"></div></section>
+<section id="live-duel" class="panel live-duel" aria-label="Résultat du combat configuré et vue d’ensemble">
+  <div class="live-view-heading"><div class="live-view-toggle" role="group" aria-label="Résultat affiché"><button id="show-live-duel" type="button" aria-pressed="true">Combat configuré</button><button id="show-overview" type="button" aria-pressed="false">Vue d’ensemble</button></div><span id="live-duel-status" role="status">Calcul à venir…</span></div>
+  <div id="live-duel-results" class="live-duel-results"></div>
+  <section id="profile-feedback" class="profile-feedback" aria-label="Aide aux réglages"><p class="muted">Modifiez un réglage moteur pour obtenir une explication.</p></section>
+</section>
 <div id="notice" role="status" aria-live="polite"></div>
 <section id="units" data-view>
   <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Unités</h1></div><button id="prefill" class="quiet">Unités de Test 2</button></div>

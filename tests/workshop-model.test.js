@@ -22,3 +22,5 @@ const reference={rows:[{id:'a',winRate:.51,rawCasualtyRatio:.06}]};
 const candidate={rows:[{id:'a',winRate:.8,rawCasualtyRatio:.04}]};
 assert.deepEqual(model.plotRows(reference,candidate),[{id:'a',reference:{x:.51,y:.06},candidate:{x:.8,y:.04}}]);
 assert.equal(model.stable({a:{b:1}})===model.stable({a:{b:2}}),false);
+assert.deepEqual(model.boundedAppend([1,2],3,2),[2,3]);
+assert.equal(model.measurementKey({b:2,a:1},'neutral'),model.measurementKey({a:1,b:2},'neutral'),'measurement cache keys are canonical');
