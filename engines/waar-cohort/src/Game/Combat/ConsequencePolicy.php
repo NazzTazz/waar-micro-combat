@@ -12,7 +12,7 @@ final class ConsequencePolicy
     /** @return array<string,mixed> */
     public function project(CombatResult $result,CombatRuleset $ruleset,int $compressionPercent,int $capturePercent):array
     {
-        if($compressionPercent<0||$compressionPercent>100||$capturePercent<0||$capturePercent>10)throw new \InvalidArgumentException('Compression must be 0..100 and capture 0..10 percent.');
+        if($compressionPercent<0||$compressionPercent>100||$capturePercent<0||$capturePercent>50)throw new \InvalidArgumentException('Compression must be 0..100 and capture 0..50 percent.');
         return ['schemaVersion'=>'waar-combat-consequences/1','policyVersion'=>self::VERSION,'rawResult'=>$result->replayHash,
             'compressionPercent'=>$compressionPercent,'capturePercent'=>$capturePercent,
             'attacker'=>$this->side($result->attackerArmy,$result->attackerPrepared,$result->winner===CombatSide::Defender,$compressionPercent,$capturePercent),

@@ -41,7 +41,7 @@ async function waitFor(url) {
     const profileResponse = await fetch(origin + '/api/default-profile');
     const profilePayload = await profileResponse.json();
     assert.equal(profileResponse.status, 200);
-    assert.equal(profilePayload.data.profile.combat.lossCompressionPercent, 8);
+    assert.equal(profilePayload.data.profile.combat.lossCompressionPercent, 5);
     assert.equal(profilePayload.data.profile.schemaVersion, 'waar-engine-profile/0.2');
     assert.equal(profilePayload.data.profile.id, 'test-2');
     assert.deepEqual(Object.values(profilePayload.data.profile.units).map(unit=>[unit.cost,unit.attack,unit.structure,unit.baseAccuracy,unit.strikesPerAttack,unit.defendingEfficiency,unit.capturable]),[
@@ -51,8 +51,13 @@ async function waitFor(url) {
       [550,'350','250','0.8',15,'1',false],
     ]);
     assert.deepEqual(profilePayload.data.profile.relations,[]);
-    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:10});
+    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10});
 
+    assert.equal(profilePayload.data.profile.weather.neutral.soldier.attack,'1');
+    assert.equal(profilePayload.data.profile.weather.blizzard.soldier.attack,'0.875');
+    assert.equal(profilePayload.data.profile.weather.snow.soldier.attack,'0.75');
+    assert.equal(profilePayload.data.profile.weather.storm.archer.attack,'0.75');
+    assert.equal(profilePayload.data.profile.weather.storm.archer.baseAccuracy,'1');
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
     assert.equal(traversal.status, 404);
 

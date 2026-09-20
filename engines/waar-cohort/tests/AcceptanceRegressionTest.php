@@ -56,7 +56,7 @@ final class AcceptanceRegressionTest extends TestCase
     public static function largePopulations(): iterable
     {
         yield 'dead' => [50000000, '100', [0, 0, 50000000, 0]];
-        yield 'wounded and captured' => [500000000, '1', [0, 450000000, 0, 50000000]];
+        yield 'wounded and captured' => [500000000, '1', [0, 250000000, 0, 250000000]];
     }
 
     #[DataProvider('largePopulations')]
@@ -74,7 +74,7 @@ final class AcceptanceRegressionTest extends TestCase
             $unit['defendingEfficiency'] = '1';
         }
         unset($unit);
-        $request['consequences'] = ['compressionPercent'=>100, 'capturePercent'=>10];
+        $request['consequences'] = ['compressionPercent'=>100, 'capturePercent'=>50];
         $php = (new CombatEngine())->resolveRequest($request);
         self::assertSame(CanonicalJson::encode($php), CanonicalJson::encode($this->rust()->resolveRequest($request)));
         $projected = $php['consequences']['attacker']['types']['soldier']['projected'];
@@ -90,7 +90,7 @@ final class AcceptanceRegressionTest extends TestCase
     public static function invalidPercentages(): iterable
     {
         yield ['compressionPercent', 101];
-        yield ['capturePercent', 11];
+        yield ['capturePercent', 51];
     }
 
     #[DataProvider('invalidPercentages')]
@@ -99,7 +99,7 @@ final class AcceptanceRegressionTest extends TestCase
         $batch = DemoRequestFactory::batch(1);
         $batch['consequences'][$key] = $value;
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('compression must be 0..100 and capture 0..10 percent');
+        $this->expectExceptionMessage('compression must be 0..100 and capture 0..50 percent');
         $this->rust()->resolveBatch($batch);
     }
 

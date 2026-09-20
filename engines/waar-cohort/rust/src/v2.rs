@@ -1197,8 +1197,8 @@ fn percentage_floor(count: u32, percent: u32) -> u32 {
 }
 
 fn validate_consequences(settings: &ConsequenceSettings) -> Result<(), String> {
-    if settings.compression_percent > 100 || settings.capture_percent > 10 {
-        return Err("compression must be 0..100 and capture 0..10 percent".into());
+    if settings.compression_percent > 100 || settings.capture_percent > 50 {
+        return Err("compression must be 0..100 and capture 0..50 percent".into());
     }
     Ok(())
 }
