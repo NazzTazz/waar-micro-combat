@@ -1,0 +1,626 @@
+{
+    "schemaVersion": "waar-cohort-paired-benchmark/1",
+    "timestamp": "2026-09-19T22:47:25+00:00",
+    "machine": "DESKTOP-JFVSFN5",
+    "os": "Windows NT DESKTOP-JFVSFN5 10.0 build 19045 (Windows 10) AMD64",
+    "php": "8.2.33",
+    "profileId": "test-2",
+    "profileFingerprint": "c10a6ecf96d2a93ecb338f4eade01eef9918a0bb996c7d08d744896e0da8055f",
+    "mode": "duration",
+    "requestedCombatsPerEngine": null,
+    "secondsPerEngineWorkload": 20,
+    "batchIterations": 1,
+    "method": "20-second-style wall-clock throughput window per engine, including process startup, JSON, combat, consequences and driver bookkeeping; no HTTP. Each batch contains all 16 monotypes and 16 mixed scenarios equally. One warm-up batch excluded. Complete final batch before stopping; actual elapsed time reported.",
+    "workloads": {
+        "balanced": {
+            "inputFingerprint": "f3b3b5a1770536e613260a4196cdb087c2910a5f15b1a7f090bef7fdab9627a1",
+            "scenarios": [
+                {
+                    "id": "soldier-vs-soldier",
+                    "attacker": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "soldier-vs-spearman",
+                    "attacker": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "soldier-vs-archer",
+                    "attacker": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "soldier-vs-knight",
+                    "attacker": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spearman-vs-soldier",
+                    "attacker": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spearman-vs-spearman",
+                    "attacker": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spearman-vs-archer",
+                    "attacker": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spearman-vs-knight",
+                    "attacker": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "archer-vs-soldier",
+                    "attacker": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "archer-vs-spearman",
+                    "attacker": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "archer-vs-archer",
+                    "attacker": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "archer-vs-knight",
+                    "attacker": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "knight-vs-soldier",
+                    "attacker": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 40040
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "knight-vs-spearman",
+                    "attacker": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "spearman": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "knight-vs-archer",
+                    "attacker": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "archer": 5720
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "knight-vs-knight",
+                    "attacker": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "knight": 728
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "balanced-vs-balanced",
+                    "attacker": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "balanced-vs-screen-knights",
+                    "attacker": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "balanced-vs-screen-archers",
+                    "attacker": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "balanced-vs-spear-assault",
+                    "attacker": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-knights-vs-balanced",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-knights-vs-screen-knights",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-knights-vs-screen-archers",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-knights-vs-spear-assault",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-archers-vs-balanced",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-archers-vs-screen-knights",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-archers-vs-screen-archers",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "screen-archers-vs-spear-assault",
+                    "attacker": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spear-assault-vs-balanced",
+                    "attacker": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 10010,
+                            "spearman": 1430,
+                            "archer": 1430,
+                            "knight": 182
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spear-assault-vs-screen-knights",
+                    "attacker": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 0,
+                            "knight": 509
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spear-assault-vs-screen-archers",
+                    "attacker": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 12012,
+                            "spearman": 0,
+                            "archer": 4004,
+                            "knight": 0
+                        },
+                        "modifiers": []
+                    }
+                },
+                {
+                    "id": "spear-assault-vs-spear-assault",
+                    "attacker": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    },
+                    "defender": {
+                        "units": {
+                            "soldier": 8008,
+                            "spearman": 2288,
+                            "archer": 0,
+                            "knight": 291
+                        },
+                        "modifiers": []
+                    }
+                }
+            ],
+            "measurements": {
+                "php": {
+                    "combats": 768,
+                    "seconds": 20.5243702,
+                    "combatsPerSecond": 37.41893137359216,
+                    "completed": true,
+                    "batches": 24,
+                    "batchSecondsMin": 0.5612029,
+                    "batchSecondsMax": 1.5267109,
+                    "estimatedSecondsForWorkloadTarget": null
+                },
+                "rust": {
+                    "combats": 10528,
+                    "seconds": 20.0131198,
+                    "combatsPerSecond": 526.0549132374654,
+                    "completed": true,
+                    "batches": 329,
+                    "batchSecondsMin": 0.0575194,
+                    "batchSecondsMax": 0.0617564,
+                    "estimatedSecondsForWorkloadTarget": null
+                },
+                "parity": {
+                    "matchedCombats": 768,
+                    "warmupMatched": true,
+                    "allMeasuredCombatsMatched": false
+                },
+                "matchedPrefixSpeedup": 14.348071667249325
+            }
+        }
+    },
+    "driverPeakMemoryBytes": 2097152
+}
