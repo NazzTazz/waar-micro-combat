@@ -1,10 +1,6 @@
 /* Presentation only: explain settings without changing the profile. */
 (() => {
   const help = {
-    attack: 'Puissance répartie entre les frappes. Augmenter cette valeur accroît les dégâts de chaque touche.',
-    structure: 'Résistance aux dégâts. Une valeur plus élevée permet de supporter davantage de dégâts avant de finir blessé ou mort.',
-    baseAccuracy: 'Probabilité moyenne de toucher. 60 % signifie environ 60 touches pour 100 tentatives, avant les modificateurs.',
-    accuracySpread: 'Amplitude du tirage autour de la précision moyenne, à chaque round et pour chaque type d’unité. 60 % ± 10 points donne un tirage entre 50 et 70 %.',
     strikesPerAttack: 'Répartit la même attaque entre plusieurs frappes. Plus de frappes donne des touches moins puissantes et peut limiter les dégâts excédentaires.',
     defendingEfficiency: 'Multiplie les dégâts infligés lorsque cette unité défend. ×1,25 donne +25 % de dégâts ; ce réglage ne réduit pas les dégâts reçus.',
     cost: 'Prix de construction utilisé pour comparer les armées à budget égal et valoriser les pertes. Augmenter le coût réduit les effectifs de ce monotype dans la soufflerie.',
