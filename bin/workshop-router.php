@@ -49,7 +49,7 @@ if(str_starts_with($path,'/api/')){
         };
         echo json_encode(['ok'=>true,'data'=>$result],JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
     }catch(ProfileValidationException $e){http_response_code(422);echo json_encode(['ok'=>false,'errors'=>$e->errors],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);}
-    catch(Throwable $e){$status=$e->getCode();http_response_code(is_int($status)&&$status>=400&&$status<600?$status:422);echo json_encode(['ok'=>false,'errors'=>[['code'=>'request_error','path'=>'','message'=>$e->getMessage()]]],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);}
+    catch(Throwable $e){http_response_code(\Waar\MicroCombat\Workshop\JsonApiRuntime::statusFor($e));echo json_encode(['ok'=>false,'errors'=>[['code'=>'request_error','path'=>'','message'=>$e->getMessage()]]],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);}
     return;
 }
 if($path==='/')$path='/index.html';$file=realpath($public.$path);if($file===false||!str_starts_with(str_replace('\\','/',$file),str_replace('\\','/',$public).'/')||!is_file($file)){http_response_code(404);echo 'Not found';return;}

@@ -5,6 +5,13 @@ namespace Waar\MicroCombat\Workshop;
 /** HTTP-only runtime: long, bounded calculations and JSON even after fatal errors. */
 final class JsonApiRuntime
 {
+    public static function statusFor(\Throwable $error): int
+    {
+        $status=$error->getCode();
+        if(is_int($status)&&$status>=400&&$status<600)return $status;
+        return $error instanceof \InvalidArgumentException||$error instanceof \JsonException?422:500;
+    }
+
     public static function begin(string $path): void
     {
         // Keep finite timeouts; do not change php.ini or the budgets/seeds of the calculation.
