@@ -4,7 +4,7 @@
 <body>
 <header class="app-header">
   <a class="brand" href="#units"><span class="brand-mark">W</span> WAAR <span class="brand-sub">Soufflerie</span></a>
-  <nav class="journey" aria-label="Configuration"><button data-step="units" aria-current="page">Unités</button><button data-step="relations">Contres</button><button data-step="combat">Combat</button><button data-step="weather">Météo</button><button data-step="trial">Test</button><button data-step="expert">Zones</button></nav>
+  <nav class="journey" aria-label="Configuration"><button data-step="units" aria-current="page">Unités</button><button data-step="relations">Contres</button><button data-step="weather">Météo</button><button data-step="combat">Combat</button><button data-step="trial">Test</button><button data-step="expert">Zones</button></nav>
   <div class="header-actions"><button id="open-duel" class="primary">Tester ↗</button><details id="ready"><summary>Profil</summary><div class="profile-menu"><label>Nom<input id="profile-label"></label><label>Identifiant<input id="profile-id"></label><span id="profile-version"></span><button id="download-profile">Exporter le profil</button><label class="file">Importer un profil<input id="import-profile" type="file" accept="application/json"></label><button id="reset-profile" class="danger">Repartir de Test 2</button></div></details></div>
 </header>
 <main>
@@ -17,18 +17,18 @@
 <section id="relations" data-view hidden>
   <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Contres</h1></div></div>
   <div class="unit-workspace"><nav id="relation-unit-selector" class="unit-selector" aria-label="Unité dont les contres sont à configurer"></nav><div class="panel relation-panel"><p class="hint">Multiplie les dégâts de l’unité vers cette cible, sans changer sa probabilité de la cibler. ×1 : neutre ; ×1,5 : +50 % ; ×0 : aucun dégât. Le sens inverse se règle séparément.</p><div class="relation-form"><label>Cible<select id="relation-target"></select></label><label>Dégâts ×<input id="relation-factor" type="number" min="0" max="10" step=".01" value="1.5"></label><button id="add-relation" class="primary">Appliquer</button></div><div id="relation-list" class="chips"></div></div></div>
-  <div class="section-footer"><button data-go="units">← Unités</button><button data-go="combat">Combat →</button></div>
+  <div class="section-footer"><button data-go="units">← Unités</button><button data-go="weather">Météo →</button></div>
+</section>
+<section id="weather" data-view hidden>
+  <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Météo</h1></div></div>
+  <div class="unit-workspace weather-workspace"><nav id="weather-tabs" class="weather-presets" aria-label="Preset météo à configurer"></nav><div class="panel"><p class="hint">Chaque preset multiplie l’attaque et la précision moyenne, jamais son amplitude. ×1 conserve la valeur ; ×0,8 la réduit de 20 %. La météo sélectionnée ici sert aussi à la mesure des monotypes.</p><div class="weather-head"><span>Unité</span><span>Attaque</span><span>Précision</span></div><div id="weather-grid" class="weather-grid"></div></div></div>
+  <div class="section-footer"><button data-go="relations">← Contres</button><button data-go="combat">Combat →</button></div>
 </section>
 <section id="combat" data-view hidden>
   <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Combat</h1></div><span id="combat-summary" class="badge"></span></div>
   <div class="combat-grid"><div class="panel"><h2>Résolution</h2><div class="settings resolution-settings"><label class="rounds-setting">Rounds<output id="rounds-out"></output><input data-combat="maxRounds" type="range" min="1" max="30" step="1"></label><label id="surrender-threshold">Seuil de morts avant reddition<output id="surrender-out"></output><input data-combat="surrenderDeadPercent" type="range" min="0" max="100" step="5"></label><label class="tie-setting">Départage<select data-combat="tieBreakCriterion"><option value="economic">Coût économique restant</option><option value="structure">Proportion de structure restante</option></select></label><label class="tie-setting">Égalité exacte<select data-combat="equalityPolicy"><option value="defender">Avantage au défenseur</option><option value="draw">Match nul</option></select></label></div></div><div class="panel"><h2>Projection de sortie</h2><div class="settings"><label>Compression des hors-combat <output id="compression-out"></output><input data-combat="lossCompressionPercent" type="range" min="0" max="100"></label><label>Prisonniers <output id="capture-out"></output><input data-combat="capturePercent" type="range" min="0" max="10"></label></div><p class="hint">Cette projection ne change ni le combat brut, ni le vainqueur, ni la position des points dans les zones.</p></div>
   </div>
-  <div class="section-footer"><button data-go="relations">← Contres</button><button data-go="weather">Météo →</button></div>
-</section>
-<section id="weather" data-view hidden>
-  <div class="section-heading"><div><span class="eyebrow">CONFIGURATION</span><h1>Météo</h1></div></div>
-  <div class="unit-workspace weather-workspace"><nav id="weather-tabs" class="weather-presets" aria-label="Preset météo à configurer"></nav><div class="panel"><p class="hint">Chaque preset multiplie l’attaque et la précision moyenne, jamais son amplitude. ×1 conserve la valeur ; ×0,8 la réduit de 20 %. La météo sélectionnée ici sert aussi à la mesure des monotypes.</p><div class="weather-head"><span>Unité</span><span>Attaque</span><span>Précision</span></div><div id="weather-grid" class="weather-grid"></div></div></div>
-  <div class="section-footer"><button data-go="combat">← Combat</button><button data-go="trial">Test →</button></div>
+  <div class="section-footer"><button data-go="weather">← Météo</button><button data-go="trial">Test →</button></div>
 </section>
 <section id="trial" data-view hidden>
   <div class="section-heading"><div><span class="eyebrow">SIMULATION</span><h1>Test</h1></div><span class="badge">A → B & B → A</span></div>
@@ -36,7 +36,7 @@
   <div class="duel-config"><div class="army panel camp-a"><h2>Camp A</h2><p class="hint">Effectif : <strong id="count-a">100</strong> / 100 000 unités</p><div id="army-a"></div><div class="army-cost">Construction <strong id="cost-a">0</strong></div></div><div class="duel-options panel"><h2>Conditions de combat</h2><label>Météo commune<select id="duel-weather"></select><small>La même météo s’applique aux deux camps.</small></label><label>Graine aléatoire<input id="duel-seed" type="number" min="0" max="2147483647" value="42"><small>Même profil, mêmes armées et même graine : résultat reproductible.</small></label><button id="simulate" class="primary">Simuler les deux sens</button><details class="duel-effects"><summary>Effets acquis</summary><p class="hint">Import JSON explicite, séparé par camp. La météo est ajoutée ensuite par le backend.</p><div><button id="demo-modifiers" type="button">Charger la démo</button><button id="clear-modifiers" type="button">Retirer les effets</button><label class="file">Importer JSON<input id="import-modifiers" type="file" accept="application/json"></label></div><p id="modifier-summary" class="muted"></p></details><span class="hint">Deux combats ponctuels, pas un taux de victoire.</span></div><div class="army panel camp-b"><h2>Camp B</h2><p class="hint">Effectif : <strong id="count-b">100</strong> / 100 000 unités</p><div id="army-b"></div><div class="army-cost">Construction <strong id="cost-b">0</strong></div></div></div>
   <div id="duel-errors" role="alert"></div><div id="duel-stale" class="stale hidden">Résultat à recalculer.</div><div id="duel-results"></div>
   </div></div>
-  <div class="section-footer"><button data-go="weather">← Météo</button><button id="start-expert" data-go="expert">Zones →</button></div>
+  <div class="section-footer"><button data-go="combat">← Combat</button><button id="start-expert" data-go="expert">Zones →</button></div>
 </section>
 <section id="expert" data-view hidden>
   <div class="section-heading"><div><span class="eyebrow">CALIBRATION</span><h1>Zones</h1></div><button class="primary" id="measure">Mesurer les monotypes</button></div>
