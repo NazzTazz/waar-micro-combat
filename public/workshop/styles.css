@@ -23,3 +23,5 @@ main{width:min(1440px,100%);margin:auto;padding:28px 32px 40px}.section-heading{
 @media(max-width:760px){#duel-results .result-grid{grid-template-columns:1fr}.analysis-heading{align-items:start;flex-direction:column}}
 
 .round-navigation{display:flex;align-items:center;justify-content:center;gap:20px;margin:20px 0 12px}.round-navigation strong{min-width:110px;text-align:center;font-variant-numeric:tabular-nums}.round-navigation button{font-size:20px;min-width:48px}.round-navigation button:disabled{opacity:.35;cursor:default}
+
+.defense-setting{margin:26px 0;width:100%}.defense-setting>label{display:flex;justify-content:space-between;align-items:center}.defense-value{font-size:20px;color:var(--accent)}.defense-setting input[type=range]{width:100%;margin:18px 0 8px;padding:0}.defense-ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.defense-help{margin:14px 0 0;color:var(--ink);font-size:13px}

@@ -2,8 +2,6 @@
 (() => {
   const help = {
     strikesPerAttack: 'Répartit la même attaque entre plusieurs frappes. Plus de frappes donne des touches moins puissantes et peut limiter les dégâts excédentaires.',
-    defendingEfficiency: 'Multiplie les dégâts infligés lorsque cette unité défend. ×1,25 donne +25 % de dégâts ; ce réglage ne réduit pas les dégâts reçus.',
-    cost: 'Prix de construction utilisé pour comparer les armées à budget égal et valoriser les pertes. Augmenter le coût réduit les effectifs de ce monotype dans la soufflerie.',
     capturable: 'Autorise la capture des blessés de cette unité si son camp perd et si le taux de prisonniers est supérieur à zéro.',
     maxRounds: 'Limite la durée du combat. Si les deux camps sont encore en lice, le critère de départage désigne le vainqueur.',
     surrenderEnabled: 'Arrête le combat lorsqu’un camp atteint le seuil de morts. Désactivée, la résolution continue jusqu’à une autre condition de fin.',
