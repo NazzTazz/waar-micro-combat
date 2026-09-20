@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict');
+require('../resources/acceptance-zones-model.js');
+const model=globalThis.WaarAcceptanceZonesModel;
+const zone={id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',endpoint:'tip',xMetric:'winRate',yMetric:'rawCasualtyRatio',shape:'ellipse',center:{x:.5,y:1},radii:{x:.05,y:.05},enabled:true,approval:'draft',source:{kind:'observation',referenceId:'test',referencePointId:'soldier-vs-soldier/attacker',originalCenter:{x:.5,y:1},modifiedManually:false}};
+const doc={schemaVersion:'waar-consequence-editor-zones/0.1',experimentId:'test',corpusFingerprint:'a'.repeat(64),comparisonProfileId:'workshop-consequences-v1',valuationId:'waar-profile-costs-v1',generation:{id:'test',label:'Test',radiusX:.05,radiusY:.05,readOnly:false},zones:[zone]};
+const context={...doc,editorSchema:doc.schemaVersion,referenceId:'test',initialZones:[zone]};
+assert.equal(model.validateAndClassify(doc,context).staleZoneIds.size,0);
+const old=structuredClone(doc);old.zones[0].yMetric='rawLossRatio';
+assert.throws(()=>model.validateAndClassify(old,context),/métriques/);
+console.log('workshop-casualty-zones: ok');

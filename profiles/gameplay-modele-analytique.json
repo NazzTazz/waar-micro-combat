@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "waar-gameplay-mathematical-model/1",
+  "status": "analytical-model-not-validated-candidate",
+  "costs": {
+    "soldier": 10,
+    "spearman": 70,
+    "archer": 70,
+    "knight": 550
+  },
+  "budget": 400400,
+  "lossMetric": "pre-compression-cost-of-wounded-plus-dead-prisoners-already-in-wounded",
+  "mirrorApproximation": {
+    "assumptions": [
+      "negligible-deaths",
+      "equal-living-populations",
+      "positive-damage",
+      "constant-accuracy",
+      "hits-per-unit-at-most-one-per-round"
+    ],
+    "formula": "loss = 1 - (1 - strikes * accuracy)^rounds",
+    "values": [
+      {
+        "rounds": 3,
+        "intensityFor10Percent": 0.03451061539437028,
+        "intensityFor50Percent": 0.2062994740159002,
+        "intensityFor99Percent": 0.7845565309968117
+      },
+      {
+        "rounds": 10,
+        "intensityFor10Percent": 0.010480741793785553,
+        "intensityFor50Percent": 0.06696700846319259,
+        "intensityFor99Percent": 0.36904265551980675
+      },
+      {
+        "rounds": 30,
+        "intensityFor10Percent": 0.0035058572695848556,
+        "intensityFor50Percent": 0.022840031565754093,
+        "intensityFor99Percent": 0.14230410140910588
+      }
+    ]
+  },
+  "buffer": {
+    "assumptions": [
+      "initial-populations",
+      "proportional-targeting",
+      "equal-incoming-hit-volume",
+      "before-reallocation"
+    ],
+    "values": [
+      {
+        "soldierBudgetFraction": 0,
+        "knightHitShare": 1,
+        "perKnightExposureRelativeToFullKnights": 1,
+        "knightCountRelativeToFullKnights": 1
+      },
+      {
+        "soldierBudgetFraction": 0.1,
+        "knightHitShare": 0.140625,
+        "perKnightExposureRelativeToFullKnights": 0.15625,
+        "knightCountRelativeToFullKnights": 0.9
+      },
+      {
+        "soldierBudgetFraction": 0.2,
+        "knightHitShare": 0.06779661016949153,
+        "perKnightExposureRelativeToFullKnights": 0.0847457627118644,
+        "knightCountRelativeToFullKnights": 0.8
+      },
+      {
+        "soldierBudgetFraction": 0.5,
+        "knightHitShare": 0.017857142857142856,
+        "perKnightExposureRelativeToFullKnights": 0.03571428571428571,
+        "knightCountRelativeToFullKnights": 0.5
+      }
+    ]
+  }
+}

@@ -16,7 +16,7 @@ final class WorkshopRegressionTest extends TestCase
     private function zones(array $measurement): array
     {
         return array_map(static fn(array $row):array => [
-            'id'=>$row['id'], 'center'=>['x'=>$row['winRate'],'y'=>$row['appliedLossRatio']],
+            'id'=>$row['id'], 'center'=>['x'=>$row['winRate'],'y'=>$row['rawCasualtyRatio']],
             'radii'=>['x'=>.05,'y'=>.1], 'sourceFingerprint'=>$measurement['profileFingerprint'],
             'modelVersion'=>$measurement['modelVersion'], 'context'=>$measurement['context'],
         ], $measurement['rows']);
@@ -40,7 +40,7 @@ final class WorkshopRegressionTest extends TestCase
         $profile=EngineProfile::defaults();
         $measurement=(new MonotypeMeasurementService())->measure($profile,'neutral',42,1);
         $zones=$this->zones($measurement);
-        foreach (['profile','seed','weather','iterations','model','unknown','duplicate','radius','missing'] as $case) {
+        foreach (['profile','seed','weather','iterations','model','previous-model','unknown','duplicate','radius','missing'] as $case) {
             $bad=$zones;
             switch ($case) {
                 case 'profile': $bad[0]['sourceFingerprint']='foreign'; break;
@@ -48,6 +48,7 @@ final class WorkshopRegressionTest extends TestCase
                 case 'weather': $bad[0]['context']['weather']='rain'; break;
                 case 'iterations': $bad[0]['context']['iterations']='1'; break;
                 case 'model': $bad[0]['modelVersion']='foreign'; break;
+                case 'previous-model': $bad[0]['modelVersion']='waar-micro-combat/consequences-v1'; break;
                 case 'unknown': $bad[0]['id']='unknown'; break;
                 case 'duplicate': $bad[1]=$bad[0]; break;
                 case 'radius': $bad[0]['radii']['x']=0; break;

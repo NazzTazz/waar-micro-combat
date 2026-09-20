@@ -1,5 +1,19 @@
 # Waar Micro Combat
 
+Dans la soufflerie, l'axe des pertes mesure désormais **blessés + morts avant
+compression**, sous l'identifiant `rawCasualtyRatio`. Les prisonniers sont un
+indicateur séparé ; ils ne sont pas ajoutés aux blessés bruts. En monotype, le
+ratio d'effectifs est aussi le ratio du coût perdu ou immobilisé. Les anciens
+objectifs `rawLossRatio` (morts seuls) doivent être remesurés ; la géométrie peut
+être réassociée explicitement. Reconstruire le runtime Rust après mise à jour.
+
+La soufflerie dispose aussi d'un premier optimiseur évolutif : jusqu'à quatre
+générations de huit profils, avec descendants issus des résultats précédents,
+mutations combinées et export du candidat. La recherche historique à huit profils
+reste disponible côté API. Voir
+[`docs/spec-generateur-optimiseur-candidats.md`](docs/spec-generateur-optimiseur-candidats.md)
+pour le contrat, les preuves attendues et les fonctions encore différées.
+
 Standalone deterministic micro-combat workbench for Waar's soldier, spearman,
 archer, and knight. The package is pure PHP 8.2+, with offline HTML reports and
 small dependency-free JavaScript presentation tests.
@@ -125,6 +139,7 @@ deux sens, mesurer les 16 confrontations monotypes, dessiner 32 zones et lancer
 une recherche bornée à huit candidats :
 
 ```bash
+cargo build --locked --release --manifest-path engines/waar-cohort/rust/Cargo.toml
 php bin/run-workshop.php
 ```
 
@@ -133,6 +148,17 @@ Ouvrir ensuite `http://127.0.0.1:8080`. Le serveur ne publie que
 navigateur ; l’export JSON reste disponible si ce stockage ne l’est pas. Il
 s’agit d’un atelier local : aucun résultat n’est appliqué aux armées du jeu et
 aucun candidat n’est approuvé automatiquement.
+
+Le duel, les mesures et la recherche utilisent le même moteur de cohortes Rust
+via un travail JSONL par appel. L'absence ou l'incompatibilité du binaire est une
+erreur explicite : il n'existe aucun repli silencieux vers l'ancien moteur. Le
+runtime PHP de référence est réservé au diagnostic et se sélectionne
+explicitement avec `WAAR_COHORT_RUNTIME=php`.
+
+Un profil `waar-engine-profile/0.1` doit passer par l'action de migration de
+l'interface avant son import. La migration crée un profil `0.2`, conserve les
+choix encore représentables et marque les anciennes mesures comme obsolètes ;
+elle ne réinterprète jamais silencieusement leur physique.
 
 Les JSON de brouillon peuvent contenir des fiches absentes (`null`) : seules les
 unités présentes dans un duel sont requises pour le simuler, tandis que
@@ -150,3 +176,12 @@ la seed de recherche (314159) n’est pas une seed de mesure.
 Modifier les objectifs ou réglages invalide les résultats, y compris une réponse
 encore en cours. La dernière recherche reste exportable en JSON, avec son profil
 de référence, après adoption d’un candidat comme nouveau brouillon.
+
+Le duel accepte jusqu’à 1 000 000 d’unités par type et par camp, dans la saisie
+comme dans l’API. Son coût économique perdu est la somme des morts et blessés
+après compression, valorisés au coût du profil ; les prisonniers sont exclus.
+Cette correction est identifiée par `wounded-capture-then-compress/2` dans les
+rapports PHP et Rust (recompiler le binaire Rust après mise à jour). Les anciens
+rapports conservent leur ancien calcul. Les ellipses continuent à mesurer les
+blessés + morts avant compression. Ni les vainqueurs ni les règles de combat
+ne changent avec cette correction de valorisation.

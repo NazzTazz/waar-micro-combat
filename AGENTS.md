@@ -2,9 +2,11 @@
 
 ## Scope
 
-This is a pure PHP 8.2+ combat workbench for the four Waar units: soldier,
-spearman, archer, and knight. It has no Symfony, Doctrine, database, Rust, or
-automatic Arbestra inheritance.
+This is a PHP 8.2+ workbench for configuring and evaluating the selected Rust
+cohort combat engine for the four Waar units: soldier, spearman, archer, and
+knight. PHP owns validation, orchestration, experiments, and reports; Rust owns
+combat resolution. It has no Symfony, Doctrine, database, or automatic Arbestra
+inheritance.
 
 ## Engineering rules
 
@@ -19,6 +21,15 @@ automatic Arbestra inheritance.
 - Never hand-edit frozen files under `experiments/references/` to make tests pass.
 - Keep experiments bounded. The routine smoke search is 8 candidates. T31's
   128-candidate search and full T33 validation are long, manual operations.
+
+## Frontend iteration
+
+- Do not rebuild container images for each frontend/CSS adjustment when the
+  change can be validated locally or in a mounted development environment.
+- Use a short edit/refresh/validate loop. Batch visual changes and perform a
+  single final image rebuild after validation, only if deployment requires it.
+- If a rebuild is unavoidable for validation, explain the concrete constraint
+  before rebuilding and preserve Docker layer caching where possible.
 
 ## Verification
 

@@ -4,7 +4,7 @@ namespace Waar\MicroCombat;
 
 final class CombatResolver
 {
-    public function resolve(PreparedBattle $battle): BattleResult
+    public function resolve(PreparedBattle $battle, ?callable $onRound = null): BattleResult
     {
         $states = [
             CombatSide::Attacker->value => $this->initialState($battle->attacker),
@@ -18,6 +18,8 @@ final class CombatResolver
         $random = new Lcg31($battle->seed);
         $rounds = [];
         for ($round = 1; $round <= $battle->ruleset->maxRounds; ++$round) {
+            $before = null === $onRound ? null : $this->traceStates($states);
+            $attackerContributions = $defenderContributions = null === $onRound ? null : [];
             $attackerFactor = $random->nextFactor($battle->ruleset->randomSpreadMicro);
             $defenderFactor = $random->nextFactor($battle->ruleset->randomSpreadMicro);
             $attackerDamage = $this->damage(
@@ -26,6 +28,7 @@ final class CombatResolver
                 false,
                 $attackerFactor,
                 $battle->ruleset,
+                $attackerContributions,
             );
             $defenderDamage = $this->damage(
                 $states[CombatSide::Defender->value],
@@ -33,9 +36,14 @@ final class CombatResolver
                 true,
                 $defenderFactor,
                 $battle->ruleset,
+                $defenderContributions,
             );
             $this->apply($states[CombatSide::Defender->value], $attackerDamage);
             $this->apply($states[CombatSide::Attacker->value], $defenderDamage);
+            if (null !== $onRound) {
+                $onRound(['number'=>$round, 'before'=>$before, 'after'=>$this->traceStates($states),
+                    'attacks'=>['attacker'=>$attackerContributions, 'defender'=>$defenderContributions]]);
+            }
             $rounds[] = [
                 'number' => $round,
                 'randomFactorMicro' => [
@@ -94,7 +102,7 @@ final class CombatResolver
      * @param array<string, array{unit: PreparedUnit, initial: int, survivors: int, initialStructureMicro: int, remainingStructureMicro: int}> $target
      * @return array<string, int>
      */
-    private function damage(array $acting, array $target, bool $defending, int $randomFactorMicro, CombatRuleset $ruleset): array
+    private function damage(array $acting, array $target, bool $defending, int $randomFactorMicro, CombatRuleset $ruleset, ?array &$contributions = null): array
     {
         $damage = array_fill_keys(array_column(UnitType::cases(), 'value'), 0);
         $targetCount = $this->totalSurvivors($target);
@@ -107,8 +115,10 @@ final class CombatResolver
                 continue;
             }
             $pressure = FixedPoint::checkedMultiply($source['survivors'], $source['unit']->attackMicro);
+            $basePressure = $pressure;
             $roleFactor = $defending ? $source['unit']->defendingEfficiencyMicro : FixedPoint::SCALE;
             $pressure = FixedPoint::mulDivNearest($pressure, $roleFactor, FixedPoint::SCALE);
+            $rolePressure = $pressure;
             $pressure = FixedPoint::mulDivNearest($pressure, $randomFactorMicro, FixedPoint::SCALE);
             foreach (UnitType::cases() as $targetType) {
                 $exposedCount = $target[$targetType->value]['survivors'];
@@ -118,10 +128,34 @@ final class CombatResolver
                 $exposed = FixedPoint::mulDivNearest($pressure, $exposedCount, $targetCount);
                 $contribution = FixedPoint::mulDivNearest($exposed, $ruleset->damageFactor($actingType, $targetType), FixedPoint::SCALE);
                 $damage[$targetType->value] = FixedPoint::checkedAdd($damage[$targetType->value], $contribution);
+                if (null !== $contributions) {
+                    $contributions[] = ['source'=>$actingType->value, 'target'=>$targetType->value,
+                        'sourceCount'=>$source['survivors'], 'targetCount'=>$exposedCount, 'totalTargetCount'=>$targetCount,
+                        'unitAttackMicro'=>$source['unit']->attackMicro,
+                        'damagePerTargetMicro'=>FixedPoint::mulDivNearest($contribution,1,$exposedCount),
+                        'baseAttackMicro'=>$basePressure, 'defendingFactorMicro'=>$roleFactor,
+                        'afterDefenseMicro'=>$rolePressure, 'randomFactorMicro'=>$randomFactorMicro,
+                        'afterRandomMicro'=>$pressure, 'exposedAttackMicro'=>$exposed,
+                        'counterFactorMicro'=>$ruleset->damageFactor($actingType, $targetType), 'damageMicro'=>$contribution];
+                }
             }
         }
 
         return $damage;
+    }
+
+    /** Optional diagnostic snapshot, never used to resolve combat. */
+    private function traceStates(array $states): array
+    {
+        $snapshot=[];
+        foreach ($states as $side=>$units) foreach ($units as $type=>$row) {
+            $attack=FixedPoint::checkedMultiply($row['survivors'],$row['unit']->attackMicro);
+            $factor=$side===CombatSide::Defender->value?$row['unit']->defendingEfficiencyMicro:FixedPoint::SCALE;
+            $snapshot[$side][$type]=['count'=>$row['survivors'], 'attackMicro'=>$attack,
+                'defendingFactorMicro'=>$factor, 'effectiveAttackMicro'=>FixedPoint::mulDivNearest($attack,$factor,FixedPoint::SCALE),
+                'structureMicro'=>$row['remainingStructureMicro']];
+        }
+        return $snapshot;
     }
 
     /**

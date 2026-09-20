@@ -18,13 +18,15 @@
         "test": "phpunit",
         "test:js": [
             "node tests/acceptance-zones-model.test.js",
+            "node tests/workshop-casualty-zones.test.js",
             "node tests/finalist-comparison-model.test.js",
             "node tests/finalist-stability-model.test.js",
             "node tests/mixed-composition-observation-model.test.js",
             "node tests/candidate-legacy-comparison.test.js",
             "node tests/workshop-model.test.js",
             "node tests/workshop-ui.test.js",
-            "node tests/workshop-http.test.js"
+            "node tests/workshop-http.test.js",
+            "node tests/workshop-runtime.test.js"
         ],
         "test:all": ["@test", "@test:js"],
         "smoke": "php bin/run-wind-tunnel.php experiments/t24-astra-vector-corrections.json reports/smoke"

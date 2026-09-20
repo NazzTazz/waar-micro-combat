@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "waar-combat-result/2",
+  "type": "object",
+  "required": ["schemaVersion", "modelVersion", "winner", "reason", "decision", "rulesetVersion", "replayHash", "snapshot", "ruleset", "initialArmies", "attacker", "defender", "rounds"],
+  "properties": {
+    "schemaVersion": { "const": "waar-combat-result/2" },
+    "modelVersion": { "const": "waar-cohort-v2" },
+    "winner": { "enum": ["attacker", "defender", null] },
+    "reason": { "enum": ["initial_empty", "elimination", "surrender", "round_limit"] },
+    "replayHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "ruleset": { "$ref": "ruleset.schema.json" },
+    "initialArmies": {
+      "type": "object", "additionalProperties": false, "required": ["attacker", "defender"],
+      "properties": {
+        "attacker": { "$ref": "combat-request.schema.json#/$defs/counts" },
+        "defender": { "$ref": "combat-request.schema.json#/$defs/counts" }
+      }
+    },
+    "rounds": { "type": "array" },
+    "decision": { "type": "object" }, "rulesetVersion": { "type": "string" },
+    "snapshot": { "type": "object" }, "attacker": { "type": "object" }, "defender": { "type": "object" }
+  }
+}

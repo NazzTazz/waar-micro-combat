@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "waar-combat-request/2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "ruleset", "attacker", "defender", "seed"],
+  "properties": {
+    "schemaVersion": { "const": "waar-combat-request/2" },
+    "ruleset": { "$ref": "ruleset.schema.json" },
+    "attacker": { "$ref": "#/$defs/side" },
+    "defender": { "$ref": "#/$defs/side" },
+    "seed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
+    "traceLevel": { "enum": ["none", "full"], "default": "full" },
+    "consequences": { "$ref": "#/$defs/consequences" }
+  },
+  "$defs": {
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "soldier": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "spearman": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "archer": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "knight": { "type": "integer", "minimum": 0, "maximum": 4294967295 }
+      }
+    },
+    "modifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "id", "label", "unitType", "parameter", "operation", "value"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "unitType": { "enum": ["soldier", "spearman", "archer", "knight"] },
+        "parameter": { "enum": ["attack", "structure", "cost", "baseAccuracy", "accuracySpread", "strikesPerAttack", "defendingEfficiency", "capturable"] },
+        "operation": { "enum": ["multiply", "set"] },
+        "value": { "oneOf": [{ "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?$" }, { "type": "boolean" }] }
+      }
+    },
+    "side": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["units"],
+      "properties": {
+        "units": { "$ref": "#/$defs/counts" },
+        "modifiers": { "type": "array", "items": { "$ref": "#/$defs/modifier" }, "default": [] }
+      }
+    },
+    "consequences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compressionPercent", "capturePercent"],
+      "properties": {
+        "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "capturePercent": { "type": "integer", "minimum": 0, "maximum": 10 }
+      }
+    }
+  }
+}

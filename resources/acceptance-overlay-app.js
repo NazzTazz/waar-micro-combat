@@ -44,6 +44,7 @@
   if(ui.noReferenceMessage)$('#legacy-unavailable').textContent=ui.noReferenceMessage;
 
   const context={
+    editorSchema:ui.workshop?'waar-consequence-editor-zones/0.1':undefined,
     experimentId:data.experiment.id,
     corpusFingerprint:data.legacyReference.corpusFingerprint,
     comparisonProfileId:data.comparisonProfile.id,
@@ -81,18 +82,18 @@
   function armyBudget(row){return Object.entries(row.army).reduce((total,[unit,count])=>total+count*(data.comparisonProfile.valuation?.[unit]||0),0);}
   function objectiveMetric(metric=axis.value){return ui.canonicalMonotypeObjectives?(metric==='structure'?null:'survivors'):metric;}
   function findZone(row,which=endpoint.value){return row?zonesDocument.zones.find(zone=>zone.scenarioId===row.scenarioId&&zone.side===row.side&&zone.yMetric===objectiveMetric()&&zone.endpoint===which):null;}
-  function zoneState(zone){return zone?model.state(zone,data.rows,staleZoneIds):'missing';}
-  function stateLabel(state){return ({inside:'Dedans',outside:'Dehors','not-applicable':'Non applicable',disabled:'Désactivée',stale:'Provenance incompatible',missing:'Zone absente'})[state]||state;}
+  function zoneState(zone){return zone?(ui.workshop?(zone.enabled?'pending':'disabled'):model.state(zone,data.rows,staleZoneIds)):'missing';}
+  function stateLabel(state){return ({pending:'À évaluer en PHP',inside:'Dedans',outside:'Dehors','not-applicable':'Non applicable',disabled:'Désactivée',stale:'Provenance incompatible',missing:'Zone absente'})[state]||state;}
   function approvalLabel(zone){return zone?.approval==='confirmed'?'Confirmée':'Brouillon';}
   function recomputeCompatibility(){classified=model.validateAndClassify(zonesDocument,context);zonesDocument=classified.document;staleZoneIds=classified.staleZoneIds;}
   function markGeometryChanged(zone){zone.source.modifiedManually=true;}
   function linkHorizontalChange(zone,previousX,previousRadius){if(ui.complementaryWinRates&&(zone.center.x!==previousX||zone.radii.x!==previousRadius))model.linkWinRate(zonesDocument,zone.id);}
   function currentSerialized(){return model.serialize(zonesDocument);}
   function updateDirty(){const dirty=currentSerialized()!==lastExported;saveState.textContent=dirty?'Modifications non exportées':'Document exporté';saveState.className=dirty?'dirty':'saved';}
-  function pushMutation(before,label){const after=currentSerialized();if(before===after)return;undoStack.push({document:JSON.parse(before),label});redoStack.length=0;diagnostics.mutations++;updateDirty();updateHistoryButtons();}
+  function pushMutation(before,label){const after=currentSerialized();if(before===after)return;undoStack.push({document:JSON.parse(before),label});redoStack.length=0;diagnostics.mutations++;updateDirty();updateHistoryButtons();notifyWorkshop();}
   function mutate(label,operation){const before=currentSerialized();operation();recomputeCompatibility();pushMutation(before,label);renderChart(label,false);}
   function updateHistoryButtons(){undoButton.disabled=undoStack.length===0;redoButton.disabled=redoStack.length===0;}
-  function restore(snapshot){zonesDocument=model.clone(snapshot);editorState.reset();recomputeCompatibility();updateDirty();updateHistoryButtons();renderChart('history',false);}
+  function restore(snapshot){zonesDocument=model.clone(snapshot);editorState.reset();recomputeCompatibility();updateDirty();updateHistoryButtons();renderChart('history',false);notifyWorkshop();}
   function undo(){const action=undoStack.pop();if(!action)return;redoStack.push({document:model.clone(zonesDocument),label:action.label});restore(action.document);}
   function redo(){const action=redoStack.pop();if(!action)return;undoStack.push({document:model.clone(zonesDocument),label:action.label});restore(action.document);}
 
@@ -114,7 +115,7 @@
   function zoneSeries(rows,metric,selectedId){
     const zones=visibleZones(rows,metric,selectedId);
     if(!zones.length)return [];
-    return [{id:'acceptance-zones',name:'Zones d’acceptation',type:'custom',coordinateSystem:'cartesian2d',silent:false,clip:true,z:1,tooltip:{show:false},data:zones.map(zone=>({value:[zone.center.x,zone.center.y,zone.radii.x,zone.radii.y],zone})),renderItem:(params,api)=>{
+    return [{id:'acceptance-zones',name:'Zones d’acceptation',type:'custom',coordinateSystem:'cartesian2d',silent:false,clip:true,z:1,tooltip:{show:false,trigger:'none'},data:zones.map(zone=>({value:[zone.center.x,zone.center.y,zone.radii.x,zone.radii.y],zone})),renderItem:(params,api)=>{
       const item=zones[params.dataIndex],center=api.coord([item.center.x,item.center.y]),size=api.size([item.radii.x*2,item.radii.y*2]);
       const selected=item.scenarioId===selectedId&&item.side===zoneSide.value&&item.endpoint===endpoint.value,emphasized=selected||allZones.checked;
       const state=zoneState(item),disabled=state==='disabled',stale=state==='stale';
@@ -192,7 +193,7 @@
   function renderChart(reason='initial',animateOverride=null){
     pendingRender=performance.now();const rows=visibleRows();diagnostics.lastVisibleRows=rows.length;
     const animate=animateOverride??(motion.checked&&!reducedMotion.matches&&!editMode);diagnostics.viewChanges.push({reason,requestedAt:pendingRender,visibleRows:rows.length});
-    chart.setOption({animation:animate,animationDuration:animate?180:0,animationDurationUpdate:animate?180:0,animationEasing:'cubicOut',animationEasingUpdate:'cubicOut',aria:{enabled:true,decal:{show:false}},grid:{left:66,right:28,top:30,bottom:58,containLabel:false},tooltip:{trigger:'item',confine:true,backgroundColor:'#11181a',borderColor:'#526068',textStyle:{color:'#f1eadf',fontSize:12}},xAxis:{type:'value',min:0,max:1,interval:.25,name:'Taux de victoire',nameLocation:'middle',nameGap:36,axisLabel:{formatter:v=>`${v*100} %`,color:'#aca89f',fontSize:12},nameTextStyle:{color:'#f1eadf',fontWeight:600},splitLine:{lineStyle:{color:'#303a3e'}}},yAxis:{type:'value',min:0,max:1,interval:.25,name:axisLabels[axis.value],nameLocation:'middle',nameGap:48,axisLabel:{formatter:v=>`${v*100} %`,color:'#aca89f',fontSize:12},nameTextStyle:{color:'#f1eadf',fontWeight:600},splitLine:{lineStyle:{color:'#303a3e'}}},series:buildSeries(rows)},{notMerge:true,lazyUpdate:false});
+    chart.setOption({animation:animate,animationDuration:animate?180:0,animationDurationUpdate:animate?180:0,animationEasing:'cubicOut',animationEasingUpdate:'cubicOut',aria:{enabled:true,decal:{show:false}},grid:{left:66,right:28,top:30,bottom:58,containLabel:false},tooltip:{show:!editMode,trigger:'item',triggerOn:editMode?'none':'mousemove|click',confine:true,backgroundColor:'#11181a',borderColor:'#526068',textStyle:{color:'#f1eadf',fontSize:12}},xAxis:{type:'value',min:0,max:1,interval:.25,name:'Taux de victoire',nameLocation:'middle',nameGap:36,axisLabel:{formatter:v=>`${v*100} %`,color:'#aca89f',fontSize:12},nameTextStyle:{color:'#f1eadf',fontWeight:600},splitLine:{lineStyle:{color:'#303a3e'}}},yAxis:{type:'value',min:0,max:1,interval:.25,name:axisLabels[axis.value],nameLocation:'middle',nameGap:48,axisLabel:{formatter:v=>`${v*100} %`,color:'#aca89f',fontSize:12},nameTextStyle:{color:'#f1eadf',fontWeight:600},splitLine:{lineStyle:{color:'#303a3e'}}},series:buildSeries(rows)},{notMerge:true,lazyUpdate:false});
     renderText(rows);requestAnimationFrame(renderHandles);
   }
 
@@ -232,7 +233,7 @@
     const list=$('#scenario-list');list.replaceChildren();scenarioRows.forEach(item=>{const button=document.createElement('button');button.type='button';button.textContent=item.scenarioLabel;button.title=item.scenarioLabel;button.setAttribute('aria-current',item.scenarioId===scenario.value?'true':'false');button.addEventListener('click',()=>{scenario.value=item.scenarioId;renderChart('scenario-list');});list.append(button);});
     renderEditor(row);renderGlobalSummary();renderTable(rows);renderProvenance();updateDirty();updateHistoryButtons();
   }
-  function renderGlobalSummary(){const totals=model.summary(zonesDocument,data.rows,staleZoneIds,context.initialZones.length);$('#summary').textContent=`Contraintes confirmées : ${totals.satisfied} / ${totals.confirmed} satisfaites · ${totals.drafts} brouillons · ${totals.disabled} désactivées · ${totals.stale} incompatibles · ${totals.notApplicable} non applicables · ${totals.missing} absentes. Estimations courantes, sans garantie statistique.`;}
+  function renderGlobalSummary(){if(ui.workshop){$('#summary').textContent='Les objectifs sont évalués côté PHP lors de la recherche.';return;}const totals=model.summary(zonesDocument,data.rows,staleZoneIds,context.initialZones.length);$('#summary').textContent=`Contraintes confirmées : ${totals.satisfied} / ${totals.confirmed} satisfaites · ${totals.drafts} brouillons · ${totals.disabled} désactivées · ${totals.stale} incompatibles · ${totals.notApplicable} non applicables · ${totals.missing} absentes. Estimations courantes, sans garantie statistique.`;}
   function renderTable(rows){const host=$('#table');host.replaceChildren();const table=document.createElement('table'),head=document.createElement('thead'),hr=document.createElement('tr');const headers=referenceAvailable?['Scénario','Camp','Armée','Base X/Y','Pointe X/Y','Legacy X/Y','Contrainte base','Contrainte pointe']:['Scénario','Camp','Armée','Base X/Y','Pointe X/Y','Budget exact','Base figée','Objectif pointe'];headers.forEach(label=>{const th=document.createElement('th');th.textContent=label;hr.append(th);});head.append(hr);table.append(head);const body=document.createElement('tbody');rows.forEach(row=>{const tr=document.createElement('tr'),base=findZone(row,'base'),tip=findZone(row,'tip'),ly=row.legacy.coordinates.y[axis.value];const zoneText=zone=>zone?`${approvalLabel(zone)} · ${stateLabel(zoneState(zone))}`:'Absente';const reference=referenceAvailable?(ly==null?'Indisponible':`${pct(row.legacy.coordinates.x)} / ${pct(ly)}`):armyBudget(row).toLocaleString('fr-FR');const values=[row.scenarioLabel,role(row),armyLabel(row),`${pct(row.micro.vector.x.from)} / ${pct(row.micro.vector.y[axis.value].from)}`,`${pct(row.micro.vector.x.to)} / ${pct(row.micro.vector.y[axis.value].to)}`,reference,referenceAvailable?zoneText(base):'Sans contrainte',zoneText(tip)];values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});body.append(tr);});table.append(body);host.append(table);}
   function renderProvenance(){const host=$('#provenance');host.replaceChildren();const title=document.createElement('strong');title.textContent='Provenance';const reference=referenceAvailable?`Référence ${data.legacyReference.id} · ruleset ${data.legacyReference.rulesetVersion}`:`Point de départ ${data.objectiveReference.label} · les centres initiaux ne sont pas des objectifs confirmés`;host.append(title,document.createElement('br'),document.createTextNode(reference),document.createElement('br'),document.createTextNode(`Sources ${data.legacyReference.sourceFingerprint}`),document.createElement('br'),document.createTextNode(`Corpus ${data.legacyReference.corpusFingerprint}`),document.createElement('br'),document.createTextNode(`Mesure ${data.comparisonProfile.id} / ${data.comparisonProfile.valuationId} · 80/110/130/350.`));}
 
@@ -252,7 +253,7 @@
       lastExported=migrated||converted?model.serialize(raw):model.serialize(zonesDocument);
       diagnostics.imports.push(staleZoneIds.size?'stale':converted?'canonical':migrated?'migrated':'valid');
       importStatus.textContent=staleZoneIds.size?`Import réussi : ${staleZoneIds.size} zones incompatibles, réancrage explicite requis.`:converted?`Import converti : ${zonesDocument.zones.length} objectifs survivants conservés ; ${candidate.removedCount} anciennes zones des autres axes retirées. Exportez le document corrigé.`:migrated?'Import T25A2 migré vers 0.2 : export requis pour enregistrer cette version.':'Import réussi, document compatible.';
-      renderChart('import',false);
+      renderChart('import',false);notifyWorkshop();
     }catch(error){diagnostics.imports.push('invalid');diagnostics.errors.push(`import:${error.message}`);importStatus.textContent=`Import refusé : ${error.message} L’état courant est conservé.`;}finally{importInput.value='';}
   }
 
@@ -268,12 +269,33 @@
   linkPairButton.addEventListener('click',()=>mutate('Liaison horizontale de la paire',()=>{const zone=findZone(selectedRow());if(zone)model.linkWinRate(zonesDocument,zone.id);}));
   exportButton.addEventListener('click',exportZones);importInput.addEventListener('change',()=>importZones(importInput.files?.[0]));
   chart.on('click',params=>{if(params.data?.zone){if(params.seriesId==='zone-centers')selectCenterObjective(params.data.zone);else selectObjective(params.data.zone);return;}if(params.data?.scenarioId){scenario.value=params.data.scenarioId;if(params.data.row)zoneSide.value=params.data.row.side;if(params.data.kind==='base'||params.data.kind==='tip')endpoint.value=params.data.kind;renderChart('chart-selection',false);}});
-  chart.on('mouseover',params=>highlightObjective(params.data?.zone,true));
-  chart.on('mouseout',params=>highlightObjective(params.data?.zone,false));
+  // The custom ellipse already receives its native emphasis on hover. Asking
+  // ECharts to highlight that same custom item recursively makes its tooltip
+  // controller look up a stale item model while the drag handles are redrawn.
+  // Only proxy the hover from the separate centre marker to the ellipse.
+  chart.on('mouseover',params=>{if(params.seriesId!=='acceptance-zones')highlightObjective(params.data?.zone,true);});
+  chart.on('mouseout',params=>{if(params.seriesId!=='acceptance-zones')highlightObjective(params.data?.zone,false);});
   chart.on('finished',()=>{const elapsed=performance.now()-pendingRender,last=diagnostics.viewChanges.at(-1);if(last&&last.finishedMs==null)last.finishedMs=elapsed;if(diagnostics.initialRenderMs==null)diagnostics.initialRenderMs=performance.now()-started;});
   [axis,side,legacyLayer,zonesLayer,allZones,motion,pairView].forEach(control=>control.addEventListener('change',()=>renderChart(control.id)));
   scenario.addEventListener('change',()=>renderChart('scenario'));reducedMotion.addEventListener?.('change',()=>renderChart('reduced-motion'));
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&editorState.hasActiveDrag()){event.preventDefault();cancelDrag();}else if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='z'){event.preventDefault();event.shiftKey?redo():undo();}else if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='y'){event.preventDefault();redo();}});
   const resizeObserver=new ResizeObserver(()=>{chart.resize({animation:{duration:0}});requestAnimationFrame(renderHandles);});resizeObserver.observe(chartNode);
+  function notifyWorkshop(){
+    if(ui.workshop)parent.postMessage({type:'waar-t27-zones',fingerprint:context.corpusFingerprint,document:zonesDocument},parent.location.origin);
+  }
+  if(ui.workshop){
+    editMode=true;
+    document.body.classList.add('workshop-editor');
+    window.addEventListener('message',event=>{
+      if(event.source!==parent||event.origin!==parent.location.origin||event.data?.type!=='waar-t27-comparison')return;
+      for(const row of data.rows){
+        const candidate=event.data.rows?.find(item=>item.scenarioId===row.scenarioId&&item.side===row.side);
+        row.micro.vector.x.to=candidate?.winRate??row.micro.vector.x.from;
+        row.micro.vector.y.rawCasualtyRatio.to=candidate?.rawCasualtyRatio??row.micro.vector.y.rawCasualtyRatio.from;
+      }
+      renderChart('comparison',false);
+    });
+    parent.postMessage({type:'waar-t27-ready',fingerprint:context.corpusFingerprint},parent.location.origin);
+  }
   renderChart();
 })();

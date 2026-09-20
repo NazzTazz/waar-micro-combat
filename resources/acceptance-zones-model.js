@@ -120,7 +120,8 @@ globalThis.WaarAcceptanceZonesModel = (() => {
     assert(object(raw), 'Le document de zones doit être un objet JSON.');
     const document = migrate(raw);
     keysExactly(document, ['schemaVersion', 'experimentId', 'corpusFingerprint', 'comparisonProfileId', 'valuationId', 'generation', 'zones'], 'Le document');
-    assert(document.schemaVersion === SCHEMA_VERSION, `Version non prise en charge : ${String(document.schemaVersion)}.`);
+    const consequenceEditor=context.comparisonProfileId==='workshop-consequences-v1' && context.editorSchema==='waar-consequence-editor-zones/0.1';
+    assert(document.schemaVersion === (consequenceEditor?context.editorSchema:SCHEMA_VERSION), `Version non prise en charge : ${String(document.schemaVersion)}.`);
     for (const field of ['experimentId', 'corpusFingerprint', 'comparisonProfileId', 'valuationId']) assert(typeof document[field] === 'string' && document[field].length > 0 && document[field].length <= 240, `${field} doit être une chaîne de 1 à 240 caractères.`);
     assert(/^[a-f0-9]{64}$/.test(document.corpusFingerprint), 'corpusFingerprint doit être une empreinte SHA-256 minuscule.');
     assert(object(document.generation), 'generation doit être un objet.');
@@ -142,7 +143,7 @@ globalThis.WaarAcceptanceZonesModel = (() => {
       assert(expected, `Identifiant de zone inconnu : ${zone.id}.`);
       assert(typeof zone.scenarioId === 'string' && zone.scenarioId.length > 0, `Scénario invalide pour ${zone.id}.`);
       assert(SIDES.has(zone.side) && ENDPOINTS.has(zone.endpoint), `Camp ou extrémité invalide pour ${zone.id}.`);
-      assert(zone.xMetric === 'winRate' && Y_METRICS.has(zone.yMetric), `Paire de métriques invalide pour ${zone.id}.`);
+      assert(zone.xMetric === 'winRate' && (consequenceEditor?zone.yMetric==='rawCasualtyRatio':Y_METRICS.has(zone.yMetric)), `Paire de métriques invalide pour ${zone.id}.`);
       assert(zone.shape === 'ellipse', `Forme non prise en charge pour ${zone.id}.`);
       assert(zoneKey(zone) === zoneKey(expected), `Association modifiée ou inconnue pour ${zone.id}.`);
       assert(!associations.has(zoneKey(zone)), `Association de zone dupliquée pour ${zone.id}.`); associations.add(zoneKey(zone));

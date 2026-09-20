@@ -15,6 +15,8 @@ class Element {
   get textContent(){return this.text||''}
   append(...children){this.children.push(...children)}
   before(){}
+  setAttribute(name,value){this[name]=value}
+  removeAttribute(name){delete this[name]}
   replaceChildren(...children){this.children=children;this.html=''}
   add(option){this.children.push(option);if(this.children.length===1)this.value=option.value}
   addEventListener(name,handler){this.listeners[name]=handler}
@@ -32,12 +34,17 @@ class Element {
 (async()=>{
   const elements=new Map();
   const element=selector=>{if(!elements.has(selector))elements.set(selector,new Element());return elements.get(selector)};
-  const units=Object.fromEntries(['soldier','spearman','archer','knight'].map(type=>[type,{attack:'7',structure:'18',defendingEfficiency:'1',cost:80,capturable:false}]));
-  const profile={schemaVersion:'waar-engine-profile/0.1',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(['neutral','rain','snow','heat'].map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,'1']))])),combat:{maxRounds:3,lossCompressionPercent:8,capturePercent:0}};
-  const measurement={profileFingerprint:'fp',modelVersion:'model',context:{baseSeed:42,iterations:100},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,appliedLossRatio:.06}]};
-  let pendingSearch,searchBody,confirmResult=true;
-  const storage=new Map();
+  const units=Object.fromEntries(['soldier','spearman','archer','knight'].map(type=>[type,{attack:'7',structure:'18',baseAccuracy:'0.15',accuracySpread:'0.02',strikesPerAttack:1,defendingEfficiency:'1',cost:80,capturable:false}]));
+  const weatherIds=['neutral','cloudy','snow','blizzard','heat','canicule','wind','storm','rain','thunderstorm'];
+  const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0}};
+  const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawCasualtyRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawCasualtyRatio:.06}]};
+  let pendingSearch,searchBody,confirmResult=true,malformedResponse=false;
+  const storage=new Map(),messages=[],listeners={};
+  element('#t27-editor').contentWindow={postMessage:message=>messages.push(message)};
+  const origin='http://localhost';
+  const editZones=x=>listeners.message({source:element('#t27-editor').contentWindow,origin,data:{type:'waar-t27-zones',fingerprint:'editor-fp',document:{schemaVersion:'waar-consequence-editor-zones/0.1',corpusFingerprint:'editor-fp',zones:[{id:measurement.rows[0].id,center:{x,y:.06},radii:{x:.05,y:.1},enabled:true,source:{referenceId:'fp'}}]}}});
   const document={querySelector:element,createElement:()=>new Element(),addEventListener(){},querySelectorAll(selector){
+    if(selector==='[data-combat]')return ['maxRounds','surrenderEnabled','surrenderDeadPercent','tieBreakCriterion','equalityPolicy','lossCompressionPercent','capturePercent'].map(key=>{const input=element('[data-combat='+key+']');input.dataset.combat=key;input.type=key==='surrenderEnabled'?'checkbox':key.includes('Policy')||key.includes('Criterion')?'select':'range';return input});
     if(selector==='[data-pick]'||selector==='[data-compare]'){
       const attribute=selector.slice(1,-1),key=attribute==='data-pick'?'pick':'compare';
       return [...element('#search-results').innerHTML.matchAll(new RegExp(attribute+'="(\\d+)"','g'))].map(match=>{const button=element(selector+match[1]);button.dataset[key]=match[1];return button});
@@ -45,37 +52,51 @@ class Element {
     if(selector==='.journey button')return [Object.assign(new Element(),{dataset:{step:'units'}})];
     return [];
   }};
-  const context=vm.createContext({document,structuredClone,console,confirm:()=>confirmResult,setTimeout:fn=>fn(),Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,setTimeout:fn=>fn(),Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+    if(malformedResponse)return {ok:false,status:500,json:async()=>{throw new SyntaxError('Unexpected token <')}};
     const body=options?.body?JSON.parse(options.body):null;
     let data;
     if(url.endsWith('default-profile'))data={profile:structuredClone(profile)};
+    else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
+    else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
     else if(url.endsWith('/measure'))data=structuredClone(measurement);
-    else if(url.endsWith('/search')){searchBody=body;data=await new Promise(resolve=>{pendingSearch=resolve})}
+    else if(url.endsWith('/optimize')){searchBody=body;data=await new Promise(resolve=>{pendingSearch=resolve})}
     else data={errors:[]};
     return {ok:true,json:async()=>({data})};
   }});
-  for(const file of ['model.js','app.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../public/workshop',file),'utf8'),context);
+  for(const file of ['model.js','app.js']){
+    let source=fs.readFileSync(path.join(__dirname,'../public/workshop',file),'utf8');
+    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary};\nfunction renderDuel(result){');
+    vm.runInContext(source,context);
+  }
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
   assert.equal(typeof element('#measure').onclick,'function');
+  const armyRow=element('#army-a').children[0];
+  assert.match(armyRow.innerHTML,/max="1000000"/);
+  armyRow.children[2].value='25000';armyRow.children[2].oninput();
+  assert.equal(Number(armyRow.children[1].value),25000);
+  armyRow.children[2].value='1000001';armyRow.children[2].oninput();
+  assert.equal(Number(armyRow.children[2].value),1000000);
+  const rounds=element('[data-combat=maxRounds]');
+  assert.equal(rounds['aria-label'],'Rounds');
+  rounds.value='5';rounds.oninput();
+  assert.equal(element('#rounds-out').textContent,5);
+  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.maxRounds,5);
   await element('#measure').onclick();
-  assert.match(element('#observation-values').textContent,/51\.000/);
-  element('#zone-x').value='80';element('#zone-x').onchange({target:element('#zone-x')});
-  assert.match(element('#observation-values').textContent,/51\.000/,'zone edits never move measured reference');
-  const chart=element('#zone-chart');
-  chart.onpointerdown({button:0,pointerId:1,clientX:250,clientY:250});
-  chart.onpointermove({clientX:450,clientY:350});
-  chart.onpointerup();
-  assert.match(element('#observation-values').textContent,/51\.000/,'drawing changes only the desired zone');
-  const searchResult=()=>({referenceProfile:structuredClone(profile),candidates:[{rank:1,fingerprint:'candidate',inside:32,score:0,worst:{id:'a'},profile:structuredClone(profile),observations:{rows:[{id:measurement.rows[0].id,winRate:.8,appliedLossRatio:.04}]}}]});
+  assert.equal(element('#t27-editor').srcdoc,'T27 fixture');
+  editZones(.8);
+  assert.equal(measurement.rows[0].winRate,.51,'editing T27 does not alter observations');
+  const searchResult=()=>({referenceProfile:structuredClone(profile),evaluated:1,candidateBudget:32,stopReason:'objectives_satisfied',generations:[{number:1,improved:true,best:{metrics:{inside:32,score:0}}}],candidates:[{rank:1,generation:1,operator:'reference',fingerprint:'candidate',inside:32,score:0,worst:{id:'a'},profile:structuredClone(profile),observations:{rows:[{id:measurement.rows[0].id,winRate:.8,rawCasualtyRatio:.04}]}}]});
 
   const run=element('#search').onclick();
   assert.equal(searchBody.measurementBaseSeed,42);
   assert.equal(searchBody.seed,314159);
+  assert.equal(searchBody.budget,32);
   pendingSearch(searchResult());await run;
   element('[data-compare]1').onclick();
-  assert.match(element('#observation-values').textContent,/80\.000/,'explicit comparison displays candidate');
-  element('#zone-x').value='20';element('#zone-x').onchange({target:element('#zone-x')});
+  assert.equal(messages.at(-1).rows[0].winRate,.8,'candidate observations sent to T27');
+  editZones(.2);
   assert.equal(document.querySelectorAll('[data-pick]').length,0,'edited zones remove candidate adoption');
 
   const late=element('#search').onclick();
@@ -96,5 +117,42 @@ class Element {
   confirmResult=true;await element('#prefill').onclick();
   assert.equal(element('#profile-label').value,'Retain this name');
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.label,'Retain this name');
+  const unitTypes=Object.keys(units);
+  const emptyCell=()=>({sourceCount:0,strikesPerAttack:1,allocatedAttempts:0,consumedAttempts:0,reallocatedAttempts:0,sampledHits:0,appliedHits:0,attackPerStrike:'7',accuracy:'0.15',attackFactor:'1',defendingEfficiency:'1',damagePerHit:'7',damageEmitted:'0',damageAbsorbed:'0',overkill:'0'});
+  const createMatrix=()=>Object.fromEntries(unitTypes.map(source=>[source,Object.fromEntries(unitTypes.map(target=>[target,emptyCell()]))]));
+  const defenderMatrix=createMatrix();for(const target of unitTypes)defenderMatrix.soldier[target].sourceCount=10;defenderMatrix.soldier.archer={...emptyCell(),sourceCount:10,allocatedAttempts:10,consumedAttempts:10,sampledHits:10,appliedHits:10,attackPerStrike:'7',accuracy:'1',attackFactor:'2',defendingEfficiency:'1.5',damagePerHit:'21',damageEmitted:'210',damageAbsorbed:'190',overkill:'20'};
+  const attackerMatrix=createMatrix();attackerMatrix.archer.soldier={...emptyCell(),sourceCount:5,allocatedAttempts:5,sampledHits:1,appliedHits:1};
+  const round={number:1,attackerAction:{attempts:5,hits:1,deaths:0,matrix:attackerMatrix},defenderAction:{attempts:10,hits:10,deaths:2,matrix:defenderMatrix},attackerDeathRatio:'0',defenderDeathRatio:'0.2'};
+  const prepared=unitTypes.map(type=>({type,attack:'7',structure:'18',cost:80,baseAccuracy:'0.15',accuracySpread:'0.02',strikesPerAttack:1,defendingEfficiency:'1',capturable:false,base:{type,attack:'7',structure:'18',cost:80,baseAccuracy:'0.15',accuracySpread:'0.02',strikesPerAttack:1,defendingEfficiency:'1',capturable:false},effects:[]}));
+  const armies={attacker:{soldier:0,spearman:0,archer:5,knight:0},defender:{soldier:10,spearman:0,archer:0,knight:0}};
+  const final={attacker:{healthy:{soldier:0,spearman:0,archer:5,knight:0},wounded:{soldier:0,spearman:0,archer:0,knight:0},dead:{soldier:0,spearman:0,archer:0,knight:0}},defender:{healthy:{soldier:7,spearman:0,archer:0,knight:0},wounded:{soldier:1,spearman:0,archer:0,knight:0},dead:{soldier:2,spearman:0,archer:0,knight:0}}};
+  const consequenceSide=(initial,economicLoss,percent)=>({economicLoss,economicLossPercent:String(percent),types:Object.fromEntries(unitTypes.map(type=>[type,{initial:initial[type],raw:{healthy:initial[type],wounded:0,dead:0},projected:{healthy:initial[type],wounded:0,dead:0,prisoners:0,freeSurvivors:initial[type]}}]))});
+  const direction={labels:{attacker:'B',defender:'A'},result:{initialArmies:armies,snapshot:{prepared:{attacker:{units:prepared},defender:{units:prepared}}},rounds:[round],...final},consequences:{attacker:consequenceSide(armies.attacker,480,6),defender:consequenceSide(armies.defender,100,3.333333)}};
+  assert.deepEqual(Array.from(context.reportViews.orderedSides(direction)),['defender','attacker']);
+  assert.match(context.reportViews.consequenceSummary(direction,'attacker',{A:10000,B:8000}),/480 \(6 %\)/,'percentage comes from the engine consequence report');
+  assert.match(context.reportViews.consequenceSummary(direction,'defender',{A:3000,B:8000}),/100 \(3,333333 %\)/);
+  const details=context.reportViews.detailedCombat(direction);
+  assert.ok(details.indexOf('Camp A')<details.indexOf('Camp B'),'A remains on the left when B attacks');
+  assert.match(details,/Attaque/);assert.match(details,/Structure/);assert.match(details,/Précision/);
+  assert.match(details,/Soldat A vers Archer B : 10 touches sur 10 tentatives/);
+  assert.match(details,/210 émis/,'damage is displayed from the native trace');
+  assert.match(details,/Coefficient défensif ×1,5/);
+  assert.match(details,/Contre ×2/);
+  assert.match(details,/Attaque par frappe : 7/);
+  assert.match(details,/10 combattants × 1 frappes/);
+  assert.match(details,/scope="col">Archer/);assert.match(details,/scope="row">Soldat/);
+  assert.match(details,/tabindex="0"/);assert.match(details,/role="tooltip"/);
+  const matrix=context.reportViews.roundAttacks(direction,round,'defender').match(/<table class="impact-matrix">(.*?)<\/table>/s)[1];
+  assert.equal((matrix.match(/scope="col"/g)||[]).length,5,'source heading plus all four target types');
+  assert.equal((matrix.match(/scope="row"/g)||[]).length,4,'all four source types, including empty cohorts');
+  assert.equal((matrix.match(/<td[ >]/g)||[]).length,16,'stable 4 × 4 matrix');
+  for(const name of ['Soldat','Lancier','Archer','Chevalier']){assert.ok(matrix.includes('scope="row">'+name));assert.ok(matrix.includes('scope="col">'+name));}
+  assert.match(matrix,/Cohorte source vide/);assert.match(matrix,/Aucune tentative allouée/);
+  assert.doesNotMatch(matrix,/NaN|Infinity/);
+  assert.match(details,/Round 1/);assert.doesNotMatch(details,/<details[^>]* open/);
+  malformedResponse=true;
+  await element('#measure').onclick();
+  assert.match(element('#measure-progress').textContent,/Réponse serveur invalide \(HTTP 500\)/);
+  assert.doesNotMatch(element('#measure-progress').textContent,/Unexpected token/);
   console.log('workshop-ui: ok (initialization, independent observations, vectors, stale responses, protected prefill)');
 })().catch(error=>{console.error(error);process.exitCode=1});

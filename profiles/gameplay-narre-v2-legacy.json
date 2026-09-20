@@ -1,0 +1,300 @@
+{
+  "schemaVersion": "waar-engine-profile/0.2",
+  "id": "gameplay-narre-v2-legacy",
+  "label": "Gameplay narré — coûts legacy — candidat v2",
+  "units": {
+    "soldier": {
+      "attack": "10",
+      "structure": "20",
+      "baseAccuracy": "0.1",
+      "accuracySpread": "0",
+      "strikesPerAttack": 1,
+      "defendingEfficiency": "1",
+      "cost": 10,
+      "capturable": true
+    },
+    "spearman": {
+      "attack": "10",
+      "structure": "30",
+      "baseAccuracy": "0.8",
+      "accuracySpread": "0",
+      "strikesPerAttack": 1,
+      "defendingEfficiency": "10",
+      "cost": 70,
+      "capturable": false
+    },
+    "archer": {
+      "attack": "80",
+      "structure": "20",
+      "baseAccuracy": "0.8",
+      "accuracySpread": "0",
+      "strikesPerAttack": 4,
+      "defendingEfficiency": "1",
+      "cost": 70,
+      "capturable": false
+    },
+    "knight": {
+      "attack": "150",
+      "structure": "60",
+      "baseAccuracy": "0.6",
+      "accuracySpread": "0",
+      "strikesPerAttack": 5,
+      "defendingEfficiency": "5",
+      "cost": 550,
+      "capturable": false
+    }
+  },
+  "relations": [
+    {
+      "acting": "soldier",
+      "target": "spearman",
+      "factor": "1"
+    },
+    {
+      "acting": "soldier",
+      "target": "archer",
+      "factor": "1"
+    },
+    {
+      "acting": "soldier",
+      "target": "knight",
+      "factor": "1"
+    },
+    {
+      "acting": "spearman",
+      "target": "soldier",
+      "factor": "1"
+    },
+    {
+      "acting": "spearman",
+      "target": "archer",
+      "factor": "1"
+    },
+    {
+      "acting": "spearman",
+      "target": "knight",
+      "factor": "0.3"
+    },
+    {
+      "acting": "archer",
+      "target": "soldier",
+      "factor": "1"
+    },
+    {
+      "acting": "archer",
+      "target": "spearman",
+      "factor": "0.3"
+    },
+    {
+      "acting": "archer",
+      "target": "knight",
+      "factor": "0.5"
+    },
+    {
+      "acting": "knight",
+      "target": "soldier",
+      "factor": "1"
+    },
+    {
+      "acting": "knight",
+      "target": "spearman",
+      "factor": "0.2"
+    },
+    {
+      "acting": "knight",
+      "target": "archer",
+      "factor": "1"
+    }
+  ],
+  "weather": {
+    "neutral": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "cloudy": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "snow": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "blizzard": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "heat": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "canicule": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "wind": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "storm": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "rain": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    },
+    "thunderstorm": {
+      "soldier": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "spearman": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "archer": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      },
+      "knight": {
+        "attack": "1",
+        "baseAccuracy": "1"
+      }
+    }
+  },
+  "combat": {
+    "maxRounds": 3,
+    "surrenderEnabled": false,
+    "surrenderDeadPercent": 20,
+    "tieBreakCriterion": "economic",
+    "equalityPolicy": "defender",
+    "lossCompressionPercent": 8,
+    "capturePercent": 10
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "waar-combat-batch-result/2",
+  "type": "object",
+  "required": ["schemaVersion", "modelVersion", "unitOrder", "projectedCategoryOrder", "iterations", "startIteration", "iterationRange", "totalCombats", "scenarios"],
+  "properties": {
+    "schemaVersion": { "const": "waar-combat-batch-result/2" },
+    "modelVersion": { "const": "waar-cohort-v2" },
+    "unitOrder": { "const": ["soldier", "spearman", "archer", "knight"] },
+    "projectedCategoryOrder": { "const": ["healthy", "wounded", "dead", "prisoners"] },
+    "iterations": { "type": "integer", "minimum": 1 },
+    "startIteration": { "type": "integer", "minimum": 0 },
+    "totalCombats": { "type": "integer", "minimum": 1 },
+    "iterationRange": {
+      "type": "object",
+      "required": ["start", "endExclusive", "total", "complete"],
+      "properties": {
+        "start": { "type": "integer" }, "endExclusive": { "type": "integer" },
+        "total": { "type": "integer" }, "complete": { "type": "boolean" }
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "object",
+            "properties": {
+              "attackerRawWoundedByType": { "$ref": "#/$defs/rawCounts" },
+              "defenderRawWoundedByType": { "$ref": "#/$defs/rawCounts" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "rawCounts": {
+      "description": "Somme des blessés avant capture et compression, dans unitOrder. Extension additive ; requise par la métrique de soufflerie rawCasualtyRatio.",
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": { "type": "integer", "minimum": 0 }
+    }
+  }
+}
