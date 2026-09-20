@@ -21,6 +21,8 @@ jobs:
           tools: composer
       - run: composer validate --strict
       - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Build native cohort runtime required by workbench tests
+        run: cargo build --locked --release --manifest-path engines/waar-cohort/rust/Cargo.toml
       - run: composer test
       - run: composer test:js
       - name: Generate short offline report
