@@ -36,11 +36,43 @@ final class MonotypeComparisonService
         if ($changed['appliedLossRatio'] || $changed['woundedRatio'] || $changed['captureRatio']) $observations[] = 'Les conséquences après compression et capture ont changé.';
         if ($changed['initialCount']) $observations[] = 'Le même budget achète des effectifs différents.';
         if (!in_array(true, $changed, true)) $observations = ['Aucun écart observé sur les indicateurs de cette confrontation.'];
+        $settingsChanges = (new ProfileFeedbackService())->analyse($beforeProfile, $afterProfile)['changes'];
         $mechanics = new MonotypeMechanics();
+        $mechanisms = ['before'=>$mechanics->describe($reference, $before['context']['weather'], $scenario), 'after'=>$mechanics->describe($current, $after['context']['weather'], $scenario)];
+        $mechanicalChanges = [];
+        $names = ['soldier'=>'Soldats', 'spearman'=>'Lanciers', 'archer'=>'Archers', 'knight'=>'Chevaliers'];
+        foreach (['attacker'=>'en attaque', 'defender'=>'en défense'] as $side=>$role) {
+            $b = $mechanisms['before'][$side]; $a = $mechanisms['after'][$side];
+            $parts = [];
+            foreach (['damagePerHit'=>'dégâts par impact réussi', 'strikesPerAttack'=>'frappes par combattant', 'targetStructure'=>'structure de la cible'] as $field=>$label) {
+                if ($b[$field] !== $a[$field]) $parts[] = $label.' : '.$this->number($b[$field]).' → '.$this->number($a[$field]);
+            }
+            if ($b['baseAccuracy'] !== $a['baseAccuracy']) $parts[] = 'précision centrale : '.$this->number((float)$b['baseAccuracy'] * 100).' % → '.$this->number((float)$a['baseAccuracy'] * 100).' %';
+            if ($b['accuracyLower'] !== $a['accuracyLower'] || $b['accuracyUpper'] !== $a['accuracyUpper']) $parts[] = 'plage de précision : '.$this->accuracyRange($b).' → '.$this->accuracyRange($a);
+            if ($b['hitsToKillIntact'] !== $a['hitsToKillIntact']) $parts[] = 'impacts nécessaires pour tuer une cible intacte : '.($b['hitsToKillIntact'] ?? 'aucun dégât').' → '.($a['hitsToKillIntact'] ?? 'aucun dégât');
+            if ($parts) $mechanicalChanges[] = $names[$a['unitType']].' '.$role.' contre '.$names[$a['targetType']].' — '.implode(' ; ', $parts).'.';
+        }
+        $hasObservedChange = in_array(true, $changed, true);
+        $state = $hasObservedChange ? 'changed' : (!$settingsChanges ? 'reference' : 'unchanged');
+        $summary = $state === 'reference'
+            ? 'Référence fixée. Modifiez un réglage ci-dessous : la comparaison se met à jour automatiquement.'
+            : ($state === 'unchanged'
+                ? 'Réglages modifiés pris en compte. Dans ces 50 simulations par profil, les victoires, les pertes et les effectifs restent identiques. Cela ne signifie pas que les réglages sont sans effet.'
+                : 'Dans ces 50 simulations par profil : '.implode(' ', $observations));
         return ['scenarioId'=>$scenario, 'context'=>$after['context'], 'sides'=>$sides,
-            'summary'=>'Dans ces 50 simulations par profil : '.implode(' ', $observations),
-            'mechanisms'=>['before'=>$mechanics->describe($reference, $before['context']['weather'], $scenario), 'after'=>$mechanics->describe($current, $after['context']['weather'], $scenario)],
+            'state'=>$state, 'settingsChanges'=>$settingsChanges, 'mechanicalChanges'=>$mechanicalChanges,
+            'summary'=>$summary, 'mechanisms'=>$mechanisms,
         ];
+    }
+
+    private function number(string|int|float $value): string
+    {
+        return rtrim(rtrim(number_format((float)$value, 6, ',', ''), '0'), ',');
+    }
+
+    private function accuracyRange(array $mechanics): string
+    {
+        return $this->number((float)$mechanics['accuracyLower'] * 100).'–'.$this->number((float)$mechanics['accuracyUpper'] * 100).' %';
     }
 
     private function validatedRows(array $measurement, EngineProfile $profile): array

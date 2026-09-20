@@ -24,6 +24,21 @@ distingue des victoires inchangées et des pertes modifiées. Il ne sélectionne
 plus automatiquement trois confrontations à raconter, ne recommande pas
 un profil et ne conclut pas à une amélioration statistiquement significative.
 
+Les réglages modifiés depuis la référence et leurs changements mécaniques
+sont affichés directement au-dessus des résultats, avec l’heure d’actualisation
+de la comparaison. Un témoin encore identique aux réglages courants invite à
+modifier un réglage ; un changement sans différence mesurée est identifié
+séparément. Remplacer la référence est une action explicite qui remet les écarts
+à zéro, pas un bouton nécessaire pour actualiser le calcul.
+
+Exemple vérifié dans le navigateur sur Nazz-Equilibre-Test1 : Chevaliers attaquant
+Soldats, attaque du soldat 9 → 8 puis coefficient défensif 1 → 1,25. Les tableaux
+de pertes restent identiques sur les cinquante répétitions, mais les dégâts par
+impact du soldat passent de 9 à 10 au total et son seuil contre un chevalier
+intact de 28 à 25 impacts. La catégorie « blessé » ne décrit pas la gravité de
+ses blessures. Les changements mécaniques sont donc utiles même lorsque les
+nombres de morts et de blessés ne bougent pas.
+
 ## Contexte et calculs
 
 La météo courante et le budget fixe de 400 400 par camp sont visibles. Un

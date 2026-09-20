@@ -15,7 +15,7 @@ function create({root,api,getProfile,getWeather,weatherLabels,measure,cached,run
   let history=[],anchor=null,branchBase=null,limited=false,feedback=null,feedbackPending=false;
   let timer=null,dragging=false,revision=0,lastState='',working=false,error='',exam=null;
   const compareGate=M.createRevisionGate();
-  let comparisonPending='';
+  let comparisonPending='',comparedAt=null;
   const refKey=()=>reference?M.stable([reference.profile,reference.scenarioId,reference.weather,key()]):'';
 
   function save() {
@@ -88,7 +88,7 @@ function create({root,api,getProfile,getWeather,weatherLabels,measure,cached,run
     try {
       const result=await api('compare-monotypes',{beforeProfile:reference.profile,afterProfile:structuredClone(getProfile()),before:referenceMeasurement,after,scenarioId:reference.scenarioId});
       if(!compareGate.accept(token,refKey()))return;
-      comparison=result;comparisonKey=signature;error='';
+      comparison=result;comparisonKey=signature;comparedAt=new Date();error='';
     }catch(e){if(compareGate.accept(token,refKey()))error=e.message;}
     finally{if(comparisonPending===signature)comparisonPending='';render();}
   }
@@ -121,13 +121,17 @@ function create({root,api,getProfile,getWeather,weatherLabels,measure,cached,run
   }
   function render() {
     const current=cached(getProfile(),getWeather()),ready=reference&&referenceMeasurement&&reference.weather===getWeather()&&comparisonKey===refKey()&&comparison;
-    let content='<div class="bench-heading"><div><strong>Votre expérience</strong><p>'+html(title(reference?.scenarioId||selected))+(reference?' · confrontation épinglée':' · case sélectionnée')+'</p></div><button type="button" data-pin '+(!current||working?'disabled':'')+'>'+(reference?'Prendre cette case et cet état comme nouvelle référence':'Comparer mes réglages à cet état')+'</button></div>';
+    const unchangedReference=reference&&reference.scenarioId===selected&&M.profileKey(reference.profile)===M.profileKey(getProfile())&&reference.weather===getWeather();
+    let content='<div class="bench-heading"><div><strong>Votre expérience</strong><p>'+html(title(reference?.scenarioId||selected))+(reference?' · confrontation épinglée':' · case sélectionnée')+'</p></div><button type="button" data-pin '+(!current||working||unchangedReference?'disabled':'')+'>'+(reference?'Remplacer la référence par les réglages actuels':'Fixer cette référence, puis modifier les réglages')+'</button></div>';
     if(!reference)content+='<p class="muted">Choisissez une case de la matrice, puis fixez votre référence avant de modifier les réglages.</p>'+mechanisms(current?.mechanisms?.[selected]);
     else {
       content+='<p class="muted">Référence : '+html(reference.profile.label)+' · '+html(new Date(reference.date).toLocaleString('fr-FR'))+' · budget 400 400 par camp · '+html(weatherLabels[getWeather()])+' · 50 simulations par profil.</p>';
+      content+='<p class="bench-instruction">Modifiez les réglages dans les sections ci-dessous. La référence reste fixe et la comparaison s’actualise automatiquement. Le bouton ci-dessus remplace votre point de départ.</p>';
       if(!referenceMeasurement||reference.weather!==getWeather())content+='<p class="bench-status">'+(!referenceMeasurement?'Référence conservée ; ses mesures sont à renouveler après le rechargement.':'Météo modifiée : la référence doit être remesurée dans ce contexte.')+'</p><button data-remesure type="button" '+(working?'disabled':'')+'>Remesurer la référence · '+html(weatherLabels[getWeather()])+'</button>';
       else if(!ready)content+='<p class="bench-status">Comparaison en attente des mesures du profil courant.</p>';
       if(ready) {
+        const changes=comparison.settingsChanges||[];
+        if(changes.length)content+='<section class="bench-changes" aria-label="Réglages pris en compte"><h4>'+changes.length+' réglage'+(changes.length>1?'s':'')+' modifié'+(changes.length>1?'s':'')+' depuis la référence · comparaison actualisée à '+html(comparedAt.toLocaleTimeString('fr-FR'))+'</h4><ul>'+changes.map(c=>'<li>'+html(c.explanation)+'</li>').join('')+'</ul>'+((comparison.mechanicalChanges||[]).length?'<div class="bench-mechanical-changes">'+comparison.mechanicalChanges.map(text=>'<p>'+html(text)+'</p>').join('')+'<p class="muted">Ces seuils décrivent des impacts réussis sur une cible intacte, pas le résultat de toute la bataille.</p></div>':'')+'</section>';
         content+='<p class="bench-observation" role="status">'+html(comparison.summary)+'</p><div class="bench-sides">'+['attacker','defender'].map(side=>'<div class="table-scroll">'+table(side,['initialCount','winRate','drawRate','rawLossRatio','rawWoundedRatio'])+'</div>').join('')+'</div><p class="muted">Morts et blessés : part de l’effectif initial de chaque camp. Les écarts de taux sont en points de pourcentage.</p><details><summary>Conséquences après compression et capture</summary><div class="bench-sides">'+['attacker','defender'].map(side=>'<div class="table-scroll">'+table(side,['appliedLossRatio','woundedRatio','captureRatio'])+'</div>').join('')+'</div></details>'+mechanisms(comparison.mechanisms.after,comparison.mechanisms.before);
       }
     }

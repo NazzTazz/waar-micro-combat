@@ -9,6 +9,31 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class MonotypeComparisonTest extends TestCase
 {
+    public function testUnchangedOutcomesStillExplainSettingsAndMechanicsSinceReference(): void
+    {
+        $p=EngineProfile::defaults();$p['units']['soldier']['attack']='9';$p['units']['knight']['structure']='250';
+        $service=new MonotypeComparisonService();$before=$this->measurement($p);
+        $same=$service->compare($p,$p,$before,$before,'knight-vs-soldier');
+        self::assertSame('reference',$same['state']);self::assertSame([],$same['settingsChanges']);
+        self::assertStringContainsString('Modifiez un réglage',$same['summary']);
+        $q=$p;$q['units']['soldier']['attack']='8';
+        $attack=$service->compare($p,$q,$before,$this->measurement($q),'knight-vs-soldier');
+        self::assertSame('unchanged',$attack['state']);self::assertCount(1,$attack['settingsChanges']);
+        self::assertStringContainsString('Réglages modifiés pris en compte',$attack['summary']);
+        self::assertStringContainsString('Soldats en défense contre Chevaliers',$attack['mechanicalChanges'][0]);
+        self::assertStringContainsString('9 → 8',$attack['mechanicalChanges'][0]);
+        self::assertStringContainsString('28 → 32',$attack['mechanicalChanges'][0]);
+        $q['units']['soldier']['defendingEfficiency']='1.25';
+        $both=$service->compare($p,$q,$before,$this->measurement($q),'knight-vs-soldier');
+        self::assertCount(2,$both['settingsChanges']);
+        self::assertSame(['units.soldier.attack','units.soldier.defendingEfficiency'],array_column($both['settingsChanges'],'path'));
+        self::assertStringContainsString('9 → 10',$both['mechanicalChanges'][0]);
+        self::assertStringContainsString('28 → 25',$both['mechanicalChanges'][0]);
+        $q['units']['soldier']['attack']='0';
+        $zero=$service->compare($p,$q,$before,$this->measurement($q),'knight-vs-soldier');
+        self::assertStringContainsString('28 → aucun dégât',$zero['mechanicalChanges'][0]);
+    }
+
     public function testPinnedCaseIgnoresLargeUnrelatedDeltasAndSeparatesLossesFromVictories(): void
     {
         $p=EngineProfile::defaults();$before=$this->measurement($p);$after=$before;

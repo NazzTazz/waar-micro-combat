@@ -24,7 +24,12 @@ const M=globalThis.WaarWorkshopModel;
       const changes=body.before.units.soldier.attack===body.after.units.soldier.attack?[]:[{path:'units.soldier.attack',label:'Attaque des soldats',before:body.before.units.soldier.attack,after:body.after.units.soldier.attack,explanation:'Explication du geste'}];
       return {changes,interactions:[]};
     }
-    if(path==='compare-monotypes'){if(deferComparison)return new Promise(resolve=>pendingCompare=resolve);return comparison()}
+    if(path==='compare-monotypes'){
+      if(deferComparison)return new Promise(resolve=>pendingCompare=resolve);
+      const result=comparison();
+      result.settingsChanges=body.beforeProfile.units.soldier.attack===body.afterProfile.units.soldier.attack?[]:[{explanation:'Attaque des soldats : '+body.beforeProfile.units.soldier.attack+' → '+body.afterProfile.units.soldier.attack}];
+      result.mechanicalChanges=['Description mécanique renvoyée par PHP'];return result;
+    }
     throw Error(path);
   };
   const options={root,api,getProfile:()=>profile,getWeather:()=>condition,weatherLabels:{neutral:'Beau temps',rain:'Pluie'},measure,cached,runManual:fn=>fn(),onSelect(){},storage};
@@ -54,6 +59,10 @@ const M=globalThis.WaarWorkshopModel;
   for(const value of ['35','36','37']){profile.units.soldier.attack=value;bench.changed()}
   pendingCompare(comparison());await clock.tick(0);assert.doesNotMatch(root.innerHTML,/Résultat de la case épinglée/);
   deferComparison=false;await clock.tick(500);await measure(profile,condition);await bench.updated();assert.match(root.innerHTML,/Résultat de la case épinglée/);
+  assert.match(root.innerHTML,/1 réglage modifié depuis la référence/);
+  assert.match(root.innerHTML,/Attaque des soldats : 9 → 37/);
+  assert.match(root.innerHTML,/Description mécanique renvoyée par PHP/);
+  assert.ok(root.innerHTML.indexOf('Attaque des soldats : 9 → 37')<root.innerHTML.indexOf('Résultat de la case épinglée'),'the acknowledged settings must be visible before the outcome');
   // Merely inspecting another matrix cell does not move the pinned experiment.
   bench.select('archer-vs-archer');assert.equal(saved().reference.scenarioId,'spearman-vs-knight');
   condition='rain';bench.changed();await clock.tick(500);assert.match(root.innerHTML,/Météo modifiée/);assert.doesNotMatch(root.innerHTML,/Résultat de la case épinglée/);
