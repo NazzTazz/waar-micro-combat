@@ -10,4 +10,4 @@ Sur le VPS, les données sont conservées dans le volume Docker nommé waar-engi
 
 WAAR_PROFILE_DIRECTORY permet de choisir le répertoire ; par défaut en développement : reports/shared-profiles. Les tests HTTP utilisent leur propre répertoire temporaire et ne créent aucune sauvegarde de démonstration.
 
-Écritures sérialisées par verrou puis remplacement atomique du fichier JSON ; profils validés par EngineProfile avant persistance. Les noms ne sont jamais utilisés comme chemins et sont affichés comme texte.
+Écritures sérialisées par verrou puis remplacement atomique du fichier JSON sur le déploiement Linux. Le repli Windows conserve une sauvegarde récupérable pendant le remplacement. Les profils sont validés par EngineProfile avant persistance. Les noms ne sont jamais utilisés comme chemins et sont affichés comme texte.

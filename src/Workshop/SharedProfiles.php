@@ -17,7 +17,19 @@ final class SharedProfiles
         try{$rows=$this->read();foreach($rows as$row)if(strcasecmp($row['name'],$name)===0)throw new \RuntimeException('Ce nom existe déjà. Choisissez un autre nom ou numéro de proposition.',409);
             $id=bin2hex(random_bytes(16));$row=['id'=>$id,'name'=>$name,'createdAt'=>gmdate('c'),'profile'=>$profile];$rows[$id]=$row;
             $temporary=tempnam($this->directory,'profiles-');if($temporary===false)throw new \RuntimeException('Stockage indisponible.',503);
-            try{if(file_put_contents($temporary,json_encode($rows,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE))===false||!rename($temporary,$this->directory.'/profiles.json'))throw new \RuntimeException('Écriture impossible.',503);}finally{if(is_file($temporary))unlink($temporary);}
+            $target=$this->directory.'/profiles.json';
+            try{
+                if(file_put_contents($temporary,json_encode($rows,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE))===false)throw new \RuntimeException('Écriture impossible.',503);
+                if(!@rename($temporary,$target)){
+                    // Windows cannot replace an existing file with rename(). Keep a
+                    // recoverable backup while swapping it; Linux takes the atomic path above.
+                    $backup=$target.'.backup-'.bin2hex(random_bytes(8));
+                    if(!is_file($target)||!rename($target,$backup))throw new \RuntimeException('Écriture impossible.',503);
+                    try{if(!rename($temporary,$target))throw new \RuntimeException('Écriture impossible.',503);}
+                    catch(\Throwable$e){if(is_file($backup))rename($backup,$target);throw $e;}
+                    finally{if(is_file($backup))unlink($backup);}
+                }
+            }finally{if(is_file($temporary))unlink($temporary);}
             return $row;
         }finally{flock($lock,LOCK_UN);fclose($lock);}
     }

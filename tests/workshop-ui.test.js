@@ -79,6 +79,9 @@ class Element {
   assert.equal(Number(armyRow.children[1].value),25000);
   armyRow.children[2].value='100001';armyRow.children[2].oninput();
   assert.equal(Number(armyRow.children[2].value),100001);
+  assert.match(armyRow.innerHTML,/max="4294967295"/);
+  armyRow.children[2].value='4294967296';armyRow.children[2].oninput();
+  assert.equal(Number(armyRow.children[2].value),4294967295,'numeric counts stop at the native u32 limit');
   const mixedRow=element('#army-a').children[1];
   mixedRow.children[2].value='20000';mixedRow.children[2].oninput();
   assert.equal(Number(mixedRow.children[2].value),20000,'numeric counts are independent of slider and camp totals');

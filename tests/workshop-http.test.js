@@ -73,6 +73,9 @@ async function waitFor(url) {
     const loaded=await fetch(origin+'/api/load-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:saved.id})});
     assert.deepEqual((await loaded.json()).data.profile,saved.profile);
     assert.equal((await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(saveBody)})).status,409);
+    const secondResponse=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...saveBody,name:'Testeur-Proposition-2'})});
+    assert.equal(secondResponse.status,200,'a second distinct profile replaces the JSON store on every supported OS');
+    assert.equal((await (await fetch(origin+'/api/profiles')).json()).data.profiles.length,2);
     assert.ok(fs.existsSync(path.join(temporary,'profiles','profiles.json')));
     const invalid=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Invalid',profile:{}})});assert.equal(invalid.status,422);
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
