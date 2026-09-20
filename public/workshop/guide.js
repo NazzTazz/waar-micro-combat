@@ -1,19 +1,10 @@
 /* Presentation only: explain settings without changing the profile. */
 (() => {
   const help = {
-    attack: 'Puissance répartie entre les frappes. Augmenter cette valeur accroît les dégâts de chaque touche.',
-    structure: 'Résistance aux dégâts. Une valeur plus élevée permet de supporter davantage de dégâts avant de finir blessé ou mort.',
-    baseAccuracy: 'Probabilité moyenne de toucher. 60 % signifie environ 60 touches pour 100 tentatives, avant les modificateurs.',
-    accuracySpread: 'Amplitude du tirage autour de la précision moyenne, à chaque round et pour chaque type d’unité. 60 % ± 10 points donne un tirage entre 50 et 70 %.',
-    strikesPerAttack: 'Répartit la même attaque entre plusieurs frappes. Plus de frappes donne des touches moins puissantes et peut limiter les dégâts excédentaires.',
-    defendingEfficiency: 'Multiplie les dégâts infligés lorsque cette unité défend. ×1,25 donne +25 % de dégâts ; ce réglage ne réduit pas les dégâts reçus.',
-    cost: 'Prix de construction utilisé pour comparer les armées à budget égal et valoriser les pertes. Augmenter le coût réduit les effectifs de ce monotype dans la soufflerie.',
     capturable: 'Autorise la capture des blessés de cette unité si son camp perd et si le taux de prisonniers est supérieur à zéro.',
     maxRounds: 'Limite la durée du combat. Si les deux camps sont encore en lice, le critère de départage désigne le vainqueur.',
     surrenderEnabled: 'Arrête le combat lorsqu’un camp atteint le seuil de morts. Désactivée, la résolution continue jusqu’à une autre condition de fin.',
-    surrenderDeadPercent: 'Proportion cumulée de morts parmi les effectifs initiaux. Le seuil est inclusif ; les blessés ne le déclenchent pas.',
-    tieBreakCriterion: 'Compare les survivants à la fin du combat selon leur valeur économique ou la proportion de structure restante.',
-    equalityPolicy: 'Décide du résultat uniquement quand le départage donne une égalité exacte. Un match nul ne produit pas de prisonniers.',
+    surrenderDeadPercent: 'À 0, la reddition est désactivée. Sinon, seuil de morts parmi les effectifs initiaux ; les blessés ne comptent pas.',
     lossCompressionPercent: 'Part des conséquences brutes conservée en sortie, avec arrondi inférieur par catégorie. 10 % conserve un dixième des morts, blessés et prisonniers.',
     capturePercent: 'Part des blessés capturables du vaincu transformée en prisonniers avant compression. 0 % désactive les captures.'
   };
@@ -24,6 +15,7 @@
       if (!message) return;
       input.dataset.explained = 'true';
       const label = input.closest('label');
+      if (input.dataset.combat === 'surrenderEnabled') {label.title = message;input.title = message;return;}
       label.querySelectorAll('small').forEach(node => node.remove());
       const note = document.createElement('small');
       note.className = 'setting-help';

@@ -11,7 +11,7 @@ final class WorkshopDuelLimitsTest extends TestCase
 {
     public function testMillionUnitArmiesAndWoundedEconomyHaveRuntimeParity(): void
     {
-        $p=EngineProfile::defaults();$p['combat']['maxRounds']=1;$p['combat']['capturePercent']=10;
+        $p=EngineProfile::defaults();$p['combat']['maxRounds']=1;$p['combat']['capturePercent']=50;
         foreach($p['units'] as &$u){$u['attack']='1';$u['structure']='100';$u['baseAccuracy']='1';$u['accuracySpread']='0';$u['cost']=400400;$u['capturable']=true;}unset($u);
         foreach([0,8,100] as $compression){
             $p['combat']['lossCompressionPercent']=$compression;
@@ -35,5 +35,11 @@ final class WorkshopDuelLimitsTest extends TestCase
     {
         $this->expectException(ProfileValidationException::class);
         (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>1000001],'B'=>['soldier'=>1]],'seed'=>42]);
+    }
+
+    public function testSummaryRejectsCountsAboveOneMillionPerType(): void
+    {
+        $this->expectException(ProfileValidationException::class);
+        (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>1],'B'=>['knight'=>1000001]],'seed'=>42],true);
     }
 }

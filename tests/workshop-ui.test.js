@@ -52,7 +52,7 @@ class Element {
     if(selector==='.journey button')return [Object.assign(new Element(),{dataset:{step:'units'}})];
     return [];
   }};
-  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,setTimeout:fn=>fn(),Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{if(delay!==300&&delay!==10000)fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
     if(malformedResponse)return {ok:false,status:500,json:async()=>{throw new SyntaxError('Unexpected token <')}};
     const body=options?.body?JSON.parse(options.body):null;
     let data;
@@ -72,16 +72,31 @@ class Element {
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
   assert.equal(typeof element('#measure').onclick,'function');
+  assert.equal(element('#profile-modified').hidden,true,'new profile starts unmodified');
   const armyRow=element('#army-a').children[0];
-  assert.match(armyRow.innerHTML,/max="1000000"/);
+  assert.match(armyRow.innerHTML,/max="100000"/);
   armyRow.children[2].value='25000';armyRow.children[2].oninput();
   assert.equal(Number(armyRow.children[1].value),25000);
+  armyRow.children[2].value='100001';armyRow.children[2].oninput();
+  assert.equal(Number(armyRow.children[2].value),100001);
+  assert.match(armyRow.innerHTML,/max="1000000"/);
   armyRow.children[2].value='1000001';armyRow.children[2].oninput();
-  assert.equal(Number(armyRow.children[2].value),1000000);
+  assert.equal(Number(armyRow.children[2].value),1000000,'numeric counts stop at the one-million-per-type limit');
+  const mixedRow=element('#army-a').children[1];
+  mixedRow.children[2].value='20000';mixedRow.children[2].oninput();
+  assert.equal(Number(mixedRow.children[2].value),20000,'numeric counts are independent of slider and camp totals');
+  const beforeB=JSON.parse(storage.get('waar-workshop-draft-v1')).armies.B;
+  element('#composition-a').value='sl';element('#budget-a').value='250000';element('#apply-army-a').onclick();
+  const filled=JSON.parse(storage.get('waar-workshop-draft-v1')).armies;
+  assert.deepEqual(filled.A,{soldier:2500,spearman:625,archer:0,knight:0});
+  assert.deepEqual(filled.B,beforeB,'shortcut only replaces the chosen camp');
+  element('#weather-tabs').children[3].children[1].onclick();
+  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).duelWeather,'rain');
   const rounds=element('[data-combat=maxRounds]');
   assert.equal(rounds['aria-label'],'Rounds');
   rounds.value='5';rounds.oninput();
   assert.equal(element('#rounds-out').textContent,5);
+  assert.equal(element('#profile-modified').hidden,false,'engine changes mark the profile modified');
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.maxRounds,5);
   await element('#measure').onclick();
   assert.equal(element('#t27-editor').srcdoc,'T27 fixture');
@@ -111,12 +126,9 @@ class Element {
   assert.equal(typeof element('#export-search').onclick,'function');
 
   // Prefill cancellation and confirmation preserve non-unit settings.
-  element('#profile-label').value='Retain this name';element('#profile-label').onchange();
   confirmResult=false;await element('#prefill').onclick();
-  assert.equal(element('#profile-label').value,'Retain this name');
   confirmResult=true;await element('#prefill').onclick();
-  assert.equal(element('#profile-label').value,'Retain this name');
-  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.label,'Retain this name');
+  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.label,'Keep me');
   const unitTypes=Object.keys(units);
   const emptyCell=()=>({sourceCount:0,strikesPerAttack:1,allocatedAttempts:0,consumedAttempts:0,reallocatedAttempts:0,sampledHits:0,appliedHits:0,attackPerStrike:'7',accuracy:'0.15',attackFactor:'1',defendingEfficiency:'1',damagePerHit:'7',damageEmitted:'0',damageAbsorbed:'0',overkill:'0'});
   const createMatrix=()=>Object.fromEntries(unitTypes.map(source=>[source,Object.fromEntries(unitTypes.map(target=>[target,emptyCell()]))]));

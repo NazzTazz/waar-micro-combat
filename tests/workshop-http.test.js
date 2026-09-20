@@ -34,14 +34,14 @@ async function waitFor(url) {
   const port = await freePort();
   const origin = `http://127.0.0.1:${port}`;
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'waar-demo-http-'));
-  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', TMP:temporary, TEMP:temporary, TMPDIR:temporary};
+  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', WAAR_PROFILE_DIRECTORY:path.join(temporary,'profiles'), TMP:temporary, TEMP:temporary, TMPDIR:temporary};
   const server = spawn('php', ['-S', `127.0.0.1:${port}`, '-t', 'public/workshop', 'bin/workshop-router.php'], {cwd: path.join(__dirname, '..'), env, stdio: 'ignore'});
   try {
     await waitFor(origin + '/');
     const profileResponse = await fetch(origin + '/api/default-profile');
     const profilePayload = await profileResponse.json();
     assert.equal(profileResponse.status, 200);
-    assert.equal(profilePayload.data.profile.combat.lossCompressionPercent, 8);
+    assert.equal(profilePayload.data.profile.combat.lossCompressionPercent, 5);
     assert.equal(profilePayload.data.profile.schemaVersion, 'waar-engine-profile/0.2');
     assert.equal(profilePayload.data.profile.id, 'test-2');
     assert.deepEqual(Object.values(profilePayload.data.profile.units).map(unit=>[unit.cost,unit.attack,unit.structure,unit.baseAccuracy,unit.strikesPerAttack,unit.defendingEfficiency,unit.capturable]),[
@@ -51,8 +51,33 @@ async function waitFor(url) {
       [550,'350','250','0.8',15,'1',false],
     ]);
     assert.deepEqual(profilePayload.data.profile.relations,[]);
-    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:10});
+    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10});
 
+    assert.equal(profilePayload.data.profile.weather.neutral.soldier.attack,'1');
+    assert.equal(profilePayload.data.profile.weather.blizzard.soldier.attack,'0.875');
+    assert.equal(profilePayload.data.profile.weather.snow.soldier.attack,'0.75');
+    assert.equal(profilePayload.data.profile.weather.storm.archer.attack,'0.75');
+    assert.equal(profilePayload.data.profile.weather.storm.archer.baseAccuracy,'1');
+    const summaryResponse=await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{soldier:100}},weather:'neutral',seed:42,requestId:'live-test'})});
+    assert.equal(summaryResponse.status,200);
+    const summary=(await summaryResponse.json()).data;
+    assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
+    assert.deepEqual(summary.rows.map(row=>[row.attacker,row.defender]),[['A','B'],['B','A']]);
+    for(const row of summary.rows){assert.equal(row.camps.A.winRate+row.camps.B.winRate+row.drawRate,1);for(const camp of ['A','B'])assert.ok(row.camps[camp].valueLossRate>=0&&row.camps[camp].valueLossRate<=1)}
+    for(const row of summary.rows)for(const camp of ['A','B']){const c=row.camps[camp];assert.deepEqual(Object.keys(c.losses),['soldier','spearman','archer','knight']);for(const type of ['spearman','archer','knight'])assert.deepEqual(c.losses[type],{initial:0,dead:0,wounded:0});assert.equal(c.losses.soldier.initial,100);assert.ok(c.losses.soldier.dead>=0&&c.losses.soldier.wounded>=0&&c.prisoners>=0);assert.ok(Math.abs((c.losses.soldier.dead+c.losses.soldier.wounded)/100-c.valueLossRate)<1e-9)}
+    const saveBody={name:'Testeur-Proposition-1',profile:profilePayload.data.profile};
+    const savedResponse=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(saveBody)});
+    assert.equal(savedResponse.status,200);const saved=(await savedResponse.json()).data;
+    assert.equal(saved.profile.label,saveBody.name);
+    assert.equal((await (await fetch(origin+'/api/profiles')).json()).data.profiles[0].id,saved.id);
+    const loaded=await fetch(origin+'/api/load-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:saved.id})});
+    assert.deepEqual((await loaded.json()).data.profile,saved.profile);
+    assert.equal((await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(saveBody)})).status,409);
+    const secondResponse=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...saveBody,name:'Testeur-Proposition-2'})});
+    assert.equal(secondResponse.status,200,'a second distinct profile replaces the JSON store on every supported OS');
+    assert.equal((await (await fetch(origin+'/api/profiles')).json()).data.profiles.length,2);
+    assert.ok(fs.existsSync(path.join(temporary,'profiles','profiles.json')));
+    const invalid=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Invalid',profile:{}})});assert.equal(invalid.status,422);
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
     assert.equal(traversal.status, 404);
 
@@ -80,6 +105,7 @@ async function waitFor(url) {
       assert.equal(busy.status,429);
       assert.equal(busy.headers.get('retry-after'),'10');
       assert.match((await busy.json()).errors[0].message,/déjà en cours/);
+      assert.equal((await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,429);
       assert.equal((await fetch(origin+'/api/default-profile')).status,200);
     } finally { const exited=once(locker,'exit');locker.kill();await exited; }
     const post=async(path,body)=>{const response=await fetch(origin+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const payload=await response.json();assert.equal(response.status,200,JSON.stringify(payload));return payload.data};
