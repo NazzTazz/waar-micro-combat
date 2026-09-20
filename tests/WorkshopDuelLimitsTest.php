@@ -9,13 +9,13 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class WorkshopDuelLimitsTest extends TestCase
 {
-    public function testMillionUnitArmiesAndWoundedEconomyHaveRuntimeParity(): void
+    public function testHundredThousandUnitArmiesAndWoundedEconomyHaveRuntimeParity(): void
     {
         $p=EngineProfile::defaults();$p['combat']['maxRounds']=1;$p['combat']['capturePercent']=10;
         foreach($p['units'] as &$u){$u['attack']='1';$u['structure']='100';$u['baseAccuracy']='1';$u['accuracySpread']='0';$u['cost']=400400;$u['capturable']=true;}unset($u);
         foreach([0,8,100] as $compression){
             $p['combat']['lossCompressionPercent']=$compression;
-            $request=['profile'=>$p,'armies'=>['A'=>['soldier'=>1000000],'B'=>['soldier'=>1000000]],'seed'=>42];
+            $request=['profile'=>$p,'armies'=>['A'=>['soldier'=>100000],'B'=>['soldier'=>100000]],'seed'=>42];
             $native=(new DuelService())->simulate($request);
             $php=(new DuelService(new ProcessCohortRuntime(null,'php')))->simulate($request);
             foreach($native['directions'] as $i=>$direction){
@@ -24,7 +24,7 @@ final class WorkshopDuelLimitsTest extends TestCase
                     $data=$direction['consequences'][$side];$unit=$data['types']['soldier'];
                     self::assertSame(0,$unit['projected']['dead']);
                     self::assertSame($unit['projected']['wounded']*400400,$data['economicLoss']);
-                    self::assertEquals($unit['projected']['wounded']/10000,(float)$data['economicLossPercent']);
+                    self::assertEquals($unit['projected']['wounded']/1000,(float)$data['economicLossPercent']);
                     if($compression>0)self::assertGreaterThan(0,$data['economicLoss']);
                 }
             }
@@ -34,6 +34,6 @@ final class WorkshopDuelLimitsTest extends TestCase
     public function testCountsAboveGuardrailAreRejected(): void
     {
         $this->expectException(ProfileValidationException::class);
-        (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>1000001],'B'=>['soldier'=>1]],'seed'=>42]);
+        (new DuelService())->simulate(['profile'=>EngineProfile::defaults(),'armies'=>['A'=>['soldier'=>60000,'spearman'=>40001],'B'=>['soldier'=>1]],'seed'=>42]);
     }
 }
