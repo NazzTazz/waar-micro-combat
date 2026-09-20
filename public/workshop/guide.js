@@ -1,7 +1,6 @@
 /* Presentation only: explain settings without changing the profile. */
 (() => {
   const help = {
-    strikesPerAttack: 'Répartit la même attaque entre plusieurs frappes. Plus de frappes donne des touches moins puissantes et peut limiter les dégâts excédentaires.',
     capturable: 'Autorise la capture des blessés de cette unité si son camp perd et si le taux de prisonniers est supérieur à zéro.',
     maxRounds: 'Limite la durée du combat. Si les deux camps sont encore en lice, le critère de départage désigne le vainqueur.',
     surrenderEnabled: 'Arrête le combat lorsqu’un camp atteint le seuil de morts. Désactivée, la résolution continue jusqu’à une autre condition de fin.',
