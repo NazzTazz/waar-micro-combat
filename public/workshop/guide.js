@@ -6,7 +6,8 @@
     surrenderEnabled: 'Arrête le combat lorsqu’un camp atteint le seuil de morts. Désactivée, la résolution continue jusqu’à une autre condition de fin.',
     surrenderDeadPercent: 'À 0, la reddition est désactivée. Sinon, seuil de morts parmi les effectifs initiaux ; les blessés ne comptent pas.',
     lossCompressionPercent: 'Fréquence de conservation des conséquences brutes. À 5 %, chaque mort, blessé ou prisonnier a 5 % de chances de rester en sortie : les nombres entiers varient selon la seed.',
-    capturePercent: 'Probabilité pour chaque blessé capturable du vaincu de devenir prisonnier avant compression. 0 % désactive les captures.'
+    capturePercent: 'Probabilité pour chaque blessé capturable du vaincu de devenir prisonnier avant compression. 0 % désactive les captures.',
+    woundDamageThreshold: 'Une unité est blessée lorsque ses dégâts cumulés dépassent ce pourcentage de sa structure maximale. Elle continue de combattre normalement.'
   };
   function annotate() {
     document.querySelectorAll('[data-field], [data-combat]').forEach(input => {

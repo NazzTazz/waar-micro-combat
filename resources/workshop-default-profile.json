@@ -234,6 +234,7 @@
     "tieBreakCriterion": "structure",
     "equalityPolicy": "defender",
     "lossCompressionPercent": 5,
-    "capturePercent": 10
+    "capturePercent": 10,
+    "woundDamageThreshold": "0.2"
   }
 }

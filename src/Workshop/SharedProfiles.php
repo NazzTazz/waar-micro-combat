@@ -7,7 +7,7 @@ final class SharedProfiles
     public function __construct(?string $directory=null){$this->directory=$directory??(getenv('WAAR_PROFILE_DIRECTORY')?:dirname(__DIR__,2).'/reports/shared-profiles');}
     private function read():array{$file=$this->directory.'/profiles.json';return is_file($file)?json_decode(file_get_contents($file),true,128,JSON_THROW_ON_ERROR):[];}
     public function listing():array{$rows=array_values($this->read());usort($rows,static fn($a,$b)=>strcmp($b['createdAt'],$a['createdAt']));return ['profiles'=>array_map(static fn($row)=>['id'=>$row['id'],'name'=>$row['name'],'createdAt'=>$row['createdAt']],$rows)];}
-    public function load(string $id):array{$rows=$this->read();if(!isset($rows[$id]))throw new \RuntimeException('Sauvegarde introuvable.',404);return $rows[$id];}
+    public function load(string $id):array{$rows=$this->read();if(!isset($rows[$id]))throw new \RuntimeException('Sauvegarde introuvable.',404);$row=$rows[$id];$row['profile']=(new EngineProfileMigrator())->migrate($row['profile'])['profile'];return $row;}
     public function save(string $name,array $profile):array{
         $name=trim($name);if($name===''||strlen($name)>200||preg_match('/[\x00-\x1f]/',$name))throw new \InvalidArgumentException('Nom de profil invalide.');
         $profile['label']=$name;$profile['id']='saved-'.substr(hash('sha256',$name),0,24);

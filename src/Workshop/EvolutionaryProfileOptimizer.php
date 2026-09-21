@@ -67,7 +67,7 @@ final class EvolutionaryProfileOptimizer
         $ranked=$this->rank($archive);foreach($ranked as $i=>&$candidate)$candidate['rank']=$i+1;unset($candidate);
         $publicBounds=[];foreach($dimensions as$d)$publicBounds[$d['path']]=array_intersect_key($d,array_flip(['path','kind','type','target','field','current','minimum','maximum','step']));
         return ['schemaVersion'=>'waar-optimizer-report/1','algorithm'=>self::ALGORITHM,'modelVersion'=>EngineProfile::MODEL_VERSION,'referenceFingerprint'=>EngineProfile::fromArray($reference)->semanticFingerprint(),'referenceProfile'=>$reference,
-            'weather'=>$weather,'searchSeed'=>$searchSeed,'measurementBaseSeed'=>$measurementBaseSeed,'candidateBudget'=>$budget,'evaluated'=>count($archive),'iterationsPerScenario'=>$iterations,'bounds'=>$publicBounds,'frozen'=>['costs'=>true,'capturable'=>true,'weather'=>true,'accuracySpread'=>true,'strikesPerAttack'=>true,'rounds'=>true,'surrender'=>true,'tieBreak'=>true,'lossCompressionPercent'=>true,'capturePercent'=>true],
+            'weather'=>$weather,'searchSeed'=>$searchSeed,'measurementBaseSeed'=>$measurementBaseSeed,'candidateBudget'=>$budget,'evaluated'=>count($archive),'iterationsPerScenario'=>$iterations,'bounds'=>$publicBounds,'frozen'=>['costs'=>true,'capturable'=>true,'weather'=>true,'accuracySpread'=>true,'strikesPerAttack'=>true,'rounds'=>true,'surrender'=>true,'tieBreak'=>true,'lossCompressionPercent'=>true,'capturePercent'=>true,'woundDamageThreshold'=>true],
             'selectionPerformed'=>false,'stopReason'=>$stopReason,'coverage'=>$this->coverage,'generations'=>$generations,'bestCandidateId'=>$ranked[0]['id']??null,'candidates'=>$ranked];
     }
 

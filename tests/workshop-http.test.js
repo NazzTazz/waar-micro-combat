@@ -51,7 +51,7 @@ async function waitFor(url) {
       [550,'350','250','0.8',15,'1',false],
     ]);
     assert.deepEqual(profilePayload.data.profile.relations,[]);
-    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10});
+    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10,woundDamageThreshold:'0.2'});
 
     assert.equal(profilePayload.data.profile.weather.neutral.soldier.attack,'1');
     assert.equal(profilePayload.data.profile.weather.blizzard.soldier.attack,'0.875');

@@ -37,6 +37,9 @@ function resolvePhpBatch(array $batch): array
         $settings=$batch['consequences'];$version=$settings['policyVersion']??\App\Game\Combat\ConsequencePolicy::VERSION;
         $provenance=['consequenceProvenance'=>['policyVersion'=>$version,'samplingProtocol'=>$version===\App\Game\Combat\ConsequencePolicy::PROBABILISTIC_VERSION?\App\Game\Random\ConsequenceSampler::VERSION:'floor/1','compressionPercent'=>$settings['compressionPercent'],'capturePercent'=>$settings['capturePercent']]];
     }
+    if(isset($report['result']['ruleset']['woundDamageThreshold'])){
+        $provenance['classificationProvenance']=['woundDamageThreshold'=>$report['result']['ruleset']['woundDamageThreshold']];
+    }
     return [...$provenance,'schemaVersion'=>'waar-combat-batch-result/2','modelVersion'=>'waar-cohort-v2','unitOrder'=>$types,'projectedCategoryOrder'=>$categories,'iterations'=>$iterations,'startIteration'=>$start,
         'iterationRange'=>['start'=>$start,'endExclusive'=>$start+$iterations,'total'=>$total,'complete'=>$start===0&&$iterations===$total],'totalCombats'=>$iterations*count($scenarios),'scenarios'=>$results];
 }

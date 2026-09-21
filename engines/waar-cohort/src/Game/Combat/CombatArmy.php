@@ -66,13 +66,13 @@ final class CombatArmy
     public function remainingValue(PreparedCombatSide $prepared):int{$value=0;foreach(UnitType::cases() as $type)$value+=$this->livingCount($type)*$prepared->unit($type)->cost;return $value;}
     public function totalStructureUnits():int{$sum=0;foreach($this->cohorts() as $cohort)$sum+=CombatFixedPoint::units($cohort->remainingStructure)*$cohort->count;return $sum;}
     public function initialStructureUnits(PreparedCombatSide $prepared):int{return $this->initialStructureUnits;}
-    public function woundedCount(PreparedCombatSide $prepared,?UnitType $type=null):int{$count=0;foreach(null===$type?UnitType::cases():[$type] as $unitType)foreach($this->cohorts($unitType) as $cohort)if(UnitState::Wounded===$cohort->state($prepared->unit($unitType)->structure))$count+=$cohort->count;return $count;}
+    public function woundedCount(PreparedCombatSide $prepared,?UnitType $type=null,float|int|string $woundDamageThreshold=0):int{$count=0;foreach(null===$type?UnitType::cases():[$type] as $unitType)foreach($this->cohorts($unitType) as $cohort)if(UnitState::Wounded===$cohort->state($prepared->unit($unitType)->structure,$woundDamageThreshold))$count+=$cohort->count;return $count;}
 
     /** @return array<string,mixed> */
-    public function toArray(PreparedCombatSide $prepared):array
+    public function toArray(PreparedCombatSide $prepared,float|int|string $woundDamageThreshold=0):array
     {
         $healthy=$wounded=$dead=[];foreach(UnitType::cases() as $type){$healthy[$type->value]=0;$wounded[$type->value]=0;
-            foreach($this->cohorts($type) as $cohort){if(UnitState::Valid===$cohort->state($prepared->unit($type)->structure))$healthy[$type->value]+=$cohort->count;else$wounded[$type->value]+=$cohort->count;}
+            foreach($this->cohorts($type) as $cohort){if(UnitState::Valid===$cohort->state($prepared->unit($type)->structure,$woundDamageThreshold))$healthy[$type->value]+=$cohort->count;else$wounded[$type->value]+=$cohort->count;}
             $dead[$type->value]=$this->deadCount($type);
         }
         $cohorts=array_map(static fn(UnitCohort $c)=>['type'=>$c->type->value,'remainingStructure'=>CombatFixedPoint::format($c->remainingStructure),'count'=>$c->count],$this->cohorts());
