@@ -5,6 +5,7 @@ namespace Waar\MicroCombat\Tests;
 use PHPUnit\Framework\TestCase;
 use Waar\MicroCombat\Workshop\DuelService;
 use Waar\MicroCombat\Workshop\CohortRequestFactory;
+use Waar\MicroCombat\Workshop\ConsequenceObjectives;
 use Waar\MicroCombat\Workshop\EngineProfile;
 use Waar\MicroCombat\Workshop\EngineProfileMigrator;
 use Waar\MicroCombat\Workshop\ProcessCohortRuntime;
@@ -14,6 +15,31 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class CohortWorkshopIntegrationTest extends TestCase
 {
+    public function testOldConsequenceContextsCannotReuseObjectives():void
+    {
+        $values=EngineProfile::defaults();$profile=EngineProfile::fromArray($values);
+        $context=['weather'=>'neutral','baseSeed'=>42,'iterations'=>1,'budget'=>MonotypeMeasurementService::BUDGET,
+            'objectiveMetric'=>'rawCasualtyRatio','modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$profile->ruleset()['version'],
+            'runtime'=>['kind'=>'rust','transport'=>'process-jsonl','modelVersion'=>EngineProfile::MODEL_VERSION],
+            'consequences'=>CohortRequestFactory::consequenceContext($profile)];
+        $zones=[];
+        foreach(array_keys(EngineProfile::UNIT_COSTS) as $a)foreach(array_keys(EngineProfile::UNIT_COSTS) as $b)foreach(['attacker','defender'] as $side){
+            $zones[]=['id'=>"$a-vs-$b/$side",'center'=>['x'=>.5,'y'=>.1],'radii'=>['x'=>.05,'y'=>.1],
+                'sourceFingerprint'=>$profile->semanticFingerprint(),'modelVersion'=>EngineProfile::MODEL_VERSION,'context'=>$context];
+        }
+        $validator=new ConsequenceObjectives();
+        self::assertSame($zones,$validator->validate($values,$zones,'neutral',42,1));
+        foreach([[],['policyVersion'=>'wounded-capture-then-compress/2','samplingProtocol'=>'floor/1'],
+            ['policyVersion'=>CohortRequestFactory::POLICY_VERSION,'samplingProtocol'=>'unknown']] as $old){
+            $obsolete=$zones;
+            foreach($obsolete as &$zone)$zone['context']['consequences']=[
+                'lossCompressionPercent'=>$profile->lossCompressionPercent,'capturePercent'=>$profile->capturePercent,...$old];
+            unset($zone);
+            try{$validator->validate($values,$obsolete,'neutral',42,1);self::fail('Obsolete context accepted');}
+            catch(\InvalidArgumentException $error){self::assertStringContainsString('contexte de mesure',$error->getMessage());}
+        }
+        self::assertSame($values,$profile->toArray());
+    }
     public function testConsequenceExecutionChoiceDoesNotMutateProfilesAndRejectsOldRuntime():void
     {
         $values=EngineProfile::defaults();$profile=EngineProfile::fromArray($values);$snapshot=$profile->toArray();$fingerprint=$profile->semanticFingerprint();

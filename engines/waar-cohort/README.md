@@ -72,6 +72,22 @@ contient un `result` physique et un objet décrit par
 Les schémas physiques restent inchangés, les profils sauvegardés aussi.
 Le rejeu conserve le sélecteur de la politique exécutée.
 
+Le correctif est basé sur la production `3cbc8ab` ; il n'inclut pas le panneau
+de comparaison proposé dans la PR #11. Dans cette interface, les mesures ne sont
+pas persistées et sont recalculées au rechargement. Le contexte des nouvelles
+mesures et objectifs contient la politique et le protocole ; les anciens contextes
+sont refusés et leur géométrie ne peut être réassociée qu'explicitement.
+
+Dette connue R1 de la [contre-recette #13](https://github.com/NazzTazz/waar-micro-combat/pull/13#issuecomment-5759781661) :
+la version du ruleset construite depuis un profil inclut encore les taux de
+compression/capture. Modifier ces seuls taux dans la soufflerie change donc le
+`replayHash`, même lorsque les rounds et états physiques restent identiques.
+Cette lacune préexistante n'est pas corrigée ici. Sa résolution devra séparer
+l'identité physique du contexte de projection, conserver les replays historiques
+et couvrir la construction depuis le profil, sans enlever les taux du contexte
+des conséquences. Elle reste suivie dans #12 ; aucun constat de conformité totale
+ou d'acceptation PO n'est déduit de cette livraison.
+
 Le [§9.5 de la spécification](../../docs/spec-moteur-cohortes-soufflerie-2026-09-13.md#95-amendement-du-21-septembre-2026--politique-probabiliste-3)
 fixe les octets du flux, le sampler, ses limites numériques et les vérifications.
 
@@ -94,6 +110,40 @@ puis `healthy, wounded, dead, prisoners` pour les catégories projetées.
 au budget de 400 400, avec les observations des deux rôles et 100 répétitions.
 
 ## Vérifier
+
+### Recette locale RC-1 de la politique /3
+
+Depuis un checkout de cette PR, utiliser un répertoire **neuf et isolé**. Le menu
+Profil n'a pas d'import de profil : le script ci-dessous prépare une sauvegarde
+RC-1 à partir de la fixture de #12, puis le testeur la charge par le menu existant.
+Il refuse un répertoire déjà présent, ne résout aucun combat et ne modifie ni
+profil partagé ni profil par défaut. Rust doit être construit pour ce checkout
+avant de démarrer le serveur (`cargo build --locked --release --manifest-path
+engines/waar-cohort/rust/Cargo.toml`).
+
+```powershell
+$rc1Directory = Join-Path $env:TEMP ('waar-rc1-' + [guid]::NewGuid().ToString('N'))
+php bin/prepare-rc1-review.php $rc1Directory
+if ($LASTEXITCODE -ne 0) { throw 'Préparation RC-1 échouée.' }
+$env:WAAR_PROFILE_DIRECTORY = $rc1Directory
+$env:WAAR_COHORT_RUNTIME = 'rust'
+php -S 127.0.0.1:8096 -t public/workshop bin/workshop-router.php
+```
+
+Ouvrir `http://127.0.0.1:8096` dans un onglet de recette dédié. Dans Profil,
+charger « RC-1 — recette isolée ». Choisir Beau temps, retirer les effets acquis,
+puis saisir A=(3 soldats, 1 lancier, 0 archer, 18 chevaliers), B=(1 000 soldats,
+0 lancier, 0 archer, 0 chevalier). Attendre la cartouche à jour et cliquer
+« Simuler les deux sens ». Lire brut, projeté et provenance dans les analyses.
+Chaque actualisation automatique coûte 100 combats ; chaque clic de détail en
+résout deux. Éviter les rechargements et répétitions inutiles.
+
+Suivre ensuite les cas et limites de [#12](https://github.com/NazzTazz/waar-micro-combat/issues/12) :
+défaite K18L/L, R/C 10k, cycle 200k/400k, rejeu à seed égale et compression seule.
+La dette R1 ci-dessus reste visible lors de ce dernier geste. Cette procédure
+permet la recette ; elle ne constitue pas son acceptation.
+
+### Outils moteur généraux
 
 Depuis la racine du dépôt, avec PHP 8.2 64 bits, FFI et Rust :
 
