@@ -3,16 +3,24 @@
 namespace Waar\MicroCombat\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Waar\MicroCombat\Workshop\{EngineProfile, MonotypeMeasurementService, ProcessCohortRuntime, ConsequenceObjectives};
 
 require_once dirname(__DIR__).'/autoload.php';
 
 final class WorkshopCasualtyMetricTest extends TestCase
 {
-    public function testEveryWoundedUnitCountsBeforeCaptureAndCompression(): void
+    public static function woundThresholds(): array
+    {
+        return ['historical zero'=>['0',1], 'new default'=>['0.2',0]];
+    }
+
+    #[DataProvider('woundThresholds')]
+    public function testEveryWoundedUnitCountsBeforeCaptureAndCompression(string $threshold, int $woundedRatio): void
     {
         $p=EngineProfile::defaults();
         $p['combat']['maxRounds']=1;
+        $p['combat']['woundDamageThreshold']=$threshold;
         foreach($p['units'] as &$unit){$unit['attack']='1';$unit['structure']='100';$unit['baseAccuracy']='1';$unit['accuracySpread']='0';$unit['capturable']=true;}unset($unit);
         foreach([0,8,100] as $compression){
             $p['combat']['lossCompressionPercent']=$compression;$p['combat']['capturePercent']=10;
@@ -21,8 +29,8 @@ final class WorkshopCasualtyMetricTest extends TestCase
             self::assertSame($native['rows'],$php['rows']);
             foreach(array_slice($native['rows'],0,2) as $row){
                 self::assertEquals(0,$row['rawLossRatio']);
-                self::assertEquals(1,$row['rawWoundedRatio']);
-                self::assertEquals(1,$row['rawCasualtyRatio']);
+                self::assertEquals($woundedRatio,$row['rawWoundedRatio']);
+                self::assertEquals($woundedRatio,$row['rawCasualtyRatio']);
             }
             self::assertSame('rawCasualtyRatio',$native['context']['objectiveMetric']);
         }

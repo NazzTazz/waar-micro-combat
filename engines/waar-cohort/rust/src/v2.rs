@@ -78,6 +78,8 @@ struct Ruleset {
     max_rounds: u32,
     surrender: Surrender,
     tie_break: TieBreak,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    wound_damage_threshold: Option<Micro>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -201,6 +203,10 @@ fn type_name(t: UnitType) -> &'static str {
     }
 }
 impl Ruleset {
+    fn wound_threshold(&self) -> Micro {
+        self.wound_damage_threshold.unwrap_or(Micro::ZERO)
+    }
+
     fn validate(&self) -> Result<(), String> {
         if self.schema_version != RULESET_SCHEMA
             || self.model_version != MODEL_VERSION
@@ -214,6 +220,9 @@ impl Ruleset {
         if self.surrender.dead_ratio.units() < 0 || self.surrender.dead_ratio.units() > FIXED_SCALE
         {
             return Err("invalid surrender threshold".into());
+        }
+        if self.wound_threshold().units() < 0 || self.wound_threshold().units() > FIXED_SCALE {
+            return Err("invalid wound damage threshold".into());
         }
         if !matches!(self.tie_break.criterion.as_str(), "economic" | "structure")
             || !matches!(self.tie_break.equality.as_str(), "defender" | "draw")
@@ -515,10 +524,10 @@ impl Army {
             && self.dead_total() as i128 * FIXED_SCALE as i128
                 >= threshold.units() as i128 * initial as i128
     }
-    fn wounded(&self, i: usize, prepared: &PreparedSide) -> u32 {
+    fn wounded(&self, i: usize, prepared: &PreparedSide, threshold: Micro) -> u32 {
         self.cohorts[i]
             .iter()
-            .filter(|c| c.structure < prepared.units[i].structure)
+            .filter(|c| is_wounded(c.structure, prepared.units[i].structure, threshold))
             .map(|c| c.count)
             .sum()
     }
@@ -824,13 +833,19 @@ fn counts_value(initial: [u32; 4]) -> Value {
     }
     Value::Object(map)
 }
-fn army_value(army: &Army, prepared: &PreparedSide) -> Value {
+fn is_wounded(remaining: Micro, maximum: Micro, threshold: Micro) -> bool {
+    remaining.units() > 0
+        && (maximum.units() - remaining.units()) as i128 * FIXED_SCALE as i128
+            > threshold.units() as i128 * maximum.units() as i128
+}
+
+fn army_value(army: &Army, prepared: &PreparedSide, threshold: Micro) -> Value {
     let mut healthy = Map::new();
     let mut wounded = Map::new();
     let mut dead = Map::new();
     for t in UnitType::ALL {
         let i = t.index();
-        let w = army.wounded(i, prepared);
+        let w = army.wounded(i, prepared, threshold);
         wounded.insert(type_name(t).into(), json!(w));
         healthy.insert(type_name(t).into(), json!(army.living_type(i) - w));
         dead.insert(type_name(t).into(), json!(army.dead[i]));
@@ -1194,7 +1209,8 @@ fn resolve_core(
             Some("defender")
         };
     }
-    let result = json!({"schemaVersion":"waar-combat-result/2","modelVersion":MODEL_VERSION,"winner":winner,"reason":reason,"decision":decision,"rulesetVersion":request.ruleset.version,"replayHash":replay_hash,"snapshot":snapshot,"ruleset":request.ruleset,"initialArmies":{"attacker":counts_value(a.initial),"defender":counts_value(d.initial)},"attacker":army_value(&a,ap),"defender":army_value(&d,dp),"rounds":rounds});
+    let threshold = request.ruleset.wound_threshold();
+    let result = json!({"schemaVersion":"waar-combat-result/2","modelVersion":MODEL_VERSION,"winner":winner,"reason":reason,"decision":decision,"rulesetVersion":request.ruleset.version,"replayHash":replay_hash,"snapshot":snapshot,"ruleset":request.ruleset,"initialArmies":{"attacker":counts_value(a.initial),"defender":counts_value(d.initial)},"attacker":army_value(&a,ap,threshold),"defender":army_value(&d,dp,threshold),"rounds":rounds});
     Ok((result, a, d, winner, replay_hash))
 }
 
@@ -1222,6 +1238,7 @@ fn consequence_side(
     settings: &ConsequenceSettings,
     seed: i64,
     side: &str,
+    threshold: Micro,
 ) -> Value {
     let mut types = Map::new();
     let mut initial_cost = 0u64;
@@ -1230,10 +1247,10 @@ fn consequence_side(
         let i = t.index();
         let initial = army.initial[i];
         let dead = army.dead[i];
-        let wounded = army.wounded(i, prepared);
+        let wounded = army.wounded(i, prepared, threshold);
         let healthy = initial - dead - wounded;
         let [h_out, w_out, d_out, p_out, selected] =
-            projected_counts(army, prepared, i, defeated, settings, seed, side);
+            projected_counts(army, prepared, i, defeated, settings, seed, side, threshold);
         let cost = prepared.units[i].cost;
         initial_cost += initial as u64 * cost as u64;
         lost += (d_out + w_out) as u64 * cost as u64;
@@ -1259,11 +1276,12 @@ fn projected_counts(
     settings: &ConsequenceSettings,
     seed: i64,
     side: &str,
+    threshold: Micro,
 ) -> [u32; 5] {
     project_type(
         army.initial[i],
         army.dead[i],
-        army.wounded(i, prepared),
+        army.wounded(i, prepared, threshold),
         defeated && prepared.units[i].capturable,
         settings,
         seed,
@@ -1307,9 +1325,10 @@ fn consequences(
     hash: &str,
     seed: i64,
     settings: &ConsequenceSettings,
+    threshold: Micro,
 ) -> Result<Value, String> {
     validate_consequences(settings)?;
-    let mut output = json!({"schemaVersion":"waar-combat-consequences/1","policyVersion":settings.policy_version,"rawResult":hash,"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent,"attacker":consequence_side(a,ap,winner==Some("defender"),settings,seed,"attacker"),"defender":consequence_side(d,dp,winner==Some("attacker"),settings,seed,"defender")});
+    let mut output = json!({"schemaVersion":"waar-combat-consequences/1","policyVersion":settings.policy_version,"rawResult":hash,"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent,"attacker":consequence_side(a,ap,winner==Some("defender"),settings,seed,"attacker",threshold),"defender":consequence_side(d,dp,winner==Some("attacker"),settings,seed,"defender",threshold)});
     if settings.policy_version == PROBABILISTIC_VERSION {
         output["samplingProtocol"] = json!(SAMPLING_PROTOCOL);
     }
@@ -1335,8 +1354,17 @@ fn resolve_request(request: &Request) -> Result<Value, String> {
     let (result, a, d, winner, hash) = resolve_core(request, &ap, &dp)?;
     let mut out = json!({"result":result});
     if let Some(settings) = &request.consequences {
-        out["consequences"] =
-            consequences(&a, &d, &ap, &dp, winner, &hash, request.seed, settings)?;
+        out["consequences"] = consequences(
+            &a,
+            &d,
+            &ap,
+            &dp,
+            winner,
+            &hash,
+            request.seed,
+            settings,
+            request.ruleset.wound_threshold(),
+        )?;
     }
     Ok(out)
 }
@@ -1443,6 +1471,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
         let mut dw = [0u64; 4];
         let mut projected_a = [[0u64; 4]; 4];
         let mut projected_d = [[0u64; 4]; 4];
+        let wound_threshold = batch.ruleset.wound_threshold();
         for offset in 0..batch.iterations {
             let request = Request {
                 schema_version: REQUEST_SCHEMA.into(),
@@ -1463,8 +1492,8 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
             for i in 0..4 {
                 ad[i] += a.dead[i] as u64;
                 dd[i] += d.dead[i] as u64;
-                aw[i] += a.wounded(i, &ap) as u64;
-                dw[i] += d.wounded(i, &dp) as u64;
+                aw[i] += a.wounded(i, &ap, wound_threshold) as u64;
+                dw[i] += d.wounded(i, &dp, wound_threshold) as u64;
             }
             if let Some(settings) = &batch.consequences {
                 for i in 0..4 {
@@ -1476,6 +1505,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                         settings,
                         request.seed,
                         "attacker",
+                        wound_threshold,
                     );
                     let di = projected_counts(
                         &d,
@@ -1485,6 +1515,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                         settings,
                         request.seed,
                         "defender",
+                        wound_threshold,
                     );
                     for k in 0..4 {
                         projected_a[i][k] += ai[k] as u64;
@@ -1510,6 +1541,9 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
         scenarios.push(json!({"id":scenario.id,"result":{"samples":batch.iterations,"attackerWins":wins[0],"defenderWins":wins[1],"draws":wins[2],"roundSum":round_sum,"attackerInitialByType":attacker_initial,"defenderInitialByType":defender_initial,"attackerRawDeathsByType":ad,"defenderRawDeathsByType":dd,"attackerRawWoundedByType":aw,"defenderRawWoundedByType":dw,"attackerProjectedByType":if batch.consequences.is_some(){json!(projected_a)}else{Value::Null},"defenderProjectedByType":if batch.consequences.is_some(){json!(projected_d)}else{Value::Null}}}));
     }
     let mut output = json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":batch.start_iteration+batch.iterations,"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios});
+    if let Some(threshold) = batch.ruleset.wound_damage_threshold {
+        output["classificationProvenance"] = json!({"woundDamageThreshold":threshold});
+    }
     if let Some(settings) = &batch.consequences {
         output["consequenceProvenance"] = json!({"policyVersion":settings.policy_version,"samplingProtocol":if settings.policy_version == PROBABILISTIC_VERSION { SAMPLING_PROTOCOL } else { "floor/1" },"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent});
     }
@@ -1536,6 +1570,37 @@ mod tests {
         assert_eq!(percentage_floor(u32::MAX, 100), u32::MAX);
         assert_eq!(percentage_floor(u32::MAX, 10), 429_496_729);
         assert_eq!(percentage_floor(u32::MAX, 0), 0);
+    }
+    #[test]
+    fn wound_threshold_boundaries_are_strict_and_fixed_point() {
+        let maximum = Micro::from_decimal_str("250").unwrap();
+        let threshold = Micro::from_decimal_str("0.2").unwrap();
+        assert!(!is_wounded(
+            Micro::from_decimal_str("250").unwrap(),
+            maximum,
+            threshold
+        ));
+        assert!(!is_wounded(
+            Micro::from_decimal_str("200").unwrap(),
+            maximum,
+            threshold
+        ));
+        assert!(is_wounded(
+            Micro::from_decimal_str("199.999999").unwrap(),
+            maximum,
+            threshold
+        ));
+        assert!(is_wounded(
+            Micro::from_decimal_str("249.999999").unwrap(),
+            maximum,
+            Micro::ZERO
+        ));
+        assert!(!is_wounded(
+            Micro::from_decimal_str("249.999999").unwrap(),
+            maximum,
+            Micro::from_decimal_str("1").unwrap()
+        ));
+        assert!(!is_wounded(Micro::ZERO, maximum, Micro::ZERO));
     }
     #[test]
     fn accuracy_vectors() {

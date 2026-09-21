@@ -14,6 +14,7 @@ use App\Game\Combat\Preparation\CombatPreparation;
 use App\Game\Combat\Rules\CombatRuleset;
 use App\Game\Combat\Rules\WaarRuleset;
 use App\Game\Combat\UnitCohort;
+use App\Game\Combat\UnitState;
 use App\Game\Combat\VictoryReason;
 use App\Game\Random\AccuracySampler;
 use App\Infrastructure\Combat\RustCombatResolver;
@@ -42,6 +43,67 @@ final class SliceAEngineTest extends TestCase
     {
         $rules=WaarRuleset::create();$json=json_encode($rules->toArray(),JSON_THROW_ON_ERROR);self::assertSame(CombatRuleset::SCHEMA_VERSION,$rules->toArray()['schemaVersion']);self::assertSame('waar-cohort-v2',$rules->toArray()['modelVersion']);self::assertStringNotContainsString('extraBall',$json);self::assertStringNotContainsString('woundedAttackMultiplier',$json);self::assertFalse($rules->surrenderEnabled);self::assertSame('economic',$rules->tieBreakCriterion);
     }
+
+    public function testWoundDamageThresholdUsesThePreparedMaximumAndStrictBoundary():void
+    {
+        $maximum=250.0;
+        self::assertSame(UnitState::Valid,(new UnitCohort(UnitType::Knight,250,1))->state($maximum,'0.2'));
+        self::assertSame(UnitState::Valid,(new UnitCohort(UnitType::Knight,200,1))->state($maximum,'0.2'));
+        self::assertSame(UnitState::Wounded,(new UnitCohort(UnitType::Knight,199.999999,1))->state($maximum,'0.2'));
+        self::assertSame(UnitState::Valid,(new UnitCohort(UnitType::Knight,249.999999,1))->state($maximum,'1'));
+        self::assertSame(UnitState::Wounded,(new UnitCohort(UnitType::Knight,249.999999,1))->state($maximum,'0'));
+        self::assertSame(UnitState::Dead,(new UnitCohort(UnitType::Knight,0,1))->state($maximum,'0'));
+    }
+
+    public function testThresholdChangesOnlyClassificationAndDependentConsequences():void
+    {
+        $request=self::request(['soldier'=>1],['soldier'=>1]);
+        $request['ruleset']['maxRounds']=2;
+        foreach($request['ruleset']['units']as&$unit){$unit['attack']=$unit['type']==='soldier'?'10':'0';$unit['structure']='100';$unit['baseAccuracy']='1';$unit['accuracySpread']='0';$unit['defendingEfficiency']='1';}unset($unit);
+        $request['consequences']=['policyVersion'=>ConsequencePolicy::PROBABILISTIC_VERSION,'compressionPercent'=>100,'capturePercent'=>0];
+        $request['ruleset']['woundDamageThreshold']='0';
+        $below=$this->parity($request);
+        $request['ruleset']['woundDamageThreshold']='0.2';
+        $boundary=$this->parity($request);
+        foreach(['attacker','defender']as$side){
+            self::assertSame(1,$below['result'][$side]['wounded']['soldier']);
+            self::assertSame(0,$boundary['result'][$side]['wounded']['soldier']);
+            self::assertSame(1,$below['consequences'][$side]['types']['soldier']['projected']['wounded']);
+            self::assertSame(0,$boundary['consequences'][$side]['types']['soldier']['projected']['wounded']);
+            self::assertSame($below['result'][$side]['cohorts'],$boundary['result'][$side]['cohorts']);
+            self::assertSame($below['result'][$side]['dead'],$boundary['result'][$side]['dead']);
+        }
+        foreach(['winner','reason','decision','rounds','initialArmies']as$key)self::assertSame($below['result'][$key],$boundary['result'][$key]);
+        self::assertCount(2,$below['result']['rounds'],'units classified as wounded after round one still attack in round two');
+        self::assertNotSame($below['result']['replayHash'],$boundary['result']['replayHash']);
+        $replay=\App\Game\Combat\CombatReplay::request($boundary);
+        self::assertSame('0.2',$replay['ruleset']['woundDamageThreshold']);
+        self::assertSame(CanonicalJson::encode($boundary),CanonicalJson::encode((new CombatEngine())->resolveRequest($replay)));
+    }
+
+    public function testRustBatchUsesTheSameWoundBoundaryAsDetailedReports():void
+    {
+        $request=self::request(['soldier'=>1],['soldier'=>1]);$request['ruleset']['maxRounds']=1;
+        foreach($request['ruleset']['units']as&$unit){$unit['attack']=$unit['type']==='soldier'?'20':'0';$unit['structure']='100';$unit['baseAccuracy']='1';$unit['accuracySpread']='0';$unit['defendingEfficiency']='1';}unset($unit);
+        $batch=['schemaVersion'=>'waar-combat-batch-request/2','ruleset'=>$request['ruleset'],'baseSeed'=>42,'iterations'=>1,'consequences'=>['policyVersion'=>ConsequencePolicy::PROBABILISTIC_VERSION,'compressionPercent'=>100,'capturePercent'=>0],'scenarios'=>[['id'=>'boundary','seedKey'=>0,'attacker'=>$request['attacker'],'defender'=>$request['defender']]]];
+        $batch['ruleset']['woundDamageThreshold']='0.2';$boundaryReport=self::rust()->resolveBatch($batch);$boundary=$boundaryReport['scenarios'][0]['result'];
+        self::assertSame('0.2',$boundaryReport['classificationProvenance']['woundDamageThreshold']);
+        $batch['ruleset']['woundDamageThreshold']='0.199999';$below=self::rust()->resolveBatch($batch)['scenarios'][0]['result'];
+        self::assertSame([0,0,0,0],$boundary['attackerRawWoundedByType']);
+        self::assertSame([1,0,0,0],$below['attackerRawWoundedByType']);
+        self::assertSame([1,0,0,0],$boundary['attackerProjectedByType'][0]);
+        self::assertSame([0,1,0,0],$below['attackerProjectedByType'][0]);
+        foreach(['attackerWins','defenderWins','draws','roundSum','attackerRawDeathsByType','defenderRawDeathsByType']as$key)self::assertSame($boundary[$key],$below[$key]);
+    }
+
+    #[DataProvider('invalidWoundThresholds')]
+    public function testInvalidWoundDamageThresholdIsRejectedByBothRuntimes(string $threshold):void
+    {
+        $request=self::request();$request['ruleset']['woundDamageThreshold']=$threshold;
+        try{(new CombatEngine())->resolveRequest($request);self::fail('PHP accepted an invalid wound threshold.');}catch(InvalidArgumentException){self::assertTrue(true);}
+        try{self::rust()->resolveRequest($request);self::fail('Rust accepted an invalid wound threshold.');}catch(RuntimeException){self::assertTrue(true);}
+    }
+    public static function invalidWoundThresholds():iterable{yield['-0.000001'];yield['1.000001'];}
 
     public function testModifierPreparationRoundsOnceAndKeepsProvenance():void
     {

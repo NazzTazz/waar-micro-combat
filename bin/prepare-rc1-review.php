@@ -33,6 +33,7 @@ try {
         'equalityPolicy'=>$ruleset['tieBreak']['equality'],
         'lossCompressionPercent'=>$request['consequences']['compressionPercent'],
         'capturePercent'=>$request['consequences']['capturePercent'],
+        'woundDamageThreshold'=>'0',
     ];
     $saved = (new SharedProfiles($directory))->save('RC-1 — recette isolée', $profile);
     echo json_encode(['directory'=>realpath($directory), 'id'=>$saved['id'], 'name'=>$saved['name']], JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES).PHP_EOL;

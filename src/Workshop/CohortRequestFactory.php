@@ -10,7 +10,8 @@ final readonly class CohortRequestFactory
     public static function consequenceContext(EngineProfile $profile): array
     {
         return ['policyVersion'=>self::POLICY_VERSION, 'samplingProtocol'=>self::SAMPLING_PROTOCOL,
-            'lossCompressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent];
+            'lossCompressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent,
+            'woundDamageThreshold'=>$profile->woundDamageThreshold];
     }
 
     public static function assertProvenance(array $actual, array $requested): void

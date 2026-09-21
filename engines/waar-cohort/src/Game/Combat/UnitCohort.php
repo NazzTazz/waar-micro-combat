@@ -20,11 +20,23 @@ final readonly class UnitCohort
         $this->remainingStructure = CombatFixedPoint::canonicalize($remainingStructure);
     }
 
-    public function state(float $maximumStructure): UnitState
+    public function state(float $maximumStructure, float|int|string $woundDamageThreshold = 0): UnitState
     {
         if (CombatFixedPoint::compare($this->remainingStructure, 0) <= 0) {
             return UnitState::Dead;
         }
-        return CombatFixedPoint::compare($this->remainingStructure, $maximumStructure) < 0 ? UnitState::Wounded : UnitState::Valid;
+        $maximum = CombatFixedPoint::units($maximumStructure);
+        $remaining = CombatFixedPoint::units($this->remainingStructure);
+        $threshold = CombatFixedPoint::units($woundDamageThreshold);
+        if ($maximum <= 0 || $threshold < 0 || $threshold > CombatFixedPoint::SCALE) {
+            throw new \InvalidArgumentException('Wound classification expects positive structure and a threshold between 0 and 1.');
+        }
+
+        return CombatFixedPoint::compareProducts(
+            $maximum - $remaining,
+            CombatFixedPoint::SCALE,
+            $threshold,
+            $maximum,
+        ) > 0 ? UnitState::Wounded : UnitState::Valid;
     }
 }

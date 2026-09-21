@@ -41,15 +41,15 @@ final class ConsequencePolicy
         return ['schemaVersion'=>'waar-combat-consequences/1','policyVersion'=>$policyVersion,
             ...($policyVersion===self::PROBABILISTIC_VERSION?['samplingProtocol'=>ConsequenceSampler::VERSION]:[]),'rawResult'=>$result->replayHash,
             'compressionPercent'=>$compressionPercent,'capturePercent'=>$capturePercent,
-            'attacker'=>$this->side($result->attackerArmy,$result->attackerPrepared,$result->winner===CombatSide::Defender,$compressionPercent,$capturePercent,$result->snapshot->seed,'attacker',$policyVersion),
-            'defender'=>$this->side($result->defenderArmy,$result->defenderPrepared,$result->winner===CombatSide::Attacker,$compressionPercent,$capturePercent,$result->snapshot->seed,'defender',$policyVersion)];
+            'attacker'=>$this->side($result->attackerArmy,$result->attackerPrepared,$result->winner===CombatSide::Defender,$compressionPercent,$capturePercent,$result->snapshot->seed,'attacker',$policyVersion,$ruleset->woundDamageThreshold),
+            'defender'=>$this->side($result->defenderArmy,$result->defenderPrepared,$result->winner===CombatSide::Attacker,$compressionPercent,$capturePercent,$result->snapshot->seed,'defender',$policyVersion,$ruleset->woundDamageThreshold)];
     }
 
     /** @return array<string,mixed> */
-    private function side(CombatArmy $army,\App\Game\Combat\Preparation\PreparedCombatSide $prepared,bool $defeated,int $compression,int $capture,int $seed,string $side,string $version):array
+    private function side(CombatArmy $army,\App\Game\Combat\Preparation\PreparedCombatSide $prepared,bool $defeated,int $compression,int $capture,int $seed,string $side,string $version,float $woundDamageThreshold):array
     {
         $types=[];$initialCost=$lostCost=0;
-        foreach(UnitType::cases() as $type){$initial=$army->initialCount($type);$dead=$army->deadCount($type);$wounded=$army->woundedCount($prepared,$type);$healthy=$initial-$dead-$wounded;
+        foreach(UnitType::cases() as $type){$initial=$army->initialCount($type);$dead=$army->deadCount($type);$wounded=$army->woundedCount($prepared,$type,$woundDamageThreshold);$healthy=$initial-$dead-$wounded;
             [$healthyOut,$woundedOut,$deadOut,$prisonersOut,$selected]=self::counts($initial,$dead,$wounded,$defeated&&$prepared->unit($type)->capturable,$compression,$capture,$seed,$side,$type->value,$version);
             $cost=$prepared->unit($type)->cost;$initialCost+=$initial*$cost;$lostCost+=($deadOut+$woundedOut)*$cost;
             $types[$type->value]=['initial'=>$initial,'raw'=>['healthy'=>$healthy,'wounded'=>$wounded,'dead'=>$dead],

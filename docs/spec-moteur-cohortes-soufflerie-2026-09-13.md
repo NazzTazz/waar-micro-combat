@@ -244,6 +244,7 @@ implicitement dans le nouveau parcours.
 | Égalité exacte | Défenseur ; option match nul. |
 | Compression de sortie | Valeur du profil, défaut de nouveau profil conservé à 8 %. |
 | Taux de capture | Valeur du profil, défaut 0 %, intervalle 0–10 %. |
+| Seuil de blessure | `combat.woundDamageThreshold`, défaut des nouveaux profils 20 %, affiché de 0 à 100 %. |
 
 La variation globale de puissance `randomSpread`, le multiplicateur des blessés et
 l'extraball sont absents du nouveau modèle et de ses formulaires. Un import qui les
@@ -419,6 +420,16 @@ type/camp. Ils ont moins de structure restante, pas un bonus ou malus caché d'a
 Les survivants de même type et même structure restante sont regroupés. Suivre et
 mesurer la fragmentation des cohortes sans introduire un plafond qui changerait
 silencieusement le résultat.
+
+Amendement du 21 septembre 2026, issue #14 : un survivant est classé blessé si et
+seulement si `(Smax - Sreste) / Smax > woundDamageThreshold`, sur les entiers fixes
+du moteur et sans arrondi d'affichage. `Smax` est la structure maximale effective
+préparée pour ce combat. À la frontière exacte le survivant reste valide ; un seuil
+de 0 reproduit le classement historique et un seuil de 1 ne classe aucun survivant
+comme blessé. Ce classement alimente les états, agrégats, captures et conséquences,
+sans restaurer de structure ni modifier frappes, ciblage, RNG, reddition ou départage.
+Le ruleset JSON omet le champ pour les anciennes requêtes afin de préserver leurs
+empreintes ; les nouvelles requêtes l'émettent explicitement sous forme décimale.
 
 La réallocation estimée des tentatives non consommées reste celle du moteur hérité.
 Avec le fractionnement, ses compteurs portent sur les tentatives de frappe, pas sur
@@ -843,6 +854,9 @@ de son libellé. Les anciens identifiants de presets restent migrables.
 
 Le migrateur produit un nouveau document ; il n'écrase pas les anciennes références
 ou sauvegardes. Un profil déjà au nouveau format est réimportable sans perte.
+Depuis l'amendement #14, un profil sans `combat.woundDamageThreshold` est normalisé
+à `"0"` au chargement, sans réécriture en masse. Une valeur explicite, y compris
+`"0"`, est conservée. Les nouveaux profils portent explicitement `"0.2"`.
 
 ### 13.3 Retour arrière
 

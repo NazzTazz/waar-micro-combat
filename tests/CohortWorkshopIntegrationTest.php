@@ -15,6 +15,27 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class CohortWorkshopIntegrationTest extends TestCase
 {
+    public function testCompleteBatchParityIncludesOptionalCanonicalClassificationProvenance():void
+    {
+        $values=EngineProfile::defaults();$values['combat']['maxRounds']=1;
+        $batch=(new CohortRequestFactory())->monotypes(EngineProfile::fromArray($values),'neutral',42,1);
+        $batch['scenarios']=array_slice($batch['scenarios'],0,1);
+        $php=new ProcessCohortRuntime(null,'php');$rust=new ProcessCohortRuntime();
+        $canonical=static function(array $value)use(&$canonical):array{
+            foreach($value as &$item)if(is_array($item))$item=$canonical($item);unset($item);
+            if(!array_is_list($value))ksort($value);
+            return $value;
+        };
+        foreach([null,'0','0.200000','1'] as $threshold){
+            unset($batch['ruleset']['woundDamageThreshold']);
+            if($threshold!==null)$batch['ruleset']['woundDamageThreshold']=$threshold;
+            $actual=$php->batch($batch);$expected=$rust->batch($batch);
+            self::assertSame($canonical($expected),$canonical($actual));
+            if($threshold===null)self::assertArrayNotHasKey('classificationProvenance',$actual);
+            else self::assertSame(['woundDamageThreshold'=>$threshold==='0.200000'?'0.2':$threshold],$actual['classificationProvenance']);
+        }
+    }
+
     public function testOldConsequenceContextsCannotReuseObjectives():void
     {
         $values=EngineProfile::defaults();$profile=EngineProfile::fromArray($values);
@@ -64,7 +85,25 @@ final class CohortWorkshopIntegrationTest extends TestCase
         self::assertSame('0.15',$profile['units']['archer']['baseAccuracy']);self::assertSame('0',$profile['units']['archer']['accuracySpread']);self::assertSame(1,$profile['units']['archer']['strikesPerAttack']);
         self::assertSame('0.7',$profile['weather']['rain']['archer']['attack']);self::assertSame('1',$profile['weather']['rain']['archer']['baseAccuracy']);
         self::assertSame('draw',$profile['combat']['equalityPolicy']);self::assertContains('combat.randomSpread',$result['migration']['obsoleteFields']);
+        self::assertSame('0',$profile['combat']['woundDamageThreshold']);
         self::assertContains('unsupported_schema',array_column(EngineProfile::validate($legacy),'code'));
+    }
+
+    public function testNewAndPreThresholdProfilesUseDifferentExplicitDefaults():void
+    {
+        $new=EngineProfile::defaults();
+        self::assertSame('0.2',$new['combat']['woundDamageThreshold']);
+        $old=$new;unset($old['combat']['woundDamageThreshold']);
+        $migration=(new EngineProfileMigrator())->migrate($old);
+        self::assertTrue($migration['migration']['performed']);
+        self::assertTrue($migration['migration']['measurementsObsolete']);
+        self::assertSame('0',$migration['profile']['combat']['woundDamageThreshold']);
+        $explicitZero=$new;$explicitZero['combat']['woundDamageThreshold']='0';
+        $unchanged=(new EngineProfileMigrator())->migrate($explicitZero);
+        self::assertFalse($unchanged['migration']['performed']);
+        self::assertSame('0',$unchanged['profile']['combat']['woundDamageThreshold']);
+        self::assertSame('0.2',EngineProfile::fromArray($new)->ruleset()['woundDamageThreshold']);
+        foreach(['-0.000001','1.000001']as$invalid){$candidate=$new;$candidate['combat']['woundDamageThreshold']=$invalid;$errors=EngineProfile::validate($candidate);self::assertContains('combat.woundDamageThreshold',array_column($errors,'path'));}
     }
 
     public function testNativeDuelUsesDistinctCampModifiersAndExposesReplayableCohortReport():void
