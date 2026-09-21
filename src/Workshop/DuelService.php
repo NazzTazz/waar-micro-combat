@@ -30,18 +30,19 @@ final class DuelService
                 $scenarios[]=['id'=>$a.'-'.$b,'seedKey'=>0,'attacker'=>$combat['attacker'],'defender'=>$combat['defender']];
             }
             $batch=$this->runtime->batch(['schemaVersion'=>'waar-combat-batch-request/2','ruleset'=>$profile->ruleset(),'baseSeed'=>$seed,'iterations'=>50,'startIteration'=>0,'totalIterations'=>50,'consequences'=>$combat['consequences'],'scenarios'=>$scenarios]);
+            CohortRequestFactory::assertProvenance($batch['consequenceProvenance']??[], $combat['consequences']);
             if(($batch['unitOrder']??null)!==array_keys(EngineProfile::UNIT_COSTS)||($batch['projectedCategoryOrder']??null)!==['healthy','wounded','dead','prisoners'])throw new \RuntimeException('Ordre du résultat batch incompatible.');
             $rows=[];
             foreach($batch['scenarios']as$scenario){[$a,$b]=explode('-',$scenario['id']);$r=$scenario['result'];$row=['attacker'=>$a,'defender'=>$b,'drawRate'=>$r['draws']/50,'camps'=>[]];
                 foreach(['attacker'=>$a,'defender'=>$b]as$side=>$camp){$initialCost=0;$lostCost=0;$losses=[];$prisoners=0;foreach($batch['unitOrder']as$i=>$type){$cost=$profile->costs()[$type];$initialCost+=$r[$side.'InitialByType'][$i]*$cost;$projected=$r[$side.'ProjectedByType'][$i];$lostCost+=($projected[1]+$projected[2])*$cost;$losses[$type]=['initial'=>$r[$side.'InitialByType'][$i],'dead'=>$projected[2]/50,'wounded'=>$projected[1]/50];$prisoners+=$projected[3]/50;}$row['camps'][$camp]=['losses'=>$losses,'prisoners'=>$prisoners,'winRate'=>$r[$side.'Wins']/50,'valueLossRate'=>$initialCost>0?$lostCost/50/$initialCost:0];}
                 $rows[]=$row;
             }
-            return ['requestId'=>(string)($request['requestId']??''),'iterations'=>50,'totalCombats'=>$batch['totalCombats'],'rows'=>$rows];
+            return ['requestId'=>(string)($request['requestId']??''),'iterations'=>50,'totalCombats'=>$batch['totalCombats'],'consequenceProvenance'=>$batch['consequenceProvenance'],'rows'=>$rows];
         }
         $directions=[];
         foreach([['id'=>'a-attacks-b','attacker'=>'A','defender'=>'B'],['id'=>'b-attacks-a','attacker'=>'B','defender'=>'A']]as$direction){
             $engineRequest=$this->requests->combat($profile,$armies[$direction['attacker']],$armies[$direction['defender']],$seed,$weather[$direction['attacker']],$weather[$direction['defender']],$modifiers[$direction['attacker']]??[],$modifiers[$direction['defender']]??[],'full');
-            $report=$this->runtime->resolve($engineRequest);$winner=$report['result']['winner'];
+            $report=$this->runtime->resolve($engineRequest);CohortRequestFactory::assertProvenance($report['consequences']??[], $engineRequest['consequences']);$winner=$report['result']['winner'];
             $directions[]=['id'=>$direction['id'],'labels'=>['attacker'=>$direction['attacker'],'defender'=>$direction['defender'],'winner'=>$winner===null?null:($winner==='attacker'?$direction['attacker']:$direction['defender'])],
                 'weather'=>['attacker'=>$weather[$direction['attacker']],'defender'=>$weather[$direction['defender']]],'report'=>$report,'result'=>$report['result'],'consequences'=>$report['consequences']??null];
         }

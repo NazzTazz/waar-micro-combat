@@ -52,6 +52,7 @@
       "additionalProperties": false,
       "required": ["compressionPercent", "capturePercent"],
       "properties": {
+        "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"], "default": "wounded-capture-then-compress/2" },
         "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
         "capturePercent": { "type": "integer", "minimum": 0, "maximum": 50 }
       }

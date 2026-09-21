@@ -5,8 +5,8 @@
     maxRounds: 'Limite la durée du combat. Si les deux camps sont encore en lice, le critère de départage désigne le vainqueur.',
     surrenderEnabled: 'Arrête le combat lorsqu’un camp atteint le seuil de morts. Désactivée, la résolution continue jusqu’à une autre condition de fin.',
     surrenderDeadPercent: 'À 0, la reddition est désactivée. Sinon, seuil de morts parmi les effectifs initiaux ; les blessés ne comptent pas.',
-    lossCompressionPercent: 'Part des conséquences brutes conservée en sortie, avec arrondi inférieur par catégorie. 10 % conserve un dixième des morts, blessés et prisonniers.',
-    capturePercent: 'Part des blessés capturables du vaincu transformée en prisonniers avant compression. 0 % désactive les captures.'
+    lossCompressionPercent: 'Fréquence de conservation des conséquences brutes. À 5 %, chaque mort, blessé ou prisonnier a 5 % de chances de rester en sortie : les nombres entiers varient selon la seed.',
+    capturePercent: 'Probabilité pour chaque blessé capturable du vaincu de devenir prisonnier avant compression. 0 % désactive les captures.'
   };
   function annotate() {
     document.querySelectorAll('[data-field], [data-combat]').forEach(input => {

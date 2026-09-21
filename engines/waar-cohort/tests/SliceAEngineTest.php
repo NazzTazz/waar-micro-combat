@@ -133,6 +133,25 @@ final class SliceAEngineTest extends TestCase
         $result=new CombatResult($a,$d,[],CombatSide::Defender,VictoryReason::RoundLimit,$snapshot,$rules->version,$prepared,$prepared,[],'raw');$out=(new ConsequencePolicy())->project($result,$rules,8,10)['attacker']['types']['archer'];self::assertSame(['healthy'=>929,'wounded'=>21,'dead'=>48,'prisoners'=>2,'freeSurvivors'=>950],$out['projected']);
     }
 
+    public function testProbabilisticCaptureEligibilityWithoutResolvingCombat():void
+    {
+        $rules=WaarRuleset::create();$prepared=(new CombatPreparation())->prepare($rules);
+        // Initial populations 100 each, half wounded, half dead, for every type.
+        $cohorts=[];$counts=[];
+        foreach(UnitType::cases() as $type){$cohorts[]=new UnitCohort($type,1,50);$counts[$type->value]=100;}
+        $army=new CombatArmy($cohorts,$counts);$snapshot=new CombatSnapshot($rules->version,42,$prepared,$prepared,'none');
+        foreach([null,CombatSide::Attacker,CombatSide::Defender] as $winner){
+            $result=new CombatResult($army,$army,[],$winner,VictoryReason::RoundLimit,$snapshot,$rules->version,$prepared,$prepared,[],'raw');
+            $report=(new ConsequencePolicy())->project($result,$rules,100,50,ConsequencePolicy::PROBABILISTIC_VERSION);
+            foreach(['attacker','defender'] as $side)foreach($report[$side]['types'] as $row){
+                $p=$row['prisonersSelectedBeforeCompression'];
+                if(!$report[$side]['defeated']||!$row['capturable'])self::assertSame(0,$p);
+                else self::assertGreaterThan(0,$p);
+                self::assertSame($p,$row['projected']['prisoners']);
+            }
+        }
+    }
+
     public function testCompressionNeverChangesRawCombatOrWinner():void
     {
         $request=DemoRequestFactory::combat('none');$low=(new CombatEngine())->resolveRequest($request);$request['consequences']['compressionPercent']=100;$request['consequences']['capturePercent']=0;$full=(new CombatEngine())->resolveRequest($request);self::assertSame(CanonicalJson::encode($low['result']),CanonicalJson::encode($full['result']));self::assertNotSame(CanonicalJson::encode($low['consequences']),CanonicalJson::encode($full['consequences']));

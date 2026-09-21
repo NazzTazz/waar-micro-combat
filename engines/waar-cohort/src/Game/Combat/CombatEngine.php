@@ -20,10 +20,14 @@ final readonly class CombatEngine
         $aPrepared=$this->preparation->prepare($ruleset,(array)($a['modifiers']??[]));$dPrepared=$this->preparation->prepare($ruleset,(array)($d['modifiers']??[]));
         $aArmy=CombatArmy::fromCounts(self::counts($a),$aPrepared);$dArmy=CombatArmy::fromCounts(self::counts($d),$dPrepared);
         $seed=$request['seed']??null;if(!is_int($seed)||$seed<0||$seed>2147483647)throw new \InvalidArgumentException('Seed must be a 31-bit non-negative integer.');
+        if(isset($request['consequences'])){$settings=$request['consequences'];if(!is_array($settings))throw new \InvalidArgumentException('Consequences settings must be an object.');self::keys($settings,['compressionPercent','capturePercent','policyVersion'],'consequences');
+            if(array_key_exists('policyVersion',$settings)&&!is_string($settings['policyVersion']))throw new \InvalidArgumentException('Consequence policyVersion must be a string.');
+            ConsequencePolicy::validateVersion($settings['policyVersion']??ConsequencePolicy::VERSION);
+        }
         $snapshot=new CombatSnapshot($ruleset->version,$seed,$aPrepared,$dPrepared,(string)($request['traceLevel']??'full'));
         $result=$this->resolver->resolve($aArmy,$dArmy,$ruleset,$snapshot);$out=['result'=>$result->toArray($ruleset)];
-        if(isset($request['consequences'])){$settings=$request['consequences'];if(!is_array($settings))throw new \InvalidArgumentException('Consequences settings must be an object.');self::keys($settings,['compressionPercent','capturePercent'],'consequences');
-            $out['consequences']=$this->consequences->project($result,$ruleset,self::percent($settings,'compressionPercent'),self::percent($settings,'capturePercent'));}
+        if(isset($request['consequences'])){
+            $out['consequences']=$this->consequences->project($result,$ruleset,self::percent($settings,'compressionPercent'),self::percent($settings,'capturePercent'),$settings['policyVersion']??ConsequencePolicy::VERSION);}
         return $out;
     }
 
