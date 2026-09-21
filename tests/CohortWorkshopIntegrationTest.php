@@ -14,6 +14,16 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class CohortWorkshopIntegrationTest extends TestCase
 {
+    public function testConsequenceExecutionChoiceDoesNotMutateProfilesAndRejectsOldRuntime():void
+    {
+        $values=EngineProfile::defaults();$profile=EngineProfile::fromArray($values);$snapshot=$profile->toArray();$fingerprint=$profile->semanticFingerprint();
+        $factory=new CohortRequestFactory();$duel=$factory->combat($profile,['soldier'=>3],['knight'=>18],42,'neutral','neutral');$batch=$factory->monotypes($profile,'neutral',42,1);
+        self::assertSame(CohortRequestFactory::POLICY_VERSION,$duel['consequences']['policyVersion']);
+        self::assertSame($duel['consequences'],$batch['consequences']);self::assertSame($snapshot,$profile->toArray());self::assertSame($fingerprint,$profile->semanticFingerprint());
+        foreach([[],['policyVersion'=>'wounded-capture-then-compress/2','samplingProtocol'=>'floor/1'],['policyVersion'=>CohortRequestFactory::POLICY_VERSION,'samplingProtocol'=>'unknown']] as $old){
+            try{CohortRequestFactory::assertProvenance($old,$duel['consequences']);self::fail('Obsolete runtime accepted');}catch(\RuntimeException $e){self::assertStringContainsString('incompatible',$e->getMessage());}
+        }
+    }
     public function testLegacyMigrationIsExplicitAndPreservesUserChoices():void
     {
         $legacy=EngineProfile::defaults();$legacy['schemaVersion']=EngineProfile::LEGACY_SCHEMA_VERSION;
@@ -41,15 +51,19 @@ final class CohortWorkshopIntegrationTest extends TestCase
         $archer=array_values(array_filter($direction['result']['snapshot']['prepared']['attacker']['units'],static fn(array $unit):bool=>$unit['type']==='archer'))[0];
         self::assertSame('0.144',$archer['baseAccuracy']);self::assertSame(['training','weather'],array_column($archer['effects'],'source'));
         self::assertArrayHasKey('matrix',$direction['result']['rounds'][0]['attackerAction']);self::assertCount(4,$direction['result']['rounds'][0]['attackerAction']['matrix']);
-        self::assertSame('wounded-capture-then-compress/2',$direction['consequences']['policyVersion']);
+        self::assertSame(CohortRequestFactory::POLICY_VERSION,$direction['consequences']['policyVersion']);
+        self::assertSame(CohortRequestFactory::SAMPLING_PROTOCOL,$direction['consequences']['samplingProtocol']);
     }
 
     public function testPhpDiagnosticRuntimeUsesTheSameVersionedBoundary():void
     {
         $profile=EngineProfile::fromArray(EngineProfile::defaults());$request=(new CohortRequestFactory())->combat($profile,['soldier'=>10],['archer'=>5],42,'neutral','neutral');
+        self::assertSame(CohortRequestFactory::POLICY_VERSION,$request['consequences']['policyVersion']);
         $runtime=new ProcessCohortRuntime(null,'php');$result=$runtime->resolve($request);
         self::assertSame('php',$runtime->provenance()['kind']);self::assertSame('waar-combat-result/2',$result['result']['schemaVersion']);self::assertSame('waar-cohort-v2',$result['result']['modelVersion']);
         $php=(new MonotypeMeasurementService($runtime))->measure($profile->toArray(),'neutral',42,1);$rust=(new MonotypeMeasurementService())->measure($profile->toArray(),'neutral',42,1);
-        self::assertSame($rust['rows'],$php['rows']);self::assertSame('php',$php['context']['runtime']['kind']);
+        self::assertSame($rust['rows'],$php['rows']);self::assertSame($rust['context']['consequences'],$php['context']['consequences']);
+        self::assertSame(CohortRequestFactory::POLICY_VERSION,$php['context']['consequences']['policyVersion']);
+        self::assertSame($profile->semanticFingerprint(),$php['profileFingerprint']);self::assertSame('php',$php['context']['runtime']['kind']);
     }
 }

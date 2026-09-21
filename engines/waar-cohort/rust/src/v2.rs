@@ -1,3 +1,4 @@
+use crate::consequence_sampler::{ConsequenceSampler, VERSION as SAMPLING_PROTOCOL};
 use crate::{
     CombatRng, Micro, UnitType, FIXED_SCALE, NUMERIC_MODEL_VERSION, STOCHASTIC_ENGINE_VERSION,
 };
@@ -12,6 +13,10 @@ const MODEL_VERSION: &str = "waar-cohort-v2";
 const SNAPSHOT_SCHEMA: &str = "waar-combat-snapshot/2";
 const ACCURACY_VERSION: &str = "waar-accuracy-uniform-v1";
 const CONSEQUENCE_VERSION: &str = "wounded-capture-then-compress/2";
+const PROBABILISTIC_VERSION: &str = "wounded-capture-then-compress/3";
+fn historical_policy() -> String {
+    CONSEQUENCE_VERSION.into()
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -98,6 +103,8 @@ struct SideInput {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ConsequenceSettings {
+    #[serde(default = "historical_policy")]
+    policy_version: String,
     compression_percent: u32,
     capture_percent: u32,
 }
@@ -1197,6 +1204,11 @@ fn percentage_floor(count: u32, percent: u32) -> u32 {
 }
 
 fn validate_consequences(settings: &ConsequenceSettings) -> Result<(), String> {
+    if settings.policy_version != CONSEQUENCE_VERSION
+        && settings.policy_version != PROBABILISTIC_VERSION
+    {
+        return Err("unsupported consequence policy".into());
+    }
     if settings.compression_percent > 100 || settings.capture_percent > 50 {
         return Err("compression must be 0..100 and capture 0..50 percent".into());
     }
@@ -1208,6 +1220,8 @@ fn consequence_side(
     prepared: &PreparedSide,
     defeated: bool,
     settings: &ConsequenceSettings,
+    seed: i64,
+    side: &str,
 ) -> Value {
     let mut types = Map::new();
     let mut initial_cost = 0u64;
@@ -1218,16 +1232,8 @@ fn consequence_side(
         let dead = army.dead[i];
         let wounded = army.wounded(i, prepared);
         let healthy = initial - dead - wounded;
-        let selected = if defeated && prepared.units[i].capturable {
-            percentage_floor(wounded, settings.capture_percent)
-        } else {
-            0
-        };
-        let free = wounded - selected;
-        let d_out = percentage_floor(dead, settings.compression_percent);
-        let w_out = percentage_floor(free, settings.compression_percent);
-        let p_out = percentage_floor(selected, settings.compression_percent);
-        let h_out = initial - d_out - w_out - p_out;
+        let [h_out, w_out, d_out, p_out, selected] =
+            projected_counts(army, prepared, i, defeated, settings, seed, side);
         let cost = prepared.units[i].cost;
         initial_cost += initial as u64 * cost as u64;
         lost += (d_out + w_out) as u64 * cost as u64;
@@ -1244,25 +1250,53 @@ fn consequence_side(
     };
     json!({"defeated":defeated,"types":types,"initialCost":initial_cost,"economicLoss":lost,"economicLossPercent":percent})
 }
+// Single projection path for detailed reports and the fast batch.
 fn projected_counts(
     army: &Army,
     prepared: &PreparedSide,
     i: usize,
     defeated: bool,
     settings: &ConsequenceSettings,
-) -> [u32; 4] {
-    let initial = army.initial[i];
-    let dead = army.dead[i];
-    let wounded = army.wounded(i, prepared);
-    let selected = if defeated && prepared.units[i].capturable {
-        percentage_floor(wounded, settings.capture_percent)
+    seed: i64,
+    side: &str,
+) -> [u32; 5] {
+    project_type(
+        army.initial[i],
+        army.dead[i],
+        army.wounded(i, prepared),
+        defeated && prepared.units[i].capturable,
+        settings,
+        seed,
+        side,
+        type_name(UnitType::ALL[i]),
+    )
+}
+fn project_type(
+    initial: u32,
+    dead: u32,
+    wounded: u32,
+    eligible: bool,
+    settings: &ConsequenceSettings,
+    seed: i64,
+    side: &str,
+    unit: &str,
+) -> [u32; 5] {
+    let draw = |n, percent, stage| {
+        if settings.policy_version == CONSEQUENCE_VERSION {
+            percentage_floor(n, percent)
+        } else {
+            ConsequenceSampler::new(seed, side, unit, stage).binomial(n, percent)
+        }
+    };
+    let selected = if eligible {
+        draw(wounded, settings.capture_percent, "capture")
     } else {
         0
     };
-    let d = percentage_floor(dead, settings.compression_percent);
-    let w = percentage_floor(wounded - selected, settings.compression_percent);
-    let p = percentage_floor(selected, settings.compression_percent);
-    [initial - d - w - p, w, d, p]
+    let d = draw(dead, settings.compression_percent, "dead");
+    let w = draw(wounded - selected, settings.compression_percent, "wounded");
+    let p = draw(selected, settings.compression_percent, "prisoners");
+    [initial - d - w - p, w, d, p, selected]
 }
 fn consequences(
     a: &Army,
@@ -1271,12 +1305,15 @@ fn consequences(
     dp: &PreparedSide,
     winner: Option<&str>,
     hash: &str,
+    seed: i64,
     settings: &ConsequenceSettings,
 ) -> Result<Value, String> {
     validate_consequences(settings)?;
-    Ok(
-        json!({"schemaVersion":"waar-combat-consequences/1","policyVersion":CONSEQUENCE_VERSION,"rawResult":hash,"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent,"attacker":consequence_side(a,ap,winner==Some("defender"),settings),"defender":consequence_side(d,dp,winner==Some("attacker"),settings)}),
-    )
+    let mut output = json!({"schemaVersion":"waar-combat-consequences/1","policyVersion":settings.policy_version,"rawResult":hash,"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent,"attacker":consequence_side(a,ap,winner==Some("defender"),settings,seed,"attacker"),"defender":consequence_side(d,dp,winner==Some("attacker"),settings,seed,"defender")});
+    if settings.policy_version == PROBABILISTIC_VERSION {
+        output["samplingProtocol"] = json!(SAMPLING_PROTOCOL);
+    }
+    Ok(output)
 }
 
 fn resolve_request(request: &Request) -> Result<Value, String> {
@@ -1298,7 +1335,8 @@ fn resolve_request(request: &Request) -> Result<Value, String> {
     let (result, a, d, winner, hash) = resolve_core(request, &ap, &dp)?;
     let mut out = json!({"result":result});
     if let Some(settings) = &request.consequences {
-        out["consequences"] = consequences(&a, &d, &ap, &dp, winner, &hash, settings)?;
+        out["consequences"] =
+            consequences(&a, &d, &ap, &dp, winner, &hash, request.seed, settings)?;
     }
     Ok(out)
 }
@@ -1430,8 +1468,24 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
             }
             if let Some(settings) = &batch.consequences {
                 for i in 0..4 {
-                    let ai = projected_counts(&a, &ap, i, winner == Some("defender"), settings);
-                    let di = projected_counts(&d, &dp, i, winner == Some("attacker"), settings);
+                    let ai = projected_counts(
+                        &a,
+                        &ap,
+                        i,
+                        winner == Some("defender"),
+                        settings,
+                        request.seed,
+                        "attacker",
+                    );
+                    let di = projected_counts(
+                        &d,
+                        &dp,
+                        i,
+                        winner == Some("attacker"),
+                        settings,
+                        request.seed,
+                        "defender",
+                    );
                     for k in 0..4 {
                         projected_a[i][k] += ai[k] as u64;
                         projected_d[i][k] += di[k] as u64;
@@ -1455,9 +1509,11 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
         });
         scenarios.push(json!({"id":scenario.id,"result":{"samples":batch.iterations,"attackerWins":wins[0],"defenderWins":wins[1],"draws":wins[2],"roundSum":round_sum,"attackerInitialByType":attacker_initial,"defenderInitialByType":defender_initial,"attackerRawDeathsByType":ad,"defenderRawDeathsByType":dd,"attackerRawWoundedByType":aw,"defenderRawWoundedByType":dw,"attackerProjectedByType":if batch.consequences.is_some(){json!(projected_a)}else{Value::Null},"defenderProjectedByType":if batch.consequences.is_some(){json!(projected_d)}else{Value::Null}}}));
     }
-    Ok(
-        json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":batch.start_iteration+batch.iterations,"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios}),
-    )
+    let mut output = json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":batch.start_iteration+batch.iterations,"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios});
+    if let Some(settings) = &batch.consequences {
+        output["consequenceProvenance"] = json!({"policyVersion":settings.policy_version,"samplingProtocol":if settings.policy_version == PROBABILISTIC_VERSION { SAMPLING_PROTOCOL } else { "floor/1" },"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent});
+    }
+    Ok(output)
 }
 pub fn resolve_batch_json(input: &str) -> String {
     let result = (|| {

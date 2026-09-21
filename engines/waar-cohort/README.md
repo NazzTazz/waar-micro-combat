@@ -56,11 +56,24 @@ Il accepte également l'enveloppe JSON de `bin/demo.php`. Les rapports v2 antér
 leur rejeu exige la requête originale. Le format physique et le calcul de l'empreinte
 restent inchangés.
 
-La projection `wounded-capture-then-compress/1` est un service séparé. Pour le camp
-vaincu et les types capturables, elle sélectionne d’abord les prisonniers parmi les
-blessés, puis compresse morts, blessés libres et prisonniers avec des arrondis
-inférieurs. Elle fournit toujours les quatre catégories et le coût économique perdu.
-Un match nul ne produit aucun prisonnier.
+La politique historique `wounded-capture-then-compress/2` reste le défaut des
+requêtes sans `consequences.policyVersion` et de l'API PHP `project()`.
+Ses troncatures sont inchangées. La soufflerie demande explicitement
+`wounded-capture-then-compress/3` : capture binomiale des blessés capturables du
+vaincu, puis conservation binomiale séparée des morts, blessés libres et prisonniers.
+Un match nul ne produit aucun prisonnier. Le coût affiché valorise les morts et
+blessés au prix d'achat, hors prisonniers ; ce n'est pas une facture de soins.
+
+La version inconnue est rejetée. Le protocole `sha256-counter52-binomial-btrs/1`
+apparaît dans `consequences.samplingProtocol` et dans la provenance du batch
+`consequenceProvenance` (`floor/1` pour un batch historique). L'enveloppe simple
+contient un `result` physique et un objet décrit par
+[le schéma des conséquences](contracts/consequences.schema.json).
+Les schémas physiques restent inchangés, les profils sauvegardés aussi.
+Le rejeu conserve le sélecteur de la politique exécutée.
+
+Le [§9.5 de la spécification](../../docs/spec-moteur-cohortes-soufflerie-2026-09-13.md#95-amendement-du-21-septembre-2026--politique-probabiliste-3)
+fixe les octets du flux, le sampler, ses limites numériques et les vérifications.
 
 Limite explicite : l’entrée publique de tranche A accepte des effectifs initialement
 indemnes. La projection d’armées déjà blessées n’est pas annoncée tant que leur

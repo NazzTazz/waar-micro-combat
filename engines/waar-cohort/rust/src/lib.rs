@@ -8,6 +8,7 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
+mod consequence_sampler;
 mod v2;
 
 const FIXED_SCALE: i64 = 1_000_000;

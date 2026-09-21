@@ -33,10 +33,10 @@ final class CombatReplay
         }
         if (isset($report['consequences'])) {
             $settings = $report['consequences'];
-            if (($settings['policyVersion'] ?? null) !== ConsequencePolicy::VERSION) {
+            if (!in_array($settings['policyVersion'] ?? null, [ConsequencePolicy::VERSION, ConsequencePolicy::PROBABILISTIC_VERSION], true)) {
                 throw new \InvalidArgumentException('Unsupported replay consequence policy.');
             }
-            $request['consequences'] = ['compressionPercent' => $settings['compressionPercent'], 'capturePercent' => $settings['capturePercent']];
+            $request['consequences'] = ['policyVersion'=>$settings['policyVersion'], 'compressionPercent' => $settings['compressionPercent'], 'capturePercent' => $settings['capturePercent']];
         }
         return $request;
     }

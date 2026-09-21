@@ -485,7 +485,10 @@ Conserver la dérivation des seeds de scénarios existante pour les monotypes et
 plages d'itérations. Les nouveaux résultats peuvent changer à seed identique puisque
 le modèle change ; ne pas modifier les oracles historiques pour masquer ce changement.
 
-## 9. Conséquences de sortie : politique provisoire V1
+## 9. Conséquences de sortie : historique et amendement probabiliste
+
+Les §9.1–9.4 conservent le cadrage historique. Le §9.5 amende explicitement
+le tirage pour les nouveaux appels de la soufflerie ; `/2` reste rejouable.
 
 ### 9.1 Séparation impérative
 
@@ -525,9 +528,10 @@ brute ; à 0 %, tout le monde sort indemne, même si le résultat brut désigne 
 
 Fournir systématiquement les quatre types, même à zéro, leurs catégories brutes et
 projetées, les paramètres, la version de politique et le lien vers le résultat brut.
-Le coût économique perdu reste `(mortsSortie + prisonniersSortie) × coût unitaire`.
-Les blessés libres ne sont pas considérés comme détruits ; un éventuel coût de soin
-est hors scope. Afficher le pourcentage du coût initial, en définissant proprement
+La formule initialement proposée était `(mortsSortie + prisonniersSortie) × coût
+unitaire`. Elle a été remplacée dans la politique `/2` livrée : l’indicateur
+valorise **morts + blessés libres**, hors prisonniers, au prix d’achat entier.
+L’amendement `/3` conserve cette définition ; un coût de soin reste hors scope. Afficher le pourcentage du coût initial, en définissant proprement
 le cas d'un coût initial nul dans les résultats de bas niveau.
 
 La première sortie de jeu promise est une ventilation d'effectifs par type, pas
@@ -553,6 +557,103 @@ ces champs par une approximation non annoncée.
 
 Changer cette politique doit nécessiter un changement du service de conséquences,
 de sa version et de ses tests, pas une réécriture du résolveur, des zones ou de l'UI.
+
+### 9.5 Amendement du 21 septembre 2026 — politique probabiliste /3
+
+Mandat : [issue #12](https://github.com/NazzTazz/waar-micro-combat/issues/12),
+après les constats RC-1 ARR-01/02/03 et CAP-01. À 5 %, chaque catégorie de moins
+de vingt pertes disparaissait systématiquement. La correction concerne la sortie,
+sans changement de reddition, vainqueur, dégâts, objectifs ou profil RC-1.
+Statut : implémentation corrective ; recette E2E et acceptation réservées au PO.
+
+**Loi.** Pour chaque camp/type, avec I initial, D morts bruts, W blessés vivants,
+k=compression/100 et c=capture/100 : P ~ Bin(W,c) si vaincu capturable, sinon P=0.
+Puis, avec des flux distincts : Dsortie ~ Bin(D,k), Wsortie ~ Bin(W−P,k),
+Psortie ~ Bin(P,k). Hsortie=I−Dsortie−Wsortie−Psortie ; survivants libres=Hsortie+Wsortie.
+Le diagnostic `prisonersSelectedBeforeCompression` contient P, y compris à k=0.
+Pas de capture chez le vainqueur, en match nul ou pour un type non capturable.
+Les catégories restent exclusives, entières et de leur type d'origine. À k=100,
+toutes les pertes sont conservées ; à k=0, toutes les sorties finales sont indemnes.
+Capture 0–50 %, compression 0–100 %. Aucun minimum, reliquat ou transfert entre types.
+
+Pour un blessé capturable vaincu à c=24 %, k=5 % : prisonnier 1,2 %, blessé libre
+3,8 %, indemne 95 %. Dix morts donnent une espérance de 0,5 mort. Dix-huit blessés
+non capturables donnent 0,9 blessé, et une probabilité de zéro de 0,95^18 ≈ 39,7 %.
+Le cas I=32,D=9,W=14 donne 0,45 mort + 0,70 blessé en espérance ; W=68 capturables
+vaincus donne 0,816 prisonnier + 2,584 blessés libres. Ce sont des valeurs théoriques.
+La somme de binomiales indépendantes de même k garde la même loi à total brut égal :
+fragmenter catégories, types ou combats ne réduit plus l'espérance du total conservé.
+Cela ne promet ni les mêmes entiers à seed donnée après recomposition, ni le même
+coût entre types de prix différents, ni le même résultat physique après changement
+de composition.
+
+**Compatibilité.** `consequences.policyVersion` accepte `/2` ou `/3`, dans le duel
+comme dans le batch. Champ absent = `/2` ; valeur inconnue, null ou non textuelle
+rejetée. L'API PHP historique garde `/2` par défaut. La soufflerie sélectionne `/3`
+via sa factory de requêtes, sans réécrire un profil ni son empreinte. Le rejeu
+restitue cette sélection. Les sorties `/2` individuelles sont inchangées ; le batch
+reçoit une provenance additive `consequenceProvenance`, avec version, protocole et
+taux réellement utilisés. `/3` ajoute `samplingProtocol` aux conséquences du duel.
+Les modèles physique, numérique, de précision et de touches ne changent pas.
+
+**Protocole figé** `sha256-counter52-binomial-btrs/1`. À chaque étape, créer un
+compteur local j=0. Hacher en SHA-256 les octets UTF-8 suivants, sans NUL terminal :
+
+`protocole NUL wounded-capture-then-compress/3 NUL seed NUL camp NUL type NUL étape NUL j`
+
+Seed et j sont des entiers décimaux non signés, sans zéro préfixé. La seed est la
+seed effective du combat, dans [0,2147483647] : aucune nouvelle dérivation des seeds
+de scénarios. Camp = `attacker` ou `defender` ; type = `soldier`, `spearman`,
+`archer` ou `knight` ; étape = `capture`, `dead`, `wounded`, `prisoners`.
+Lire les huit premiers octets big-endian, décaler de 12 bits vers la droite pour
+obtenir B sur 52 bits, puis U=(B+0,5)/2^52. Incrémenter j après chaque uniforme.
+U appartient strictement à (0,1). Ni le hash physique, ni la trace, ni le libellé,
+ni l'ordre des appels n'entrent dans cette chaîne. Aucun état partagé avec la physique.
+
+**Sampler dédié.** n reste u32. n=0, taux=0 et taux=100 retournent respectivement
+0, 0 et n sans consommer d'uniforme. Sinon prendre p=min(taux,100−taux)/100 ; pour
+un taux >50, retourner n−X. Si n*p<30, sommer les attentes géométriques
+floor(log(U)/log1p(−p))+1 jusqu'à dépasser n ; le nombre d'attentes complétées est X.
+Sinon employer le rejet transformé BTRS de
+[Hörmann, 1993](https://doi.org/10.1080/00949659308811496), avec le test d'acceptation
+logarithmique explicité dans [TensorFlow](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/random_binomial_op.cc).
+Il s'agit d'un rejet binomial, pas d'une normale arrondie ou tronquée.
+
+Les deux implémentations évaluent dans le même ordre en binary64, sans FMA explicite :
+proposition BTRS, refus des k hors [0,n], acceptation rapide, puis log du rapport des
+masses. Le terme central utilise log1p pour limiter la cancellation ; la correction
+de Stirling utilise dix constantes pour k<10 puis les termes jusqu'à 1/(1188*x^9),
+x=k+1 (terme suivant <7e−15 pour x≥11). Les transcendantes restent celles du runtime :
+ce protocole ne promet pas une arithmétique réelle exacte sur toute plateforme.
+Les vecteurs communs vérifient entiers et consommation du flux ; un port vers une
+nouvelle plateforme doit les rejouer. Aucun écrêtage ou plafond d'itérations ne
+substitue une autre loi. Coût moyen borné : moins de 31 uniformes dans la branche
+faible espérance, rejet de coût moyen constant pour les grands effectifs ; mémoire
+constante. Le sampler physique historique demeure inchangé.
+
+**Raccordement.** Une seule projection par camp/type alimente détail et batch dans
+chaque langage. Sommes batch en u64/entiers PHP 64 bits, après projection individuelle.
+La factory refuse une provenance absente ou différente de la politique demandée.
+Version/protocole participent au contexte et à la clé du cache. Une comparaison
+entre `/2` et `/3` laisse les observations brutes comparables mais n'émet aucun delta
+de perte projetée : « Non comparable », avec invitation à remesurer la référence.
+Les zones anciennes suivent le mécanisme de remesure/réassociation existant ; aucune
+modification des objectifs ni migration silencieuse des sauvegardes.
+
+La compression est expliquée comme une fréquence de conservation, avec des entiers
+variables selon la seed. La provenance reste dans les détails existants. Les pertes
+économiques restent la valeur d'achat des morts + blessés, hors prisonniers.
+
+**Vérification ciblée.** Les tests purs contrôlent les vecteurs, la partition, les
+extrêmes et la loi sur les seeds 0…4095 ; la fragmentation entre deux combats utilise
+2s et 2s+1, donc au total seulement les seeds 0…8191. Pour une moyenne binomiale,
+marge Bernstein sqrt(2*variance*log(2000000)/4096)+2*log(2000000)/(3*4096), appliquée
+aux Bernoulli constituants (risque nominal ≤1e−6 par contrôle). Même principe pour
+chaque fréquence de classe. Le second moment centré utilise six écarts-types
+calculés à partir du quatrième moment binomial. Les contrôles ne sont jamais relancés
+avec une autre liste pour obtenir un résultat favorable. La parité seule ne sert
+pas de preuve de loi. La recette physique et les commandes sont consignées dans
+la PR de #12, dans le budget de 512 combats par langage, sans campagne d'équilibrage.
 
 ## 10. Journal métier et explication
 

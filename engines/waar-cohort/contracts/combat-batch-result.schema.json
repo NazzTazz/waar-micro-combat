@@ -19,6 +19,16 @@
         "total": { "type": "integer" }, "complete": { "type": "boolean" }
       }
     },
+    "consequenceProvenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["policyVersion", "samplingProtocol", "compressionPercent", "capturePercent"],
+      "properties": {
+        "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"] },
+        "samplingProtocol": { "enum": ["floor/1", "sha256-counter52-binomial-btrs/1"] },
+        "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "capturePercent": { "type": "integer", "minimum": 0, "maximum": 50 }
+      }
+    },
     "scenarios": {
       "type": "array",
       "items": {

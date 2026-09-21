@@ -4,6 +4,23 @@ namespace Waar\MicroCombat\Workshop;
 
 final readonly class CohortRequestFactory
 {
+    public const POLICY_VERSION = 'wounded-capture-then-compress/3';
+    public const SAMPLING_PROTOCOL = 'sha256-counter52-binomial-btrs/1';
+
+    public static function consequenceContext(EngineProfile $profile): array
+    {
+        return ['policyVersion'=>self::POLICY_VERSION, 'samplingProtocol'=>self::SAMPLING_PROTOCOL,
+            'lossCompressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent];
+    }
+
+    public static function assertProvenance(array $actual, array $requested): void
+    {
+        foreach (['policyVersion'=>self::POLICY_VERSION, 'samplingProtocol'=>self::SAMPLING_PROTOCOL,
+            'compressionPercent'=>$requested['compressionPercent'], 'capturePercent'=>$requested['capturePercent']] as $key=>$value) {
+            if (($actual[$key] ?? null) !== $value) throw new \RuntimeException('Politique de conséquences du runtime incompatible : reconstruisez Rust et remesurez.');
+        }
+    }
+
     /**
      * @param array<string,int> $attacker
      * @param array<string,int> $defender
@@ -21,7 +38,7 @@ final readonly class CohortRequestFactory
             'traceLevel'=>$traceLevel,
             'attacker'=>['units'=>$attacker, 'modifiers'=>[...$attackerModifiers, ...$profile->weatherModifiers($attackerWeather, 'attacker')]],
             'defender'=>['units'=>$defender, 'modifiers'=>[...$defenderModifiers, ...$profile->weatherModifiers($defenderWeather, 'defender')]],
-            'consequences'=>['compressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent],
+            'consequences'=>['policyVersion'=>self::POLICY_VERSION, 'compressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent],
         ];
     }
 
@@ -43,7 +60,7 @@ final readonly class CohortRequestFactory
             'iterations'=>$iterations,
             'startIteration'=>0,
             'totalIterations'=>$iterations,
-            'consequences'=>['compressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent],
+            'consequences'=>['policyVersion'=>self::POLICY_VERSION, 'compressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent],
             'scenarios'=>$scenarios,
         ];
     }
