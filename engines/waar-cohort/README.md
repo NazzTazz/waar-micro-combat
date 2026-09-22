@@ -1,9 +1,40 @@
 # Moteur Waar par cohortes — tranche A
 
 Ce dossier est l’adaptation isolée du moteur par cohortes importé de `waar-v3`.
-Son contrat actif est `waar-cohort-v2`. La soufflerie actuelle n’est pas raccordée :
-ce sera la tranche B. Les copies de référence sous `engines/waar-v3` et les fichiers
+Son contrat actif est `waar-cohort-v2`. La soufflerie est raccordée depuis la tranche B.
+Les copies de référence sous `engines/waar-v3` et les fichiers
 figés du dépôt ne sont pas modifiés.
+
+## Protocole aléatoire courant — #16, 22 septembre 2026
+
+La soufflerie demande désormais `stochasticEngineVersion: sha256-binomial-tree/1`,
+avec `armyIdentities` A/B conservées lorsque les rôles s'inversent, et la politique
+de conséquences `wounded-capture-then-compress/4`. Tous les usages sont adressés
+séparément. Le tirage binomial agrégé conserve des réussites emboîtées quand p
+augmente à adresse et nombre de tentatives fixes ; aucune approximation normale
+n'est employée par ce protocole. Les compartiments de dégâts sont triés avant
+allocation, sans identité individuelle inventée.
+
+Requêtes sans ces champs : protocole historique LCG et anciennes politiques
+conservés. Les versions et identités figurent dans le snapshot, le batch, le rejeu
+et les contextes de mesure. Une politique /4 sans nouveau protocole, ou un nouveau
+protocole sans identités distinctes, est rejeté. Les passages sur /3 ci-dessous
+décrivent la livraison antérieure, toujours disponible pour le rejeu.
+
+Contrat, preuves et limites : [spécification §8.7](../../docs/spec-moteur-cohortes-soufflerie-2026-09-13.md#87-amendement-16--hasard-adressé-et-binomiale-couplée-22-septembre-2026),
+[PR #17](https://github.com/NazzTazz/waar-micro-combat/pull/17).
+Recette ciblée sans navigateur :
+
+```powershell
+cargo build --locked --release --manifest-path engines/waar-cohort/rust/Cargo.toml
+php -d ffi.enable=1 vendor/bin/phpunit --bootstrap engines/waar-cohort/autoload.php engines/waar-cohort/tests
+php vendor/bin/phpunit tests/WorkshopAddressedRandomTest.php
+cargo test --locked --manifest-path engines/waar-cohort/rust/Cargo.toml
+```
+
+La suite moteur est distincte de `composer test` : l'exécuter explicitement pour
+la contre-recette RNG. Les nouvelles sorties ne constituent pas un équilibrage
+accepté, et les contrôles bornés ne certifient pas tous les combats possibles.
 
 ## Règles actives
 

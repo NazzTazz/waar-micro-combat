@@ -62,16 +62,16 @@ async function waitFor(url) {
     assert.equal(summaryResponse.status,200);
     const summary=(await summaryResponse.json()).data;
     assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
-    assert.equal(summary.consequenceProvenance.policyVersion,'wounded-capture-then-compress/3');
-    assert.equal(summary.consequenceProvenance.samplingProtocol,'sha256-counter52-binomial-btrs/1');
+    assert.equal(summary.consequenceProvenance.policyVersion,'wounded-capture-then-compress/4');
+    assert.equal(summary.consequenceProvenance.samplingProtocol,'sha256-binomial-tree/1');
     // Scope filter for issue #12: default CI still exercises the complete historical flow.
     if(process.env.WAAR_TEST_SCOPE==='consequences'){
       const post=async(route,body)=>{const response=await fetch(origin+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(response.status,200);return (await response.json()).data};
       const profile=profilePayload.data.profile,snapshot=JSON.stringify(profile);
       const duel=await post('duel',{profile,armies:{A:{knight:10},B:{soldier:1000}},weather:'neutral',seed:42});
-      for(const direction of duel.directions){assert.equal(direction.consequences.policyVersion,'wounded-capture-then-compress/3');assert.equal(direction.consequences.samplingProtocol,'sha256-counter52-binomial-btrs/1')}
+      for(const direction of duel.directions){assert.equal(direction.consequences.policyVersion,'wounded-capture-then-compress/4');assert.equal(direction.consequences.samplingProtocol,'sha256-binomial-tree/1')}
       const measurement=await post('measure',{profile,weather:'neutral',seed:42,iterations:1});
-      assert.equal(measurement.context.consequences.policyVersion,'wounded-capture-then-compress/3');
+      assert.equal(measurement.context.consequences.policyVersion,'wounded-capture-then-compress/4');
       assert.equal(JSON.stringify(profile),snapshot);
       console.log('workshop-http: consequences scope ok (118 Rust combats, no search)');return;
     }

@@ -1,0 +1,1949 @@
+{
+  "report": {
+    "consequences": {
+      "attacker": {
+        "defeated": true,
+        "economicLoss": 440,
+        "economicLossPercent": "22",
+        "initialCost": 2000,
+        "types": {
+          "archer": {
+            "capturable": true,
+            "initial": 0,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 0,
+              "healthy": 0,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 0,
+              "wounded": 0
+            },
+            "unitCost": 60
+          },
+          "knight": {
+            "capturable": true,
+            "initial": 0,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 0,
+              "healthy": 0,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 0,
+              "wounded": 0
+            },
+            "unitCost": 200
+          },
+          "soldier": {
+            "capturable": true,
+            "initial": 0,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 0,
+              "healthy": 0,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 0,
+              "wounded": 0
+            },
+            "unitCost": 20
+          },
+          "spearman": {
+            "capturable": true,
+            "initial": 50,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 50,
+              "healthy": 39,
+              "prisoners": 0,
+              "wounded": 11
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 39,
+              "wounded": 11
+            },
+            "unitCost": 40
+          }
+        }
+      },
+      "capturePercent": 1,
+      "compressionPercent": 100,
+      "defender": {
+        "defeated": false,
+        "economicLoss": 0,
+        "economicLossPercent": "0",
+        "initialCost": 1980,
+        "types": {
+          "archer": {
+            "capturable": true,
+            "initial": 33,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 33,
+              "healthy": 33,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 33,
+              "wounded": 0
+            },
+            "unitCost": 60
+          },
+          "knight": {
+            "capturable": true,
+            "initial": 0,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 0,
+              "healthy": 0,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 0,
+              "wounded": 0
+            },
+            "unitCost": 200
+          },
+          "soldier": {
+            "capturable": true,
+            "initial": 0,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 0,
+              "healthy": 0,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 0,
+              "wounded": 0
+            },
+            "unitCost": 20
+          },
+          "spearman": {
+            "capturable": true,
+            "initial": 0,
+            "prisonersSelectedBeforeCompression": 0,
+            "projected": {
+              "dead": 0,
+              "freeSurvivors": 0,
+              "healthy": 0,
+              "prisoners": 0,
+              "wounded": 0
+            },
+            "raw": {
+              "dead": 0,
+              "healthy": 0,
+              "wounded": 0
+            },
+            "unitCost": 40
+          }
+        }
+      },
+      "policyVersion": "wounded-capture-then-compress/3",
+      "rawResult": "df3c2be9131926efa6e1a2f505366d95790fe107c0c7e7a9582c8b8e44d79813",
+      "samplingProtocol": "sha256-counter52-binomial-btrs/1",
+      "schemaVersion": "waar-combat-consequences/1"
+    },
+    "result": {
+      "attacker": {
+        "cohorts": [
+          {
+            "count": 11,
+            "remainingStructure": "15",
+            "type": "spearman"
+          },
+          {
+            "count": 39,
+            "remainingStructure": "30",
+            "type": "spearman"
+          }
+        ],
+        "dead": {
+          "archer": 0,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 0
+        },
+        "healthy": {
+          "archer": 0,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 39
+        },
+        "wounded": {
+          "archer": 0,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 11
+        }
+      },
+      "decision": {
+        "comparison": -1,
+        "criterion": "structure",
+        "equalityPolicy": "draw",
+        "trigger": "round_limit",
+        "values": {
+          "attacker": {
+            "initialUnits": 3000000000,
+            "remainingUnits": 1335000000
+          },
+          "defender": {
+            "initialUnits": 990000000,
+            "remainingUnits": 815000000
+          }
+        }
+      },
+      "defender": {
+        "cohorts": [
+          {
+            "count": 14,
+            "remainingStructure": "20",
+            "type": "archer"
+          },
+          {
+            "count": 7,
+            "remainingStructure": "25",
+            "type": "archer"
+          },
+          {
+            "count": 12,
+            "remainingStructure": "30",
+            "type": "archer"
+          }
+        ],
+        "dead": {
+          "archer": 0,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 0
+        },
+        "healthy": {
+          "archer": 33,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 0
+        },
+        "wounded": {
+          "archer": 0,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 0
+        }
+      },
+      "initialArmies": {
+        "attacker": {
+          "archer": 0,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 50
+        },
+        "defender": {
+          "archer": 33,
+          "knight": 0,
+          "soldier": 0,
+          "spearman": 0
+        }
+      },
+      "modelVersion": "waar-cohort-v2",
+      "reason": "round_limit",
+      "replayHash": "df3c2be9131926efa6e1a2f505366d95790fe107c0c7e7a9582c8b8e44d79813",
+      "rounds": [
+        {
+          "accuracy": {
+            "attacker": {
+              "archer": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "knight": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "soldier": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "spearman": {
+                "lower": "0.3",
+                "sampled": true,
+                "substream": "fefcf3d8e13bd4e4d57c07f36881d15a6c0979358b3a760e4127f9a887b024b1",
+                "upper": "0.3",
+                "value": "0.3"
+              }
+            },
+            "defender": {
+              "archer": {
+                "lower": "0.5",
+                "sampled": true,
+                "substream": "208b140944cb99aa5747224aacd7a2d42757ddda4f51dd396575ba391724af44",
+                "upper": "0.5",
+                "value": "0.5"
+              },
+              "knight": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "soldier": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "spearman": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              }
+            }
+          },
+          "attackerAction": {
+            "attempts": 50,
+            "deaths": 0,
+            "hits": 16,
+            "matrix": {
+              "archer": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "3",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                }
+              },
+              "knight": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "30",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "20",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "8",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                }
+              },
+              "soldier": {
+                "archer": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "8",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.75",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "7.5",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                }
+              },
+              "spearman": {
+                "archer": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 50,
+                  "appliedHits": 16,
+                  "attackFactor": "0.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 50,
+                  "damageAbsorbed": "80",
+                  "damageEmitted": "80",
+                  "damagePerHit": "5",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 16,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "20",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                }
+              }
+            }
+          },
+          "attackerDeathRatio": "0",
+          "defenderAction": {
+            "attempts": 99,
+            "deaths": 0,
+            "hits": 58,
+            "matrix": {
+              "archer": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "3",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 99,
+                  "appliedHits": 58,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 99,
+                  "damageAbsorbed": "870",
+                  "damageEmitted": "870",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 58,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                }
+              },
+              "knight": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "22.5",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "7.5",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "6",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                }
+              },
+              "soldier": {
+                "archer": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "11.25",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "6",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "7.5",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.75",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "5.625",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                }
+              },
+              "spearman": {
+                "archer": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "5",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "20",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                }
+              }
+            }
+          },
+          "defenderDeathRatio": "0",
+          "number": 1
+        },
+        {
+          "accuracy": {
+            "attacker": {
+              "archer": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "knight": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "soldier": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "spearman": {
+                "lower": "0.3",
+                "sampled": true,
+                "substream": "bfe80d487014d926e6e1160ef04e2bcf40bac4f57491f4c7fce90945a2e1b450",
+                "upper": "0.3",
+                "value": "0.3"
+              }
+            },
+            "defender": {
+              "archer": {
+                "lower": "0.5",
+                "sampled": true,
+                "substream": "45c4e9678396eebb0d1e3d0f8c3276ad578b628b3e9b31a9dc605d1b35ffa942",
+                "upper": "0.5",
+                "value": "0.5"
+              },
+              "knight": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "soldier": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              },
+              "spearman": {
+                "lower": null,
+                "sampled": false,
+                "substream": null,
+                "upper": null,
+                "value": null
+              }
+            }
+          },
+          "attackerAction": {
+            "attempts": 50,
+            "deaths": 0,
+            "hits": 19,
+            "matrix": {
+              "archer": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "3",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 3
+                }
+              },
+              "knight": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "30",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "20",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "8",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                }
+              },
+              "soldier": {
+                "archer": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "8",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.75",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "7.5",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                }
+              },
+              "spearman": {
+                "archer": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 50,
+                  "appliedHits": 19,
+                  "attackFactor": "0.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 50,
+                  "damageAbsorbed": "95",
+                  "damageEmitted": "95",
+                  "damagePerHit": "5",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 19,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "20",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 50,
+                  "strikesPerAttack": 1
+                }
+              }
+            }
+          },
+          "attackerDeathRatio": "0",
+          "defenderAction": {
+            "attempts": 99,
+            "deaths": 0,
+            "hits": 53,
+            "matrix": {
+              "archer": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "3",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 99,
+                  "appliedHits": 53,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 99,
+                  "damageAbsorbed": "795",
+                  "damageEmitted": "795",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 53,
+                  "sourceCount": 33,
+                  "strikesPerAttack": 3
+                }
+              },
+              "knight": {
+                "archer": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "3",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "22.5",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "knight": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "7.5",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "soldier": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                },
+                "spearman": {
+                  "accuracy": "0.5",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "6",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 6
+                }
+              },
+              "soldier": {
+                "archer": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "11.25",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.8",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "6",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "7.5",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.25",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.75",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "5.625",
+                  "defendingEfficiency": "0.75",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                }
+              },
+              "spearman": {
+                "archer": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "0.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "5",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "knight": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1.5",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "15",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "soldier": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "2",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "20",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                },
+                "spearman": {
+                  "accuracy": "0.3",
+                  "allocatedAttempts": 0,
+                  "appliedHits": 0,
+                  "attackFactor": "1",
+                  "attackPerStrike": "10",
+                  "consumedAttempts": 0,
+                  "damageAbsorbed": "0",
+                  "damageEmitted": "0",
+                  "damagePerHit": "10",
+                  "defendingEfficiency": "1",
+                  "overkill": "0",
+                  "reallocatedAttempts": 0,
+                  "sampledHits": 0,
+                  "sourceCount": 0,
+                  "strikesPerAttack": 1
+                }
+              }
+            }
+          },
+          "defenderDeathRatio": "0",
+          "number": 2
+        }
+      ],
+      "ruleset": {
+        "engagements": {
+          "archer": {
+            "archer": {
+              "attackFactor": "1",
+              "isProvisional": false
+            },
+            "knight": {
+              "attackFactor": "0.3",
+              "isProvisional": false
+            },
+            "soldier": {
+              "attackFactor": "1",
+              "isProvisional": false
+            },
+            "spearman": {
+              "attackFactor": "1.5",
+              "isProvisional": false
+            }
+          },
+          "knight": {
+            "archer": {
+              "attackFactor": "3",
+              "isProvisional": false
+            },
+            "knight": {
+              "attackFactor": "1",
+              "isProvisional": false
+            },
+            "soldier": {
+              "attackFactor": "2",
+              "isProvisional": false
+            },
+            "spearman": {
+              "attackFactor": "0.8",
+              "isProvisional": false
+            }
+          },
+          "soldier": {
+            "archer": {
+              "attackFactor": "1.5",
+              "isProvisional": false
+            },
+            "knight": {
+              "attackFactor": "0.8",
+              "isProvisional": false
+            },
+            "soldier": {
+              "attackFactor": "1",
+              "isProvisional": false
+            },
+            "spearman": {
+              "attackFactor": "0.75",
+              "isProvisional": false
+            }
+          },
+          "spearman": {
+            "archer": {
+              "attackFactor": "0.5",
+              "isProvisional": false
+            },
+            "knight": {
+              "attackFactor": "1.5",
+              "isProvisional": false
+            },
+            "soldier": {
+              "attackFactor": "2",
+              "isProvisional": false
+            },
+            "spearman": {
+              "attackFactor": "1",
+              "isProvisional": false
+            }
+          }
+        },
+        "maxRounds": 2,
+        "modelVersion": "waar-cohort-v2",
+        "schemaVersion": "waar-cohort-ruleset/2",
+        "surrender": {
+          "deadRatio": "0.1",
+          "enabled": false
+        },
+        "targeting": {
+          "archer": {
+            "weights": {
+              "archer": 1,
+              "knight": 1,
+              "soldier": 1,
+              "spearman": 1
+            }
+          },
+          "knight": {
+            "weights": {
+              "archer": 1,
+              "knight": 1,
+              "soldier": 1,
+              "spearman": 1
+            }
+          },
+          "soldier": {
+            "weights": {
+              "archer": 1,
+              "knight": 1,
+              "soldier": 1,
+              "spearman": 1
+            }
+          },
+          "spearman": {
+            "weights": {
+              "archer": 1,
+              "knight": 1,
+              "soldier": 1,
+              "spearman": 1
+            }
+          }
+        },
+        "targetingMode": "proportional",
+        "tieBreak": {
+          "criterion": "structure",
+          "equality": "draw"
+        },
+        "units": [
+          {
+            "accuracySpread": "0",
+            "attack": "10",
+            "baseAccuracy": "0.25",
+            "capturable": true,
+            "cost": 20,
+            "defendingEfficiency": "0.75",
+            "strikesPerAttack": 1,
+            "structure": "30",
+            "type": "soldier"
+          },
+          {
+            "accuracySpread": "0",
+            "attack": "10",
+            "baseAccuracy": "0.3",
+            "capturable": true,
+            "cost": 40,
+            "defendingEfficiency": "1",
+            "strikesPerAttack": 1,
+            "structure": "60",
+            "type": "spearman"
+          },
+          {
+            "accuracySpread": "0",
+            "attack": "30",
+            "baseAccuracy": "0.5",
+            "capturable": true,
+            "cost": 60,
+            "defendingEfficiency": "1",
+            "strikesPerAttack": 3,
+            "structure": "30",
+            "type": "archer"
+          },
+          {
+            "accuracySpread": "0",
+            "attack": "60",
+            "baseAccuracy": "0.5",
+            "capturable": true,
+            "cost": 200,
+            "defendingEfficiency": "0.75",
+            "strikesPerAttack": 6,
+            "structure": "80",
+            "type": "knight"
+          }
+        ],
+        "version": "waar-cohort-v2@b8bc1531759b1372",
+        "woundDamageThreshold": "0.5"
+      },
+      "rulesetVersion": "waar-cohort-v2@b8bc1531759b1372",
+      "schemaVersion": "waar-combat-result/2",
+      "snapshot": {
+        "accuracySamplerVersion": "waar-accuracy-uniform-v1",
+        "numericModelVersion": "microstructure-6-half-up-v1",
+        "prepared": {
+          "attacker": {
+            "modifiers": [],
+            "units": [
+              {
+                "accuracySpread": "0",
+                "attack": "10",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "10",
+                  "baseAccuracy": "0.25",
+                  "capturable": true,
+                  "cost": 20,
+                  "defendingEfficiency": "0.75",
+                  "strikesPerAttack": 1,
+                  "structure": "30",
+                  "type": "soldier"
+                },
+                "baseAccuracy": "0.25",
+                "capturable": true,
+                "cost": 20,
+                "defendingEfficiency": "0.75",
+                "effects": [],
+                "strikesPerAttack": 1,
+                "structure": "30",
+                "type": "soldier"
+              },
+              {
+                "accuracySpread": "0",
+                "attack": "10",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "10",
+                  "baseAccuracy": "0.3",
+                  "capturable": true,
+                  "cost": 40,
+                  "defendingEfficiency": "1",
+                  "strikesPerAttack": 1,
+                  "structure": "60",
+                  "type": "spearman"
+                },
+                "baseAccuracy": "0.3",
+                "capturable": true,
+                "cost": 40,
+                "defendingEfficiency": "1",
+                "effects": [],
+                "strikesPerAttack": 1,
+                "structure": "60",
+                "type": "spearman"
+              },
+              {
+                "accuracySpread": "0",
+                "attack": "30",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "30",
+                  "baseAccuracy": "0.5",
+                  "capturable": true,
+                  "cost": 60,
+                  "defendingEfficiency": "1",
+                  "strikesPerAttack": 3,
+                  "structure": "30",
+                  "type": "archer"
+                },
+                "baseAccuracy": "0.5",
+                "capturable": true,
+                "cost": 60,
+                "defendingEfficiency": "1",
+                "effects": [],
+                "strikesPerAttack": 3,
+                "structure": "30",
+                "type": "archer"
+              },
+              {
+                "accuracySpread": "0",
+                "attack": "60",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "60",
+                  "baseAccuracy": "0.5",
+                  "capturable": true,
+                  "cost": 200,
+                  "defendingEfficiency": "0.75",
+                  "strikesPerAttack": 6,
+                  "structure": "80",
+                  "type": "knight"
+                },
+                "baseAccuracy": "0.5",
+                "capturable": true,
+                "cost": 200,
+                "defendingEfficiency": "0.75",
+                "effects": [],
+                "strikesPerAttack": 6,
+                "structure": "80",
+                "type": "knight"
+              }
+            ]
+          },
+          "defender": {
+            "modifiers": [],
+            "units": [
+              {
+                "accuracySpread": "0",
+                "attack": "10",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "10",
+                  "baseAccuracy": "0.25",
+                  "capturable": true,
+                  "cost": 20,
+                  "defendingEfficiency": "0.75",
+                  "strikesPerAttack": 1,
+                  "structure": "30",
+                  "type": "soldier"
+                },
+                "baseAccuracy": "0.25",
+                "capturable": true,
+                "cost": 20,
+                "defendingEfficiency": "0.75",
+                "effects": [],
+                "strikesPerAttack": 1,
+                "structure": "30",
+                "type": "soldier"
+              },
+              {
+                "accuracySpread": "0",
+                "attack": "10",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "10",
+                  "baseAccuracy": "0.3",
+                  "capturable": true,
+                  "cost": 40,
+                  "defendingEfficiency": "1",
+                  "strikesPerAttack": 1,
+                  "structure": "60",
+                  "type": "spearman"
+                },
+                "baseAccuracy": "0.3",
+                "capturable": true,
+                "cost": 40,
+                "defendingEfficiency": "1",
+                "effects": [],
+                "strikesPerAttack": 1,
+                "structure": "60",
+                "type": "spearman"
+              },
+              {
+                "accuracySpread": "0",
+                "attack": "30",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "30",
+                  "baseAccuracy": "0.5",
+                  "capturable": true,
+                  "cost": 60,
+                  "defendingEfficiency": "1",
+                  "strikesPerAttack": 3,
+                  "structure": "30",
+                  "type": "archer"
+                },
+                "baseAccuracy": "0.5",
+                "capturable": true,
+                "cost": 60,
+                "defendingEfficiency": "1",
+                "effects": [],
+                "strikesPerAttack": 3,
+                "structure": "30",
+                "type": "archer"
+              },
+              {
+                "accuracySpread": "0",
+                "attack": "60",
+                "base": {
+                  "accuracySpread": "0",
+                  "attack": "60",
+                  "baseAccuracy": "0.5",
+                  "capturable": true,
+                  "cost": 200,
+                  "defendingEfficiency": "0.75",
+                  "strikesPerAttack": 6,
+                  "structure": "80",
+                  "type": "knight"
+                },
+                "baseAccuracy": "0.5",
+                "capturable": true,
+                "cost": 200,
+                "defendingEfficiency": "0.75",
+                "effects": [],
+                "strikesPerAttack": 6,
+                "structure": "80",
+                "type": "knight"
+              }
+            ]
+          }
+        },
+        "rulesetVersion": "waar-cohort-v2@b8bc1531759b1372",
+        "schemaVersion": "waar-combat-snapshot/2",
+        "seed": 42,
+        "stochasticEngineVersion": "lcg31-binomial-normal-v1",
+        "traceLevel": "full"
+      },
+      "winner": "defender"
+    }
+  },
+  "profileFingerprint": "b8bc1531759b1372d14b3e57de7a86c5250338399c0c7b476d3e713840cf6f49",
+  "weather": {
+    "A": "neutral",
+    "B": "neutral"
+  },
+  "seed": 42,
+  "runtime": {
+    "kind": "rust",
+    "transport": "process-jsonl",
+    "modelVersion": "waar-cohort-v2"
+  }
+}

@@ -16,6 +16,7 @@ final class MonotypeMeasurementService
         if(!in_array($weather,EngineProfile::WEATHER,true))throw new \InvalidArgumentException('Condition météo inconnue.');
         $profile=EngineProfile::fromArray($profileValues);$request=$this->requests->monotypes($profile,$weather,$baseSeed,$iterations);$batch=$this->runtime->batch($request);
         CohortRequestFactory::assertProvenance($batch['consequenceProvenance']??[], $request['consequences']);
+        CohortRequestFactory::assertBatchRandomProvenance($batch,$request['scenarios']);
         if(($batch['unitOrder']??null)!==array_keys(EngineProfile::UNIT_COSTS)||($batch['projectedCategoryOrder']??null)!==['healthy','wounded','dead','prisoners'])throw new \RuntimeException('Ordre d’agrégation du batch cohortes incompatible.');
         $rows=[];
         foreach($batch['scenarios'] as $scenario)foreach(['attacker','defender'] as $side)if(!isset($scenario['result'][$side.'RawWoundedByType']))throw new \RuntimeException('Runtime obsolète : reconstruisez Rust pour mesurer les blessés bruts.');

@@ -19,6 +19,17 @@
     },
     "rounds": { "type": "array" },
     "decision": { "type": "object" }, "rulesetVersion": { "type": "string" },
-    "snapshot": { "type": "object" }, "attacker": { "type": "object" }, "defender": { "type": "object" }
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1"] },
+        "armyIdentities": { "$ref": "combat-request.schema.json#/$defs/armyIdentities" }
+      },
+      "allOf": [{
+        "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" } } },
+        "then": { "required": ["armyIdentities"] },
+        "else": { "not": { "required": ["armyIdentities"] } }
+      }]
+    }, "attacker": { "type": "object" }, "defender": { "type": "object" }
   }
 }

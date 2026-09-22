@@ -14,6 +14,14 @@ final class ConsequenceSampler
         $this->domain = implode("\0", [self::VERSION, 'wounded-capture-then-compress/3', (string)$seed, $side, $type, $stage]);
     }
 
+    /** Separate protocol domain; historical constructor and sampling remain unchanged. */
+    public static function fromDomain(string $domain): self
+    {
+        $stream = new self(0, '', '', '');
+        $stream->domain = $domain;
+        return $stream;
+    }
+
     /** Open interval (0,1), 52 random bits, no zero/log(0) or endpoint retry. */
     public function uniform(): float
     {

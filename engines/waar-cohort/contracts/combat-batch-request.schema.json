@@ -4,9 +4,15 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["schemaVersion", "ruleset", "baseSeed", "iterations", "scenarios"],
+  "allOf": [{
+    "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" } } },
+    "then": { "properties": { "scenarios": { "items": { "required": ["armyIdentities"] } }, "consequences": { "required": ["policyVersion"], "properties": { "policyVersion": { "const": "wounded-capture-then-compress/4" } } } } },
+    "else": { "properties": { "scenarios": { "items": { "not": { "required": ["armyIdentities"] } } }, "consequences": { "properties": { "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"] } } } } }
+  }],
   "properties": {
     "schemaVersion": { "const": "waar-combat-batch-request/2" },
     "ruleset": { "$ref": "ruleset.schema.json" },
+    "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1"] },
     "baseSeed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
     "iterations": { "type": "integer", "minimum": 1, "maximum": 100 },
     "startIteration": { "type": "integer", "minimum": 0, "default": 0 },
@@ -19,6 +25,7 @@
         "required": ["id", "attacker", "defender"],
         "properties": {
           "id": { "type": "string", "minLength": 1 }, "seedKey": { "type": ["integer", "null"], "minimum": 0, "maximum": 2147 },
+          "armyIdentities": { "$ref": "combat-request.schema.json#/$defs/armyIdentities" },
           "attacker": { "$ref": "combat-request.schema.json#/$defs/side" },
           "defender": { "$ref": "combat-request.schema.json#/$defs/side" }
         }

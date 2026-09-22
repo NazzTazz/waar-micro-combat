@@ -7,6 +7,7 @@ use App\Game\Combat\Numeric\CombatFixedPoint;
 use App\Game\Combat\Preparation\PreparedCombatSide;
 use App\Game\Combat\Rules\CombatRuleset;
 use App\Game\Random\RandomSource;
+use App\Game\Random\AddressedRandom;
 
 final class RoundResolver
 {
@@ -17,7 +18,7 @@ final class RoundResolver
      * @param array<string,string> $accuracyByType
      */
     public function resolveAttacks(CombatArmy $actingSnapshot,CombatArmy $targetSnapshot,PreparedCombatSide $actingPrepared,
-        CombatRuleset $ruleset,RandomSource $random,array $accuracyByType,bool $defending=false):AttackResult
+        CombatRuleset $ruleset,RandomSource $random,array $accuracyByType,bool $defending=false,?AddressedRandom $addressed=null):AttackResult
     {
         $target=clone $targetSnapshot;$matrix=$this->emptyMatrix($actingPrepared,$ruleset,$accuracyByType,$defending);
         $attempts=$hits=0;$deathsBefore=$target->deadCount();
@@ -25,25 +26,25 @@ final class RoundResolver
             $count=$actingSnapshot->livingCount($actingType);$strikes=$actingPrepared->unit($actingType)->strikesPerAttack;
             foreach(UnitType::cases() as $targetType)$matrix[$actingType->value][$targetType->value]['sourceCount']=$count;
             if($count>intdiv(PHP_INT_MAX,$strikes))throw new \OverflowException('Strike attempt count exceeds the supported range.');
-            $pending=$count*$strikes;$attempts+=$pending;
+            $pending=$count*$strikes;$attempts+=$pending;$wave=0;
             while($pending>0&&$target->livingCount()>0){$reallocated=0;
-                foreach($this->allocateWeightedLivingTargets($pending,$actingType,$target,$ruleset,$random) as $targetValue=>$allocated){
+                foreach($this->allocateWeightedLivingTargets($pending,$actingType,$target,$ruleset,$random,$addressed,$wave) as $targetValue=>$allocated){
                     if($allocated<=0)continue;$targetType=UnitType::from($targetValue);
                     $accuracy=(float)$accuracyByType[$actingType->value];
-                    $sampled=$random->binomial($allocated,$accuracy);
+                    $sampled=$addressed?->binomial($allocated,$accuracy,$actingType->value,"hit/{$wave}/{$targetValue}")??$random->binomial($allocated,$accuracy);
                     $perStrike=CombatFixedPoint::divideByInt($actingPrepared->unit($actingType)->attack,$strikes);
                     $damage=CombatFixedPoint::multiply($perStrike,$ruleset->attackFactor($actingType,$targetType));
                     if($defending)$damage=CombatFixedPoint::multiply($damage,$actingPrepared->unit($actingType)->defendingEfficiency);
                     $needed=$this->impactsNeededToDestroy($target,$targetType,$damage);$consumed=$allocated;$applied=$sampled;
                     if(null!==$needed&&$sampled>=$needed){$consumed=max(1,min($allocated,(int)ceil($allocated*$needed/max(1,$sampled))));$applied=$needed;$reallocated+=$allocated-$consumed;}
-                    $absorbed=$applied>0?$this->applyImpacts($target,$targetType,$applied,$damage,$random):0;
+                    $absorbed=$applied>0?$this->applyImpacts($target,$targetType,$applied,$damage,$random,$addressed,$actingType->value,$wave):0;
                     $hits+=$applied;$cell=&$matrix[$actingType->value][$targetType->value];
                     $cell['allocatedAttempts']+=$allocated;$cell['consumedAttempts']+=$consumed;$cell['reallocatedAttempts']+=$allocated-$consumed;
                     $cell['sampledHits']+=$sampled;$cell['appliedHits']+=$applied;
                     $emitted=CombatFixedPoint::units($damage)*$applied;$cell['damageEmittedUnits']+=$emitted;$cell['damageAbsorbedUnits']+=$absorbed;$cell['overkillUnits']+=max(0,$emitted-$absorbed);
                     unset($cell);
                 }
-                $pending=$reallocated;
+                $pending=$reallocated;++$wave;
             }
         }
         foreach($matrix as &$row)foreach($row as &$cell){foreach(['damageEmittedUnits'=>'damageEmitted','damageAbsorbedUnits'=>'damageAbsorbed','overkillUnits'=>'overkill'] as $units=>$name){$cell[$name]=CombatFixedPoint::formatUnits($cell[$units]);unset($cell[$units]);}}unset($cell,$row);
@@ -64,12 +65,12 @@ final class RoundResolver
     }
 
     /** @return array<string,int> */
-    private function allocateWeightedLivingTargets(int $attempts,UnitType $acting,CombatArmy $target,CombatRuleset $ruleset,RandomSource $random):array
+    private function allocateWeightedLivingTargets(int $attempts,UnitType $acting,CombatArmy $target,CombatRuleset $ruleset,RandomSource $random,?AddressedRandom $addressed=null,int $wave=0):array
     {
         $types=array_values(array_filter(UnitType::cases(),static fn(UnitType $type)=>$target->livingCount($type)>0));$remaining=$attempts;
         $weight=array_sum(array_map(fn(UnitType $type)=>$target->livingCount($type)*$ruleset->targetWeight($acting,$type),$types));$out=[];
         foreach($types as $index=>$type){$typeWeight=$target->livingCount($type)*$ruleset->targetWeight($acting,$type);
-            $allocated=$index===array_key_last($types)?$remaining:$random->binomial($remaining,$typeWeight/$weight);
+            $allocated=$index===array_key_last($types)?$remaining:($addressed?->binomial($remaining,$typeWeight/$weight,$acting->value,"target/{$wave}/{$type->value}")??$random->binomial($remaining,$typeWeight/$weight));
             $out[$type->value]=$allocated;$remaining-=$allocated;$weight-=$typeWeight;
         }return $out;
     }
@@ -82,12 +83,13 @@ final class RoundResolver
     }
 
     /** Return absorbed damage in micro-units. */
-    private function applyImpacts(CombatArmy $army,UnitType $type,int $impacts,float $damage,RandomSource $random):int
+    private function applyImpacts(CombatArmy $army,UnitType $type,int $impacts,float $damage,RandomSource $random,?AddressedRandom $addressed=null,string $acting='',int $wave=0):int
     {
         if($impacts<=0||CombatFixedPoint::compare($damage,0)<=0)return 0;$cohorts=$army->cohorts($type);
+        if($addressed!==null)usort($cohorts,static fn($a,$b)=>CombatFixedPoint::units($a->remainingStructure)<=>CombatFixedPoint::units($b->remainingStructure));
         $before=0;foreach($cohorts as $cohort)$before+=CombatFixedPoint::units($cohort->remainingStructure)*$cohort->count;
         $remainingImpacts=$impacts;$remainingUnits=array_sum(array_map(static fn(UnitCohort $c)=>$c->count,$cohorts));$allocations=[];
-        foreach($cohorts as $index=>$cohort){$allocated=$index===array_key_last($cohorts)?$remainingImpacts:$random->binomial($remainingImpacts,$cohort->count/$remainingUnits);
+        foreach($cohorts as $index=>$cohort){$structure=CombatFixedPoint::units($cohort->remainingStructure);$allocated=$index===array_key_last($cohorts)?$remainingImpacts:($addressed?->binomial($remainingImpacts,$cohort->count/$remainingUnits,$acting,"impact/{$wave}/{$type->value}/{$structure}")??$random->binomial($remainingImpacts,$cohort->count/$remainingUnits));
             $allocations[$index]=$allocated;$remainingImpacts-=$allocated;$remainingUnits-=$cohort->count;}
         $updated=[];$deaths=0;foreach($cohorts as $index=>$cohort){$perUnit=intdiv($allocations[$index],$cohort->count);$remainder=$allocations[$index]%$cohort->count;
             if($cohort->count-$remainder>0)$this->appendDamaged($updated,$deaths,$cohort,$cohort->count-$remainder,$perUnit,$damage);

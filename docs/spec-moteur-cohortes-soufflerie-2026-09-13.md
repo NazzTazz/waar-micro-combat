@@ -498,9 +498,10 @@ le modèle change ; ne pas modifier les oracles historiques pour masquer ce chan
 
 ### 8.7 Amendement #16 — hasard adressé et binomiale couplée (22 septembre 2026)
 
-Statut : correctif mandaté par le PO, à implémenter et recetter sur
-`fix/issue-16-addressed-rng`, base `55cfbe4`. Ni acceptation, ni déploiement.
-Suivi : [issue #16](https://github.com/NazzTazz/waar-micro-combat/issues/16).
+Statut : correctif mandaté par le PO, implémenté et recetté localement sur
+`fix/issue-16-addressed-rng`, base `55cfbe4`, soumis à contre-recette.
+Ni acceptation, ni déploiement. Suivi : [issue #16](https://github.com/NazzTazz/waar-micro-combat/issues/16),
+[PR #17 et preuves de livraison](https://github.com/NazzTazz/waar-micro-combat/pull/17).
 Cet amendement remplace le flux partagé de §8.6 pour les nouvelles requêtes de
 la soufflerie. Le protocole historique reste disponible et inchangé.
 
@@ -535,7 +536,9 @@ sont `consequence/capture`, `consequence/dead`, `consequence/wounded`,
 `consequence/prisoners`. Chaque événement repart de son adresse : aucun compteur
 global, aucun état conservé entre clics, aucune consommation d'un autre usage.
 
-Les types et cohortes gardent leur ordre canonique existant. La structure
+Les types gardent leur ordre canonique existant. Dans le nouveau protocole, les
+compartiments sont triés par structure résiduelle croissante avant allocation ;
+le chemin historique conserve son ordre d'insertion. La structure
 résiduelle identifie un **compartiment de dégâts**, pas un soldat persistant.
 Fusionner deux cohortes de même structure conserve ce compartiment ; une
 structure différente est un événement différent. La correspondance promise
@@ -616,6 +619,34 @@ le départage et les effets spécifiques au défenseur restent inchangés.
   de raccordement service/runtime, aucun E2E navigateur selon le mandat PO.
   Aucune campagne T31/T33, modification de références gelées, fusion ou
   déploiement. La contre-recette indépendante reste à la discrétion du PO.
+
+Recette locale du 22 septembre : le flux historique diverge à la répartition
+des impacts lanciers du round 2 (position 102, consommation 16 contre 19), puis
+les archers commencent aux positions 118/121 et obtiennent 46/53 touches.
+Les pièces jointes d'origine sont conservées sous
+`engines/waar-cohort/tests/fixtures/issue16-{25,30}.json`. Leur sérialisation
+navigateur a remplacé les poids flottants `1.0` par `1` ; les harnais restaurent
+uniquement leur type déclaré avant vérification, sans modifier les hashes ou
+les fichiers archivés. Les deux anciens rapports et empreintes sont retrouvés.
+Cette limite préexistante d'export/rejeu n'est pas corrigée par #16.
+
+Nouveau protocole, seed 42, mêmes entrées : 9 blessés lanciers et 0 mort aux deux
+précisions, archers 51/58 touches aux rounds 1/2 dans les deux variantes,
+lanciers 12/11 touches à 25 % puis 15/15 à 30 %. Retour exact à 25 %,
+inversion A/B et résumé de 50 combats par sens vérifiés par les services PHP/Rust,
+sans navigateur. Les suites dédiées vérifient aussi les lois sur 4 096 seeds
+fixes par cas, 180 vecteurs partagés, l'oracle élémentaire de deux frappes sur
+1 024 seeds, les limites u32 du sampler et des combats jusqu'à un million
+d'unités par camp. Ce sont des contrôles bornés, pas une preuve exhaustive de
+tous les combats ni une validation d'équilibrage.
+
+Coût local Windows, corpus monotype `test-2` existant, 80 combats mesurés par
+runtime/protocole, transport process-jsonl compris : Rust 46,5 ms historique,
+165,9 ms nouveau ; PHP 681,4 / 1 088,4 ms. Une seule passe séquentielle après
+échauffement, aucune concurrence de tests demandée. Les issues/arrêts peuvent
+changer entre protocoles : ce rapport mesure le coût du même corpus d'entrées,
+pas le surcoût isolé du sampler. Aucun seuil de débit serveur n'est certifié.
+Commandes, versions, résultats et limites de recette restent dans la PR #17.
 
 ## 9. Conséquences de sortie : historique et amendement probabiliste
 
