@@ -9,11 +9,24 @@
     "ruleset": { "$ref": "ruleset.schema.json" },
     "attacker": { "$ref": "#/$defs/side" },
     "defender": { "$ref": "#/$defs/side" },
+    "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1"] },
+    "armyIdentities": { "$ref": "#/$defs/armyIdentities" },
     "seed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
     "traceLevel": { "enum": ["none", "full"], "default": "full" },
     "consequences": { "$ref": "#/$defs/consequences" }
   },
+  "allOf": [{
+    "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" } } },
+    "then": { "required": ["armyIdentities"], "properties": { "consequences": { "required": ["policyVersion"], "properties": { "policyVersion": { "const": "wounded-capture-then-compress/4" } } } } },
+    "else": { "not": { "required": ["armyIdentities"] }, "properties": { "consequences": { "properties": { "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"] } } } } }
+  }],
   "$defs": {
+    "armyIdentities": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["attacker","defender"], "properties": { "attacker": { "const": "A" }, "defender": { "const": "B" } } },
+        { "type": "object", "additionalProperties": false, "required": ["attacker","defender"], "properties": { "attacker": { "const": "B" }, "defender": { "const": "A" } } }
+      ]
+    },
     "counts": {
       "type": "object",
       "additionalProperties": false,
@@ -52,7 +65,7 @@
       "additionalProperties": false,
       "required": ["compressionPercent", "capturePercent"],
       "properties": {
-        "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"], "default": "wounded-capture-then-compress/2" },
+        "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3", "wounded-capture-then-compress/4"], "default": "wounded-capture-then-compress/2" },
         "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
         "capturePercent": { "type": "integer", "minimum": 0, "maximum": 50 }
       }

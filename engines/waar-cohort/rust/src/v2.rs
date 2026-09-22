@@ -1,3 +1,4 @@
+use crate::addressed_random::{AddressedRandom, VERSION as ADDRESSED_PROTOCOL};
 use crate::consequence_sampler::{ConsequenceSampler, VERSION as SAMPLING_PROTOCOL};
 use crate::{
     CombatRng, Micro, UnitType, FIXED_SCALE, NUMERIC_MODEL_VERSION, STOCHASTIC_ENGINE_VERSION,
@@ -14,6 +15,52 @@ const SNAPSHOT_SCHEMA: &str = "waar-combat-snapshot/2";
 const ACCURACY_VERSION: &str = "waar-accuracy-uniform-v1";
 const CONSEQUENCE_VERSION: &str = "wounded-capture-then-compress/2";
 const PROBABILISTIC_VERSION: &str = "wounded-capture-then-compress/3";
+const ADDRESSED_POLICY: &str = "wounded-capture-then-compress/4";
+fn historical_stochastic() -> String {
+    STOCHASTIC_ENGINE_VERSION.into()
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ArmyIdentities {
+    attacker: String,
+    defender: String,
+}
+
+fn non_null_identities<'de, D: serde::Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<ArmyIdentities>, D::Error> {
+    ArmyIdentities::deserialize(deserializer).map(Some)
+}
+
+fn validate_random(
+    version: &str,
+    ids: &Option<ArmyIdentities>,
+    policy: Option<&ConsequenceSettings>,
+) -> Result<(), String> {
+    match (version, ids) {
+        (STOCHASTIC_ENGINE_VERSION, None) => {}
+        (ADDRESSED_PROTOCOL, Some(ids))
+            if matches!(ids.attacker.as_str(), "A" | "B")
+                && matches!(ids.defender.as_str(), "A" | "B")
+                && ids.attacker != ids.defender => {}
+        _ => return Err("unsupported stochastic protocol or invalid armyIdentities".into()),
+    }
+    if let Some(settings) = policy {
+        if (settings.policy_version == ADDRESSED_POLICY) != (version == ADDRESSED_PROTOCOL) {
+            return Err("incompatible consequence and stochastic protocols".into());
+        }
+    }
+    Ok(())
+}
+
+fn sampling_protocol(version: &str) -> &'static str {
+    match version {
+        ADDRESSED_POLICY => ADDRESSED_PROTOCOL,
+        PROBABILISTIC_VERSION => SAMPLING_PROTOCOL,
+        _ => "floor/1",
+    }
+}
 fn historical_policy() -> String {
     CONSEQUENCE_VERSION.into()
 }
@@ -122,6 +169,26 @@ struct Request {
     #[serde(default = "full_trace")]
     trace_level: String,
     consequences: Option<ConsequenceSettings>,
+    #[serde(default = "historical_stochastic")]
+    stochastic_engine_version: String,
+    #[serde(default, deserialize_with = "non_null_identities")]
+    army_identities: Option<ArmyIdentities>,
+}
+
+impl Request {
+    fn identity(&self, role: &str) -> &str {
+        match (&self.army_identities, role) {
+            (Some(ids), "attacker") => &ids.attacker,
+            (Some(ids), _) => &ids.defender,
+            (None, "attacker") => "attacker",
+            (None, _) => "defender",
+        }
+    }
+    fn addressed(&self, round: u32, role: &str) -> Option<AddressedRandom> {
+        self.army_identities
+            .as_ref()
+            .map(|_| AddressedRandom::new(self.seed, self.identity(role), round))
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -603,6 +670,27 @@ fn accuracy(
     )
 }
 
+fn event_accuracy(
+    request: &Request,
+    round: u32,
+    role: &str,
+    t: UnitType,
+    base: Micro,
+    spread: Micro,
+) -> (Micro, Value) {
+    if let Some(random) = request.addressed(round, role) {
+        let lower = (base.units() - spread.units()).max(0);
+        let upper = (base.units() + spread.units()).min(FIXED_SCALE);
+        let value = Micro::from_units(random.integer(lower, upper, type_name(t), "accuracy"));
+        (
+            value,
+            json!({"sampled":true,"lower":Micro::from_units(lower),"upper":Micro::from_units(upper),"value":value,"substream":hex_hash(random.domain(type_name(t), "accuracy").as_bytes())}),
+        )
+    } else {
+        accuracy(request.seed, round, role, t, base, spread)
+    }
+}
+
 fn micro_div(value: Micro, divisor: u32) -> Micro {
     Micro::from_units((value.units() + divisor as i64 / 2) / divisor as i64)
 }
@@ -647,6 +735,7 @@ fn resolve_action(
     rng: &mut CombatRng,
     accuracies: &[Micro; 4],
     defending: bool,
+    addressed: Option<&AddressedRandom>,
 ) -> Result<Action, String> {
     let mut target = target_start.clone();
     let mut matrix = empty_matrix(prepared, rules, accuracies, defending, source)?;
@@ -659,8 +748,9 @@ fn resolve_action(
         let strikes = prepared.units[i].strikes;
         let mut pending = count.checked_mul(strikes).ok_or("strike count overflow")?;
         attempts += pending as u64;
+        let mut wave = 0;
         while pending > 0 && target.living() > 0 {
-            let allocations = allocate(pending, acting, &target, rules, rng);
+            let allocations = allocate(pending, acting, &target, rules, rng, addressed, wave);
             let mut reallocated = 0u32;
             for target_type in UnitType::ALL {
                 let j = target_type.index();
@@ -668,8 +758,16 @@ fn resolve_action(
                 if allocated == 0 {
                     continue;
                 }
-                let sampled =
-                    rng.binomial(allocated, accuracies[i].units() as f64 / FIXED_SCALE as f64);
+                let probability = accuracies[i].units() as f64 / FIXED_SCALE as f64;
+                let sampled = match addressed {
+                    Some(random) => random.binomial(
+                        allocated,
+                        probability,
+                        type_name(acting),
+                        &format!("hit/{wave}/{}", type_name(target_type)),
+                    ),
+                    None => rng.binomial(allocated, probability),
+                };
                 let damage = matrix[i][j].damage_per_hit;
                 let needed = impacts_needed(&target, j, damage)?;
                 let (mut consumed, mut applied) = (allocated, sampled);
@@ -685,7 +783,16 @@ fn resolve_action(
                     }
                 }
                 let absorbed = if applied > 0 {
-                    apply_impacts(&mut target, j, applied, damage, rng)?
+                    apply_impacts(
+                        &mut target,
+                        j,
+                        applied,
+                        damage,
+                        rng,
+                        addressed,
+                        acting,
+                        wave,
+                    )?
                 } else {
                     0
                 };
@@ -705,6 +812,7 @@ fn resolve_action(
                 hits += applied as u64;
             }
             pending = reallocated;
+            wave += 1;
         }
     }
     Ok(Action {
@@ -722,6 +830,8 @@ fn allocate(
     target: &Army,
     rules: &Ruleset,
     rng: &mut CombatRng,
+    addressed: Option<&AddressedRandom>,
+    wave: u32,
 ) -> [u32; 4] {
     let mut result = [0; 4];
     let living: Vec<_> = UnitType::ALL
@@ -729,6 +839,28 @@ fn allocate(
         .filter(|t| target.living_type(t.index()) > 0)
         .collect();
     let mut remaining = attempts;
+    if let Some(random) = addressed {
+        let weights: Vec<_> = living
+            .iter()
+            .map(|t| (target.living_type(t.index()), rules.weight(acting, *t)))
+            .collect();
+        for (pos, t) in living.iter().enumerate() {
+            let value = if pos + 1 == living.len() {
+                remaining
+            } else {
+                random.binomial(
+                    remaining,
+                    target_probability(&weights[pos..]),
+                    type_name(acting),
+                    &format!("target/{wave}/{}", type_name(*t)),
+                )
+            };
+            result[t.index()] = value;
+            remaining -= value;
+        }
+        return result;
+    }
+    // Keep the historical arithmetic and random consumption for old replays.
     let mut total: f64 = living
         .iter()
         .map(|t| target.living_type(t.index()) as f64 * rules.weight(acting, *t))
@@ -746,6 +878,15 @@ fn allocate(
     }
     result
 }
+
+// Remaining living targets in canonical order. Recompute the denominator to
+// avoid cancellation, and scale preferences before population multiplication.
+fn target_probability(weights: &[(u32, f64)]) -> f64 {
+    let scale = weights.iter().map(|(_, w)| *w).fold(0.0, f64::max);
+    let total: f64 = weights.iter().map(|(n, w)| *n as f64 * (*w / scale)).sum();
+    (weights[0].0 as f64 * (weights[0].1 / scale)) / total
+}
+
 fn impacts_needed(army: &Army, i: usize, damage: Micro) -> Result<Option<u64>, String> {
     if damage.units() <= 0 {
         return Ok(None);
@@ -769,8 +910,14 @@ fn apply_impacts(
     impacts: u32,
     damage: Micro,
     rng: &mut CombatRng,
+    addressed: Option<&AddressedRandom>,
+    acting: UnitType,
+    wave: u32,
 ) -> Result<i64, String> {
-    let cohorts = army.cohorts[i].clone();
+    let mut cohorts = army.cohorts[i].clone();
+    if addressed.is_some() {
+        cohorts.sort_by_key(|c| c.structure.units());
+    }
     let before: i64 = cohorts
         .iter()
         .map(|c| c.structure.units() * c.count as i64)
@@ -782,7 +929,19 @@ fn apply_impacts(
         let value = if index + 1 == cohorts.len() {
             remaining_hits
         } else {
-            rng.binomial(remaining_hits, c.count as f64 / remaining_units as f64)
+            match addressed {
+                Some(random) => random.binomial(
+                    remaining_hits,
+                    c.count as f64 / remaining_units as f64,
+                    type_name(acting),
+                    &format!(
+                        "impact/{wave}/{}/{}",
+                        type_name(UnitType::ALL[i]),
+                        c.structure.units()
+                    ),
+                ),
+                None => rng.binomial(remaining_hits, c.count as f64 / remaining_units as f64),
+            }
         };
         allocations.push(value);
         remaining_hits -= value;
@@ -944,8 +1103,8 @@ fn resolve_fast(
         for t in UnitType::ALL {
             let i = t.index();
             av[i] = if a_start.living_type(i) > 0 {
-                accuracy(
-                    request.seed,
+                event_accuracy(
+                    request,
                     round,
                     "attacker",
                     t,
@@ -957,8 +1116,8 @@ fn resolve_fast(
                 ap.units[i].base_accuracy
             };
             dv[i] = if d_start.living_type(i) > 0 {
-                accuracy(
-                    request.seed,
+                event_accuracy(
+                    request,
                     round,
                     "defender",
                     t,
@@ -978,6 +1137,7 @@ fn resolve_fast(
             &mut rng,
             &av,
             false,
+            request.addressed(round, "attacker").as_ref(),
         )?;
         let da = resolve_action(
             &d_start,
@@ -987,6 +1147,7 @@ fn resolve_fast(
             &mut rng,
             &dv,
             true,
+            request.addressed(round, "defender").as_ref(),
         )?;
         d = aa.target;
         a = da.target;
@@ -1069,7 +1230,11 @@ fn tie_break(
 }
 
 fn snapshot_value(request: &Request, ap: &PreparedSide, dp: &PreparedSide) -> Value {
-    json!({"schemaVersion":SNAPSHOT_SCHEMA,"rulesetVersion":request.ruleset.version,"seed":request.seed,"traceLevel":request.trace_level,"stochasticEngineVersion":STOCHASTIC_ENGINE_VERSION,"accuracySamplerVersion":ACCURACY_VERSION,"numericModelVersion":NUMERIC_MODEL_VERSION,"prepared":{"attacker":prepared_value(ap),"defender":prepared_value(dp)}})
+    let mut value = json!({"schemaVersion":SNAPSHOT_SCHEMA,"rulesetVersion":request.ruleset.version,"seed":request.seed,"traceLevel":request.trace_level,"stochasticEngineVersion":request.stochastic_engine_version,"accuracySamplerVersion":if request.army_identities.is_some(){ADDRESSED_PROTOCOL}else{ACCURACY_VERSION},"numericModelVersion":NUMERIC_MODEL_VERSION,"prepared":{"attacker":prepared_value(ap),"defender":prepared_value(dp)}});
+    if let Some(ids) = &request.army_identities {
+        value["armyIdentities"] = json!(ids);
+    }
+    value
 }
 
 fn resolve_core(
@@ -1105,8 +1270,8 @@ fn resolve_core(
             for t in UnitType::ALL {
                 let i = t.index();
                 if a_start.living_type(i) > 0 {
-                    let (v, tr) = accuracy(
-                        request.seed,
+                    let (v, tr) = event_accuracy(
+                        request,
                         round,
                         "attacker",
                         t,
@@ -1120,8 +1285,8 @@ fn resolve_core(
                     at.insert(type_name(t).into(),json!({"sampled":false,"lower":null,"upper":null,"value":null,"substream":null}));
                 }
                 if d_start.living_type(i) > 0 {
-                    let (v, tr) = accuracy(
-                        request.seed,
+                    let (v, tr) = event_accuracy(
+                        request,
                         round,
                         "defender",
                         t,
@@ -1143,6 +1308,7 @@ fn resolve_core(
                 &mut rng,
                 &av,
                 false,
+                request.addressed(round, "attacker").as_ref(),
             )?;
             let da = resolve_action(
                 &d_start,
@@ -1152,6 +1318,7 @@ fn resolve_core(
                 &mut rng,
                 &dv,
                 true,
+                request.addressed(round, "defender").as_ref(),
             )?;
             d = aa.target.clone();
             a = da.target.clone();
@@ -1222,6 +1389,7 @@ fn percentage_floor(count: u32, percent: u32) -> u32 {
 fn validate_consequences(settings: &ConsequenceSettings) -> Result<(), String> {
     if settings.policy_version != CONSEQUENCE_VERSION
         && settings.policy_version != PROBABILISTIC_VERSION
+        && settings.policy_version != ADDRESSED_POLICY
     {
         return Err("unsupported consequence policy".into());
     }
@@ -1302,6 +1470,13 @@ fn project_type(
     let draw = |n, percent, stage| {
         if settings.policy_version == CONSEQUENCE_VERSION {
             percentage_floor(n, percent)
+        } else if settings.policy_version == ADDRESSED_POLICY {
+            AddressedRandom::new(seed, side, 0).binomial(
+                n,
+                percent as f64 / 100.0,
+                unit,
+                &format!("consequence/{stage}"),
+            )
         } else {
             ConsequenceSampler::new(seed, side, unit, stage).binomial(n, percent)
         }
@@ -1326,11 +1501,12 @@ fn consequences(
     seed: i64,
     settings: &ConsequenceSettings,
     threshold: Micro,
+    request: &Request,
 ) -> Result<Value, String> {
     validate_consequences(settings)?;
-    let mut output = json!({"schemaVersion":"waar-combat-consequences/1","policyVersion":settings.policy_version,"rawResult":hash,"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent,"attacker":consequence_side(a,ap,winner==Some("defender"),settings,seed,"attacker",threshold),"defender":consequence_side(d,dp,winner==Some("attacker"),settings,seed,"defender",threshold)});
-    if settings.policy_version == PROBABILISTIC_VERSION {
-        output["samplingProtocol"] = json!(SAMPLING_PROTOCOL);
+    let mut output = json!({"schemaVersion":"waar-combat-consequences/1","policyVersion":settings.policy_version,"rawResult":hash,"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent,"attacker":consequence_side(a,ap,winner==Some("defender"),settings,seed,request.identity("attacker"),threshold),"defender":consequence_side(d,dp,winner==Some("attacker"),settings,seed,request.identity("defender"),threshold)});
+    if settings.policy_version != CONSEQUENCE_VERSION {
+        output["samplingProtocol"] = json!(sampling_protocol(&settings.policy_version));
     }
     Ok(output)
 }
@@ -1344,6 +1520,11 @@ fn resolve_request(request: &Request) -> Result<Value, String> {
         return Err("unsupported request schema, seed or trace level".into());
     }
     request.ruleset.validate()?;
+    validate_random(
+        &request.stochastic_engine_version,
+        &request.army_identities,
+        request.consequences.as_ref(),
+    )?;
     if let Some(settings) = &request.consequences {
         validate_consequences(settings)?;
     }
@@ -1364,6 +1545,7 @@ fn resolve_request(request: &Request) -> Result<Value, String> {
             request.seed,
             settings,
             request.ruleset.wound_threshold(),
+            request,
         )?;
     }
     Ok(out)
@@ -1403,6 +1585,8 @@ struct BatchScenario {
     seed_key: Option<i64>,
     attacker: SideInput,
     defender: SideInput,
+    #[serde(default, deserialize_with = "non_null_identities")]
+    army_identities: Option<ArmyIdentities>,
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -1415,6 +1599,8 @@ struct BatchRequest {
     start_iteration: u32,
     #[serde(default)]
     total_iterations: Option<u32>,
+    #[serde(default = "historical_stochastic")]
+    stochastic_engine_version: String,
     scenarios: Vec<BatchScenario>,
     consequences: Option<ConsequenceSettings>,
 }
@@ -1459,6 +1645,11 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                 "scenario ids must be unique and seedKey must be between 0 and 2147".into(),
             );
         }
+        validate_random(
+            &batch.stochastic_engine_version,
+            &scenario.army_identities,
+            batch.consequences.as_ref(),
+        )?;
         validate_side(&scenario.attacker)?;
         validate_side(&scenario.defender)?;
         let ap = prepare(&batch.ruleset, scenario.attacker.modifiers.clone())?;
@@ -1481,6 +1672,8 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                 seed: scenario_seed(batch.base_seed, scenario, batch.start_iteration + offset),
                 trace_level: "none".into(),
                 consequences: None,
+                stochastic_engine_version: batch.stochastic_engine_version.clone(),
+                army_identities: scenario.army_identities.clone(),
             };
             let (a, d, winner, rounds) = resolve_fast(&request, &ap, &dp)?;
             round_sum += rounds as u64;
@@ -1504,7 +1697,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                         winner == Some("defender"),
                         settings,
                         request.seed,
-                        "attacker",
+                        request.identity("attacker"),
                         wound_threshold,
                     );
                     let di = projected_counts(
@@ -1514,7 +1707,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                         winner == Some("attacker"),
                         settings,
                         request.seed,
-                        "defender",
+                        request.identity("defender"),
                         wound_threshold,
                     );
                     for k in 0..4 {
@@ -1538,14 +1731,21 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
                 .get(type_name(UnitType::ALL[i]))
                 .unwrap_or(&0)
         });
-        scenarios.push(json!({"id":scenario.id,"result":{"samples":batch.iterations,"attackerWins":wins[0],"defenderWins":wins[1],"draws":wins[2],"roundSum":round_sum,"attackerInitialByType":attacker_initial,"defenderInitialByType":defender_initial,"attackerRawDeathsByType":ad,"defenderRawDeathsByType":dd,"attackerRawWoundedByType":aw,"defenderRawWoundedByType":dw,"attackerProjectedByType":if batch.consequences.is_some(){json!(projected_a)}else{Value::Null},"defenderProjectedByType":if batch.consequences.is_some(){json!(projected_d)}else{Value::Null}}}));
+        let mut row = json!({"id":scenario.id,"result":{"samples":batch.iterations,"attackerWins":wins[0],"defenderWins":wins[1],"draws":wins[2],"roundSum":round_sum,"attackerInitialByType":attacker_initial,"defenderInitialByType":defender_initial,"attackerRawDeathsByType":ad,"defenderRawDeathsByType":dd,"attackerRawWoundedByType":aw,"defenderRawWoundedByType":dw,"attackerProjectedByType":if batch.consequences.is_some(){json!(projected_a)}else{Value::Null},"defenderProjectedByType":if batch.consequences.is_some(){json!(projected_d)}else{Value::Null}}});
+        if let Some(ids) = &scenario.army_identities {
+            row["armyIdentities"] = json!(ids);
+        }
+        scenarios.push(row);
     }
     let mut output = json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":batch.start_iteration+batch.iterations,"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios});
+    if batch.stochastic_engine_version == ADDRESSED_PROTOCOL {
+        output["stochasticEngineVersion"] = json!(ADDRESSED_PROTOCOL);
+    }
     if let Some(threshold) = batch.ruleset.wound_damage_threshold {
         output["classificationProvenance"] = json!({"woundDamageThreshold":threshold});
     }
     if let Some(settings) = &batch.consequences {
-        output["consequenceProvenance"] = json!({"policyVersion":settings.policy_version,"samplingProtocol":if settings.policy_version == PROBABILISTIC_VERSION { SAMPLING_PROTOCOL } else { "floor/1" },"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent});
+        output["consequenceProvenance"] = json!({"policyVersion":settings.policy_version,"samplingProtocol":sampling_protocol(&settings.policy_version),"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent});
     }
     Ok(output)
 }
@@ -1564,6 +1764,37 @@ pub fn resolve_batch_json(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn targeting_probabilities_remain_finite_without_erasing_the_tail() {
+        let weights = [(1, 1e16), (1, 2.9), (1, 0.01)];
+        assert!((target_probability(&weights[1..]) - 2.9 / 2.91).abs() < 1e-15);
+        for weights in [
+            weights.to_vec(),
+            vec![(1, 1e16), (1, 0.01), (1, 0.01)],
+            vec![(1, f64::MAX), (3, f64::MAX), (2, f64::MAX)],
+            vec![
+                (1, f64::from_bits(1)),
+                (3, f64::from_bits(2)),
+                (2, f64::from_bits(3)),
+            ],
+            vec![
+                (u32::MAX, f64::MAX),
+                (1, f64::from_bits(1)),
+                (2, f64::from_bits(1)),
+            ],
+        ] {
+            for pos in 0..weights.len() {
+                let p = target_probability(&weights[pos..]);
+                assert!(p.is_finite() && (0.0..=1.0).contains(&p));
+            }
+        }
+        assert_eq!(target_probability(&[(3, f64::MAX), (2, f64::MAX)]), 0.6);
+        assert_eq!(
+            target_probability(&[(1, f64::from_bits(1)), (1, f64::from_bits(1))]),
+            0.5
+        );
+    }
+
     #[test]
     fn percentages_preserve_large_populations() {
         assert_eq!(percentage_floor(50_000_000, 100), 50_000_000);
@@ -1627,5 +1858,51 @@ mod tests {
     fn exact_product_rounds_once() {
         assert_eq!(multiply_many(&[150000, 1200000, 800000]).unwrap(), 144000);
         assert_eq!(multiply_many(&[150000, 800000, 1200000]).unwrap(), 144000);
+    }
+
+    #[test]
+    fn addressed_cohorts_have_stable_order_after_merge() {
+        let make = |rows: &[(i64, u32)]| {
+            let mut army = Army {
+                cohorts: std::array::from_fn(|_| Vec::new()),
+                dead: [0; 4],
+                initial: [0, 0, 5, 0],
+            };
+            army.replace(
+                2,
+                rows.iter()
+                    .map(|(s, n)| Cohort {
+                        structure: Micro::from_units(s * FIXED_SCALE),
+                        count: *n,
+                    })
+                    .collect(),
+                0,
+            );
+            army
+        };
+        let mut a = make(&[(20, 2), (10, 3)]);
+        let mut b = make(&[(10, 1), (20, 1), (10, 2), (20, 1)]);
+        let random = AddressedRandom::new(42, "B", 1);
+        for army in [&mut a, &mut b] {
+            apply_impacts(
+                army,
+                2,
+                4,
+                Micro::from_units(5 * FIXED_SCALE),
+                &mut CombatRng::new(42),
+                Some(&random),
+                UnitType::Spearman,
+                0,
+            )
+            .unwrap();
+        }
+        let rows = |army: &Army| {
+            army.cohorts[2]
+                .iter()
+                .map(|c| (c.structure.units(), c.count))
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(rows(&a), rows(&b));
+        assert_eq!(a.dead, b.dead);
     }
 }

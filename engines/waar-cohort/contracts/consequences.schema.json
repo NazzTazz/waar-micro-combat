@@ -5,8 +5,8 @@
   "required": ["schemaVersion", "policyVersion", "rawResult", "compressionPercent", "capturePercent", "attacker", "defender"],
   "properties": {
     "schemaVersion": { "const": "waar-combat-consequences/1" },
-    "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"] },
-    "samplingProtocol": { "const": "sha256-counter52-binomial-btrs/1" },
+    "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3", "wounded-capture-then-compress/4"] },
+    "samplingProtocol": { "enum": ["sha256-counter52-binomial-btrs/1", "sha256-binomial-tree/1"] },
     "rawResult": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
     "capturePercent": { "type": "integer", "minimum": 0, "maximum": 50 },
@@ -14,7 +14,7 @@
     "defender": { "$ref": "#/$defs/side" }
   },
   "allOf": [{
-    "if": { "properties": { "policyVersion": { "const": "wounded-capture-then-compress/3" } } },
+    "if": { "properties": { "policyVersion": { "enum": ["wounded-capture-then-compress/3", "wounded-capture-then-compress/4"] } } },
     "then": { "required": ["samplingProtocol"] }
   }],
   "$defs": {

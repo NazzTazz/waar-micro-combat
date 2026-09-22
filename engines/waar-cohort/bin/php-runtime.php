@@ -7,7 +7,7 @@ require dirname(__DIR__).'/autoload.php';
 /** @param array<string,mixed> $batch @return array<string,mixed> */
 function resolvePhpBatch(array $batch): array
 {
-    $allowed=['schemaVersion','ruleset','baseSeed','iterations','startIteration','totalIterations','consequences','scenarios'];
+    $allowed=['schemaVersion','ruleset','baseSeed','iterations','startIteration','totalIterations','consequences','scenarios','stochasticEngineVersion'];
     if(array_diff(array_keys($batch),$allowed))throw new InvalidArgumentException('Unknown combat batch field.');
     if(($batch['schemaVersion']??null)!=='waar-combat-batch-request/2')throw new InvalidArgumentException('Unsupported combat batch schema.');
     $iterations=$batch['iterations']??null;$start=$batch['startIteration']??0;$total=$batch['totalIterations']??($start+(is_int($iterations)?$iterations:0));$baseSeed=$batch['baseSeed']??null;
@@ -16,6 +16,7 @@ function resolvePhpBatch(array $batch): array
     $types=['soldier','spearman','archer','knight'];$categories=['healthy','wounded','dead','prisoners'];$engine=new CombatEngine();$results=[];$seen=[];
     foreach($scenarios as $scenario){
         if(!is_array($scenario)||!is_string($scenario['id']??null)||trim($scenario['id'])===''||isset($seen[$scenario['id']]))throw new InvalidArgumentException('Scenario id missing or duplicated.');
+        if(array_diff(array_keys($scenario),['id','seedKey','attacker','defender','armyIdentities']))throw new InvalidArgumentException('Unknown scenario field.');
         $seen[$scenario['id']]=true;$wins=['attacker'=>0,'defender'=>0,'draw'=>0];$roundSum=0;$wounded=['attacker'=>array_fill(0,4,0),'defender'=>array_fill(0,4,0)];$deaths=['attacker'=>array_fill(0,4,0),'defender'=>array_fill(0,4,0)];$projected=['attacker'=>array_fill(0,4,array_fill(0,4,0)),'defender'=>array_fill(0,4,array_fill(0,4,0))];
         foreach(range($start,$start+$iterations-1) as $iteration){
             $key=$scenario['seedKey']??null;
@@ -23,11 +24,13 @@ function resolvePhpBatch(array $batch): array
             else{$bytes=hash('sha256',$baseSeed."\0".$scenario['id']."\0".$iteration,true);$parts=unpack('Nseed',substr($bytes,0,4));$seed=$parts['seed']&0x7fffffff;}
             $request=['schemaVersion'=>'waar-combat-request/2','ruleset'=>$batch['ruleset'],'attacker'=>$scenario['attacker'],'defender'=>$scenario['defender'],'seed'=>$seed,'traceLevel'=>'none'];
             if(isset($batch['consequences']))$request['consequences']=$batch['consequences'];
+            if(array_key_exists('stochasticEngineVersion',$batch))$request['stochasticEngineVersion']=$batch['stochasticEngineVersion'];
+            if(array_key_exists('armyIdentities',$scenario))$request['armyIdentities']=$scenario['armyIdentities'];
             $report=$engine->resolveRequest($request);$winner=$report['result']['winner'];$wins[$winner??'draw']++;$roundSum+=count($report['result']['rounds']);
             foreach(['attacker','defender'] as $side)foreach($types as $typeIndex=>$type){$wounded[$side][$typeIndex]+=$report['result'][$side]['wounded'][$type];$deaths[$side][$typeIndex]+=$report['result'][$side]['dead'][$type];if(isset($report['consequences']))foreach($categories as $categoryIndex=>$category)$projected[$side][$typeIndex][$categoryIndex]+=$report['consequences'][$side]['types'][$type]['projected'][$category];}
         }
         $initial=static fn(string $side):array=>array_map(static fn(string $type):int=>(int)($scenario[$side]['units'][$type]??0),$types);
-        $results[]=['id'=>$scenario['id'],'result'=>['samples'=>$iterations,'attackerWins'=>$wins['attacker'],'defenderWins'=>$wins['defender'],'draws'=>$wins['draw'],'roundSum'=>$roundSum,
+        $results[]=['id'=>$scenario['id'],...(isset($scenario['armyIdentities'])?['armyIdentities'=>$scenario['armyIdentities']]:[]),'result'=>['samples'=>$iterations,'attackerWins'=>$wins['attacker'],'defenderWins'=>$wins['defender'],'draws'=>$wins['draw'],'roundSum'=>$roundSum,
             'attackerInitialByType'=>$initial('attacker'),'defenderInitialByType'=>$initial('defender'),'attackerRawDeathsByType'=>$deaths['attacker'],'defenderRawDeathsByType'=>$deaths['defender'],
             'attackerRawWoundedByType'=>$wounded['attacker'],'defenderRawWoundedByType'=>$wounded['defender'],
             'attackerProjectedByType'=>isset($batch['consequences'])?$projected['attacker']:null,'defenderProjectedByType'=>isset($batch['consequences'])?$projected['defender']:null]];
@@ -35,8 +38,9 @@ function resolvePhpBatch(array $batch): array
     $provenance=[];
     if(isset($batch['consequences'])){
         $settings=$batch['consequences'];$version=$settings['policyVersion']??\App\Game\Combat\ConsequencePolicy::VERSION;
-        $provenance=['consequenceProvenance'=>['policyVersion'=>$version,'samplingProtocol'=>$version===\App\Game\Combat\ConsequencePolicy::PROBABILISTIC_VERSION?\App\Game\Random\ConsequenceSampler::VERSION:'floor/1','compressionPercent'=>$settings['compressionPercent'],'capturePercent'=>$settings['capturePercent']]];
+        $provenance=['consequenceProvenance'=>['policyVersion'=>$version,'samplingProtocol'=>\App\Game\Combat\ConsequencePolicy::samplingProtocol($version),'compressionPercent'=>$settings['compressionPercent'],'capturePercent'=>$settings['capturePercent']]];
     }
+    if(($batch['stochasticEngineVersion']??null)===\App\Game\Random\AddressedRandom::VERSION)$provenance['stochasticEngineVersion']=\App\Game\Random\AddressedRandom::VERSION;
     if(isset($report['result']['ruleset']['woundDamageThreshold'])){
         $provenance['classificationProvenance']=['woundDamageThreshold'=>$report['result']['ruleset']['woundDamageThreshold']];
     }

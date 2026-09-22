@@ -26,11 +26,12 @@ final class DuelService
         if($summary){
             $scenarios=[];
             foreach([['A','B'],['B','A']]as[$a,$b]){
-                $combat=$this->requests->combat($profile,$armies[$a],$armies[$b],$seed,$weather[$a],$weather[$b],$modifiers[$a]??[],$modifiers[$b]??[],'none');
-                $scenarios[]=['id'=>$a.'-'.$b,'seedKey'=>0,'attacker'=>$combat['attacker'],'defender'=>$combat['defender']];
+                $combat=$this->requests->combat($profile,$armies[$a],$armies[$b],$seed,$weather[$a],$weather[$b],$modifiers[$a]??[],$modifiers[$b]??[],'none',$a,$b);
+                $scenarios[]=['id'=>$a.'-'.$b,'seedKey'=>0,'armyIdentities'=>$combat['armyIdentities'],'attacker'=>$combat['attacker'],'defender'=>$combat['defender']];
             }
-            $batch=$this->runtime->batch(['schemaVersion'=>'waar-combat-batch-request/2','ruleset'=>$profile->ruleset(),'baseSeed'=>$seed,'iterations'=>50,'startIteration'=>0,'totalIterations'=>50,'consequences'=>$combat['consequences'],'scenarios'=>$scenarios]);
+            $batch=$this->runtime->batch(['schemaVersion'=>'waar-combat-batch-request/2','stochasticEngineVersion'=>CohortRequestFactory::STOCHASTIC_VERSION,'ruleset'=>$profile->ruleset(),'baseSeed'=>$seed,'iterations'=>50,'startIteration'=>0,'totalIterations'=>50,'consequences'=>$combat['consequences'],'scenarios'=>$scenarios]);
             CohortRequestFactory::assertProvenance($batch['consequenceProvenance']??[], $combat['consequences']);
+            CohortRequestFactory::assertBatchRandomProvenance($batch,$scenarios);
             if(($batch['unitOrder']??null)!==array_keys(EngineProfile::UNIT_COSTS)||($batch['projectedCategoryOrder']??null)!==['healthy','wounded','dead','prisoners'])throw new \RuntimeException('Ordre du résultat batch incompatible.');
             $rows=[];
             foreach($batch['scenarios']as$scenario){[$a,$b]=explode('-',$scenario['id']);$r=$scenario['result'];$row=['attacker'=>$a,'defender'=>$b,'drawRate'=>$r['draws']/50,'camps'=>[]];
@@ -41,8 +42,9 @@ final class DuelService
         }
         $directions=[];
         foreach([['id'=>'a-attacks-b','attacker'=>'A','defender'=>'B'],['id'=>'b-attacks-a','attacker'=>'B','defender'=>'A']]as$direction){
-            $engineRequest=$this->requests->combat($profile,$armies[$direction['attacker']],$armies[$direction['defender']],$seed,$weather[$direction['attacker']],$weather[$direction['defender']],$modifiers[$direction['attacker']]??[],$modifiers[$direction['defender']]??[],'full');
-            $report=$this->runtime->resolve($engineRequest);CohortRequestFactory::assertProvenance($report['consequences']??[], $engineRequest['consequences']);$winner=$report['result']['winner'];
+            $engineRequest=$this->requests->combat($profile,$armies[$direction['attacker']],$armies[$direction['defender']],$seed,$weather[$direction['attacker']],$weather[$direction['defender']],$modifiers[$direction['attacker']]??[],$modifiers[$direction['defender']]??[],'full',$direction['attacker'],$direction['defender']);
+            $report=$this->runtime->resolve($engineRequest);CohortRequestFactory::assertProvenance($report['consequences']??[], $engineRequest['consequences']);
+            CohortRequestFactory::assertRandomProvenance($report['result']['snapshot']??[],$engineRequest['armyIdentities']);$winner=$report['result']['winner'];
             $directions[]=['id'=>$direction['id'],'labels'=>['attacker'=>$direction['attacker'],'defender'=>$direction['defender'],'winner'=>$winner===null?null:($winner==='attacker'?$direction['attacker']:$direction['defender'])],
                 'weather'=>['attacker'=>$weather[$direction['attacker']],'defender'=>$weather[$direction['defender']]],'report'=>$report,'result'=>$report['result'],'consequences'=>$report['consequences']??null];
         }

@@ -8,6 +8,7 @@ final class RandomGeneratorFactory
     {
         return match ($version) {
             StochasticEngineVersion::Lcg31NormalApproximationV1 => new SeededRandomSource($seed),
+            StochasticEngineVersion::AddressedBinomialV1 => throw new \InvalidArgumentException('Addressed randomness requires an army and event context.'),
         };
     }
 }

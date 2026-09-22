@@ -13,7 +13,7 @@ final readonly class CombatEngine
     /** @param array<string,mixed> $request @return array<string,mixed> */
     public function resolveRequest(array $request):array
     {
-        self::keys($request,['schemaVersion','ruleset','attacker','defender','seed','traceLevel','consequences'],'combat request');
+        self::keys($request,['schemaVersion','ruleset','attacker','defender','seed','traceLevel','consequences','stochasticEngineVersion','armyIdentities'],'combat request');
         if(($request['schemaVersion']??null)!==self::REQUEST_SCHEMA)throw new \InvalidArgumentException('Unsupported combat request schema.');
         if(!is_array($request['ruleset']??null)||!is_array($request['attacker']??null)||!is_array($request['defender']??null))throw new \InvalidArgumentException('Ruleset and both sides are required.');
         $ruleset=CombatRuleset::fromArray($request['ruleset']);$a=$request['attacker'];$d=$request['defender'];self::keys($a,['units','modifiers'],'attacker');self::keys($d,['units','modifiers'],'defender');
@@ -24,7 +24,12 @@ final readonly class CombatEngine
             if(array_key_exists('policyVersion',$settings)&&!is_string($settings['policyVersion']))throw new \InvalidArgumentException('Consequence policyVersion must be a string.');
             ConsequencePolicy::validateVersion($settings['policyVersion']??ConsequencePolicy::VERSION);
         }
-        $snapshot=new CombatSnapshot($ruleset->version,$seed,$aPrepared,$dPrepared,(string)($request['traceLevel']??'full'));
+        $version=$request['stochasticEngineVersion']??\App\Game\Random\StochasticEngineVersion::Lcg31NormalApproximationV1->value;
+        if(!is_string($version)||!($protocol=\App\Game\Random\StochasticEngineVersion::tryFrom($version)))throw new \InvalidArgumentException('Unsupported stochastic protocol.');
+        if(array_key_exists('stochasticEngineVersion',$request)&&$request['stochasticEngineVersion']===null)throw new \InvalidArgumentException('Null stochastic protocol.');
+        if(array_key_exists('armyIdentities',$request)&&!is_array($request['armyIdentities']))throw new \InvalidArgumentException('armyIdentities must be an object.');
+        $snapshot=new CombatSnapshot($ruleset->version,$seed,$aPrepared,$dPrepared,(string)($request['traceLevel']??'full'),$protocol,armyIdentities:$request['armyIdentities']??null);
+        if(isset($settings) && (($settings['policyVersion']??ConsequencePolicy::VERSION)===ConsequencePolicy::ADDRESSED_VERSION)!==($snapshot->armyIdentities!==null))throw new \InvalidArgumentException('Consequence and stochastic protocols are incompatible.');
         $result=$this->resolver->resolve($aArmy,$dArmy,$ruleset,$snapshot);$out=['result'=>$result->toArray($ruleset)];
         if(isset($request['consequences'])){
             $out['consequences']=$this->consequences->project($result,$ruleset,self::percent($settings,'compressionPercent'),self::percent($settings,'capturePercent'),$settings['policyVersion']??ConsequencePolicy::VERSION);}

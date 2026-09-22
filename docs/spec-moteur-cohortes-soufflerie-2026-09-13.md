@@ -496,6 +496,195 @@ Conserver la dérivation des seeds de scénarios existante pour les monotypes et
 plages d'itérations. Les nouveaux résultats peuvent changer à seed identique puisque
 le modèle change ; ne pas modifier les oracles historiques pour masquer ce changement.
 
+### 8.7 Amendement #16 — hasard adressé et binomiale couplée (22 septembre 2026)
+
+Statut : correctif mandaté par le PO, implémenté et recetté localement sur
+`fix/issue-16-addressed-rng`, base `55cfbe4`, soumis à contre-recette.
+Ni acceptation, ni déploiement. Suivi : [issue #16](https://github.com/NazzTazz/waar-micro-combat/issues/16),
+[PR #17 et preuves de livraison](https://github.com/NazzTazz/waar-micro-combat/pull/17).
+Cet amendement remplace le flux partagé de §8.6 pour les nouvelles requêtes de
+la soufflerie. Le protocole historique reste disponible et inchangé.
+
+#### Identité et frontières
+
+- Nouveau `stochasticEngineVersion` : `sha256-binomial-tree/1`.
+- La requête porte `armyIdentities: {attacker: "A", defender: "B"}` ou
+  l'inverse. Les identités sont obligatoires avec le nouveau protocole, distinctes,
+  et suivent les armées lors de l'inversion des rôles. Elles ne sont pas déduites
+  des effectifs, du profil, de la position d'une cohorte ou d'un hash de règles.
+- Champs absents : exécuter `lcg31-binomial-normal-v1`, sans ajouter de champs
+  aux anciens résultats. Version inconnue, identité manquante/dupliquée ou
+  identité fournie au protocole ancien : erreur explicite.
+- Batch : version au niveau de la requête, identités dans chaque scénario.
+  Seeds, seedKey, plages, ordre des scénarios et budget restent inchangés.
+  Dans les duels, A/B sont les camps de l'interface ; pour une mesure monotype
+  autonome, A est le premier camp construit et B le second. Les deux sens du
+  duel partagent déjà seedKey=0 et conservent cette dérivation.
+- Le snapshot et le rejeu conservent version et identités. Le batch expose la
+  version et les identités par scénario ; contextes de mesure et caches incluent
+  le nouveau protocole. Aucun profil sauvegardé n'est réécrit.
+
+#### Adressage des tirages
+
+Un événement est identifié par les octets UTF-8 suivants, séparés par NUL :
+`protocole, seed décimale, identité A/B, round décimal, type acteur, usage`.
+Le round de sortie est 0. Les usages de combat sont `accuracy`,
+`target/{vague}/{typeCible}`, `hit/{vague}/{typeCible}` et
+`impact/{vague}/{typeCible}/{structureRésiduelleEnMicroUnités}`. La vague vaut 0
+au premier passage et augmente lors d'une réallocation. Les usages de sortie
+sont `consequence/capture`, `consequence/dead`, `consequence/wounded`,
+`consequence/prisoners`. Chaque événement repart de son adresse : aucun compteur
+global, aucun état conservé entre clics, aucune consommation d'un autre usage.
+
+Les types gardent leur ordre canonique existant. Dans le nouveau protocole, les
+compartiments sont triés par structure résiduelle croissante avant allocation ;
+le chemin historique conserve son ordre d'insertion. La structure
+résiduelle identifie un **compartiment de dégâts**, pas un soldat persistant.
+Fusionner deux cohortes de même structure conserve ce compartiment ; une
+structure différente est un événement différent. La correspondance promise
+concerne les événements de mêmes entrées, pas une identité individuelle fictive.
+
+Le ciblage reste multinomial séquentiel sur les populations vivantes et poids
+actuels. Ses binomiales conditionnelles sont adressées par type cible. Les
+impacts restent répartis entre compartiments proportionnellement à leurs
+populations, puis par quotient/reste dans chaque compartiment, comme auparavant.
+Les changements physiques de population, structure, poids ou réallocation peuvent
+donc modifier les résultats en aval. Aucune règle de ciblage ou de dégâts n'est
+remplacée par cet amendement.
+
+**Correction de contre-recette #17 R1, 22 septembre 2026.** Les poids finis
+strictement positifs restent valides, même très déséquilibrés. Pour chaque
+binomiale conditionnelle du ciblage adressé, reprendre uniquement les types
+encore à allouer : diviser leurs préférences par la plus grande préférence
+de ce sous-ensemble, puis multiplier par les populations vivantes. Additionner
+ces masses normalisées dans l'ordre canonique et diviser la masse du type
+courant par ce total. Recalculer le sous-ensemble à chaque étape ; ne pas
+obtenir le dénominateur suivant par soustraction du poids déjà traité.
+
+Cette normalisation avant multiplication évite le débordement des produits
+et de la somme ; le recalcul préserve les petits poids après retrait d'un poids
+dominant. Au moins une préférence normalisée vaut 1, donc le dénominateur est
+strictement positif et fini ; la probabilité reste dans `[0,1]`, y compris
+quand aucune tentative ne reste. Le dernier type reçoit le reliquat exact.
+Les rapports trop petits pour binary64 peuvent devenir nuls ; la quantification
+à 52 bits du sampler reste applicable. Aucun écrêtage d'une probabilité invalide
+ni borne supplémentaire sur les préférences n'est ajouté.
+
+Le sampler `sha256-binomial-tree/1`, ses adresses et ses vecteurs sont inchangés.
+Cette correction numérique du ciblage de la PR encore ouverte peut changer
+l'arrondi des probabilités des poids personnalisés par rapport à `7c732de` ;
+elle ne promet pas de reproduire ses allocations erronées. Le chemin historique
+`lcg31-binomial-normal-v1` garde son arithmétique et ses replays, y compris ses
+limites numériques préexistantes. Le cas de revue (`1e16`, `2.9`, `0.01`, seed 42,
+un round) et les poids extrêmes sont couverts par
+[les tests de ciblage PHP/Rust](../engines/waar-cohort/tests/AddressedTargetingTest.php).
+La [contre-recette et sa reproduction](https://github.com/NazzTazz/waar-micro-combat/pull/17#issuecomment-5779002936)
+restent la preuve historique du défaut.
+
+Limite historique distincte constatée pendant cette correction : PHP et
+`serde_json` n'encodent pas certains poids extrêmes de la même façon pour le
+hash (`10000000000000000.0` contre `1e+16`, par exemple). Le contrôle de rejeu
+PHP peut donc refuser un rapport Rust contenant ces poids. La sérialisation
+des hashes n'est pas modifiée ici ; les tests extrêmes comparent tous les
+champs sauf ce hash, et vérifient la répétition dans chaque runtime. Les tests
+des rapports historiques ordinaires conservent leur comparaison intégrale.
+
+#### Binomiale et couplage
+
+Une simple réutilisation du BTRS à des probabilités différentes ne garantit pas
+la monotonie. On emploie un arbre binaire de partitions de la population de
+tentatives, sans créer d'individus :
+
+1. À la racine, N=n. Tirer L ~ Bin(N, 1/2), R=N−L.
+2. Le sous-arbre gauche représente les uniformes dans [0,1/2), le droit [1/2,1).
+   Chaque nœud est adressé par son chemin de bits depuis la racine (`tree/`).
+3. Pour compter les uniformes < p, ajouter les sous-arbres entièrement sous p
+   et descendre uniquement dans le sous-arbre contenant la frontière.
+4. Arrêter dès que N=0 ou que la frontière est une extrémité. La probabilité
+   fournie est représentée par `floor(p * 2^52)` ; profondeur maximale 52,
+   erreur de quantification < 2^-52. p=0/1 et n=0 sont exacts.
+
+Le tirage à 1/2 réemploie la méthode binomiale de §9.5 (attentes géométriques
+pour N/2<30, BTRS sinon), dans un domaine distinct par nœud. Aucune approximation
+normale. Les mots uniformes restent les 52 bits de tête de SHA-256, transformés
+en `(bits+0.5)/2^52`, compteur local au nœud, décimal sans zéro préfixé.
+La variation de précision utilise un entier uniforme sans biais modulo sur les
+bornes micro-unités inclusives, issu du seul domaine `accuracy`.
+
+Justification : partitionner des uniformes indépendants en deux moitiés produit
+une Bin(N,1/2), puis les partitions conditionnelles ont la même construction.
+La somme des feuilles sous p est donc Bin(n,p) à la quantification et précision
+numérique documentées. Pour une adresse et n fixes, augmenter p inclut uniquement
+des feuilles supplémentaires : le nombre de réussites ne peut pas diminuer.
+Cette représentation agrégée définit des ensembles emboîtés sans prétendre
+exposer l'identité des combattants. Changer n ne promet pas une correspondance
+individuelle ni la multiplication exacte d'une sortie par le facteur d'échelle.
+Le coût attendu croît avec la profondeur utile de l'arbre, pas linéairement avec
+des millions de tentatives ; il doit néanmoins être mesuré.
+
+#### Conséquences et compatibilité
+
+Nouvelle politique `wounded-capture-then-compress/4`, même ordre et mêmes règles
+de capture/compression que /3, mais utilisant les identités A/B et l'arbre
+binomial adressé. Elle exige le nouveau protocole physique ; celui-ci exige /4
+lorsque les conséquences sont demandées. /2 et /3 restent disponibles avec le
+protocole historique et leurs rapports rejouables à l'identique. La provenance
+de /4 indique `sha256-binomial-tree/1`. Le classement des blessés, la reddition,
+le départage et les effets spécifiques au défenseur restent inchangés.
+
+#### Recette ciblée obligatoire
+
+- Pièces jointes #16 : rejouer exactement les rapports historiques 25/30 %, dont
+  7/11 blessés, puis localiser le premier décalage par un compteur du flux dans
+  un harnais de diagnostic, sans changer les tirages historiques de production.
+- Nouveau protocole : cycle 25→30→25, mêmes tirs archers et même état final
+  lanciers dans ce cas sans morts ; réussites lanciers non décroissantes.
+- Inversion des rôles avec A/B préservés : mêmes sous-flux et mêmes événements
+  à entrées égales, y compris variation de précision et conséquences. Tester
+  séparément un effet défensif non neutre pour conserver sa conséquence physique.
+- Cas avec morts, simultanéité, blessés qui frappent, ciblage mixte, fusion des
+  compartiments, traces none/full, batch entier et plages recomposées, ordre
+  des scénarios et parité complète PHP/Rust, provenance et rejeu compris.
+- Sampler : bornes, cas dégénérés, monotonie en p, petites lois calculées
+  exactement, moyenne n*p et variance n*p*(1-p), seeds fixées à l'avance,
+  échelles de 1 à plusieurs millions et frontières 59/60, 64/65. Tolérances
+  statistiques fixées avant observation ; aucune recherche de seeds favorables.
+- Combat : cas élémentaires calculables, effets par unité inchangés aux
+  différentes tailles et conservation des effectifs/dégâts ; ne pas exiger
+  que les pertes soient linéaires malgré les seuils, arrêts et sur-dégâts.
+- Mesure de coût bornée petits/grands effectifs et batch réel. Contrôles ciblés
+  de raccordement service/runtime, aucun E2E navigateur selon le mandat PO.
+  Aucune campagne T31/T33, modification de références gelées, fusion ou
+  déploiement. La contre-recette indépendante reste à la discrétion du PO.
+
+Recette locale du 22 septembre : le flux historique diverge à la répartition
+des impacts lanciers du round 2 (position 102, consommation 16 contre 19), puis
+les archers commencent aux positions 118/121 et obtiennent 46/53 touches.
+Les pièces jointes d'origine sont conservées sous
+`engines/waar-cohort/tests/fixtures/issue16-{25,30}.json`. Leur sérialisation
+navigateur a remplacé les poids flottants `1.0` par `1` ; les harnais restaurent
+uniquement leur type déclaré avant vérification, sans modifier les hashes ou
+les fichiers archivés. Les deux anciens rapports et empreintes sont retrouvés.
+Cette limite préexistante d'export/rejeu n'est pas corrigée par #16.
+
+Nouveau protocole, seed 42, mêmes entrées : 9 blessés lanciers et 0 mort aux deux
+précisions, archers 51/58 touches aux rounds 1/2 dans les deux variantes,
+lanciers 12/11 touches à 25 % puis 15/15 à 30 %. Retour exact à 25 %,
+inversion A/B et résumé de 50 combats par sens vérifiés par les services PHP/Rust,
+sans navigateur. Les suites dédiées vérifient aussi les lois sur 4 096 seeds
+fixes par cas, 180 vecteurs partagés, l'oracle élémentaire de deux frappes sur
+1 024 seeds, les limites u32 du sampler et des combats jusqu'à un million
+d'unités par camp. Ce sont des contrôles bornés, pas une preuve exhaustive de
+tous les combats ni une validation d'équilibrage.
+
+Coût local Windows, corpus monotype `test-2` existant, 80 combats mesurés par
+runtime/protocole, transport process-jsonl compris : Rust 46,5 ms historique,
+165,9 ms nouveau ; PHP 681,4 / 1 088,4 ms. Une seule passe séquentielle après
+échauffement, aucune concurrence de tests demandée. Les issues/arrêts peuvent
+changer entre protocoles : ce rapport mesure le coût du même corpus d'entrées,
+pas le surcoût isolé du sampler. Aucun seuil de débit serveur n'est certifié.
+Commandes, versions, résultats et limites de recette restent dans la PR #17.
+
 ## 9. Conséquences de sortie : historique et amendement probabiliste
 
 Les §9.1–9.4 conservent le cadrage historique. Le §9.5 amende explicitement

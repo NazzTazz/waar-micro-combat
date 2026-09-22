@@ -11,11 +11,16 @@ final class AccuracySampler
     private const MODULUS=2147483648;
 
     /** @return array{lower:string,upper:string,value:string,substream:string} */
-    public function sample(int $seed,int $round,string $role,UnitType $type,float $base,float $spread):array
+    public function sample(int $seed,int $round,string $role,UnitType $type,float $base,float $spread,?AddressedRandom $addressed=null):array
     {
         if(!in_array($role,['attacker','defender'],true)||$round<1)throw new \InvalidArgumentException('Invalid accuracy substream identity.');
         $lower=max(0,CombatFixedPoint::units($base)-CombatFixedPoint::units($spread));
         $upper=min(CombatFixedPoint::SCALE,CombatFixedPoint::units($base)+CombatFixedPoint::units($spread));
+        if ($addressed !== null) {
+            $value = $addressed->integer($lower, $upper, $type->value, 'accuracy');
+            return ['lower'=>CombatFixedPoint::formatUnits($lower), 'upper'=>CombatFixedPoint::formatUnits($upper),
+                'value'=>CombatFixedPoint::formatUnits($value), 'substream'=>hash('sha256', $addressed->domain($type->value, 'accuracy'))];
+        }
         $identity=self::VERSION."\0{$seed}\0{$round}\0{$role}\0{$type->value}";
         $state=unpack('Nvalue',substr(hash('sha256',$identity,true),0,4))['value']&0x7fffffff;
         if($lower===$upper)$value=$lower;else{

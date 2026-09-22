@@ -22,7 +22,7 @@ $shares=['balanced'=>[25,25,25,25],'screen-knights'=>[30,0,0,70],'screen-archers
 $army=static function(array $shares)use($profile):array{
     $army=[];foreach(array_keys($profile->units)as$i=>$type)$army[$type]=intdiv(400400*$shares[$i],100*$profile->costs()[$type]);return $army;
 };
-foreach($shares as$a=>$left)foreach($shares as$d=>$right)$mixed['scenarios'][]=['id'=>"$a-vs-$d",'attacker'=>['units'=>$army($left),'modifiers'=>$profile->weatherModifiers('neutral','attacker')],'defender'=>['units'=>$army($right),'modifiers'=>$profile->weatherModifiers('neutral','defender')]];
+foreach($shares as$a=>$left)foreach($shares as$d=>$right)$mixed['scenarios'][]=['id'=>"$a-vs-$d",'armyIdentities'=>['attacker'=>'A','defender'=>'B'],'attacker'=>['units'=>$army($left),'modifiers'=>$profile->weatherModifiers('neutral','attacker')],'defender'=>['units'=>$army($right),'modifiers'=>$profile->weatherModifiers('neutral','defender')]];
 $combined=$base;$combined['scenarios']=[...$base['scenarios'],...$mixed['scenarios']];
 $workloads=$timed?['balanced'=>$combined]:['monotypes'=>$base,'mixed'=>$mixed];
 // Sort object keys only: preserve ordered scenario lists and integer result types.

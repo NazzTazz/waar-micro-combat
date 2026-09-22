@@ -9,6 +9,10 @@ pub struct ConsequenceSampler {
 }
 
 impl ConsequenceSampler {
+    pub(crate) fn from_domain(domain: String) -> Self {
+        Self { domain, counter: 0 }
+    }
+
     pub fn new(seed: i64, side: &str, unit: &str, stage: &str) -> Self {
         Self {
             domain: format!(
