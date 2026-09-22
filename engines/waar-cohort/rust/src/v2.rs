@@ -839,6 +839,28 @@ fn allocate(
         .filter(|t| target.living_type(t.index()) > 0)
         .collect();
     let mut remaining = attempts;
+    if let Some(random) = addressed {
+        let weights: Vec<_> = living
+            .iter()
+            .map(|t| (target.living_type(t.index()), rules.weight(acting, *t)))
+            .collect();
+        for (pos, t) in living.iter().enumerate() {
+            let value = if pos + 1 == living.len() {
+                remaining
+            } else {
+                random.binomial(
+                    remaining,
+                    target_probability(&weights[pos..]),
+                    type_name(acting),
+                    &format!("target/{wave}/{}", type_name(*t)),
+                )
+            };
+            result[t.index()] = value;
+            remaining -= value;
+        }
+        return result;
+    }
+    // Keep the historical arithmetic and random consumption for old replays.
     let mut total: f64 = living
         .iter()
         .map(|t| target.living_type(t.index()) as f64 * rules.weight(acting, *t))
@@ -848,15 +870,7 @@ fn allocate(
         let value = if pos + 1 == living.len() {
             remaining
         } else {
-            match addressed {
-                Some(random) => random.binomial(
-                    remaining,
-                    weight / total,
-                    type_name(acting),
-                    &format!("target/{wave}/{}", type_name(*t)),
-                ),
-                None => rng.binomial(remaining, weight / total),
-            }
+            rng.binomial(remaining, weight / total)
         };
         result[t.index()] = value;
         remaining -= value;
@@ -864,6 +878,15 @@ fn allocate(
     }
     result
 }
+
+// Remaining living targets in canonical order. Recompute the denominator to
+// avoid cancellation, and scale preferences before population multiplication.
+fn target_probability(weights: &[(u32, f64)]) -> f64 {
+    let scale = weights.iter().map(|(_, w)| *w).fold(0.0, f64::max);
+    let total: f64 = weights.iter().map(|(n, w)| *n as f64 * (*w / scale)).sum();
+    (weights[0].0 as f64 * (weights[0].1 / scale)) / total
+}
+
 fn impacts_needed(army: &Army, i: usize, damage: Micro) -> Result<Option<u64>, String> {
     if damage.units() <= 0 {
         return Ok(None);
@@ -1741,6 +1764,37 @@ pub fn resolve_batch_json(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn targeting_probabilities_remain_finite_without_erasing_the_tail() {
+        let weights = [(1, 1e16), (1, 2.9), (1, 0.01)];
+        assert!((target_probability(&weights[1..]) - 2.9 / 2.91).abs() < 1e-15);
+        for weights in [
+            weights.to_vec(),
+            vec![(1, 1e16), (1, 0.01), (1, 0.01)],
+            vec![(1, f64::MAX), (3, f64::MAX), (2, f64::MAX)],
+            vec![
+                (1, f64::from_bits(1)),
+                (3, f64::from_bits(2)),
+                (2, f64::from_bits(3)),
+            ],
+            vec![
+                (u32::MAX, f64::MAX),
+                (1, f64::from_bits(1)),
+                (2, f64::from_bits(1)),
+            ],
+        ] {
+            for pos in 0..weights.len() {
+                let p = target_probability(&weights[pos..]);
+                assert!(p.is_finite() && (0.0..=1.0).contains(&p));
+            }
+        }
+        assert_eq!(target_probability(&[(3, f64::MAX), (2, f64::MAX)]), 0.6);
+        assert_eq!(
+            target_probability(&[(1, f64::from_bits(1)), (1, f64::from_bits(1))]),
+            0.5
+        );
+    }
+
     #[test]
     fn percentages_preserve_large_populations() {
         assert_eq!(percentage_floor(50_000_000, 100), 50_000_000);

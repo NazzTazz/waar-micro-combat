@@ -552,6 +552,43 @@ Les changements physiques de population, structure, poids ou réallocation peuve
 donc modifier les résultats en aval. Aucune règle de ciblage ou de dégâts n'est
 remplacée par cet amendement.
 
+**Correction de contre-recette #17 R1, 22 septembre 2026.** Les poids finis
+strictement positifs restent valides, même très déséquilibrés. Pour chaque
+binomiale conditionnelle du ciblage adressé, reprendre uniquement les types
+encore à allouer : diviser leurs préférences par la plus grande préférence
+de ce sous-ensemble, puis multiplier par les populations vivantes. Additionner
+ces masses normalisées dans l'ordre canonique et diviser la masse du type
+courant par ce total. Recalculer le sous-ensemble à chaque étape ; ne pas
+obtenir le dénominateur suivant par soustraction du poids déjà traité.
+
+Cette normalisation avant multiplication évite le débordement des produits
+et de la somme ; le recalcul préserve les petits poids après retrait d'un poids
+dominant. Au moins une préférence normalisée vaut 1, donc le dénominateur est
+strictement positif et fini ; la probabilité reste dans `[0,1]`, y compris
+quand aucune tentative ne reste. Le dernier type reçoit le reliquat exact.
+Les rapports trop petits pour binary64 peuvent devenir nuls ; la quantification
+à 52 bits du sampler reste applicable. Aucun écrêtage d'une probabilité invalide
+ni borne supplémentaire sur les préférences n'est ajouté.
+
+Le sampler `sha256-binomial-tree/1`, ses adresses et ses vecteurs sont inchangés.
+Cette correction numérique du ciblage de la PR encore ouverte peut changer
+l'arrondi des probabilités des poids personnalisés par rapport à `7c732de` ;
+elle ne promet pas de reproduire ses allocations erronées. Le chemin historique
+`lcg31-binomial-normal-v1` garde son arithmétique et ses replays, y compris ses
+limites numériques préexistantes. Le cas de revue (`1e16`, `2.9`, `0.01`, seed 42,
+un round) et les poids extrêmes sont couverts par
+[les tests de ciblage PHP/Rust](../engines/waar-cohort/tests/AddressedTargetingTest.php).
+La [contre-recette et sa reproduction](https://github.com/NazzTazz/waar-micro-combat/pull/17#issuecomment-5779002936)
+restent la preuve historique du défaut.
+
+Limite historique distincte constatée pendant cette correction : PHP et
+`serde_json` n'encodent pas certains poids extrêmes de la même façon pour le
+hash (`10000000000000000.0` contre `1e+16`, par exemple). Le contrôle de rejeu
+PHP peut donc refuser un rapport Rust contenant ces poids. La sérialisation
+des hashes n'est pas modifiée ici ; les tests extrêmes comparent tous les
+champs sauf ce hash, et vérifient la répétition dans chaque runtime. Les tests
+des rapports historiques ordinaires conservent leur comparaison intégrale.
+
 #### Binomiale et couplage
 
 Une simple réutilisation du BTRS à des probabilités différentes ne garantit pas

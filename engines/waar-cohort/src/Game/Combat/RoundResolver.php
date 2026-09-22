@@ -68,11 +68,34 @@ final class RoundResolver
     private function allocateWeightedLivingTargets(int $attempts,UnitType $acting,CombatArmy $target,CombatRuleset $ruleset,RandomSource $random,?AddressedRandom $addressed=null,int $wave=0):array
     {
         $types=array_values(array_filter(UnitType::cases(),static fn(UnitType $type)=>$target->livingCount($type)>0));$remaining=$attempts;
+        if($addressed!==null){
+            $out=[];
+            foreach($types as $index=>$type){
+                $allocated=$index===array_key_last($types)?$remaining:$addressed->binomial(
+                    $remaining,$this->targetProbability(array_slice($types,$index),$acting,$target,$ruleset),
+                    $acting->value,"target/{$wave}/{$type->value}");
+                $out[$type->value]=$allocated;$remaining-=$allocated;
+            }
+            return $out;
+        }
+        // Keep the historical arithmetic and random consumption for old replays.
         $weight=array_sum(array_map(fn(UnitType $type)=>$target->livingCount($type)*$ruleset->targetWeight($acting,$type),$types));$out=[];
         foreach($types as $index=>$type){$typeWeight=$target->livingCount($type)*$ruleset->targetWeight($acting,$type);
-            $allocated=$index===array_key_last($types)?$remaining:($addressed?->binomial($remaining,$typeWeight/$weight,$acting->value,"target/{$wave}/{$type->value}")??$random->binomial($remaining,$typeWeight/$weight));
+            $allocated=$index===array_key_last($types)?$remaining:$random->binomial($remaining,$typeWeight/$weight);
             $out[$type->value]=$allocated;$remaining-=$allocated;$weight-=$typeWeight;
         }return $out;
+    }
+
+    /** @param non-empty-list<UnitType> $types Remaining living targets, in canonical order. */
+    private function targetProbability(array $types,UnitType $acting,CombatArmy $target,CombatRuleset $ruleset):float
+    {
+        // Recompute each conditional denominator: subtracting a dominant weight
+        // can erase the tail. Scale preferences BEFORE multiplying by population
+        // so every finite positive preference remains usable without overflow.
+        $scale=max(array_map(fn(UnitType $type)=>$ruleset->targetWeight($acting,$type),$types));
+        $weights=array_map(fn(UnitType $type)=>$target->livingCount($type)*($ruleset->targetWeight($acting,$type)/$scale),$types);
+        $total=0.0;foreach($weights as $weight)$total+=$weight;
+        return $weights[0]/$total;
     }
 
     private function impactsNeededToDestroy(CombatArmy $army,UnitType $type,float $damage):?int
