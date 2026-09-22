@@ -496,6 +496,127 @@ Conserver la dérivation des seeds de scénarios existante pour les monotypes et
 plages d'itérations. Les nouveaux résultats peuvent changer à seed identique puisque
 le modèle change ; ne pas modifier les oracles historiques pour masquer ce changement.
 
+### 8.7 Amendement #16 — hasard adressé et binomiale couplée (22 septembre 2026)
+
+Statut : correctif mandaté par le PO, à implémenter et recetter sur
+`fix/issue-16-addressed-rng`, base `55cfbe4`. Ni acceptation, ni déploiement.
+Suivi : [issue #16](https://github.com/NazzTazz/waar-micro-combat/issues/16).
+Cet amendement remplace le flux partagé de §8.6 pour les nouvelles requêtes de
+la soufflerie. Le protocole historique reste disponible et inchangé.
+
+#### Identité et frontières
+
+- Nouveau `stochasticEngineVersion` : `sha256-binomial-tree/1`.
+- La requête porte `armyIdentities: {attacker: "A", defender: "B"}` ou
+  l'inverse. Les identités sont obligatoires avec le nouveau protocole, distinctes,
+  et suivent les armées lors de l'inversion des rôles. Elles ne sont pas déduites
+  des effectifs, du profil, de la position d'une cohorte ou d'un hash de règles.
+- Champs absents : exécuter `lcg31-binomial-normal-v1`, sans ajouter de champs
+  aux anciens résultats. Version inconnue, identité manquante/dupliquée ou
+  identité fournie au protocole ancien : erreur explicite.
+- Batch : version au niveau de la requête, identités dans chaque scénario.
+  Seeds, seedKey, plages, ordre des scénarios et budget restent inchangés.
+  Dans les duels, A/B sont les camps de l'interface ; pour une mesure monotype
+  autonome, A est le premier camp construit et B le second. Les deux sens du
+  duel partagent déjà seedKey=0 et conservent cette dérivation.
+- Le snapshot et le rejeu conservent version et identités. Le batch expose la
+  version et les identités par scénario ; contextes de mesure et caches incluent
+  le nouveau protocole. Aucun profil sauvegardé n'est réécrit.
+
+#### Adressage des tirages
+
+Un événement est identifié par les octets UTF-8 suivants, séparés par NUL :
+`protocole, seed décimale, identité A/B, round décimal, type acteur, usage`.
+Le round de sortie est 0. Les usages de combat sont `accuracy`,
+`target/{vague}/{typeCible}`, `hit/{vague}/{typeCible}` et
+`impact/{vague}/{typeCible}/{structureRésiduelleEnMicroUnités}`. La vague vaut 0
+au premier passage et augmente lors d'une réallocation. Les usages de sortie
+sont `consequence/capture`, `consequence/dead`, `consequence/wounded`,
+`consequence/prisoners`. Chaque événement repart de son adresse : aucun compteur
+global, aucun état conservé entre clics, aucune consommation d'un autre usage.
+
+Les types et cohortes gardent leur ordre canonique existant. La structure
+résiduelle identifie un **compartiment de dégâts**, pas un soldat persistant.
+Fusionner deux cohortes de même structure conserve ce compartiment ; une
+structure différente est un événement différent. La correspondance promise
+concerne les événements de mêmes entrées, pas une identité individuelle fictive.
+
+Le ciblage reste multinomial séquentiel sur les populations vivantes et poids
+actuels. Ses binomiales conditionnelles sont adressées par type cible. Les
+impacts restent répartis entre compartiments proportionnellement à leurs
+populations, puis par quotient/reste dans chaque compartiment, comme auparavant.
+Les changements physiques de population, structure, poids ou réallocation peuvent
+donc modifier les résultats en aval. Aucune règle de ciblage ou de dégâts n'est
+remplacée par cet amendement.
+
+#### Binomiale et couplage
+
+Une simple réutilisation du BTRS à des probabilités différentes ne garantit pas
+la monotonie. On emploie un arbre binaire de partitions de la population de
+tentatives, sans créer d'individus :
+
+1. À la racine, N=n. Tirer L ~ Bin(N, 1/2), R=N−L.
+2. Le sous-arbre gauche représente les uniformes dans [0,1/2), le droit [1/2,1).
+   Chaque nœud est adressé par son chemin de bits depuis la racine (`tree/`).
+3. Pour compter les uniformes < p, ajouter les sous-arbres entièrement sous p
+   et descendre uniquement dans le sous-arbre contenant la frontière.
+4. Arrêter dès que N=0 ou que la frontière est une extrémité. La probabilité
+   fournie est représentée par `floor(p * 2^52)` ; profondeur maximale 52,
+   erreur de quantification < 2^-52. p=0/1 et n=0 sont exacts.
+
+Le tirage à 1/2 réemploie la méthode binomiale de §9.5 (attentes géométriques
+pour N/2<30, BTRS sinon), dans un domaine distinct par nœud. Aucune approximation
+normale. Les mots uniformes restent les 52 bits de tête de SHA-256, transformés
+en `(bits+0.5)/2^52`, compteur local au nœud, décimal sans zéro préfixé.
+La variation de précision utilise un entier uniforme sans biais modulo sur les
+bornes micro-unités inclusives, issu du seul domaine `accuracy`.
+
+Justification : partitionner des uniformes indépendants en deux moitiés produit
+une Bin(N,1/2), puis les partitions conditionnelles ont la même construction.
+La somme des feuilles sous p est donc Bin(n,p) à la quantification et précision
+numérique documentées. Pour une adresse et n fixes, augmenter p inclut uniquement
+des feuilles supplémentaires : le nombre de réussites ne peut pas diminuer.
+Cette représentation agrégée définit des ensembles emboîtés sans prétendre
+exposer l'identité des combattants. Changer n ne promet pas une correspondance
+individuelle ni la multiplication exacte d'une sortie par le facteur d'échelle.
+Le coût attendu croît avec la profondeur utile de l'arbre, pas linéairement avec
+des millions de tentatives ; il doit néanmoins être mesuré.
+
+#### Conséquences et compatibilité
+
+Nouvelle politique `wounded-capture-then-compress/4`, même ordre et mêmes règles
+de capture/compression que /3, mais utilisant les identités A/B et l'arbre
+binomial adressé. Elle exige le nouveau protocole physique ; celui-ci exige /4
+lorsque les conséquences sont demandées. /2 et /3 restent disponibles avec le
+protocole historique et leurs rapports rejouables à l'identique. La provenance
+de /4 indique `sha256-binomial-tree/1`. Le classement des blessés, la reddition,
+le départage et les effets spécifiques au défenseur restent inchangés.
+
+#### Recette ciblée obligatoire
+
+- Pièces jointes #16 : rejouer exactement les rapports historiques 25/30 %, dont
+  7/11 blessés, puis localiser le premier décalage par un compteur du flux dans
+  un harnais de diagnostic, sans changer les tirages historiques de production.
+- Nouveau protocole : cycle 25→30→25, mêmes tirs archers et même état final
+  lanciers dans ce cas sans morts ; réussites lanciers non décroissantes.
+- Inversion des rôles avec A/B préservés : mêmes sous-flux et mêmes événements
+  à entrées égales, y compris variation de précision et conséquences. Tester
+  séparément un effet défensif non neutre pour conserver sa conséquence physique.
+- Cas avec morts, simultanéité, blessés qui frappent, ciblage mixte, fusion des
+  compartiments, traces none/full, batch entier et plages recomposées, ordre
+  des scénarios et parité complète PHP/Rust, provenance et rejeu compris.
+- Sampler : bornes, cas dégénérés, monotonie en p, petites lois calculées
+  exactement, moyenne n*p et variance n*p*(1-p), seeds fixées à l'avance,
+  échelles de 1 à plusieurs millions et frontières 59/60, 64/65. Tolérances
+  statistiques fixées avant observation ; aucune recherche de seeds favorables.
+- Combat : cas élémentaires calculables, effets par unité inchangés aux
+  différentes tailles et conservation des effectifs/dégâts ; ne pas exiger
+  que les pertes soient linéaires malgré les seuils, arrêts et sur-dégâts.
+- Mesure de coût bornée petits/grands effectifs et batch réel. Contrôles ciblés
+  de raccordement service/runtime, aucun E2E navigateur selon le mandat PO.
+  Aucune campagne T31/T33, modification de références gelées, fusion ou
+  déploiement. La contre-recette indépendante reste à la discrétion du PO.
+
 ## 9. Conséquences de sortie : historique et amendement probabiliste
 
 Les §9.1–9.4 conservent le cadrage historique. Le §9.5 amende explicitement
