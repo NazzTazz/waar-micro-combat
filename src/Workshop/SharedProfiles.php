@@ -13,7 +13,11 @@ final class SharedProfiles
         $profile['label']=$name;$profile['id']='saved-'.substr(hash('sha256',$name),0,24);
         $errors=EngineProfile::validate($profile);if($errors)throw new ProfileValidationException($errors);
         if(!is_dir($this->directory)&&!mkdir($this->directory,0700,true)&&!is_dir($this->directory))throw new \RuntimeException('Stockage indisponible.',503);
-        $lock=fopen($this->directory.'/profiles.lock','c');if(!$lock||!flock($lock,LOCK_EX))throw new \RuntimeException('Stockage indisponible.',503);
+        $lock=fopen($this->directory.'/profiles.lock','c');
+        if(!$lock)throw new \RuntimeException('Stockage indisponible.',503);
+        // A deployment holds this same lock while checking the persistent store.
+        // Never consume an HTTP worker waiting for it (or another writer).
+        if(!flock($lock,LOCK_EX|LOCK_NB)){fclose($lock);throw new \RuntimeException('Sauvegarde temporairement indisponible. Réessayez dans quelques instants.',503);}
         try{$rows=$this->read();foreach($rows as$row)if(strcasecmp($row['name'],$name)===0)throw new \RuntimeException('Ce nom existe déjà. Choisissez un autre nom ou numéro de proposition.',409);
             $id=bin2hex(random_bytes(16));$row=['id'=>$id,'name'=>$name,'createdAt'=>gmdate('c'),'profile'=>$profile];$rows[$id]=$row;
             $temporary=tempnam($this->directory,'profiles-');if($temporary===false)throw new \RuntimeException('Stockage indisponible.',503);
