@@ -1,0 +1,107 @@
+name: Deploy engine candidate
+on:
+  push:
+    tags: ['engine-v*-rc.*']
+permissions:
+  contents: read
+concurrency:
+  group: waar-engine-production-deploy
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      sha: ${{ steps.release.outputs.sha }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify RC tag and main ancestry
+        id: release
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          source ops/demo/release-common.sh
+          valid_tag "$RELEASE_TAG" || exit 1
+          sha=$(git rev-parse 'HEAD^{commit}')
+          test "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" = "$sha"
+          git merge-base --is-ancestor "$sha" refs/remotes/origin/main
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer
+      - run: composer validate --strict
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: cargo build --locked --release --manifest-path engines/waar-cohort/rust/Cargo.toml
+      - run: composer test
+      - run: composer test:js
+      - run: composer smoke
+      - run: sudo bash ops/demo/test-release-scripts.sh
+      - name: Prove the image and rollback on disposable Docker
+        run: sudo env ENGINE_TEST_DISPOSABLE_DOCKER=1 bash ops/demo/test-release-stack.sh
+  deploy:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: waar-engine-production
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.validate.outputs.sha }}
+          persist-credentials: false
+      - name: Prepare pinned SSH identity
+        env:
+          SSH_KEY: ${{ secrets.ENGINE_VPS_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.ENGINE_VPS_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_KEY" && test -n "$KNOWN_HOSTS"
+          install -d -m 0700 "$RUNNER_TEMP/engine-ssh"
+          printf '%s\n' "$SSH_KEY" > "$RUNNER_TEMP/engine-ssh/id"
+          printf '%s\n' "$KNOWN_HOSTS" > "$RUNNER_TEMP/engine-ssh/known_hosts"
+          chmod 0600 "$RUNNER_TEMP/engine-ssh/"*
+      - name: Archive the validated commit
+        id: archive
+        env:
+          RELEASE_SHA: ${{ needs.validate.outputs.sha }}
+        run: |
+          git archive --format=tar --output="$RUNNER_TEMP/engine.tar" "$RELEASE_SHA"
+          echo "checksum=$(sha256sum "$RUNNER_TEMP/engine.tar" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+      - name: Publish and activate
+        id: publish
+        env:
+          ENGINE_RELEASE_TAG: ${{ github.ref_name }}
+          ENGINE_RELEASE_SHA: ${{ needs.validate.outputs.sha }}
+          ENGINE_RELEASE_ARCHIVE: ${{ runner.temp }}/engine.tar
+          ENGINE_RELEASE_CHECKSUM: ${{ steps.archive.outputs.checksum }}
+          ENGINE_VPS_HOST: ${{ secrets.ENGINE_VPS_HOST }}
+          ENGINE_VPS_USER: ${{ secrets.ENGINE_VPS_USER }}
+          ENGINE_VPS_PORT: ${{ vars.ENGINE_VPS_PORT || '22' }}
+          ENGINE_SSH_KEY_FILE: ${{ runner.temp }}/engine-ssh/id
+          ENGINE_SSH_KNOWN_HOSTS_FILE: ${{ runner.temp }}/engine-ssh/known_hosts
+        run: bash ops/demo/publish-release.sh 2>&1 | tee "$RUNNER_TEMP/engine-deploy.log"
+      - name: Deployment summary
+        if: always()
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_SHA: ${{ needs.validate.outputs.sha }}
+          CHECKSUM: ${{ steps.archive.outputs.checksum }}
+          RESULT: ${{ steps.publish.outcome }}
+        run: |
+          {
+            printf 'Tag: %s\n\nSHA: %s\n\nArchive SHA-256: %s\n\nResult: %s\n\n' "$RELEASE_TAG" "$RELEASE_SHA" "$CHECKSUM" "$RESULT"
+            printf 'Release: /opt/waar-micro-combat/releases/%s\n\nImage: waar-engine-demo:%s\n\n' "$RELEASE_SHA" "$RELEASE_SHA"
+            echo 'Remote log: /var/log/waar-micro-combat/current.log'
+            echo '```text'
+            if test -f "$RUNNER_TEMP/engine-deploy.log"; then
+              grep -E '^(tag=|HTTP=|deployment=|activation=|rollback=|ERROR:)' "$RUNNER_TEMP/engine-deploy.log" || true
+            fi
+            echo '```'
+            echo 'An interrupted SSH session is not proof of rollback: inspect the VPS log before retrying.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove runner SSH material
+        if: always()
+        run: rm -f -- "$RUNNER_TEMP/engine-ssh/id" "$RUNNER_TEMP/engine-ssh/known_hosts"

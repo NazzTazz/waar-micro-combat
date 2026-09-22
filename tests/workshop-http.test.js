@@ -89,6 +89,22 @@ async function waitFor(url) {
     const secondResponse=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...saveBody,name:'Testeur-Proposition-2'})});
     assert.equal(secondResponse.status,200,'a second distinct profile replaces the JSON store on every supported OS');
     assert.equal((await (await fetch(origin+'/api/profiles')).json()).data.profiles.length,2);
+    const storedBeforeLock=fs.readFileSync(path.join(temporary,'profiles','profiles.json'),'utf8');
+    const profileLocker=spawn('php',['-r',"$f=fopen(getenv('WAAR_PROFILE_DIRECTORY').'/profiles.lock','c');flock($f,LOCK_EX);echo 'ready';fflush(STDOUT);fgets(STDIN);flock($f,LOCK_UN);"],{env});
+    await once(profileLocker.stdout,'data');
+    const retrySave={...saveBody,name:'Testeur-Apres-Deploiement'};
+    try {
+      const blocked=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(retrySave),signal:AbortSignal.timeout(2000)});
+      assert.equal(blocked.status,503);
+      assert.match((await blocked.json()).errors[0].message,/Réessayez/);
+      assert.equal(fs.readFileSync(path.join(temporary,'profiles','profiles.json'),'utf8'),storedBeforeLock);
+      assert.equal((await fetch(origin+'/api/profiles',{signal:AbortSignal.timeout(2000)})).status,200,'reads remain available while deployment holds the lock');
+      assert.equal((await fetch(origin+'/api/load-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:saved.id}),signal:AbortSignal.timeout(2000)})).status,200);
+    } finally {
+      profileLocker.stdin.end('\n');
+      await once(profileLocker,'exit');
+    }
+    assert.equal((await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(retrySave)})).status,200);
     assert.ok(fs.existsSync(path.join(temporary,'profiles','profiles.json')));
     const invalid=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Invalid',profile:{}})});assert.equal(invalid.status,422);
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
