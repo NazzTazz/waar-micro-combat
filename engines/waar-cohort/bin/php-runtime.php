@@ -5,20 +5,22 @@ use App\Game\Combat\CombatEngine;
 require dirname(__DIR__).'/autoload.php';
 
 /** @param array<string,mixed> $batch @return array<string,mixed> */
-function resolvePhpBatch(array $batch): array
+function resolvePhpBatch(array $batch, bool $campaign = false): array
 {
     $allowed = ['schemaVersion', 'ruleset', 'baseSeed', 'iterations', 'startIteration', 'totalIterations', 'consequences', 'scenarios', 'stochasticEngineVersion'];
     if (array_diff(array_keys($batch), $allowed)) {
         throw new InvalidArgumentException('Unknown combat batch field.');
     }
-    if (($batch['schemaVersion'] ?? null) !== 'waar-combat-batch-request/2') {
+    $expectedSchema = $campaign ? 'waar-combat-campaign-batch-request/1' : 'waar-combat-batch-request/2';
+    $maximumTotal = $campaign ? 2147483647 : 100;
+    if (($batch['schemaVersion'] ?? null) !== $expectedSchema) {
         throw new InvalidArgumentException('Unsupported combat batch schema.');
     }
     $iterations = $batch['iterations'] ?? null;
     $start = $batch['startIteration'] ?? 0;
     $total = $batch['totalIterations'] ?? ($start + (is_int($iterations) ? $iterations : 0));
     $baseSeed = $batch['baseSeed'] ?? null;
-    if (!is_int($iterations) || $iterations < 1 || $iterations > 100 || !is_int($start) || $start < 0 || !is_int($total) || $total < 1 || $total > 100 || $start + $iterations > $total || !is_int($baseSeed) || $baseSeed < 0 || $baseSeed > 2147483647) {
+    if (!is_int($iterations) || $iterations < 1 || $iterations > 100 || !is_int($start) || $start < 0 || !is_int($total) || $total < 1 || $total > $maximumTotal || $start > $total - $iterations || !is_int($baseSeed) || $baseSeed < 0 || $baseSeed > 2147483647) {
         throw new InvalidArgumentException('Invalid combat batch request.');
     }
     $scenarios = $batch['scenarios'] ?? null;
@@ -111,7 +113,7 @@ foreach (file('php://stdin', FILE_IGNORE_NEW_LINES) ?: [] as $line) {
             throw new InvalidArgumentException('missing request');
         }
         $result = match($document['operation'] ?? null) {
-            'resolve' => (new CombatEngine())->resolveRequest($request),'batch' => resolvePhpBatch($request),default => throw new InvalidArgumentException('operation must be resolve or batch')
+            'resolve' => (new CombatEngine())->resolveRequest($request),'batch' => resolvePhpBatch($request),'campaignBatch' => resolvePhpBatch($request, true),default => throw new InvalidArgumentException('operation must be resolve, batch or campaignBatch')
         };
     } catch (Throwable $error) {
         $result = ['error' => $error->getMessage()];

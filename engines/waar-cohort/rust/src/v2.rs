@@ -1614,18 +1614,23 @@ fn scenario_seed(base: i64, scenario: &BatchScenario, index: u32) -> i64 {
         (u32::from_be_bytes([h[0], h[1], h[2], h[3]]) & 0x7fff_ffff) as i64
     }
 }
-fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
+fn resolve_batch_typed(
+    batch: BatchRequest,
+    expected_schema: &str,
+    maximum_total_iterations: u32,
+) -> Result<Value, String> {
     let total_iterations = batch
         .total_iterations
         .unwrap_or(batch.start_iteration.saturating_add(batch.iterations));
-    if batch.schema_version != "waar-combat-batch-request/2"
+    let end_iteration = batch.start_iteration.checked_add(batch.iterations);
+    if batch.schema_version != expected_schema
         || batch.base_seed < 0
         || batch.base_seed > 2_147_483_647
         || batch.iterations == 0
         || batch.iterations > 100
         || total_iterations == 0
-        || total_iterations > 100
-        || batch.start_iteration.saturating_add(batch.iterations) > total_iterations
+        || total_iterations > maximum_total_iterations
+        || end_iteration.is_none_or(|end| end > total_iterations)
         || batch.scenarios.is_empty()
     {
         return Err("invalid batch request".into());
@@ -1737,7 +1742,7 @@ fn resolve_batch_typed(batch: BatchRequest) -> Result<Value, String> {
         }
         scenarios.push(row);
     }
-    let mut output = json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":batch.start_iteration+batch.iterations,"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios});
+    let mut output = json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":end_iteration.unwrap(),"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios});
     if batch.stochastic_engine_version == ADDRESSED_PROTOCOL {
         output["stochasticEngineVersion"] = json!(ADDRESSED_PROTOCOL);
     }
@@ -1753,7 +1758,23 @@ pub fn resolve_batch_json(input: &str) -> String {
     let result = (|| {
         let request: BatchRequest =
             serde_json::from_str(input).map_err(|e| format!("invalid combat batch JSON: {e}"))?;
-        resolve_batch_typed(request)
+        resolve_batch_typed(request, "waar-combat-batch-request/2", 100)
+    })();
+    match result {
+        Ok(v) => serde_json::to_string(&v).unwrap(),
+        Err(error) => serde_json::to_string(&json!({"error":error})).unwrap(),
+    }
+}
+
+pub fn resolve_campaign_batch_json(input: &str) -> String {
+    let result = (|| {
+        let request: BatchRequest =
+            serde_json::from_str(input).map_err(|e| format!("invalid campaign batch JSON: {e}"))?;
+        resolve_batch_typed(
+            request,
+            "waar-combat-campaign-batch-request/1",
+            2_147_483_647,
+        )
     })();
     match result {
         Ok(v) => serde_json::to_string(&v).unwrap(),

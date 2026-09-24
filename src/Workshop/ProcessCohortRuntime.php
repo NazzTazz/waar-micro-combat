@@ -14,6 +14,7 @@ final class ProcessCohortRuntime implements CohortRuntime
     public function __construct(
         private readonly ?array $command = null,
         private readonly ?string $kind = null,
+        private readonly bool $campaignRanges = false,
     ) {
     }
 
@@ -24,7 +25,7 @@ final class ProcessCohortRuntime implements CohortRuntime
 
     public function batch(array $request): array
     {
-        return $this->call('batch', $request, 'waar-combat-batch-result/2');
+        return $this->call($this->campaignRanges ? 'campaignBatch' : 'batch', $request, 'waar-combat-batch-result/2');
     }
 
     public function provenance(): array

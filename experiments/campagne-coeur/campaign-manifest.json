@@ -1,0 +1,1294 @@
+{
+  "profile": {
+    "label": "Nazz-Eq-20%-Rc2",
+    "id": "saved-fbecd00cc0d0dcb6a60e614e",
+    "sha256": "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765"
+  },
+  "status": "counts calculated from explicit grids; not CLI-validated; runtime dedup may reduce",
+  "totalPlans": 159,
+  "totalConfigurationsBeforeRuntimeDedup": 12023,
+  "totalCombatsBeforeRuntimeDedup": 48092000,
+  "combatsExecuted": 0,
+  "plans": [
+    {
+      "plan": "plan-reference.json",
+      "phase": "M0",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 30,
+      "combatsBeforeRuntimeDedup": 120000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "D1-small-mirrors.json",
+      "phase": "D1",
+      "scenarios": 20,
+      "configurationsBeforeRuntimeDedup": 20,
+      "combatsBeforeRuntimeDedup": 80000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "D2-defense-soldier.json",
+      "phase": "D2",
+      "scenarios": 1,
+      "configurationsBeforeRuntimeDedup": 21,
+      "combatsBeforeRuntimeDedup": 84000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "D2-defense-spearman.json",
+      "phase": "D2",
+      "scenarios": 1,
+      "configurationsBeforeRuntimeDedup": 21,
+      "combatsBeforeRuntimeDedup": 84000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "D2-defense-archer.json",
+      "phase": "D2",
+      "scenarios": 2,
+      "configurationsBeforeRuntimeDedup": 42,
+      "combatsBeforeRuntimeDedup": 168000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "D2-defense-knight.json",
+      "phase": "D2",
+      "scenarios": 1,
+      "configurationsBeforeRuntimeDedup": 21,
+      "combatsBeforeRuntimeDedup": 84000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-attack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-structure-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-cost-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-cost-fixed-budget.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-soldier-capturable-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-attack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-structure-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 120,
+      "combatsBeforeRuntimeDedup": 480000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-cost-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-cost-fixed-budget.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-spearman-capturable-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-attack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-structure-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-cost-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-cost-fixed-budget.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-archer-capturable-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-attack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-structure-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 108,
+      "combatsBeforeRuntimeDedup": 432000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-cost-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-cost-fixed-budget.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-unit-knight-capturable-fixed-counts.json",
+      "phase": "M",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-maxRounds.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 210,
+      "combatsBeforeRuntimeDedup": 840000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-tieBreakCriterion.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-equalityPolicy.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 60,
+      "combatsBeforeRuntimeDedup": 240000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-lossCompressionPercent.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 180,
+      "combatsBeforeRuntimeDedup": 720000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-capturePercent.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 150,
+      "combatsBeforeRuntimeDedup": 600000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-woundDamageThreshold.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 270,
+      "combatsBeforeRuntimeDedup": 1080000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-combat-surrender.json",
+      "phase": "M",
+      "scenarios": 30,
+      "configurationsBeforeRuntimeDedup": 240,
+      "combatsBeforeRuntimeDedup": 960000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-soldier-spearman.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-soldier-archer.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-soldier-knight.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-spearman-soldier.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-spearman-archer.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-spearman-knight.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-archer-soldier.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-archer-spearman.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-archer-knight.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-knight-soldier.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-knight-spearman.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-counter-knight-archer.json",
+      "phase": "M",
+      "scenarios": 3,
+      "configurationsBeforeRuntimeDedup": 24,
+      "combatsBeforeRuntimeDedup": 96000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-neutral.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-cloudy.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-snow.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-blizzard.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-heat.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-canicule.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-wind.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-storm.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-rain.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "M-weather-preset-thunderstorm.json",
+      "phase": "W",
+      "scenarios": 90,
+      "configurationsBeforeRuntimeDedup": 90,
+      "combatsBeforeRuntimeDedup": 360000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-neutral-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-cloudy-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-snow-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-blizzard-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-heat-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-canicule-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-wind-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-storm-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-rain-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-soldier-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-soldier-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-spearman-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-spearman-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-archer-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-archer-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-knight-attack.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "W-factor-thunderstorm-knight-baseAccuracy.json",
+      "phase": "W",
+      "scenarios": 12,
+      "configurationsBeforeRuntimeDedup": 72,
+      "combatsBeforeRuntimeDedup": 288000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "E-replace-spearman.json",
+      "phase": "E",
+      "scenarios": 120,
+      "configurationsBeforeRuntimeDedup": 120,
+      "combatsBeforeRuntimeDedup": 480000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "E-add-spearman.json",
+      "phase": "E",
+      "scenarios": 84,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "E-replace-archer.json",
+      "phase": "E",
+      "scenarios": 120,
+      "configurationsBeforeRuntimeDedup": 120,
+      "combatsBeforeRuntimeDedup": 480000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "E-add-archer.json",
+      "phase": "E",
+      "scenarios": 84,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "E-replace-knight.json",
+      "phase": "E",
+      "scenarios": 120,
+      "configurationsBeforeRuntimeDedup": 120,
+      "combatsBeforeRuntimeDedup": 480000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "E-add-knight.json",
+      "phase": "E",
+      "scenarios": 84,
+      "configurationsBeforeRuntimeDedup": 84,
+      "combatsBeforeRuntimeDedup": 336000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "X-simplex.json",
+      "phase": "X",
+      "scenarios": 525,
+      "configurationsBeforeRuntimeDedup": 525,
+      "combatsBeforeRuntimeDedup": 2100000,
+      "status": "generated; CLI preview required"
+    },
+    {
+      "plan": "X-archer-cut.json",
+      "phase": "X",
+      "scenarios": 105,
+      "configurationsBeforeRuntimeDedup": 105,
+      "combatsBeforeRuntimeDedup": 420000,
+      "status": "generated; CLI preview required"
+    }
+  ],
+  "deferred": [
+    "D3 exact boundaries and traces",
+    "D4 controlled equality contexts",
+    "D5 targeted probability controls",
+    "selected pair/triple interactions",
+    "adaptive refinement",
+    "independent confirmation"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/parametric-range-validation-40",
+  "sampling": {"repetitions": 120, "baseSeed": 424242, "batchSize": 40},
+  "limits": {"maxCombats": 240},
+  "axes": {},
+  "crosses": {"singles": true, "pairs": [], "triplets": []},
+  "scenarios": [{
+    "id": "range-check",
+    "directions": "both",
+    "weather": {"A": "neutral", "B": "wind"},
+    "modifiers": {"A": [], "B": []},
+    "armies": {
+      "A": {"mode": "explicit", "units": {"soldier": 40, "spearman": 4, "archer": 6, "knight": 2}},
+      "B": {"mode": "explicit", "units": {"soldier": 30, "spearman": 6, "archer": 4, "knight": 2}}
+    },
+    "compositionVariants": [{"id": "reference", "operations": []}]
+  }]
+}

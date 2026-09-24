@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/C2-archer-defense-independent",
+  "sampling": {"repetitions": 8000, "baseSeed": 10000042, "batchSize": 100},
+  "limits": {"maxCombats": 96000},
+  "axes": {
+    "defense": {"path": "units.archer.defendingEfficiency", "values": ["0.75", "1", "2"]},
+    "rounds": {"path": "combat.maxRounds", "values": [20, 2]}
+  },
+  "crosses": {"singles": true, "pairs": [["defense", "rounds"]], "triplets": []},
+  "scenarios": [{
+    "id": "c2-archer-n100", "directions": "both",
+    "weather": {"A": "neutral", "B": "neutral"},
+    "modifiers": {"A": [], "B": []},
+    "armies": {"A": {"mode": "explicit", "units": {"archer": 100}}, "B": {"mode": "explicit", "units": {"archer": 100}}},
+    "compositionVariants": [{"id": "reference", "operations": []}]
+  }]
+}
