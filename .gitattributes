@@ -4,3 +4,12 @@ experiments/objectives/** -text
 experiments/*.json -text
 experiments/corpora/** -text
 resources/vendor/** -text
+src/**/*.php text eol=lf
+tests/**/*.php text eol=lf
+bin/*.php text eol=lf
+engines/waar-cohort/src/**/*.php text eol=lf
+engines/waar-cohort/bin/*.php text eol=lf
+profiles/*.php text eol=lf
+ops/demo/*.php text eol=lf
+autoload.php text eol=lf
+.php-cs-fixer.dist.php text eol=lf

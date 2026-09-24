@@ -20,14 +20,14 @@ final class WorkshopRawCalibrationTest extends TestCase
             $profile['combat']['lossCompressionPercent'] = $percent;
             $profile['combat']['capturePercent'] = $percent === 8 ? 10 : 0;
             $measurement = $service->measure($profile, 'neutral', 42, 1);
-            $points = array_map(static fn($r) => [$r['id'], $r['winRate'], $r['rawCasualtyRatio']], $measurement['rows']);
+            $points = array_map(static fn ($r) => [$r['id'], $r['winRate'], $r['rawCasualtyRatio']], $measurement['rows']);
             $baseline ??= $points;
             self::assertSame($baseline, $points);
             $applied[$percent] = array_column($measurement['rows'], 'appliedLossRatio');
-            $zones = array_map(static fn($r) => [
-                'id'=>$r['id'], 'center'=>['x'=>$r['winRate'], 'y'=>$r['rawCasualtyRatio']],
-                'radii'=>['x'=>.05, 'y'=>.1], 'sourceFingerprint'=>$measurement['profileFingerprint'],
-                'modelVersion'=>$measurement['modelVersion'], 'context'=>$measurement['context'],
+            $zones = array_map(static fn ($r) => [
+                'id' => $r['id'], 'center' => ['x' => $r['winRate'], 'y' => $r['rawCasualtyRatio']],
+                'radii' => ['x' => .05, 'y' => .1], 'sourceFingerprint' => $measurement['profileFingerprint'],
+                'modelVersion' => $measurement['modelVersion'], 'context' => $measurement['context'],
             ], $measurement['rows']);
             $search = (new BoundedProfileSearch())->search($profile, $zones, 'neutral', 314159, 2, 1);
             $currentScores = array_column($search['candidates'], 'score');

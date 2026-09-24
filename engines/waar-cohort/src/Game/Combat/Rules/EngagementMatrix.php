@@ -42,10 +42,15 @@ final readonly class EngagementMatrix
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
-        $known=array_map(static fn(UnitType $type)=>$type->value,UnitType::cases());if(array_diff(array_keys($data),$known))throw new \InvalidArgumentException('Unknown engagement row.');
+        $known = array_map(static fn (UnitType $type) => $type->value, UnitType::cases());
+        if (array_diff(array_keys($data), $known)) {
+            throw new \InvalidArgumentException('Unknown engagement row.');
+        }
         $rules = [];
         foreach (UnitType::cases() as $attacker) {
-            if(array_diff(array_keys((array)($data[$attacker->value]??[])),$known))throw new \InvalidArgumentException('Unknown engagement target.');
+            if (array_diff(array_keys((array)($data[$attacker->value] ?? [])), $known)) {
+                throw new \InvalidArgumentException('Unknown engagement target.');
+            }
             foreach (UnitType::cases() as $target) {
                 $rules[$attacker->value][$target->value] = EngagementRule::fromArray($data[$attacker->value][$target->value] ?? []);
             }
@@ -56,8 +61,10 @@ final readonly class EngagementMatrix
     public static function neutral(): self
     {
         $rules = [];
-        foreach (UnitType::cases() as $attacker) foreach (UnitType::cases() as $target) {
-            $rules[$attacker->value][$target->value] = new EngagementRule(1);
+        foreach (UnitType::cases() as $attacker) {
+            foreach (UnitType::cases() as $target) {
+                $rules[$attacker->value][$target->value] = new EngagementRule(1);
+            }
         }
         return new self($rules);
     }

@@ -16,12 +16,13 @@ final readonly class BattleResult
         public string $rulesetVersion,
         public int $seed,
         public ?string $targetingModel = null,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function toArray(): array
     {
-        return (null === $this->targetingModel ? [] : ['targetingModel'=>$this->targetingModel]) + [
+        return (null === $this->targetingModel ? [] : ['targetingModel' => $this->targetingModel]) + [
             'winner' => $this->winner?->value,
             'reason' => $this->reason,
             'roundsPlayed' => $this->roundsPlayed,

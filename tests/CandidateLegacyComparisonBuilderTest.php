@@ -1,14 +1,17 @@
 <?php
+
 namespace Waar\MicroCombat\Tests;
+
 use PHPUnit\Framework\TestCase;
 use Waar\MicroCombat\Experiment\CandidateLegacyComparisonBuilder;
+
 require_once dirname(__DIR__).'/autoload.php';
 final class CandidateLegacyComparisonBuilderTest extends TestCase
 {
     private function fixture(): array
     {
         $root = dirname(__DIR__).'/experiments/references/';
-        return array_map(static fn(string $p): array => json_decode(file_get_contents($root.$p), true, 512, JSON_THROW_ON_ERROR), ['t25a1/legacy-reference.json', 't34-mixed-composition-observation/result.json', 't34-mixed-composition-observation/observation-plan.json']);
+        return array_map(static fn (string $p): array => json_decode(file_get_contents($root.$p), true, 512, JSON_THROW_ON_ERROR), ['t25a1/legacy-reference.json', 't34-mixed-composition-observation/result.json', 't34-mixed-composition-observation/observation-plan.json']);
     }
     public function testArchivedVectorsPreserveRawObservationsAndNegativeIndices(): void
     {

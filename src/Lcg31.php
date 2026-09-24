@@ -41,9 +41,14 @@ final class Lcg31
     /** Uniform buckets using high bits, with rejection instead of modulo bias. */
     public function nextIndex(int $count): int
     {
-        if($count<1||$count>self::MODULUS)throw new \InvalidArgumentException('Invalid target count.');
-        $bucket=intdiv(self::MODULUS,$count);$limit=$bucket*$count;
-        do{$draw=$this->nextState();}while($draw>=$limit);
-        return intdiv($draw,$bucket);
+        if ($count < 1 || $count > self::MODULUS) {
+            throw new \InvalidArgumentException('Invalid target count.');
+        }
+        $bucket = intdiv(self::MODULUS, $count);
+        $limit = $bucket * $count;
+        do {
+            $draw = $this->nextState();
+        } while ($draw >= $limit);
+        return intdiv($draw, $bucket);
     }
 }

@@ -31,17 +31,27 @@ final class ConsequenceSampler
 
     public function binomial(int $n, int $percent): int
     {
-        if ($n < 0 || $n > 4294967295 || $percent < 0 || $percent > 100) throw new \InvalidArgumentException('Invalid consequence binomial parameters.');
-        if ($n === 0 || $percent === 0) return 0;
-        if ($percent === 100) return $n;
+        if ($n < 0 || $n > 4294967295 || $percent < 0 || $percent > 100) {
+            throw new \InvalidArgumentException('Invalid consequence binomial parameters.');
+        }
+        if ($n === 0 || $percent === 0) {
+            return 0;
+        }
+        if ($percent === 100) {
+            return $n;
+        }
         // Compute the smaller probability from integer percentages in both runtimes.
         $p = min($percent, 100 - $percent) / 100;
         if ($n * $p < 30) {
             // Invert geometric waiting times; expected work <= 31 uniforms, even for u32 n.
-            $limit = log1p(-$p); $position = 0.0; $sample = 0;
+            $limit = log1p(-$p);
+            $position = 0.0;
+            $sample = 0;
             while (true) {
                 $position += floor(log($this->uniform()) / $limit) + 1;
-                if ($position > $n) break;
+                if ($position > $n) {
+                    break;
+                }
                 ++$sample;
             }
         } else {
@@ -62,17 +72,24 @@ final class ConsequenceSampler
         $mode = floor(($n + 1) * $p);
         $odds = $p / (1 - $p);
         while (true) {
-            $u = $this->uniform() - 0.5; $v = $this->uniform();
+            $u = $this->uniform() - 0.5;
+            $v = $this->uniform();
             $us = 0.5 - abs($u);
             $k = floor((2 * $a / $us + $b) * $u + $center);
-            if ($k < 0 || $k > $n) continue;
-            if ($us >= 0.07 && $v <= $squeeze) return (int)$k;
+            if ($k < 0 || $k > $n) {
+                continue;
+            }
+            if ($us >= 0.07 && $v <= $squeeze) {
+                return (int)$k;
+            }
             // log(P(X=k)/P(X=mode)); log1p avoids near-one cancellation at large n.
             $bound = ($mode + 0.5) * log(($mode + 1) / ($odds * ($n - $mode + 1)))
                 + ($n + 1) * log1p(($k - $mode) / ($n - $k + 1))
                 + ($k + 0.5) * log($odds * ($n - $k + 1) / ($k + 1))
                 + self::tail($mode) + self::tail($n - $mode) - self::tail($k) - self::tail($n - $k);
-            if (log($v * $alpha / ($a / ($us * $us) + $b)) <= $bound) return (int)$k;
+            if (log($v * $alpha / ($a / ($us * $us) + $b)) <= $bound) {
+                return (int)$k;
+            }
         }
     }
 
@@ -82,8 +99,11 @@ final class ConsequenceSampler
         $small = [0.08106146679532726, 0.04134069595540929, 0.02767792568499834, 0.02079067210376509,
             0.01664469118982119, 0.01387612882307075, 0.01189670994589177, 0.01041126526197210,
             0.009255462182712733, 0.008330563433362871];
-        if ($k < 10) return $small[(int)$k];
-        $x = $k + 1; $square = $x * $x;
+        if ($k < 10) {
+            return $small[(int)$k];
+        }
+        $x = $k + 1;
+        $square = $x * $x;
         return (1 / 12 - (1 / 360 - (1 / 1260 - (1 / 1680 - 1 / 1188 / $square) / $square) / $square) / $square) / $x;
     }
 }

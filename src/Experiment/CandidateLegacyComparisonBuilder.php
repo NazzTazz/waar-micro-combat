@@ -84,7 +84,7 @@ final class CandidateLegacyComparisonBuilder
     {
         $indexed = array_column($rows, null, 'key');
         $notes = [];
-        $format = static fn(float $value): string => rtrim(rtrim(number_format($value, 2, ',', ' '), '0'), ',');
+        $format = static fn (float $value): string => rtrim(rtrim(number_format($value, 2, ',', ' '), '0'), ',');
         $composition = static function (array $army) use ($format): string {
             $parts = [];
             foreach (['soldier' => 'de soldats', 'spearman' => 'de lanciers', 'archer' => 'd’archers', 'knight' => 'de chevaliers'] as $unit => $label) {
@@ -97,7 +97,7 @@ final class CandidateLegacyComparisonBuilder
         foreach ($scenarios as $scenario) {
             $attacker = $indexed[$scenario['id'].'/attacker']['metrics']['survivors']['raw'];
             $defender = $indexed[$scenario['id'].'/defender']['metrics']['survivors'];
-            $winner = static fn(string $engine): ?string => $attacker[$engine][0] > 50 ? 'attaquant' : ($defender['raw'][$engine][0] > 50 ? 'défenseur' : null);
+            $winner = static fn (string $engine): ?string => $attacker[$engine][0] > 50 ? 'attaquant' : ($defender['raw'][$engine][0] > 50 ? 'défenseur' : null);
             $legacyWinner = $winner('legacy');
             $candidateWinner = $winner('candidate');
             $outcome = null === $legacyWinner || null === $candidateWinner

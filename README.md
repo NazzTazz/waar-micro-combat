@@ -42,6 +42,35 @@ composer smoke
 The smoke command writes an offline JSON/HTML report to `reports/smoke/`. Open
 `reports/smoke/report.html` directly in a browser; it has no CDN dependency.
 
+## PHP coding style
+
+PHP code follows [PSR-12](https://www.php-fig.org/psr/psr-12/) with four spaces,
+LF line endings, explicit control-structure braces, and one statement per line.
+Array commas have one following space. A closing brace must not share its line
+with the next statement (`} else {` and `} catch (...) {` remain conventional).
+The 120-character line length is a soft review guideline, not an automatic rewrite.
+
+`.php-cs-fixer.dist.php` covers the first-party PHP in `src/`, `tests/`, `bin/`,
+`engines/waar-cohort/{src,bin}/`, `profiles/`, `ops/demo/`, and `autoload.php`.
+Imported engine snapshots, experiment inputs, reports, and frozen references are
+outside this formatting pass. The official PHP-CS-Fixer v3.95.15 PHAR used here
+has SHA-256 `813717fc1c8e7ff01f6896c44ae81574f9d4302f26f01c14b1da838654464103`.
+It is not committed. On Windows PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force tmp/tools | Out-Null
+curl.exe -L --fail --output tmp/tools/php-cs-fixer-v3.95.15.phar https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/releases/download/v3.95.15/php-cs-fixer.phar
+(Get-FileHash -Algorithm SHA256 tmp/tools/php-cs-fixer-v3.95.15.phar).Hash
+php tmp/tools/php-cs-fixer-v3.95.15.phar fix --dry-run --using-cache=no --config=.php-cs-fixer.dist.php
+php tmp/tools/php-cs-fixer-v3.95.15.phar fix --using-cache=no --config=.php-cs-fixer.dist.php
+php bin/check-php-block-boundaries.php
+```
+
+Check the downloaded PHAR hash before running `fix` without `--dry-run`.
+PHP-CS-Fixer alone does not detect all adjacent `}foreach` or `}$next`
+boundaries; the final command catches those. Formatting must be a separate
+change from gameplay edits and must not rebuild a campaign image in use.
+
 ## Run a bounded search
 
 This research smoke evaluates eight candidates with deterministic seed 314159:

@@ -38,8 +38,7 @@ final readonly class CombatRuleset
         int $maxRounds,
         string|int $randomSpread = 0,
         CombatTieBreakPolicy $tieBreakPolicy = CombatTieBreakPolicy::Draw,
-    ): self
-    {
+    ): self {
         $factors = [];
         foreach (UnitType::cases() as $acting) {
             foreach (UnitType::cases() as $target) {

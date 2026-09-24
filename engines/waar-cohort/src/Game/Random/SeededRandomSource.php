@@ -11,7 +11,10 @@ final class SeededRandomSource implements RandomSource
         $this->state = $initialSeed & 0x7fffffff;
     }
 
-    public function seed(): int { return $this->initialSeed; }
+    public function seed(): int
+    {
+        return $this->initialSeed;
+    }
 
     public function nextFloat(): float
     {
@@ -21,8 +24,12 @@ final class SeededRandomSource implements RandomSource
 
     public function binomial(int $trials, float $probability): int
     {
-        if ($trials <= 0 || $probability <= 0) { return 0; }
-        if ($probability >= 1) { return $trials; }
+        if ($trials <= 0 || $probability <= 0) {
+            return 0;
+        }
+        if ($probability >= 1) {
+            return $trials;
+        }
         if ($trials <= 64) {
             $successes = 0;
             for ($i = 0; $i < $trials; ++$i) {

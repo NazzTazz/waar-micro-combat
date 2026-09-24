@@ -63,7 +63,9 @@ final class CombatFixedPoint
     public static function compareProducts(int $leftA, int $leftB, int $rightA, int $rightB): int
     {
         foreach ([$leftA, $leftB, $rightA, $rightB] as $value) {
-            if ($value < 0) throw new \InvalidArgumentException('Product comparison expects non-negative integers.');
+            if ($value < 0) {
+                throw new \InvalidArgumentException('Product comparison expects non-negative integers.');
+            }
         }
         $left = ltrim(self::multiplyDecimalStrings((string) $leftA, (string) $leftB), '0') ?: '0';
         $right = ltrim(self::multiplyDecimalStrings((string) $rightA, (string) $rightB), '0') ?: '0';
@@ -73,19 +75,27 @@ final class CombatFixedPoint
     /** @param list<float|int|string> $values */
     public static function multiplyManyUnits(array $values): int
     {
-        if ([] === $values) throw new \InvalidArgumentException('A fixed-point product needs at least one value.');
+        if ([] === $values) {
+            throw new \InvalidArgumentException('A fixed-point product needs at least one value.');
+        }
         $product = '1';
         foreach ($values as $value) {
             $units = self::units($value);
-            if ($units < 0) throw new \InvalidArgumentException('Modifier products cannot be negative.');
+            if ($units < 0) {
+                throw new \InvalidArgumentException('Modifier products cannot be negative.');
+            }
             $product = self::multiplyDecimalStrings($product, (string) $units);
         }
         $discard = self::DECIMALS * (count($values) - 1);
         if ($discard > 0) {
             $product = str_pad($product, $discard + 1, '0', STR_PAD_LEFT);
             $kept = substr($product, 0, -$discard);
-            if ((int) $product[-$discard] >= 5) $kept = self::incrementDecimalString($kept);
-        } else $kept = $product;
+            if ((int) $product[-$discard] >= 5) {
+                $kept = self::incrementDecimalString($kept);
+            }
+        } else {
+            $kept = $product;
+        }
         $normalized = ltrim($kept, '0') ?: '0';
         $limit = (string) PHP_INT_MAX;
         if (strlen($normalized) > strlen($limit) || (strlen($normalized) === strlen($limit) && strcmp($normalized, $limit) > 0)) {
@@ -156,10 +166,14 @@ final class CombatFixedPoint
 
     private static function multiplyDecimalStrings(string $left, string $right): string
     {
-        if ($left === '0' || $right === '0') return '0';
+        if ($left === '0' || $right === '0') {
+            return '0';
+        }
         $digits = array_fill(0, strlen($left) + strlen($right), 0);
-        for ($i = strlen($left) - 1; $i >= 0; --$i) for ($j = strlen($right) - 1; $j >= 0; --$j) {
-            $digits[$i + $j + 1] += ((int) $left[$i]) * ((int) $right[$j]);
+        for ($i = strlen($left) - 1; $i >= 0; --$i) {
+            for ($j = strlen($right) - 1; $j >= 0; --$j) {
+                $digits[$i + $j + 1] += ((int) $left[$i]) * ((int) $right[$j]);
+            }
         }
         for ($i = count($digits) - 1; $i > 0; --$i) {
             $digits[$i - 1] += intdiv($digits[$i], 10);
@@ -172,7 +186,10 @@ final class CombatFixedPoint
     {
         $digits = str_split($value);
         for ($i = count($digits) - 1; $i >= 0; --$i) {
-            if ($digits[$i] !== '9') { $digits[$i] = (string) ((int) $digits[$i] + 1); return implode('', $digits); }
+            if ($digits[$i] !== '9') {
+                $digits[$i] = (string) ((int) $digits[$i] + 1);
+                return implode('', $digits);
+            }
             $digits[$i] = '0';
         }
         return '1'.implode('', $digits);

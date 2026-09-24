@@ -216,9 +216,15 @@ final class FinalistStabilityTest extends TestCase
     public function testRejectsMismatchedT31PlanIdentityInputHashAndCacheContract(): void
     {
         $mutations = [
-            [static function (array &$plan): void { $plan['id'] = 'different-plan'; }, 'plan id differs'],
-            [static function (array &$plan): void { $plan['inputs']['sha256']['experiment'] = str_repeat('0', 64); }, 'disagree on the experiment SHA-256'],
-            [static function (array &$plan): void { $plan['baselineCache']['keySha256'] = str_repeat('0', 64); }, 'baseline cache contract differs'],
+            [static function (array &$plan): void {
+                $plan['id'] = 'different-plan';
+            }, 'plan id differs'],
+            [static function (array &$plan): void {
+                $plan['inputs']['sha256']['experiment'] = str_repeat('0', 64);
+            }, 'disagree on the experiment SHA-256'],
+            [static function (array &$plan): void {
+                $plan['baselineCache']['keySha256'] = str_repeat('0', 64);
+            }, 'baseline cache contract differs'],
         ];
         foreach ($mutations as [$mutate, $message]) {
             $temporary = sys_get_temp_dir().'/waar-t33-contract-'.bin2hex(random_bytes(6));

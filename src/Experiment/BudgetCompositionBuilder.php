@@ -11,7 +11,7 @@ final class BudgetCompositionBuilder
 
     public function __construct(private readonly array $costs = self::COSTS)
     {
-        if (array_keys($costs) !== array_keys(self::COSTS) || array_filter($costs, static fn($cost) => !is_int($cost) || $cost <= 0)) {
+        if (array_keys($costs) !== array_keys(self::COSTS) || array_filter($costs, static fn ($cost) => !is_int($cost) || $cost <= 0)) {
             throw new \InvalidArgumentException('Expected four positive integer unit costs.');
         }
     }
@@ -34,11 +34,11 @@ final class BudgetCompositionBuilder
 
     public function allocate(int $budget, array $weights): array
     {
-        if ($budget < 1 || $budget > 80000 || !array_is_list($weights) || count($weights) !== 4 || array_filter($weights, static fn($w) => !is_int($w) || $w < 0) || array_sum($weights) !== 100) {
+        if ($budget < 1 || $budget > 80000 || !array_is_list($weights) || count($weights) !== 4 || array_filter($weights, static fn ($w) => !is_int($w) || $w < 0) || array_sum($weights) !== 100) {
             throw new \InvalidArgumentException('Expected a budget <=80000 and four non-negative integer percentages summing to 100.');
         }
         $units = array_keys($this->costs);
-        $active = array_values(array_filter(range(0, 3), static fn(int $i): bool => $weights[$i] > 0));
+        $active = array_values(array_filter(range(0, 3), static fn (int $i): bool => $weights[$i] > 0));
         // User corpus has at most three active types; bound exhaustive allocation.
         if (count($active) > 3) {
             throw new \InvalidArgumentException('At most three active unit types are supported.');
@@ -50,16 +50,23 @@ final class BudgetCompositionBuilder
             $unit = $units[$i];
             $cost = $this->costs[$unit];
             if ($position === count($active) - 1) {
-                if ($remaining % $cost !== 0) return;
+                if ($remaining % $cost !== 0) {
+                    return;
+                }
                 $counts[$unit] = intdiv($remaining, $cost);
                 $error += (100 * $remaining - $budget * $weights[$i]) ** 2;
                 // Ascending lexicographic count order is the deterministic tie-break.
-                if ($error < $bestError) { $best = $counts; $bestError = $error; }
+                if ($error < $bestError) {
+                    $best = $counts;
+                    $bestError = $error;
+                }
                 return;
             }
             for ($count = 0; $count <= intdiv($remaining, $cost); ++$count) {
                 $nextError = $error + (100 * $count * $cost - $budget * $weights[$i]) ** 2;
-                if ($nextError > $bestError) continue;
+                if ($nextError > $bestError) {
+                    continue;
+                }
                 $counts[$unit] = $count;
                 $visit($position + 1, $remaining - $count * $cost, $counts, $nextError);
             }

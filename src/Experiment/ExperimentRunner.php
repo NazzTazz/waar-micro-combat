@@ -12,7 +12,9 @@ use Waar\MicroCombat\UnitType;
 
 final readonly class ExperimentRunner
 {
-    public function __construct(private CombatResolver $resolver = new CombatResolver()) {}
+    public function __construct(private CombatResolver $resolver = new CombatResolver())
+    {
+    }
 
     /** @return array<string, mixed> */
     public function run(ExperimentDefinition $experiment): array

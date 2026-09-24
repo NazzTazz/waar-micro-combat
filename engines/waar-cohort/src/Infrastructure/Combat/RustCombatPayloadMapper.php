@@ -6,5 +6,8 @@ namespace App\Infrastructure\Combat;
 final class RustCombatPayloadMapper
 {
     /** @param array<string,mixed> $request @return array<string,mixed> */
-    public function request(array $request):array{return $request;}
+    public function request(array $request): array
+    {
+        return $request;
+    }
 }
