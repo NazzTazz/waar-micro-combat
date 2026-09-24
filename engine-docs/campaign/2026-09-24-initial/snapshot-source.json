@@ -1,0 +1,892 @@
+﻿{
+    "remoteAfterAtUtc":  "2026-09-23T23:27:03.784588+00:00",
+    "startedAtUtc":  "2026-09-23T23:24:38.724245+00:00",
+    "finishedAtUtc":  "2026-09-23T23:28:35.5454409Z",
+    "pc":  [
+               {
+                   "path":  "C1-mirrors-independent",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "bf59b4d578705ae4b4c44365339d690c4184ce9a4dccfc2cd6bf7c86f82b231e",
+                                      "exports/results.csv":  "0e0f2c4cfc8a28ff7760a13c7c1609ea00f6cddf7c43b17c2fb8c3048a2f20fc",
+                                      "plan.json":  "da552f809b1e1d182b454863dcf10ff59b1ad20c94500e89da6da0da3039198f"
+                                  },
+                   "completedCombats":  64000,
+                   "fileCount":  329,
+                   "totalBytes":  4962990
+               },
+               {
+                   "path":  "C2-archer-defense-independent",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "654d422c20fb617a96d540f13f69cc8eeb161e23d30b1454462886c11cf4d2cf",
+                                      "exports/results.csv":  "59aed5e239a8976c03d889f0aabe30b3fabe0aac160f8d75bd7a675114ff8c85",
+                                      "plan.json":  "81863b46f281e72be0a32756e5c7a1f7a4423522aad9b968618d4d440fd9078b"
+                                  },
+                   "completedCombats":  96000,
+                   "fileCount":  491,
+                   "totalBytes":  7447987
+               },
+               {
+                   "path":  "C3-spearman-defense-independent",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "7032cbb67a3125ef8ec08a65adcdaecdd8af569a179c616f26e08e8254b411f7",
+                                      "exports/results.csv":  "2c39ee9f1e155f6901e151798515355196669bc8de1620197e876d8eacc1385d",
+                                      "plan.json":  "3d24a547ace851ec67abd5655fc0c202a2428cb3f3dd157ee7f4561ddba0c6b7"
+                                  },
+                   "completedCombats":  32000,
+                   "fileCount":  167,
+                   "totalBytes":  2490020
+               },
+               {
+                   "path":  "D1-small-mirrors",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "8f7f2490e1e60f45f552b9ed08a4525b5822c3fadfab6f0f5ddf849ea17f85ae",
+                                      "exports/results.csv":  "b15e3e48bfe3641e7c40d8e82b5a259b7d59862b0646fd6970b2c5a68b193e51",
+                                      "plan.json":  "b6364e95af403b36dd4686ab0f8878ae292c56cc894994fcfc3e38e01c5ebb65"
+                                  },
+                   "completedCombats":  80000,
+                   "fileCount":  425,
+                   "totalBytes":  6342927
+               },
+               {
+                   "path":  "D2-defense-archer",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "b17fce2fef7ad3bf0228ff5523803447265e780a1b2f3b8a36172a7b9ea6cfc9",
+                                      "exports/results.csv":  "dd9f499a8b63e5c6944c36fa8512faa168a69a762c6fad683f753a731f2089bd",
+                                      "plan.json":  "59da0be7475bed011016191f4508b286e4827791a8c6d227b75a7ce2cef9c209"
+                                  },
+                   "completedCombats":  168000,
+                   "fileCount":  887,
+                   "totalBytes":  13289103
+               },
+               {
+                   "path":  "D2-defense-knight",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "1210268142ce16fa25725bc581c36265a176b294b6b465f0718a85133802f853",
+                                      "exports/results.csv":  "22a27b8b2f02029983dce05743ca1142de2aa176d73c58054526cd989c09f476",
+                                      "plan.json":  "c1dc82cb4c590469b8cb40b6d8687df05b555acd76f14d702b579b9827dd125f"
+                                  },
+                   "completedCombats":  84000,
+                   "fileCount":  446,
+                   "totalBytes":  6659655
+               },
+               {
+                   "path":  "D2-defense-soldier",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "fb9fe94b8ba0727969e4d5beba696dae141979b81cb9e388a32a6fc543e8e811",
+                                      "exports/results.csv":  "72d3351de48afba9f1855e37533d4c3b8f313af8874bc302ca2623bcd7967bd1",
+                                      "plan.json":  "a169ba866746a0e9eb8ebf1b0bc638c5366facec7f4c50b8240c24fc46d2e4a1"
+                                  },
+                   "completedCombats":  84000,
+                   "fileCount":  446,
+                   "totalBytes":  6655722
+               },
+               {
+                   "path":  "D2-defense-spearman",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "1c569f9971309dfbd6520f17c5b04e444d43db34974f0df53042eddbb4e80a1e",
+                                      "exports/results.csv":  "8ea84f38fecaf610e672c67006f048a9b1ed1c6ed69ccaa1c686088f944764c2",
+                                      "plan.json":  "08fb0450878d56df4f312d98857bc279dc267648717ce953a32872e8eb469305"
+                                  },
+                   "completedCombats":  84000,
+                   "fileCount":  446,
+                   "totalBytes":  6651316
+               },
+               {
+                   "path":  "D3-physical-thresholds",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "e81b9b1bba42c106ea2336d108e4e713e05f6478da9753bf72f295e248148638",
+                                      "exports/results.csv":  "c1a0f9bd253ba831f2c551307fa0f97395a414e5adf05f3b97637fc41d6c5009",
+                                      "plan.json":  "90048b2865038e207c444e0dbee3c0c285b75165bb5f462f41786d521ada2ff6"
+                                  },
+                   "completedCombats":  84000,
+                   "fileCount":  450,
+                   "totalBytes":  7723571
+               },
+               {
+                   "path":  "D4-decision-rules",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "5910e2d7cb43bc5d37b817b3eff3e4740de47415c2ba498d90d7504e3143e939",
+                                      "exports/results.csv":  "d101578833e53c72dd754ae36410e02b08c9844940f7f21d9cfcaeb32f9adeb8",
+                                      "plan.json":  "d9d66596b9c2f36e8c53853c67e15f451f9b40bb7d48061441e2c4d145ba41de"
+                                  },
+                   "completedCombats":  96000,
+                   "fileCount":  509,
+                   "totalBytes":  8019785
+               },
+               {
+                   "path":  "D5-accuracy-spread",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "e7889153404c954e625328ca9c62472483b79477c931c1dad8ca4edbf08fc2bc",
+                                      "exports/results.csv":  "3f8b299600e7d24d7b586fbd3bd54e746cdb1d839faab529cce5c50b8f9f4a7e",
+                                      "plan.json":  "4389a6c4ef727afee4bfb437e415a129cccb42d05aa0d8b4cd1ff9ea4c00ecc6"
+                                  },
+                   "completedCombats":  120000,
+                   "fileCount":  635,
+                   "totalBytes":  9497041
+               },
+               {
+                   "path":  "M-combat-capturePercent",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "abcd4f5d7af361e77ce806257d0f36473e1482b2f64bcba1a445f41b26b8677b",
+                                      "exports/results.csv":  "20adee55216fdc797eab49825ca89dffbd5dc74deeac5c3ff5a81d4905ee1ea2",
+                                      "plan.json":  "1115cf2ac94af827a8220948c6b87802e33b27dbc4d16980ca97168ce22fc0ae"
+                                  },
+                   "completedCombats":  480000,
+                   "fileCount":  2525,
+                   "totalBytes":  38095218
+               },
+               {
+                   "path":  "M-combat-equalityPolicy",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "c093db462f5084de9dac8e56d603db86d10f5b0c7c43c324bf104081dd7ad1a4",
+                                      "exports/results.csv":  "ac2b75f18c80855a612927d0d17a03ba544ab6a0d35f148c2829f903c9174e5c",
+                                      "plan.json":  "1d4602d247ab7e1c3a9a37dcc1896a9778f25a5e5eae0be2fcb1623be2cb13c3"
+                                  },
+                   "completedCombats":  240000,
+                   "fileCount":  1265,
+                   "totalBytes":  19063760
+               },
+               {
+                   "path":  "M-combat-tieBreakCriterion",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "cd1b8ef45c4370e494a0d6f7e06e2fce5c68a5d51c80ad75a1e2f7e5342c3865",
+                                      "exports/results.csv":  "5c38d0146dcd8a27b1b2d09f8305eb0b43a961b758adf516f2d0f509073c47f7",
+                                      "plan.json":  "a4d32e0b2d2850ff6264e1e46d9bc922e1942d5768887863645454c6bed51427"
+                                  },
+                   "completedCombats":  240000,
+                   "fileCount":  1265,
+                   "totalBytes":  19067123
+               },
+               {
+                   "path":  "M-counter-archer-knight",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "4b27e782e1253013196f8af63ed3112cc9cfec891afa68aa07bfeabf1b9fbe09",
+                                      "exports/results.csv":  "d7a78e284621856fa6456e53988a6a789a2cefbaee92f71e6039fc8f03ae61aa",
+                                      "plan.json":  "daee03c56389fb1c4e773d3d0bce32a1c7d9166f25bdad5e5f16172108991e2b"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8563166
+               },
+               {
+                   "path":  "M-counter-archer-soldier",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "83a60360f83efe85a8794ee8cab1efe66f281793d63041fbb37112587bc0aa42",
+                                      "exports/results.csv":  "038255f52349811c6390df81482263e558bc0980a46217f89525113ddb9b1c68",
+                                      "plan.json":  "4197551306ca15ef2366c25b7b46042c2b72b0a111dd256c06b7c54edcb799fc"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8581575
+               },
+               {
+                   "path":  "M-counter-archer-spearman",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "e2c1e109a0afbc310f41776e005f8b90207d19caaa7a1c856b7ef742b5d53247",
+                                      "exports/results.csv":  "71356e7713f9dc8877e9fda8cb8b25504fb824f456f711bea0f39719c4509a8c",
+                                      "plan.json":  "987cc7346f70b87435e8698d2effe151f4fa136b68a48e639669aa653ea59905"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8577086
+               },
+               {
+                   "path":  "M-counter-knight-archer",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "da7d1ca9b5805a7a5b6675384dae382a8396500486382ecc3e337808bf3a028c",
+                                      "exports/results.csv":  "58044352a66d1953bc72e6b9fcc898c6f118b8f0f8ad185acbf99cb4c9768a2c",
+                                      "plan.json":  "909d4172bc10e701af9a0c8296ebc3c50967633fdd22ba6599f5fb7e771ce1aa"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8563984
+               },
+               {
+                   "path":  "M-counter-knight-soldier",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "64e143e70d0d8156bb7ac4e0437673350265744f678d2d5f3ea5a50c402d4ba5",
+                                      "exports/results.csv":  "68708ae109b69d056b635ea10b8295df13c2d0552fffd4601ed8e26e0b228c99",
+                                      "plan.json":  "0e19ffa92390fbce5fb22d45a5cfe5848923bcfb7329133d981e628292d7cf73"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8570417
+               },
+               {
+                   "path":  "M-counter-knight-spearman",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "1c9fed4009c5e2e8c129cbf823ad0d0fc3f68c508d4551c4b4060d6a29a5e046",
+                                      "exports/results.csv":  "2d0e962e5917aa3789029c67e38ba6122696cd13339f1a9cdbed9c7e6b416328",
+                                      "plan.json":  "d69590585e34a07a155b994cb1e108ebe63b3a17dadabbda32f33d7a70f054a3"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8567478
+               },
+               {
+                   "path":  "M-counter-soldier-archer",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "1ccab3eb890d5ad9a86fc1e2dfb2b3f58e92eac834419d5bf3177f7f726a235c",
+                                      "exports/results.csv":  "5305ffb5d31e602eb231e8815d0d4ad853efa946c28e73e3cca9e7d4c1a4253c",
+                                      "plan.json":  "f3ce579772bdb2140304f07ff974c0b5bf41127fb2dbf2192880f652b7aef11a"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8587551
+               },
+               {
+                   "path":  "M-counter-soldier-knight",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "1952b20e85110e2c8f714ceb5207cba4c3d4a0beea82b75500fb18d1453ecf78",
+                                      "exports/results.csv":  "6c7f98cf8c625ca031ee288edb5c1a2e79a2d5dcd5b6cb8754614accb8d09561",
+                                      "plan.json":  "2cf310f4823181d8bb399aca35e10e4e8519489f4c6c31d33a64d7e2e6f2e962"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8570279
+               },
+               {
+                   "path":  "M-counter-soldier-spearman",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "13c9932b1d0832b82438b56581877ad092fcb9c60fc014d907d8d02b7b48f795",
+                                      "exports/results.csv":  "e4be67435d46b88cb8632e7dd9791352f3ac3aa5217993e14aa4fae21dc5cded",
+                                      "plan.json":  "eefed97b95c2f2594004b1ad3bed1a6477ee82298134a501a0d1970c43a3e9a9"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8589461
+               },
+               {
+                   "path":  "M-counter-spearman-archer",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "d927a75c348e95870da9050d597fe7a55185903638801c5425271dfc71c84e89",
+                                      "exports/results.csv":  "5b881ffc3c5d9ce41e3692b8a2aaff6b3a695e5a7bffd200c468f2d33cd1b989",
+                                      "plan.json":  "d898b966e36c2c89d1a762a7302257215cb9502796ad3a2f0e117f6d80567038"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8574295
+               },
+               {
+                   "path":  "M-counter-spearman-knight",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "9579379f109b3eebb82d4bb05230bf6b0e965a2d40c506ca577b592d4a55c00f",
+                                      "exports/results.csv":  "22e16a824852fd6d84ce1005c0669f19851bcf8ec8e5c64c047b00a2aa8be9e5",
+                                      "plan.json":  "8daf4637ec0c743f34b499fa052393c0ab4a69e19b262f9b9efcf8c3a09a2b8e"
+                                  },
+                   "completedCombats":  96000,
+                   "fileCount":  509,
+                   "totalBytes":  7615067
+               },
+               {
+                   "path":  "M-counter-spearman-soldier",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "2a48082049d49dd6436a4f7c6fd5d6539b1421da442ccb6843ee12d70866f755",
+                                      "exports/results.csv":  "01754717afdc69a18894f44c8c418ecb3fd4d5b3f88154c21c3e3eb78bee03fc",
+                                      "plan.json":  "4d8ea2a42bcd948af443a0f726d952926452429aa3e32bdf997d423b79d8b2af"
+                                  },
+                   "completedCombats":  108000,
+                   "fileCount":  572,
+                   "totalBytes":  8582023
+               },
+               {
+                   "path":  "M-unit-archer-accuracySpread-fixed-counts",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "b6524e2bd27071dd77bc86dcc586ca63105434c5c3b1d655cc8c33e7784cff09",
+                                      "exports/results.csv":  "211f06d76dd708d4ebd4b0d5131c78695abfa0e36e71345a336bf2a3ab186297",
+                                      "plan.json":  "0f5edf9e3d92d33a983e0f47df0dee4d15286a88ab8a29fb907d6cfc3c5d5b68"
+                                  },
+                   "completedCombats":  240000,
+                   "fileCount":  1265,
+                   "totalBytes":  19055767
+               },
+               {
+                   "path":  "M-unit-archer-attack-fixed-counts",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "3ecd5f67d69fa722496b5f0942c8d93ac248de1a0b1374baba1d399337a5b3b9",
+                                      "exports/results.csv":  "17d7ef3b0f7e2db8a0665832cd68fb3c942c60d0d150486631a76b9264c2dfad",
+                                      "plan.json":  "18f160abb9ae39f3c672bb2605c2acba9139f44dbf010885558884e53c520190"
+                                  },
+                   "completedCombats":  240000,
+                   "fileCount":  1265,
+                   "totalBytes":  19046470
+               },
+               {
+                   "path":  "M-unit-archer-baseAccuracy-fixed-counts",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "38f094e3d6e76ef5c90ae8971759951493cc3756248f9d8c2068da6f526b7322",
+                                      "exports/results.csv":  "c0c6ea43a4f7a391f13ef7e24869a9ef1b3d6bfd1f108032898a41a4708480a5",
+                                      "plan.json":  "7bf1be3c60b7a69ae5d187c9d849d1bb11a883838b87139b665a86aa66342103"
+                                  },
+                   "completedCombats":  432000,
+                   "fileCount":  2273,
+                   "totalBytes":  34252583
+               },
+               {
+                   "path":  "plan-reference",
+                   "coreSha256":  {
+                                      "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                      "manifest.json":  "5e9d34a50ad91bb48e5b4274e5316a2459b3b98cadb8c61c86a7e1863f67904c",
+                                      "exports/results.csv":  "580f430b9b0eeabee3926910942fa52e2621c8cc7fdc005af9f3380224acc023",
+                                      "plan.json":  "265b1576685f8012f6139db5e0da494848cfca397fa381f081012f78464a2742"
+                                  },
+                   "completedCombats":  120000,
+                   "fileCount":  635,
+                   "totalBytes":  9555808
+               }
+           ],
+    "schemaVersion":  "waar-analysis-snapshot/1",
+    "remoteRoot":  "/home/debian/waar-campaign/results",
+    "remoteBefore":  [
+                         {
+                             "path":  "M-unit-archer-capturable-fixed-counts",
+                             "completedCombats":  96000,
+                             "fileCount":  509,
+                             "totalBytes":  7631399,
+                             "listingSha256":  "1b8bf37520d2d289f70a6794304797ef9a81ee935df9df41661b44b56a9ce22b",
+                             "coreSha256":  {
+                                                "manifest.json":  "b2735199f3eae9ca97340f9b81bea107993109add01ee9f7a3aad51aad0f357c",
+                                                "plan.json":  "1baf1c1e2371d37e791a860097a442592dd49c8cd18c869b2818c12ef822fc95",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "a71beeb9d836f3acc1ee03d7d91b8c88d7663b4e7615862b41ff29c142ff614a"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-archer-cost-fixed-budget",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19057544,
+                             "listingSha256":  "54b98ab92edfa8177911da9cdef31a02373ee1604b4998f33c6d6271c316d55e",
+                             "coreSha256":  {
+                                                "manifest.json":  "26effdacde29a032685faccca7bee6b50d74fb39bcac222c4f58316b07e91a5b",
+                                                "plan.json":  "3fd25cef3fdb0e0372f85da0a2fbf22ed84062383b89d00edcc3ab5fdc170472",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "7c2523bfe6d6e6cb5f28ddd596b50124c62da9c6ac8d3452db1d8b16098b9242"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-archer-cost-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19049848,
+                             "listingSha256":  "c2b628bded9fae5518dd0773838b9f9278dce3a4e89d027d1e998b64b027f810",
+                             "coreSha256":  {
+                                                "manifest.json":  "83a1893c1f52a10fc29a6c740e7f5a31ffff9c37504b11d3d20060649e60a2f9",
+                                                "plan.json":  "8b7c214aa38599f844b7ca2c52a13578726237e575ef2b899393378197e866b7",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "d6e7b706fd75b98f04914f809f2721f4d5da7bbb624f6a5bb553b33982575f96"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-archer-defendingEfficiency-fixed-counts",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26655101,
+                             "listingSha256":  "582dae9cb4e74908408706c0164f11020418aa409b7ccdd13cf1858f1c3badab",
+                             "coreSha256":  {
+                                                "manifest.json":  "9eb26241adee6c816061b6de2f758bba1950e04935908618b31748a4f6d16b5f",
+                                                "plan.json":  "1e225e5aeec9f44732e2b37560f7f1d9db5dfaf88e6feed04b788013bfe25a74",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "db0f3fc20dd3073fd4ca60a3e4cf5d0aeb5314b50bad852be480be5f4a124e35"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-archer-strikesPerAttack-fixed-counts",
+                             "completedCombats":  432000,
+                             "fileCount":  2273,
+                             "totalBytes":  34274614,
+                             "listingSha256":  "e6ad05b7b3be302db117c443f1b9eb186719b6bb09ac9b906d7e126964cd34dc",
+                             "coreSha256":  {
+                                                "manifest.json":  "606f39f0dad9a48d6a76efe3a1b0bfbeed7cfebf41fd92b9c84ab173c3dfc31e",
+                                                "plan.json":  "1f4bfe99be92430dca43b9e8972e09b3fcfe189b95ded12329c4362150ae2cd9",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "8eae8b74663b009fe21e68289e692f458e0270c18cec9b613fc2b8f8c528261b"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-archer-structure-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19051760,
+                             "listingSha256":  "9b85b58fdefb9ad7dca86a2dc613b4d89d9c943502e280811555b7155b004b94",
+                             "coreSha256":  {
+                                                "manifest.json":  "6f87f0d2d8e5c8c512f92733dc801776ec665a57f3094b98012d0a9b0b161699",
+                                                "plan.json":  "4468d7f8c090741e06087be24db51e8be264b812c0105dbda9bb5c8a05a8eafc",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "e35bb1495e90c329dd71de4eeaee2256495b5d28ddcdd617cff5e1c9bbf50109"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-accuracySpread-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19035604,
+                             "listingSha256":  "4d714aac8dd5450336359e33383942427a987e773ac54586bcfd8d373cd356b3",
+                             "coreSha256":  {
+                                                "manifest.json":  "3c88dd4cdd63dbbf376e1bf435b4eefa6161b2b0c3a92cccbe709c8f5463b131",
+                                                "plan.json":  "e80c245a7bc25759fc7adc21fba6d026162fd55fcee7593d23c88edf1f5c55df",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "b99ff1b782bb63f60ce088f669305cd46be70ea5b71cc3d0a65a407cd4269e0b"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-attack-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19026148,
+                             "listingSha256":  "e31abe971f4a96cb6465c51158405fe85dfa5e3bf989a934cddfbf25d2a132bf",
+                             "coreSha256":  {
+                                                "manifest.json":  "37ec9cf13affec859b1d7400d4beaf149ead89a5e610b945507258aac1f70860",
+                                                "plan.json":  "8a89a81e1975d09359a079f94faafa1bd7ba0d7653caa210f12628a6f7c8f856",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "69679c1f41165dc1b5df6d57901d9389bd5c4b2dba25972f78a5a6bd2fefc608"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-baseAccuracy-fixed-counts",
+                             "completedCombats":  432000,
+                             "fileCount":  2273,
+                             "totalBytes":  34227223,
+                             "listingSha256":  "c6c920a723fe0fea24a021c7f274d8246f1e6ebcdbf03a8ce51b4add05c71667",
+                             "coreSha256":  {
+                                                "manifest.json":  "4e6c9bcf8ebaddd543663b131df4874742f9abc36e03a334e33a662802643cc1",
+                                                "plan.json":  "dcb3d36f23804cd7a1a033091ec7049a0973d1891d4b2404f2180986ab034b9b",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "83df795a390777084eeefe5e19669173a59759afecd0fde02eb3056031fda124"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-capturable-fixed-counts",
+                             "completedCombats":  96000,
+                             "fileCount":  509,
+                             "totalBytes":  7624310,
+                             "listingSha256":  "2d39dc7de8db901cc70a08faa31f333bffc8deb0a8e58a207176976ab8696d0f",
+                             "coreSha256":  {
+                                                "manifest.json":  "2bf6bd584fb5d57285d39f6acbbbf542b9ac419ddf3ae3758be7fbd47d81f06a",
+                                                "plan.json":  "ff21fbbe56e913f961163711ea2a79ce01b53ca263e8e3cc6ff7ba86dbd79a18",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "21ede90e3d97ed92197d4632e75dfd937db4515f0ef9fb97156a254a06000bd2"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-cost-fixed-budget",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19040902,
+                             "listingSha256":  "8302bfb50ad74e4a4272658c1e7b41eb2a281e9cdb2463dec1ffea49fa89f891",
+                             "coreSha256":  {
+                                                "manifest.json":  "bf2a6002eeca658597bb6318b849ff1dae0808a5df1a13837894be3c67dfaf22",
+                                                "plan.json":  "9f26c46dbfcfdd8a64ce6dca91c9ec0d2f1d20ee698d72ee4cc667d809b2f35b",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "17d11f5708cccd41dcb93169bb02b20eb570e58779705e3a29c813177087e9a6"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-cost-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19031290,
+                             "listingSha256":  "5ae168901fbe217cc1f777b5d245b4691c05d2582543d49b7745e7692fa28a0f",
+                             "coreSha256":  {
+                                                "manifest.json":  "ac0a8ee921a51cd9d2b2910866f2261a8e5f478ca0deb10219603d9dc6d35d97",
+                                                "plan.json":  "b7747e467b28cad003733985ba0dbab46eac176e314385f84c149d564b5a64d3",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "6da80585535428797c0f8b879e465bad77137d8703e01790e73b933fc8f9ce3c"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-defendingEfficiency-fixed-counts",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26634592,
+                             "listingSha256":  "d1b13000cd0dc9fb0c2ff6febf0d7051697bc83b66cb761a18a55a2d4af5e6cb",
+                             "coreSha256":  {
+                                                "manifest.json":  "b3c454f046e979b3fdede772e94cd2c2fe9da62111a7ed25f5546f66dec028c6",
+                                                "plan.json":  "f53e71c61b9800a2802b7a8985df66a47552abbe5ec43f79364788e92cc7e498",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "02c2693bb75a3ab5ec07b4d73f1c22d33a49dbe4fcd30838c634e0bf5503846f"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-strikesPerAttack-fixed-counts",
+                             "completedCombats":  432000,
+                             "fileCount":  2273,
+                             "totalBytes":  34237960,
+                             "listingSha256":  "8c2386c9a468e166617711a135b32bb2be2f4a61436c318b3648360fe8039450",
+                             "coreSha256":  {
+                                                "manifest.json":  "8cc4abaacb151ebc695b2180ca0d5c8dbe9e631f769504c333ea9008553ff186",
+                                                "plan.json":  "d781f2f59b0453de88110c2bc099ff629352d54e2cdde961f7c20701a0d6a830",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "1d8206d89e67eb07328adaeb115b8367ef1145a2c4221024378ce0ac7be10d84"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-knight-structure-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19027022,
+                             "listingSha256":  "28a66b85735ef42102fccc48341c1da1cd77c074c4bad42b5fb20bcf8e320969",
+                             "coreSha256":  {
+                                                "manifest.json":  "31fdae26d277e3ec66b4cae446ecbbec16ec413695a1e873ada2c29a83085184",
+                                                "plan.json":  "27413994db1d90b321e1f993df53fef66d3b65c5b2535354c88fe3846583b271",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "f7a4cef191d9cb16aaf20f218265af464ece0576ec9c1996acfa69d5dfd20efe"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-accuracySpread-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19081098,
+                             "listingSha256":  "dea9db4c2fc9a3eac198671dd9eb97bbcb89501338c2281ebbba75b07612b109",
+                             "coreSha256":  {
+                                                "manifest.json":  "1570de64428e4195f6fc1c9af178733b846e1a59c25c2da13cc8746b4d81fbd3",
+                                                "plan.json":  "578edb5d68ea65b6a4e83a062250c07a48265d9cb4e5cda70f0ed04c90a58852",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "31dec55c8cc732103a7590de9bdcb64ad3fb494b26a174e981f653d778bffea9"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-attack-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19074697,
+                             "listingSha256":  "9cf3a2e921dee9113ec620afc533b2813d2980b61aa27ad27f94e45ebd1d8819",
+                             "coreSha256":  {
+                                                "manifest.json":  "d864a47f44865d3e3426211cf25d289da4a58d2dd384f2c751a1f156d733da93",
+                                                "plan.json":  "a09caf066da2493fbf4c91b3314523076cee7685462fc188675a6eeafc5fc852",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "f5d5f0e3790aaef4b75e172d2c600f15db8ab8f1246dac031ea2d59c49f4dc93"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-baseAccuracy-fixed-counts",
+                             "completedCombats":  432000,
+                             "fileCount":  2273,
+                             "totalBytes":  34295123,
+                             "listingSha256":  "d2158fb4ade0b2acba036e3299ce77061278877b502806eaade7191d3a2cfe4d",
+                             "coreSha256":  {
+                                                "manifest.json":  "d96c71bd977484ca89234d10cd5dc9278fe83b8c55237b1a65980f3ce515dc19",
+                                                "plan.json":  "d93bfedb161e9cc05c3ab1c1186384e62c6eb7f4858831f960ea9d89ce0f7ced",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "7d83afd7d0983595e5623640524f3ba5034ca06c2f8dc166c1f5ef7adbf02657"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-capturable-fixed-counts",
+                             "completedCombats":  96000,
+                             "fileCount":  509,
+                             "totalBytes":  7640809,
+                             "listingSha256":  "8f593a0b4a3bf844e90c13b9c338d7b468769eba14bf414682e2890f413f6b1e",
+                             "coreSha256":  {
+                                                "manifest.json":  "25c2960328d6a84915e8b480e222069b7b6558f7886f7b3291dc84feb60c0889",
+                                                "plan.json":  "bb1fb205b9f9823a1877d7ddc1716e386a427be65931c7b78d5bf21e78dd60f2",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "2dc50b10f6fe23998f4ec7b5be40fefda3cf8d17f94609296f1580c00c92b4b1"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-cost-fixed-budget",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19077308,
+                             "listingSha256":  "00aa774fa7d7aa8c3afad4fe1ae35b781956b77de2d0e653205f4dced391c7d1",
+                             "coreSha256":  {
+                                                "manifest.json":  "fb7da676d65a9d9ae91d1e9507b04316954d178543550ac9a948154697955e75",
+                                                "plan.json":  "0766aa9a3b114adb10879a453701459cb53cb676091fc4be6e15bd7956181567",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "144e6828a90272e4eb500330884e81ecc0d2fe157676ca3295d305c3026e5a4d"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-cost-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19074446,
+                             "listingSha256":  "126396301d95c2d3d5ec07e0cad4e95eeca6d0069a32820f3bf9b3e15d7fbbae",
+                             "coreSha256":  {
+                                                "manifest.json":  "8e444ef0286cd2f695956d8261eab49cc72ea7ce04d2c185648b5766a43b3334",
+                                                "plan.json":  "397b60c49cfe63cbe51133bd04cf83683717594c602ffde68caa762d8d31eed0",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "1287d5ef4aead5595e0b23175651481c627e87b37a35d4090f2e1bed247921a1"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-defendingEfficiency-fixed-counts",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26699104,
+                             "listingSha256":  "0e0a54eddb36b55286fc4b0fe73c04261cec14832a06415c11f14d31d08cdedc",
+                             "coreSha256":  {
+                                                "manifest.json":  "64f591ae781dbac8a42cb60100e88825dea90205aa1b47c7901b9197469abc0b",
+                                                "plan.json":  "0c5c9fd4e92f7905bd6d79077e348fcc6cde214dae5f8dda8959c70f498214e1",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "fe3db9afc4abcb26bc515c28f705d85e9d0d158bb77a4fc11954cfa921f36b31"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-strikesPerAttack-fixed-counts",
+                             "completedCombats":  432000,
+                             "fileCount":  2273,
+                             "totalBytes":  34303361,
+                             "listingSha256":  "091afa3204affb8b7e18e14b5fb193fd52d0832cd817587763ecb8ddac9d3d4c",
+                             "coreSha256":  {
+                                                "manifest.json":  "2fbe40b24f5cfc6fa6ae2da6dd462061a307816daa9588217cea46761d45deb9",
+                                                "plan.json":  "37e5292c51e5e1ed9bd0fe0919d0bd2e445f1d6111f82be49aa890c13f9c63a8",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "6f1a2f0673147a85f3cfc9902a906fea241a68ec5b45a605a8e9608160a3537b"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-soldier-structure-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19073012,
+                             "listingSha256":  "fcc0760ad0581e97b6ca2e4a2209d0532495d08c68f186d055b4e7e55aa898ee",
+                             "coreSha256":  {
+                                                "manifest.json":  "9cab42615726755f3c801d763662645a0eb33648f32d3b34a1987cc9674a0dff",
+                                                "plan.json":  "23d9ae61c74d3981e1e21e99d3df42c1c1b5a3925d363ffa92b489992fc887e7",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "9c0f8f2939c8a3582e825da3a2a9d323d4d66a5f9714276101288740fa58de0f"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-accuracySpread-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19060481,
+                             "listingSha256":  "cd8bde6640ab357618938c0fdd6011f2c0de27c6be5a2cd18a0cfd1efb86c9b6",
+                             "coreSha256":  {
+                                                "manifest.json":  "2c3eb050c8212b771c47f901cf2fed0384a7e76f16107ed107936d847538ff07",
+                                                "plan.json":  "e69a77602664b9e7179df87d59022effce1c3c237a470783177dc8808ef64904",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "7388e51e2c0e3e7e2f22ca9131d94f89def90466ff5893e16b783af999c44d76"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-attack-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19051863,
+                             "listingSha256":  "d51dccfcd8ee9c1fa9a9f4bde47950f911cd572dde1176420f8e8a254036e83f",
+                             "coreSha256":  {
+                                                "manifest.json":  "a6e64de3dcb5dbcd62827d36517b61c4047575427593cf5bd3f50a0ba3e7d317",
+                                                "plan.json":  "2d285a66ad514cfc855bf19d5683edc5670cedc72e1c262fd3601deb1fdd9365",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "a7b16dfdb8864dcbc254725b1a8ac5fb5f134e2166252f20a7c3a85b80c1938b"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-baseAccuracy-fixed-counts",
+                             "completedCombats":  480000,
+                             "fileCount":  2525,
+                             "totalBytes":  38077786,
+                             "listingSha256":  "0bd82804382f0bcb978bc5c53e8598649274713e17ecfe44042b24c980a7a8ef",
+                             "coreSha256":  {
+                                                "manifest.json":  "2b529959136f8d9f4021df4a1c1d6f620c26397c6c42899ff862df64bbc11a14",
+                                                "plan.json":  "769e96c7f5f2be01a64b3525b6ebffd880b332886a6923f3079a575231437e8c",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "c5187f5eb1a00b6b11ca2c7ee63d161e2a5982806e799f44274247d0af69b8a5"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-capturable-fixed-counts",
+                             "completedCombats":  96000,
+                             "fileCount":  509,
+                             "totalBytes":  7634486,
+                             "listingSha256":  "a6e4ccf111329f5813d7ae650d29631df5ec666e2304a937a0f32875863b1968",
+                             "coreSha256":  {
+                                                "manifest.json":  "61a9dea0149998e0c221dd8db1fe769f6d293cf113e6c6bb76dbf4e4928e61f7",
+                                                "plan.json":  "d6d583aeae975d5d579b339fe82ea15347684c9523c485cb3ad0c0c47c169a98",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "b4715ceb494dbcc350ec0ed2b08406642ba399331ff60756cf241fe49feefb74"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-cost-fixed-budget",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19062371,
+                             "listingSha256":  "82038a13e3fad1f540747f9d509022ba2bb6a2151933ad9d362d3d24570c21e2",
+                             "coreSha256":  {
+                                                "manifest.json":  "43175c63b3ba63a34f00ffde53c05d3e02cf8a9259d7eb46e132b059d3acae16",
+                                                "plan.json":  "8069f944e63c81fbed8749a1962498c0bc7a7bd7dcaa6167c4327d207e7fed7b",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "c0205ecb116c533929b53887ea334905df665183e6c72b6f2f2221566a997f9d"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-cost-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19056212,
+                             "listingSha256":  "8adef743449a80ebc94a490a32665c3afe7077cbcae7eb8f35462847852e71aa",
+                             "coreSha256":  {
+                                                "manifest.json":  "1757703ee033c03196ccc2648373252abee75a403e3c0c335ca8be3c64eaf7c4",
+                                                "plan.json":  "765be9dfa06021fc75ba3b4f1e1cab24165c990c20e680fe599b8717e197ee74",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "9aa4e801e4e674d493810b9dad61c5c5e9a91570b52c66c107734d364547aa26"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-defendingEfficiency-fixed-counts",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26680550,
+                             "listingSha256":  "c5ee4930d9c2104ff01fd8140e8cd064cbc63e48eb04fc2e669cec28ce4816d3",
+                             "coreSha256":  {
+                                                "manifest.json":  "a5675b532d859da4cf9373ec87ea350e485bee8442f12e9398b2322df1119972",
+                                                "plan.json":  "d62cad65f12912fe498651d1b72e8deae9655c3f9483c86bf3024c15e27b1ff3",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "3367e3e4a1191b333ea84ee5b88b7d5b443a47c7487b8a82acd8557cf926a356"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-strikesPerAttack-fixed-counts",
+                             "completedCombats":  432000,
+                             "fileCount":  2273,
+                             "totalBytes":  34273669,
+                             "listingSha256":  "ea769f1e059815ebcdeefdab2df13243e31fea7c4934e259ddc9d9cf89683276",
+                             "coreSha256":  {
+                                                "manifest.json":  "1dcfea772b8b94cb105fd5c69c2c18c3d9da6dc52a3ddc04fdd202b973385265",
+                                                "plan.json":  "19be8f6083f2542fa27b06308804c0b29253b515580b781647c78bc384d5288d",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "4adf9f9e997da0e20cb68767038ae70102e7c23eb09f6a1b902ab49fecab1bd3"
+                                            }
+                         },
+                         {
+                             "path":  "M-unit-spearman-structure-fixed-counts",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19052297,
+                             "listingSha256":  "822ec422af52b9596504f0a254f355dac821db73698518a48e08416e9f725e39",
+                             "coreSha256":  {
+                                                "manifest.json":  "9d97baabbd4708e084699f1cc29926576c4c9ead39e506f31639a35033568699",
+                                                "plan.json":  "8539b1cd8813d9b1aef6291cb5f53921d99c8e00bf43d95de847a78b8151f66e",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "e7154a13feb94eb2913aa5577b851bf91be506a49b784a4a0bddb9c64a341199"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-lossCompressionPercent-b12000",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19032697,
+                             "listingSha256":  "4f511c47afc0574e6ad0758b1073cbb7c5e3bc50eae3bdb506506a78aea50490",
+                             "coreSha256":  {
+                                                "manifest.json":  "0d2a19d730b3b786357d6a1aed7c003591e3ae3bd8211464acb0486f4f3b92cb",
+                                                "plan.json":  "a0316cd3105b0928be3a11579896e4c948bf47c843dd81b7341c1a57795f624b",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "308a4ad285eac470c134cb3b15d935e9821b18b219c7e7841e16fef171fff16c"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-lossCompressionPercent-b120000",
+                             "completedCombats":  240000,
+                             "fileCount":  1265,
+                             "totalBytes":  19062339,
+                             "listingSha256":  "b3bacf4a4da288eeb829d9c0a634657736f350682f48bad5dd3ba02350b7d8c7",
+                             "coreSha256":  {
+                                                "manifest.json":  "f4555e1e3335c6729d996e1e4c8271e2b975704b69efaf74deefaaefe9dd05e2",
+                                                "plan.json":  "6f4ec7121da1b3953eadd7eabb84f4a9355518fc19f0fdc8d7f9ab3b5e34e1c4",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "636b294257c7253581ab9cb8a8175dc6a9d7ce4d96355b334a7b7c9a71340c00"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-maxRounds-b12000",
+                             "completedCombats":  280000,
+                             "fileCount":  1475,
+                             "totalBytes":  22187403,
+                             "listingSha256":  "6aa71c5746a1f471d064c35386d569cc7c8d2abe0cc647255203c637ee8e60f5",
+                             "coreSha256":  {
+                                                "manifest.json":  "cae072b413febe750c312d49d7b8d660d634731183d0f1ef7db5c4322acd8313",
+                                                "plan.json":  "4395db946858dd823f766edb7c5fbcea7b3172ed530bef69c46c427d5cbd5759",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "fdb6c4ff41d6a1ad5fdb21c26ee2dbf152e944643315f62027ad9f6eb8dcc150"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-maxRounds-b120000",
+                             "completedCombats":  280000,
+                             "fileCount":  1475,
+                             "totalBytes":  22221884,
+                             "listingSha256":  "206c83ca617aef2689c39baf66858e206f13d0256ea42b87fe650066d25b1507",
+                             "coreSha256":  {
+                                                "manifest.json":  "990fb52fa39ec12568af8ebfa9e4f6293c2ff0c2f8d9b8c099b55e691760cfc4",
+                                                "plan.json":  "0005fba7fef797bda75a51e7c46a5ccb532bc479f275dfe8455c70f3c0107d1e",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "9ab2b17e067788e53055dee26b1d1899ef8da70f3a4b6f3dc38edb3748bac5a5"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-surrender-b12000",
+                             "completedCombats":  320000,
+                             "fileCount":  1685,
+                             "totalBytes":  25373909,
+                             "listingSha256":  "aa66b3267b1274297ef9d835c69972379d9b3bbc447c1c01159adcadcad73932",
+                             "coreSha256":  {
+                                                "manifest.json":  "c1ec55c07a29b50e6c2d3af8231c8bdf0e504162d9b80f05b556d658bed43726",
+                                                "plan.json":  "1a98c56cd9daab6246b82844c388d0ecf900740e0403d5061b250d91c1ce60a4",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "0c286de5d8a4d577b1759f6fa4170caec0c8e04bd21737d7a37dc3a452058637"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-surrender-b120000",
+                             "completedCombats":  320000,
+                             "fileCount":  1685,
+                             "totalBytes":  25415108,
+                             "listingSha256":  "dd133f249ed1a3a32c7c20956cb14b79cc70e60514bb0f7b7ea014040ca4cded",
+                             "coreSha256":  {
+                                                "manifest.json":  "46c8c6cd7ef7da93039b0a4487e34eb686a9cc1eb99267fe72d2aabfddc17ec4",
+                                                "plan.json":  "90c151c6547dd61136ca9dff30a18efce07ec9fde8cfab326f1ba0a16608c4f1",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "842ab6829f751187e38fcd006964824e3db353e6cd2da09c53f63f283b52fb4e"
+                                            }
+                         },
+                         {
+                             "path":  "segments/M-combat-woundDamageThreshold-b12000",
+                             "completedCombats":  360000,
+                             "fileCount":  1895,
+                             "totalBytes":  28530901,
+                             "listingSha256":  "54953629efe241264e1f81db3e161ec0467eb4fe05d28210288b010c0608af2e",
+                             "coreSha256":  {
+                                                "manifest.json":  "ae25725c970c143a8b44c853da2d1d70710e3b931a48f95c1bea033ce798c80a",
+                                                "plan.json":  "2247b85b90c4571ca62ec28d2af5eb2e5ea6b66f5a51eb9c068ca31c6319af00",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "a4e0b2ecc87f58f1e2c06bd8f29e582da8c9a915e7eb74ffc56d9ed62e9a71a6"
+                                            }
+                         }
+                     ],
+    "pcRoot":  "C:\\Users\\trist\\PhpstormProjects\\waar-micro-combat\\reports\\campagne-coeur"
+}

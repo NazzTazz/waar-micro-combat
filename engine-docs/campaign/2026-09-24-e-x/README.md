@@ -1,0 +1,31 @@
+# Analyse exploratoire E/X — instantané figé du 24 septembre 2026
+
+Le corpus contient les **22 plans terminés** des blocs E (six) et X (seize), copiés du VPS entre 20:26:06 et 20:27:49 UTC, sans interrompre les workers ni lancer de combat. Il comprend **4 968 000 combats inscrits**, soit **4 392 000 combats effectifs uniques** après déduplication de 288 directions-témoins répétées (576 000 combats). Les 22 plans, 2 484 lignes expérience/sens et 24 840 lots passent l'audit ; zéro rejet. L'instantané initial du 24 septembre à 01:24 reste intact. Les autres blocs ne sont pas amalgamés ici.
+
+## Lecture et provenance
+
+- [findings.md](findings.md) : constats E/X, limites et questions de gameplay.
+- [composition-series.csv](composition-series.csv) : chaque configuration/sens avec armées exactes, parts nominales X, budgets, reliquats de conception, victoires A/B, rounds, pertes physiques et projetées. Les 2 484 lignes ont toutes 2 000 répétitions. Les colonnes `design_nominal_budget_*` et `*_design_unspent` sont **dérivées du protocole**, notamment pour E-add dont l'armée est explicite et n'a pas de `targetBudget` natif dans la configuration effective.
+- [comparisons.csv](comparisons.csv) : 1 260 transitions entre **points voisins du même balayage, adversaire, budget cible et sens**. Il ne compare pas la grille simplex comme une courbe unidimensionnelle. [composition-adjacent.csv](composition-adjacent.csv) est identique et explicite le caractère voisin.
+- [figures/](figures/) : deux courbes E/X ciblées, avec CSV source de chaque figure. Leurs valeurs de pertes sont des moyennes par combat, non des trajectoires individuelles.
+- [aggregates.csv](aggregates.csv), [duplicate-aliases.csv](duplicate-aliases.csv), [input-manifest.json](input-manifest.json) : audit des lots, comptes bruts, alias et provenance. Le champ `comparisonRows: 0` de l'auditeur désigne seulement son comparateur de variantes *internes au même scénario* ; les 1 260 comparaisons E/X entre scénarios sont dérivées ensuite par `composition-series.php`.
+- [plans/](plans/) et [profil](../profile.json) : les entrées déclaratives exactes des 22 plans et leur référence commune.
+- [snapshot-source.json](snapshot-source.json) : inventaire avant/après copie, tailles et SHA des fichiers centraux. Le snapshot complet local, **non publié dans cette branche**, contient 26 192 fichiers, 396 976 074 octets : plans, profil, configurations, requêtes/réponses des lots et exports. Aucune donnée source n'a été réécrite.
+
+Profil authentique `Nazz-Eq-20%-Rc2`, SHA-256 `4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765` ; météo `neutral` des deux côtés, aucune compétence, `baseSeed=42`. Les 22 manifests déclarent le même Rust `waar-cohort-v2`, RNG `sha256-binomial-tree/1`, conséquences `wounded-capture-then-compress/4` et binaire Linux SHA-256 `6c07ae1a68f7592489f0da739311c6574f420d0f1b54302ee61512fc49047f88`. Le SHA source de `v2.rs` déclaré (`c413c842d6f1296a7fe701a1b00976ecc13e8ba1c813ca6ddfbf9bef465000b0`) correspond au fichier examiné localement. Le `codeHead` embarqué est `unavailable` ; les empreintes de sources, du profil, du plan et du binaire constituent la provenance vérifiée. L'image Docker épinglée est documentée dans `ops/campaign/README.md`.
+
+Le script d'audit recompute chaque lot, contrôle les plages de 0 à 1 999 sans trou ni recouvrement, la préparation batch, les deux sens, les totaux de victoires et toutes les colonnes numériques des exports. Les 288 doublons ont des résultats identiques à requête effective et graine identiques ; ils restent liés à leurs plans d'origine mais ne grossissent pas l'échantillon. L'audit ne certifie pas le gameplay ou la parité universelle des binaires.
+
+## Règles de lecture
+
+E-add conserve le spécialiste et **achète des soldats en plus** : le budget A croît. E-replace transfère une part du budget du spécialiste aux soldats : le budget cible reste constant, mais les unités entières laissent un reliquat. X-cut conserve 20 % lanciers, 20 % chevaliers et remplace progressivement les soldats par des archers dans les 60 % restants. X-simplex parcourt les 35 parts de budget par pas de 25 % aux trois échelles, contre quatre monotypes et un mixte fixe. Les comparaisons ne sont pas toutes à dépense réelle égale : lire `budget_A`, `budget_B` et les reliquats.
+
+`A_win_rate` est la proportion de victoires de l'**armée A**, y compris quand B attaque A. Les morts/blessés bruts sont des moyennes physiques par combat. Morts/blessés/prisonniers projetés sont des conséquences après combat, pas des pertes physiques additionnelles. `bench_economic_loss_rate` valorise morts + blessés projetés aux prix du profil, divise par le coût initial réel, exclut les prisonniers ; ce n'est pas une facture de soins. Les intervalles de Wilson à 95 % de l'auditeur sont marginaux, sous l'hypothèse d'échantillonnage ; les lots agrégés ne livrent ni quantiles ni différences appariées répétition par répétition. Ces lectures multiples restent exploratoires.
+
+## Reproduction locale, avec le snapshot original uniquement
+
+L'audit intégral des lots exige le snapshot original `reports/campagne-coeur/analyse/snapshots/2026-09-24T202338-E-X` et les scripts d'analyse sous `reports/`, tous exclus de cette branche. Les CSV et JSON publiés permettent de contrôler les agrégations et les constats, mais un clone seul ne peut pas relire les 24 840 réponses batch. Leurs empreintes et leur inventaire figurent dans `input-manifest.json` et `snapshot-source.json`.
+
+## Reprise historique
+
+ATT-07/ATT-08/ATT-14 ; sources : `docs/product-expectations.md`, `experiments/campagne-coeur/README.md` (sections E/X et analyse), `PROMPT-SOL-ANALYSE-CAMPAGNE-WAAR.md`, `ops/campaign/README.md`, premier run d'analyse, plans/configurations/lots copiés et moteur Rust correspondant aux empreintes. Réemploi : capture et auditeur existants. Échec à éviter : considérer chaque témoin répété comme indépendant, appeler « protection » une hausse de victoires sans regarder morts/rounds, ou appeler « budget égal » une dépense arrondie. Écart traité : E/X étaient terminés sur le VPS mais absents de l'analyse figée ; ce run les rend auditables et lisibles, sans changer le moteur ni le protocole expérimental.

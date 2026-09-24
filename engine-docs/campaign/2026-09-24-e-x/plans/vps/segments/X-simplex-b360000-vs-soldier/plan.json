@@ -1,0 +1,1421 @@
+{
+    "schemaVersion": "waar-parametric-campaign/1",
+    "profile": "../../../reports/campaign-manual-sol/profile.json",
+    "output": "../../../reports/campagne-coeur/segments/X-simplex-b360000-vs-soldier",
+    "sampling": {
+        "repetitions": 2000,
+        "baseSeed": 42,
+        "batchSize": 100
+    },
+    "limits": {
+        "maxCombats": 140000
+    },
+    "axes": [],
+    "crosses": {
+        "singles": true,
+        "pairs": [],
+        "triplets": []
+    },
+    "scenarios": [
+        {
+            "id": "x-simplex-00-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 1
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-01-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0.25,
+                        "knight": 0.75
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-02-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0.5,
+                        "knight": 0.5
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-03-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0.75,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-04-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 1,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-05-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.25,
+                        "archer": 0,
+                        "knight": 0.75
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-06-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.25,
+                        "archer": 0.25,
+                        "knight": 0.5
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-07-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.25,
+                        "archer": 0.5,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-08-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.25,
+                        "archer": 0.75,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-09-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.5,
+                        "archer": 0,
+                        "knight": 0.5
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-10-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.5,
+                        "archer": 0.25,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-11-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.5,
+                        "archer": 0.5,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-12-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.75,
+                        "archer": 0,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-13-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 0.75,
+                        "archer": 0.25,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-14-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0,
+                        "spearman": 1,
+                        "archer": 0,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-15-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0.75
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-16-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0,
+                        "archer": 0.25,
+                        "knight": 0.5
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-17-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0,
+                        "archer": 0.5,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-18-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0,
+                        "archer": 0.75,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-19-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0.25,
+                        "archer": 0,
+                        "knight": 0.5
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-20-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0.25,
+                        "archer": 0.25,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-21-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0.25,
+                        "archer": 0.5,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-22-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0.5,
+                        "archer": 0,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-23-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0.5,
+                        "archer": 0.25,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-24-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.25,
+                        "spearman": 0.75,
+                        "archer": 0,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-25-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.5,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0.5
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-26-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.5,
+                        "spearman": 0,
+                        "archer": 0.25,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-27-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.5,
+                        "spearman": 0,
+                        "archer": 0.5,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-28-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.5,
+                        "spearman": 0.25,
+                        "archer": 0,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-29-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.5,
+                        "spearman": 0.25,
+                        "archer": 0.25,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-30-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.5,
+                        "spearman": 0.5,
+                        "archer": 0,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-31-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.75,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0.25
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-32-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.75,
+                        "spearman": 0,
+                        "archer": 0.25,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-33-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 0.75,
+                        "spearman": 0.25,
+                        "archer": 0,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "x-simplex-34-b360000-vs-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "budgetShares",
+                    "budget": 360000,
+                    "shares": {
+                        "soldier": 1,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    },
+                    "fillRemainderWith": null
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 36000,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        }
+    ]
+}

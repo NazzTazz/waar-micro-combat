@@ -1,0 +1,4 @@
+# Preserve byte-for-byte hashes of published measurement artifacts on every OS.
+*.csv -text
+*.json -text whitespace=cr-at-eol
+*.svg -text
