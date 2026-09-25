@@ -99,7 +99,7 @@ final class DuelService
             foreach ($batch['scenarios'] as $scenario) {
                 [$a,$b] = explode('-', $scenario['id']);
                 $r = $scenario['result'];
-                $row = ['attacker' => $a, 'defender' => $b, 'drawRate' => $r['draws'] / 50, 'camps' => []];
+                $row = ['attacker' => $a, 'defender' => $b, 'drawRate' => $r['draws'] / 50, 'meanRounds' => $r['roundSum'] / 50, 'camps' => []];
                 foreach (['attacker' => $a, 'defender' => $b] as $side => $camp) {
                     $initialCost = 0;
                     $lostCost = 0;

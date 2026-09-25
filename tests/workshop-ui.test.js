@@ -66,7 +66,7 @@ class Element {
   }});
   for(const file of ['model.js','app.js']){
     let source=fs.readFileSync(path.join(__dirname,'../public/workshop',file),'utf8');
-    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary,consequenceTable};\nfunction renderDuel(result){');
+    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary,consequenceTable,liveSummary};\nfunction renderDuel(result){');
     vm.runInContext(source,context);
   }
   await new Promise(resolve=>setImmediate(resolve));
@@ -176,6 +176,12 @@ class Element {
   const projectedSummary=context.reportViews.consequenceSummary(direction,'attacker',{A:10000,B:8000});
   assert.match(projectedSummary,/Valides en sortie/);
   assert.doesNotMatch(projectedSummary,/≤ seuil/,'projected survivors do not imply physical healing');
+  const losses=Object.fromEntries(unitTypes.map(type=>[type,{initial:type==='soldier'?10:0,dead:type==='soldier'?2:0,wounded:type==='soldier'?1:0}]));
+  const summary=context.reportViews.liveSummary({attacker:'A',defender:'B',meanRounds:2.4,drawRate:0,camps:{A:{winRate:.6,losses,prisoners:1.2,valueLossRate:.3},B:{winRate:.4,losses,prisoners:0,valueLossRate:.1}}});
+  assert.match(summary,/2,4 rounds en moyenne/);
+  assert.match(summary,/Prisonniers/);
+  assert.match(summary,/Budget perdu/);
+  assert.match(summary,/Effectifs et pertes par unité/);
   const projectedTable=context.reportViews.consequenceTable(direction,'attacker','B');
   assert.equal((projectedTable.match(/Valides \(≤ seuil\)/g)||[]).length,1,'threshold qualification applies only to raw classification');
   assert.match(projectedTable,/Valides en sortie/);
