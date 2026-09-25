@@ -1,6 +1,6 @@
 # Explorateur paramétrique CLI
 
-Cet outil construit des confrontations déclaratives avec la même validation et la même préparation que la synthèse web : `EngineProfile::fromArray()` puis `CohortRequestFactory::combat()`. L’exécution passe par le même runtime de processus et le même calcul batch, via son opération locale `campaignBatch`. Il ne modifie aucun profil partagé. Le plan de démonstration utilise l’export authentique `reports/campaign-manual-sol/profile.json`.
+Cet outil construit des confrontations déclaratives avec la même validation et la même préparation que la synthèse web : `EngineProfile::fromArray()` puis `CohortRequestFactory::combat()`. L’exécution passe par le même runtime de processus et le même calcul batch, via son opération locale `campaignBatch`. Il ne modifie aucun profil partagé. Le plan de démonstration utilise la copie versionnée de l’export authentique, `experiments/campagne-coeur/reference-profile.json`.
 
 ## Commandes
 

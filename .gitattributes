@@ -2,6 +2,7 @@
 experiments/references/manifest.sha256 text eol=lf
 experiments/objectives/** -text
 experiments/*.json -text
+experiments/campagne-coeur/reference-profile.json text eol=lf
 experiments/corpora/** -text
 resources/vendor/** -text
 src/**/*.php text eol=lf

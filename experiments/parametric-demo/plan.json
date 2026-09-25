@@ -1,6 +1,6 @@
 {
   "schemaVersion": "waar-parametric-campaign/1",
-  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "profile": "../campagne-coeur/reference-profile.json",
   "output": "../../reports/parametric-demo-final",
   "sampling": {"repetitions": 4, "baseSeed": 42, "batchSize": 2},
   "limits": {"maxCombats": 500},

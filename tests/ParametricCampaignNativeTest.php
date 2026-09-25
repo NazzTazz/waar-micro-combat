@@ -16,6 +16,14 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class ParametricCampaignNativeTest extends TestCase
 {
+    public function testVersionedProfileRetainsItsPublishedHashOnCheckout(): void
+    {
+        self::assertSame(
+            '4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765',
+            hash_file('sha256', dirname(__DIR__).'/experiments/campagne-coeur/reference-profile.json')
+        );
+    }
+
     public function testPersistentWebBatchStillRejectsTotalAboveOneHundred(): void
     {
         $request = ParametricCampaign::batchRequest($this->experiment($this->profile()), 42, 0, 1, 120);
