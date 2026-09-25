@@ -63,6 +63,32 @@ namespace Waar\MicroCombat\Tests {
             }
         }
 
+        public function testConcurrentWriterFailsPromptlyAndCanRetryWithoutLosingProfiles(): void
+        {
+            $store = new SharedProfiles($this->directory);
+            $first = $store->save('First', EngineProfile::defaults());
+            $before = file_get_contents($this->directory.'/profiles.json');
+            $lock = fopen($this->directory.'/profiles.lock', 'c');
+            self::assertTrue(flock($lock, LOCK_EX));
+            try {
+                $started = microtime(true);
+                try {
+                    $store->save('Second', EngineProfile::defaults());
+                    self::fail('Concurrent save must report temporary unavailability.');
+                } catch (\RuntimeException $error) {
+                    self::assertSame(503, $error->getCode());
+                    self::assertLessThan(2, microtime(true) - $started);
+                }
+                self::assertSame($before, file_get_contents($this->directory.'/profiles.json'));
+                self::assertSame($first, $store->load($first['id']));
+            } finally {
+                flock($lock, LOCK_UN);
+                fclose($lock);
+            }
+            $store->save('Second', EngineProfile::defaults());
+            self::assertCount(2, $store->listing()['profiles']);
+        }
+
         public function testFailedFirstSaveLeavesNoPartialStore(): void
         {
             $store = new SharedProfiles($this->directory);

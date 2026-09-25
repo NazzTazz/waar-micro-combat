@@ -46,8 +46,14 @@ final class SharedProfiles
             throw new \RuntimeException('Stockage indisponible.', 503);
         }
         $lock = fopen($this->directory.'/profiles.lock', 'c');
-        if (!$lock || !flock($lock, LOCK_EX)) {
+        if (!$lock) {
             throw new \RuntimeException('Stockage indisponible.', 503);
+        }
+        // A deployment holds this same lock while checking the persistent store.
+        // Never consume an HTTP worker waiting for it (or another writer).
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            fclose($lock);
+            throw new \RuntimeException('Sauvegarde temporairement indisponible. Réessayez dans quelques instants.', 503);
         }
         try {
             $rows = $this->read();

@@ -1,4 +1,4 @@
-experiments/references/** -text
+﻿experiments/references/** -text
 experiments/references/manifest.sha256 text eol=lf
 experiments/objectives/** -text
 experiments/*.json -text
@@ -13,3 +13,4 @@ profiles/*.php text eol=lf
 ops/demo/*.php text eol=lf
 autoload.php text eol=lf
 .php-cs-fixer.dist.php text eol=lf
+*.sh text eol=lf
