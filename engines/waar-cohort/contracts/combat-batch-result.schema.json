@@ -5,6 +5,7 @@
   "required": ["schemaVersion", "modelVersion", "unitOrder", "projectedCategoryOrder", "iterations", "startIteration", "iterationRange", "totalCombats", "scenarios"],
   "properties": {
     "schemaVersion": { "const": "waar-combat-batch-result/2" },
+    "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" },
     "modelVersion": { "const": "waar-cohort-v2" },
     "unitOrder": { "const": ["soldier", "spearman", "archer", "knight"] },
     "projectedCategoryOrder": { "const": ["healthy", "wounded", "dead", "prisoners"] },
@@ -19,11 +20,22 @@
         "total": { "type": "integer" }, "complete": { "type": "boolean" }
       }
     },
+    "consequenceProvenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["policyVersion", "samplingProtocol", "compressionPercent", "capturePercent"],
+      "properties": {
+        "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3", "wounded-capture-then-compress/4"] },
+        "samplingProtocol": { "enum": ["floor/1", "sha256-counter52-binomial-btrs/1", "sha256-binomial-tree/1"] },
+        "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "capturePercent": { "type": "integer", "minimum": 0, "maximum": 50 }
+      }
+    },
     "scenarios": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
+          "armyIdentities": { "$ref": "combat-request.schema.json#/$defs/armyIdentities" },
           "result": {
             "type": "object",
             "properties": {

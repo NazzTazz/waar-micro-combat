@@ -18,7 +18,7 @@ final class ConsequenceObjectives
         }
         $context = ['weather'=>$weather, 'baseSeed'=>$seed, 'iterations'=>$iterations, 'budget'=>MonotypeMeasurementService::BUDGET, 'objectiveMetric'=>'rawCasualtyRatio',
             'modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$profile->ruleset()['version'],
-            'consequences'=>['lossCompressionPercent'=>$profile->lossCompressionPercent, 'capturePercent'=>$profile->capturePercent]];
+            'consequences'=>CohortRequestFactory::consequenceContext($profile)];
         $expected = [];
         foreach (UnitType::cases() as $a) foreach (UnitType::cases() as $b) foreach (['attacker','defender'] as $side) {
             $expected[$a->value.'-vs-'.$b->value.'/'.$side] = true;

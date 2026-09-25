@@ -4,3 +4,4 @@ experiments/objectives/** -text
 experiments/*.json -text
 experiments/corpora/** -text
 resources/vendor/** -text
+*.sh text eol=lf

@@ -105,3 +105,16 @@ Vérifications effectuées :
   10 %, contrairement aux sources actuelles qui autorisent 50 %.
 
 Les campagnes de recherche longues T31/T33 ne font pas partie de cette recette.
+
+## Intégration avec `main` — 25 septembre 2026
+
+Historique vérifié : attente UX de l'issue #10 et PR #11, registre des attentes
+produit, présent compte rendu, livraison des conséquences et du seuil de blessure
+sur `main`. La matrice épinglée réutilise `MonotypeMeasurementService`,
+`MonotypeComparisonService` et le batch Rust ; le seuil et la provenance des
+conséquences doivent suivre le contrat actuel de `CohortRequestFactory`.
+Le risque observé lors de la fusion était de conserver les observations et les
+mécanismes de la PR tout en perdant le nouveau contexte de conséquences, ou
+de tester avec un faux runtime qui n'expose plus la provenance requise.
+La résolution conserve ces deux comportements et met le faux runtime à jour.
+Elle n'ajoute aucune règle de combat et ne vaut pas acceptation produit.

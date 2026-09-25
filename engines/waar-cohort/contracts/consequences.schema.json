@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "waar-combat-consequences/1",
+  "type": "object",
+  "required": ["schemaVersion", "policyVersion", "rawResult", "compressionPercent", "capturePercent", "attacker", "defender"],
+  "properties": {
+    "schemaVersion": { "const": "waar-combat-consequences/1" },
+    "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3", "wounded-capture-then-compress/4"] },
+    "samplingProtocol": { "enum": ["sha256-counter52-binomial-btrs/1", "sha256-binomial-tree/1"] },
+    "rawResult": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "compressionPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "capturePercent": { "type": "integer", "minimum": 0, "maximum": 50 },
+    "attacker": { "$ref": "#/$defs/side" },
+    "defender": { "$ref": "#/$defs/side" }
+  },
+  "allOf": [{
+    "if": { "properties": { "policyVersion": { "enum": ["wounded-capture-then-compress/3", "wounded-capture-then-compress/4"] } } },
+    "then": { "required": ["samplingProtocol"] }
+  }],
+  "$defs": {
+    "side": {
+      "type": "object",
+      "required": ["defeated", "types", "initialCost", "economicLoss", "economicLossPercent"],
+      "properties": {
+        "defeated": { "type": "boolean" },
+        "types": { "type": "object", "required": ["soldier", "spearman", "archer", "knight"] },
+        "initialCost": { "type": "integer", "minimum": 0 },
+        "economicLoss": { "type": "integer", "minimum": 0 },
+        "economicLossPercent": { "type": "string" }
+      }
+    }
+  }
+}

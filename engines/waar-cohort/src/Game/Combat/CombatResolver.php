@@ -23,12 +23,13 @@ final readonly class CombatResolver implements CombatResolverInterface
         $hash=hash('sha256',CanonicalJson::encode(['ruleset'=>$ruleset->toArray(),'snapshot'=>$snapshot->toArray(),'armies'=>$initial]));
         if($attacker->livingCount()===0||$defender->livingCount()===0){$winner=$attacker->livingCount()>0?CombatSide::Attacker:CombatSide::Defender;
             return $this->result($attacker,$defender,[],$winner,VictoryReason::InitialEmpty,$snapshot,$ruleset,['criterion'=>'initial_empty'], $hash);}
-        $attacker=clone $attacker;$defender=clone $defender;$random=$this->randomFactory->create($snapshot->stochasticEngineVersion,$snapshot->seed);$rounds=[];
+        $attacker=clone $attacker;$defender=clone $defender;$random=$this->randomFactory->create(\App\Game\Random\StochasticEngineVersion::Lcg31NormalApproximationV1,$snapshot->seed);$rounds=[];
         for($round=1;$round<=$ruleset->maxRounds;++$round){$attackerStart=clone $attacker;$defenderStart=clone $defender;
-            [$aAccuracy,$aTrace]=$this->accuracies($attackerStart,$snapshot->attacker,$snapshot->seed,$round,'attacker');
-            [$dAccuracy,$dTrace]=$this->accuracies($defenderStart,$snapshot->defender,$snapshot->seed,$round,'defender');
-            $aAction=$this->roundResolver->resolveAttacks($attackerStart,$defenderStart,$snapshot->attacker,$ruleset,$random,$aAccuracy);
-            $dAction=$this->roundResolver->resolveAttacks($defenderStart,$attackerStart,$snapshot->defender,$ruleset,$random,$dAccuracy,true);
+            $aRandom=$snapshot->addressed($round,'attacker');$dRandom=$snapshot->addressed($round,'defender');
+            [$aAccuracy,$aTrace]=$this->accuracies($attackerStart,$snapshot->attacker,$snapshot->seed,$round,'attacker',$aRandom);
+            [$dAccuracy,$dTrace]=$this->accuracies($defenderStart,$snapshot->defender,$snapshot->seed,$round,'defender',$dRandom);
+            $aAction=$this->roundResolver->resolveAttacks($attackerStart,$defenderStart,$snapshot->attacker,$ruleset,$random,$aAccuracy,false,$aRandom);
+            $dAction=$this->roundResolver->resolveAttacks($defenderStart,$attackerStart,$snapshot->defender,$ruleset,$random,$dAccuracy,true,$dRandom);
             $defender=$aAction->targetArmy;$attacker=$dAction->targetArmy;
             $rounds[]=new RoundResult($round,$aAction,$dAction,['attacker'=>$aTrace,'defender'=>$dTrace],$attacker->deathRatioText(),$defender->deathRatioText());
             $aEmpty=$attacker->livingCount()===0;$dEmpty=$defender->livingCount()===0;
@@ -46,11 +47,11 @@ final readonly class CombatResolver implements CombatResolverInterface
     }
 
     /** @return array{array<string,string>,array<string,array<string,mixed>>} */
-    private function accuracies(CombatArmy $army,PreparedCombatSide $prepared,int $seed,int $round,string $role):array
+    private function accuracies(CombatArmy $army,PreparedCombatSide $prepared,int $seed,int $round,string $role,?\App\Game\Random\AddressedRandom $addressed=null):array
     {
         $values=$trace=[];foreach(UnitType::cases() as $type){$unit=$prepared->unit($type);
             if($army->livingCount($type)===0){$values[$type->value]=\App\Game\Combat\Numeric\CombatFixedPoint::format($unit->baseAccuracy);$trace[$type->value]=['sampled'=>false,'lower'=>null,'upper'=>null,'value'=>null,'substream'=>null];continue;}
-            $sample=$this->accuracySampler->sample($seed,$round,$role,$type,$unit->baseAccuracy,$unit->accuracySpread);$values[$type->value]=$sample['value'];$trace[$type->value]=['sampled'=>true,...$sample];
+            $sample=$this->accuracySampler->sample($seed,$round,$role,$type,$unit->baseAccuracy,$unit->accuracySpread,$addressed);$values[$type->value]=$sample['value'];$trace[$type->value]=['sampled'=>true,...$sample];
         }return [$values,$trace];
     }
 

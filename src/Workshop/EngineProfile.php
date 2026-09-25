@@ -33,6 +33,7 @@ final readonly class EngineProfile
         public string $equalityPolicy,
         public int $lossCompressionPercent,
         public int $capturePercent,
+        public string $woundDamageThreshold,
     ) {}
 
     /** @return array<string,mixed> */
@@ -43,7 +44,7 @@ final readonly class EngineProfile
         $weather=[];
         foreach(self::WEATHER as $condition)foreach(self::UNIT_COSTS as $type=>$cost)$weather[$condition][$type]=['attack'=>'1','baseAccuracy'=>'1'];
         return ['schemaVersion'=>self::SCHEMA_VERSION,'id'=>'my-waar-profile','label'=>'Mon profil Waar','units'=>$units,'relations'=>[],'weather'=>$weather,
-            'combat'=>['maxRounds'=>3,'surrenderEnabled'=>false,'surrenderDeadPercent'=>20,'tieBreakCriterion'=>'economic','equalityPolicy'=>'defender','lossCompressionPercent'=>8,'capturePercent'=>0]];
+            'combat'=>['maxRounds'=>3,'surrenderEnabled'=>false,'surrenderDeadPercent'=>20,'tieBreakCriterion'=>'economic','equalityPolicy'=>'defender','lossCompressionPercent'=>8,'capturePercent'=>0,'woundDamageThreshold'=>'0.2']];
     }
 
     /** @param array<string,mixed> $values @param list<string>|null $requiredTypes */
@@ -55,7 +56,7 @@ final readonly class EngineProfile
         foreach(self::UNIT_COSTS as $type=>$cost)$units[$type]=$values['units'][$type]??null;
         foreach(self::WEATHER as $condition)foreach(self::UNIT_COSTS as $type=>$cost)foreach(['attack','baseAccuracy'] as $field)$weather[$condition][$type][$field]=FixedPoint::format(FixedPoint::parse($values['weather'][$condition][$type][$field]));
         $combat=$values['combat'];
-        return new self($values['id'],$values['label'],$units,$relations,$weather,$combat['maxRounds'],$combat['surrenderEnabled'],$combat['surrenderDeadPercent'],$combat['tieBreakCriterion'],$combat['equalityPolicy'],$combat['lossCompressionPercent'],$combat['capturePercent']);
+        return new self($values['id'],$values['label'],$units,$relations,$weather,$combat['maxRounds'],$combat['surrenderEnabled'],$combat['surrenderDeadPercent'],$combat['tieBreakCriterion'],$combat['equalityPolicy'],$combat['lossCompressionPercent'],$combat['capturePercent'],self::decimal($combat['woundDamageThreshold']));
     }
 
     /** @param array<string,mixed> $values @param list<string>|null $requiredTypes @return list<array{code:string,path:string,message:string}> */
@@ -85,7 +86,7 @@ final readonly class EngineProfile
         else{foreach(array_diff(array_keys($values['weather']),self::WEATHER)as$condition)$add('unknown_field','weather.'.$condition,'Condition météo inconnue.');foreach(self::WEATHER as$condition){$row=$values['weather'][$condition]??null;if(!is_array($row)||array_is_list($row)){$add('missing_weather','weather.'.$condition,'Condition météo requise.');continue;}foreach(array_diff(array_keys($row),array_keys(self::UNIT_COSTS))as$type)$add('unknown_field','weather.'.$condition.'.'.$type,'Type d’unité inconnu pour cette météo.');foreach(self::UNIT_COSTS as$type=>$cost){$cell=$row[$type]??null;if(!is_array($cell)||array_is_list($cell)){$add('invalid_type','weather.'.$condition.'.'.$type,'Deux coefficients météo sont requis.');continue;}foreach(array_diff(array_keys($cell),['attack','baseAccuracy'])as$field)$add('unknown_field','weather.'.$condition.'.'.$type.'.'.$field,'La météo ne peut modifier que l’attaque et la précision fixe.');foreach(['attack','baseAccuracy']as$field)self::decimalError($cell[$field]??null,'weather.'.$condition.'.'.$type.'.'.$field,0,1,$add);}}}
         $combat=$values['combat']??null;
         if(!is_array($combat)||array_is_list($combat))$add('invalid_type','combat','Réglages de combat invalides.');
-        else{foreach(array_diff(array_keys($combat),['maxRounds','surrenderEnabled','surrenderDeadPercent','tieBreakCriterion','equalityPolicy','lossCompressionPercent','capturePercent'])as$field)$add('unknown_field','combat.'.$field,'Réglage de combat inconnu.');foreach([['maxRounds',1,30],['surrenderDeadPercent',1,100],['lossCompressionPercent',0,100],['capturePercent',0,50]]as[$field,$min,$max])if(!is_int($combat[$field]??null)||$combat[$field]<$min||$combat[$field]>$max)$add('out_of_range','combat.'.$field,"Entier attendu entre $min et $max.");if(!is_bool($combat['surrenderEnabled']??null))$add('invalid_type','combat.surrenderEnabled','La reddition doit être activée ou désactivée.');if(!in_array($combat['tieBreakCriterion']??null,['economic','structure'],true))$add('invalid_value','combat.tieBreakCriterion','Critère attendu : coût économique ou structure.');if(!in_array($combat['equalityPolicy']??null,['draw','defender'],true))$add('invalid_value','combat.equalityPolicy','Égalité attendue : match nul ou défenseur.');}
+        else{foreach(array_diff(array_keys($combat),['maxRounds','surrenderEnabled','surrenderDeadPercent','tieBreakCriterion','equalityPolicy','lossCompressionPercent','capturePercent','woundDamageThreshold'])as$field)$add('unknown_field','combat.'.$field,'Réglage de combat inconnu.');foreach([['maxRounds',1,30],['surrenderDeadPercent',1,100],['lossCompressionPercent',0,100],['capturePercent',0,50]]as[$field,$min,$max])if(!is_int($combat[$field]??null)||$combat[$field]<$min||$combat[$field]>$max)$add('out_of_range','combat.'.$field,"Entier attendu entre $min et $max.");self::decimalError($combat['woundDamageThreshold']??null,'combat.woundDamageThreshold',0,1,$add);if(!is_bool($combat['surrenderEnabled']??null))$add('invalid_type','combat.surrenderEnabled','La reddition doit être activée ou désactivée.');if(!in_array($combat['tieBreakCriterion']??null,['economic','structure'],true))$add('invalid_value','combat.tieBreakCriterion','Critère attendu : coût économique ou structure.');if(!in_array($combat['equalityPolicy']??null,['draw','defender'],true))$add('invalid_value','combat.equalityPolicy','Égalité attendue : match nul ou défenseur.');}
         return $errors;
     }
 
@@ -101,7 +102,7 @@ final readonly class EngineProfile
     {
         $units=[];$targeting=[];$engagements=[];$factors=[];foreach($this->relations as$r)$factors[$r['acting']][$r['target']]=$r['factor'];
         foreach(self::UNIT_COSTS as$type=>$defaultCost){$unit=$this->units[$type]??[...self::DEFAULT_STATS[$type],'cost'=>$defaultCost,'capturable'=>false];$units[]=['type'=>$type,'attack'=>self::decimal($unit['attack']),'structure'=>self::decimal($unit['structure']),'cost'=>$unit['cost'],'baseAccuracy'=>self::decimal($unit['baseAccuracy']),'accuracySpread'=>self::decimal($unit['accuracySpread']),'strikesPerAttack'=>$unit['strikesPerAttack'],'defendingEfficiency'=>self::decimal($unit['defendingEfficiency']),'capturable'=>$unit['capturable']];$targeting[$type]=['weights'=>array_fill_keys(array_keys(self::UNIT_COSTS),1)];foreach(self::UNIT_COSTS as$target=>$unused)$engagements[$type][$target]=['attackFactor'=>self::decimal($factors[$type][$target]??'1'),'isProvisional'=>false];}
-        return ['schemaVersion'=>'waar-cohort-ruleset/2','modelVersion'=>self::MODEL_VERSION,'version'=>self::MODEL_VERSION.'@'.substr($this->semanticFingerprint(),0,16),'units'=>$units,'targetingMode'=>'proportional','targeting'=>$targeting,'engagements'=>$engagements,'maxRounds'=>$this->maxRounds,'surrender'=>['enabled'=>$this->surrenderEnabled,'deadRatio'=>self::decimal($this->surrenderDeadPercent/100)],'tieBreak'=>['criterion'=>$this->tieBreakCriterion,'equality'=>$this->equalityPolicy]];
+        return ['schemaVersion'=>'waar-cohort-ruleset/2','modelVersion'=>self::MODEL_VERSION,'version'=>self::MODEL_VERSION.'@'.substr($this->semanticFingerprint(),0,16),'units'=>$units,'targetingMode'=>'proportional','targeting'=>$targeting,'engagements'=>$engagements,'maxRounds'=>$this->maxRounds,'surrender'=>['enabled'=>$this->surrenderEnabled,'deadRatio'=>self::decimal($this->surrenderDeadPercent/100)],'tieBreak'=>['criterion'=>$this->tieBreakCriterion,'equality'=>$this->equalityPolicy],'woundDamageThreshold'=>$this->woundDamageThreshold];
     }
 
     /** @return list<array<string,mixed>> */
@@ -109,7 +110,7 @@ final readonly class EngineProfile
     {if(!in_array($condition,self::WEATHER,true))throw new \InvalidArgumentException('Condition météo inconnue.');$result=[];foreach(self::UNIT_COSTS as$type=>$unused)foreach(['attack','baseAccuracy']as$field){$value=$this->weather[$condition][$type][$field];if($value==='1')continue;$result[]=['source'=>'weather','id'=>'weather-'.$condition.'-'.$camp.'-'.$type.'-'.$field,'label'=>self::WEATHER_LABELS[$condition],'unitType'=>$type,'parameter'=>$field,'operation'=>'multiply','value'=>$value];}return$result;}
 
     /** @return array<string,mixed> */
-    public function toArray():array{return['schemaVersion'=>self::SCHEMA_VERSION,'id'=>$this->id,'label'=>$this->label,'units'=>$this->units,'relations'=>$this->relations,'weather'=>$this->weather,'combat'=>['maxRounds'=>$this->maxRounds,'surrenderEnabled'=>$this->surrenderEnabled,'surrenderDeadPercent'=>$this->surrenderDeadPercent,'tieBreakCriterion'=>$this->tieBreakCriterion,'equalityPolicy'=>$this->equalityPolicy,'lossCompressionPercent'=>$this->lossCompressionPercent,'capturePercent'=>$this->capturePercent]];}
+    public function toArray():array{return['schemaVersion'=>self::SCHEMA_VERSION,'id'=>$this->id,'label'=>$this->label,'units'=>$this->units,'relations'=>$this->relations,'weather'=>$this->weather,'combat'=>['maxRounds'=>$this->maxRounds,'surrenderEnabled'=>$this->surrenderEnabled,'surrenderDeadPercent'=>$this->surrenderDeadPercent,'tieBreakCriterion'=>$this->tieBreakCriterion,'equalityPolicy'=>$this->equalityPolicy,'lossCompressionPercent'=>$this->lossCompressionPercent,'capturePercent'=>$this->capturePercent,'woundDamageThreshold'=>$this->woundDamageThreshold]];}
     public function semanticFingerprint():string
     {
         $profile=$this->toArray();

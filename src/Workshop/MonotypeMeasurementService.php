@@ -15,6 +15,8 @@ final class MonotypeMeasurementService
         if($baseSeed<0||$baseSeed>2147483647)throw new \InvalidArgumentException('Seed invalide.');
         if(!in_array($weather,EngineProfile::WEATHER,true))throw new \InvalidArgumentException('Condition météo inconnue.');
         $profile=EngineProfile::fromArray($profileValues);$request=$this->requests->monotypes($profile,$weather,$baseSeed,$iterations);$batch=$this->runtime->batch($request);
+        CohortRequestFactory::assertProvenance($batch['consequenceProvenance']??[], $request['consequences']);
+        CohortRequestFactory::assertBatchRandomProvenance($batch,$request['scenarios']);
         if(($batch['unitOrder']??null)!==array_keys(EngineProfile::UNIT_COSTS)||($batch['projectedCategoryOrder']??null)!==['healthy','wounded','dead','prisoners'])throw new \RuntimeException('Ordre d’agrégation du batch cohortes incompatible.');
         $rows=[];
         foreach($batch['scenarios'] as $scenario)foreach(['attacker','defender'] as $side)if(!isset($scenario['result'][$side.'RawWoundedByType']))throw new \RuntimeException('Runtime obsolète : reconstruisez Rust pour mesurer les blessés bruts.');
@@ -23,7 +25,7 @@ final class MonotypeMeasurementService
                 $rows[]=['id'=>$id.'/'.$side,'scenarioId'=>$id,'attackerType'=>$attacking,'defenderType'=>$defending,'side'=>$side,'initialCount'=>$initialByType[$index],'winRate'=>$wins/$iterations,'drawRate'=>$result['draws']/$iterations,'rawLossRatio'=>$initial?$raw/$initial:0.0,'rawWoundedRatio'=>$initial?$result[$prefix.'RawWoundedByType'][$index]/$initial:0.0,'rawCasualtyRatio'=>$initial?($raw+$result[$prefix.'RawWoundedByType'][$index])/$initial:0.0,'appliedLossRatio'=>$initial?$p[2]/$initial:0.0,'woundedRatio'=>$initial?$p[1]/$initial:0.0,'captureRatio'=>$initial?$p[3]/$initial:0.0,'freeRatio'=>$initial?($p[0]+$p[1])/$initial:0.0,'iterations'=>$iterations];
             }
         }
-        $context=['weather'=>$weather,'baseSeed'=>$baseSeed,'iterations'=>$iterations,'budget'=>self::BUDGET,'objectiveMetric'=>'rawCasualtyRatio','modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$request['ruleset']['version'],'runtime'=>$this->runtime->provenance(),'consequences'=>['lossCompressionPercent'=>$profile->lossCompressionPercent,'capturePercent'=>$profile->capturePercent]];
+        $context=['weather'=>$weather,'baseSeed'=>$baseSeed,'iterations'=>$iterations,'budget'=>self::BUDGET,'objectiveMetric'=>'rawCasualtyRatio','modelVersion'=>EngineProfile::MODEL_VERSION,'rulesetVersion'=>$request['ruleset']['version'],'runtime'=>$this->runtime->provenance(),'consequences'=>CohortRequestFactory::consequenceContext($profile)];
         $mechanisms=[];$description=new MonotypeMechanics();
         foreach($request['scenarios'] as $scenario)$mechanisms[$scenario['id']]=$description->describe($profile,$weather,$scenario['id']);
         return ['schemaVersion'=>'waar-monotype-consequence-observations/0.2','profileFingerprint'=>$profile->semanticFingerprint(),'modelVersion'=>EngineProfile::MODEL_VERSION,'context'=>$context,'batch'=>['schemaVersion'=>$batch['schemaVersion'],'iterationRange'=>$batch['iterationRange'],'totalCombats'=>$batch['totalCombats']],'rows'=>$rows,'mechanisms'=>$mechanisms];

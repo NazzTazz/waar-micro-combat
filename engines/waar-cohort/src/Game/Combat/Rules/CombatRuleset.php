@@ -12,7 +12,9 @@ final readonly class CombatRuleset
 
     /** @var array<string,UnitDefinition> */
     private array $definitions;
+    private ?string $serializedWoundDamageThreshold;
     public float $surrenderDeadRatio;
+    public float $woundDamageThreshold;
 
     /** @param iterable<UnitDefinition> $definitions */
     public function __construct(
@@ -25,10 +27,14 @@ final readonly class CombatRuleset
         float|int|string $surrenderDeadRatio = 0.20,
         public string $tieBreakCriterion = 'economic',
         public string $equalityPolicy = 'defender',
+        float|int|string|null $woundDamageThreshold = null,
     ) {
         if ('' === trim($version) || $maxRounds < 1 || $maxRounds > 100) throw new \InvalidArgumentException('Invalid combat ruleset metadata.');
         $this->surrenderDeadRatio=CombatFixedPoint::canonicalize($surrenderDeadRatio);
+        $this->woundDamageThreshold=CombatFixedPoint::canonicalize($woundDamageThreshold ?? 0);
+        $this->serializedWoundDamageThreshold=null === $woundDamageThreshold ? null : CombatFixedPoint::format($woundDamageThreshold);
         if ($this->surrenderDeadRatio < 0 || $this->surrenderDeadRatio > 1) throw new \InvalidArgumentException('Surrender threshold must be between 0 and 1.');
+        if ($this->woundDamageThreshold < 0 || $this->woundDamageThreshold > 1) throw new \InvalidArgumentException('Wound damage threshold must be between 0 and 1.');
         if (!in_array($tieBreakCriterion, ['economic', 'structure'], true)) throw new \InvalidArgumentException('Unknown tie-break criterion.');
         if (!in_array($equalityPolicy, ['defender', 'draw'], true)) throw new \InvalidArgumentException('Unknown equality policy.');
         $indexed = [];
@@ -49,7 +55,7 @@ final readonly class CombatRuleset
     /** @return array<string,mixed> */
     public function toArray(): array
     {
-        return [
+        $data = [
             'schemaVersion' => self::SCHEMA_VERSION,
             'modelVersion' => self::MODEL_VERSION,
             'version' => $this->version,
@@ -61,12 +67,14 @@ final readonly class CombatRuleset
             'surrender' => ['enabled' => $this->surrenderEnabled, 'deadRatio' => CombatFixedPoint::format($this->surrenderDeadRatio)],
             'tieBreak' => ['criterion' => $this->tieBreakCriterion, 'equality' => $this->equalityPolicy],
         ];
+        if (null !== $this->serializedWoundDamageThreshold) $data['woundDamageThreshold'] = CombatFixedPoint::format($this->woundDamageThreshold);
+        return $data;
     }
 
     /** @param array<string,mixed> $data */
     public static function fromArray(array $data): self
     {
-        if($unknown=array_diff(array_keys($data),['schemaVersion','modelVersion','version','units','targetingMode','targeting','engagements','maxRounds','surrender','tieBreak']))throw new \InvalidArgumentException('Unknown ruleset field: '.reset($unknown));
+        if($unknown=array_diff(array_keys($data),['schemaVersion','modelVersion','version','units','targetingMode','targeting','engagements','maxRounds','surrender','tieBreak','woundDamageThreshold']))throw new \InvalidArgumentException('Unknown ruleset field: '.reset($unknown));
         if (($data['schemaVersion'] ?? self::SCHEMA_VERSION) !== self::SCHEMA_VERSION || ($data['modelVersion'] ?? self::MODEL_VERSION) !== self::MODEL_VERSION) throw new \InvalidArgumentException('Unsupported cohort ruleset schema or model.');
         if (($data['targetingMode'] ?? 'proportional') !== 'proportional') throw new \InvalidArgumentException('waar-cohort-v2 only supports proportional targeting.');
         $surrender = (array) ($data['surrender'] ?? []);
@@ -79,6 +87,7 @@ final readonly class CombatRuleset
             isset($data['engagements']) ? EngagementMatrix::fromArray((array) $data['engagements']) : EngagementMatrix::neutral(),
             self::integer($data, 'maxRounds', 3), self::boolean($surrender, 'enabled', false),
             $surrender['deadRatio'] ?? '0.2', (string) ($tieBreak['criterion'] ?? 'economic'), (string) ($tieBreak['equality'] ?? 'defender'),
+            $data['woundDamageThreshold'] ?? null,
         );
     }
 

@@ -4,12 +4,128 @@ use App\Game\Combat\CanonicalJson;
 use App\Game\Combat\CombatEngine;
 use App\Game\Combat\CombatReplay;
 use App\Game\Combat\DemoRequestFactory;
+use App\Game\Combat\ConsequencePolicy;
+use App\Game\Random\ConsequenceSampler;
 use App\Infrastructure\Combat\RustCombatResolver;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class AcceptanceRegressionTest extends TestCase
 {
+    public function testProbabilisticRc1ParityReplayAndRawIndependence(): void
+    {
+        $fixture=require __DIR__.'/fixtures/rc1.php';$php=new CombatEngine();$rust=$this->rust();
+        $captures=$losses=0;
+        foreach([0,1,2,42,9381,2147483647] as $seed){
+            $request=$fixture(['soldier'=>300,'spearman'=>75,'archer'=>25],['soldier'=>175,'knight'=>15],$seed);
+            $legacy=$php->resolveRequest($request);
+            self::assertSame(CanonicalJson::encode($legacy),CanonicalJson::encode($rust->resolveRequest($request)));
+            $request['consequences']['policyVersion']=ConsequencePolicy::VERSION;
+            self::assertSame($legacy,$php->resolveRequest($request)); // absent version remains /2
+            $request['consequences']['policyVersion']=ConsequencePolicy::PROBABILISTIC_VERSION;
+            $full=$php->resolveRequest($request);
+            self::assertSame(CanonicalJson::encode($full),CanonicalJson::encode($rust->resolveRequest($request)));
+            self::assertSame($legacy['result'],$full['result']);
+            self::assertSame(ConsequenceSampler::VERSION,$full['consequences']['samplingProtocol']);
+            foreach(['attacker','defender'] as $side)foreach($full['consequences'][$side]['types'] as $row){$captures+=$row['projected']['prisoners'];$losses+=$row['projected']['dead']+$row['projected']['wounded'];}
+            $request['traceLevel']='none';$none=$php->resolveRequest($request);
+            self::assertSame(CanonicalJson::encode($none),CanonicalJson::encode($rust->resolveRequest($request)));
+            $normalize=static function(array $report):array{
+                unset($report['result']['snapshot']['traceLevel'],$report['result']['replayHash'],$report['consequences']['rawResult']);
+                foreach($report['result']['rounds'] as &$round)unset($round['attackerAction'],$round['defenderAction']);unset($round);
+                return $report;
+            };
+            self::assertSame(CanonicalJson::encode($normalize($full)),CanonicalJson::encode($normalize($none)));
+            $request['consequences']['compressionPercent']=100;$request['consequences']['capturePercent']=50;
+            $changed=$php->resolveRequest($request);self::assertSame($none['result'],$changed['result']);
+            self::assertSame(CanonicalJson::encode($changed),CanonicalJson::encode($rust->resolveRequest($request)));
+            unset($request['consequences']);$bare=$php->resolveRequest($request);self::assertSame($none['result'],$bare['result']);
+            self::assertSame(CanonicalJson::encode($bare),CanonicalJson::encode($rust->resolveRequest($request)));
+            if($seed===42){$replay=CombatReplay::request($full);self::assertSame(ConsequencePolicy::PROBABILISTIC_VERSION,$replay['consequences']['policyVersion']);self::assertSame($full,$php->resolveRequest($replay));self::assertSame(CanonicalJson::encode($full),CanonicalJson::encode($rust->resolveRequest($replay)));}
+        }
+        self::assertGreaterThan(0,$captures);self::assertGreaterThan(0,$losses);
+    }
+
+    public function testProbabilisticBatchMatchesIndividualsAndRecombinedRanges(): void
+    {
+        $fixture=require __DIR__.'/fixtures/rc1.php';$request=$fixture(['soldier'=>3,'spearman'=>1,'knight'=>18],['soldier'=>1000]);
+        $request['traceLevel']='none';$request['consequences']['policyVersion']=ConsequencePolicy::PROBABILISTIC_VERSION;
+        // Cover both existing seed derivations, a role swap, and widened totals.
+        $batch=['schemaVersion'=>'waar-combat-batch-request/2','ruleset'=>$request['ruleset'],'baseSeed'=>42,'iterations'=>6,'totalIterations'=>6,'consequences'=>$request['consequences'],
+            'scenarios'=>[['id'=>'small-forward','seedKey'=>0,'attacker'=>$request['attacker'],'defender'=>$request['defender']],['id'=>'small-reverse','attacker'=>$request['defender'],'defender'=>$request['attacker']]]];
+        $rust=$this->rust();$full=$rust->resolveBatch($batch);
+        if($path=getenv('WAAR_ISSUE12_EVIDENCE'))file_put_contents($path.'.batch',json_encode($full,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR));
+        self::assertSame(CanonicalJson::encode(['policyVersion'=>ConsequencePolicy::PROBABILISTIC_VERSION,'samplingProtocol'=>ConsequenceSampler::VERSION,'compressionPercent'=>5,'capturePercent'=>24]),CanonicalJson::encode($full['consequenceProvenance']));
+        $php=new CombatEngine();$retained=0;
+        foreach($batch['scenarios'] as $index=>$scenario){
+            $expected=[];
+            for($iteration=0;$iteration<6;$iteration++){
+                if(isset($scenario['seedKey']))$seed=(42+$scenario['seedKey']*1000003+$iteration)%2147483647;
+                else $seed=unpack('N',substr(hash('sha256',"42\0".$scenario['id']."\0".$iteration,true),0,4))[1]&0x7fffffff;
+                $individual=$request;$individual['seed']=$seed;$individual['attacker']=$scenario['attacker'];$individual['defender']=$scenario['defender'];
+                $report=$php->resolveRequest($individual);self::assertSame(CanonicalJson::encode($report),CanonicalJson::encode($rust->resolveRequest($individual)));
+                foreach(['attacker','defender'] as $side)foreach(['soldier','spearman','archer','knight'] as $i=>$type)foreach(['healthy','wounded','dead','prisoners'] as $k=>$category){
+                    $expected[$side][$i][$k]=($expected[$side][$i][$k]??0)+$report['consequences'][$side]['types'][$type]['projected'][$category];
+                    if($type==='knight'&&$category!=='healthy')$retained+=$report['consequences'][$side]['types'][$type]['projected'][$category];
+                }
+            }
+            foreach($expected as $side=>$totals)self::assertSame($totals,$full['scenarios'][$index]['result'][$side.'ProjectedByType']);
+        }
+        self::assertGreaterThan(0,$retained,'The fixed small-cohort series must no longer be systematically immune.');
+        $batch['iterations']=3;$first=$rust->resolveBatch($batch);$batch['startIteration']=3;$second=$rust->resolveBatch($batch);
+        $add=static function($a,$b)use(&$add){return is_array($a)?array_map($add,$a,$b):$a+$b;};
+        foreach($full['scenarios'] as $i=>$scenario)foreach($scenario['result'] as $key=>$value){
+            if(str_contains($key,'InitialByType'))continue;
+            self::assertSame($value,$add($first['scenarios'][$i]['result'][$key],$second['scenarios'][$i]['result'][$key]),$key);
+        }
+    }
+
+    public function testProbabilisticPolicyValidationAndLargeTotals(): void
+    {
+        $request=DemoRequestFactory::combat('none');$request['ruleset']['maxRounds']=1;
+        foreach($request['ruleset']['units'] as &$unit){$unit['attack']='1';$unit['structure']='100';$unit['baseAccuracy']='1';$unit['accuracySpread']='0';$unit['defendingEfficiency']='1';}unset($unit);
+        $request['attacker']=['units'=>['soldier'=>4294967295],'modifiers'=>[]];$request['defender']=$request['attacker'];
+        $request['consequences']=['policyVersion'=>ConsequencePolicy::PROBABILISTIC_VERSION,'compressionPercent'=>100,'capturePercent'=>50];
+        $report=(new CombatEngine())->resolveRequest($request);self::assertSame(CanonicalJson::encode($report),CanonicalJson::encode($this->rust()->resolveRequest($request)));
+        $batch=['schemaVersion'=>'waar-combat-batch-request/2','ruleset'=>$request['ruleset'],'baseSeed'=>$request['seed'],'iterations'=>2,'consequences'=>$request['consequences'],'scenarios'=>[['id'=>'large','seedKey'=>0,'attacker'=>$request['attacker'],'defender'=>$request['defender']]]];
+        $large=$this->rust()->resolveBatch($batch);
+        self::assertSame(8589934590,array_sum($large['scenarios'][0]['result']['attackerProjectedByType'][0]));
+        foreach(['unknown',null,3] as $invalid){
+            $request['consequences']['policyVersion']=$invalid;$batch['consequences']['policyVersion']=$invalid;
+            foreach([fn()=>(new CombatEngine())->resolveRequest($request),fn()=>$this->rust()->resolveRequest($request),fn()=>$this->rust()->resolveBatch($batch)] as $call){
+                try{$call();self::fail('Invalid policy accepted');}catch(InvalidArgumentException|RuntimeException $e){self::assertNotEmpty($e->getMessage());}
+            }
+        }
+    }
+
+    public function testRc1FieldCasesPreserveRawResults(): void
+    {
+        $fixture=require __DIR__.'/fixtures/rc1.php';$pairs=[];
+        $small=[
+            'K10-S'=>[['knight'=>10],['soldier'=>1000]],
+            'K18L-S'=>[['soldier'=>3,'spearman'=>1,'knight'=>18],['soldier'=>1000]],
+            'K18L-L'=>[['soldier'=>3,'spearman'=>1,'knight'=>18],['soldier'=>6,'spearman'=>142]],
+            'R-C'=>[['soldier'=>300,'spearman'=>75,'archer'=>25],['soldier'=>175,'knight'=>15]],
+        ];
+        foreach($small as $id=>[$a,$d]){$pairs[$id]=[$a,$d];$pairs[$id.'-reverse']=[$d,$a];}
+        foreach([200000=>2,400000=>1] as $budget=>$divisor){
+            $r=['soldier'=>intdiv(12000,$divisor),'spearman'=>intdiv(3000,$divisor),'archer'=>intdiv(1000,$divisor)];
+            $c=['soldier'=>intdiv(7000,$divisor),'knight'=>intdiv(600,$divisor)];
+            $e=['soldier'=>intdiv(2,$divisor),'archer'=>intdiv(5714,$divisor)];
+            foreach(['R-C'=>[$r,$c],'C-E'=>[$c,$e],'E-R'=>[$e,$r]] as $id=>[$a,$d]){$pairs[$budget.'-'.$id]=[$a,$d];$pairs[$budget.'-'.$id.'-reverse']=[$d,$a];}
+        }
+        $evidence=[];$php=new CombatEngine();$rust=$this->rust();
+        foreach($pairs as $id=>[$a,$d]){
+            $request=$fixture($a,$d);$request['traceLevel']='none';
+            $old=$php->resolveRequest($request);self::assertSame(CanonicalJson::encode($old),CanonicalJson::encode($rust->resolveRequest($request)));
+            $request['consequences']['policyVersion']=ConsequencePolicy::PROBABILISTIC_VERSION;
+            $new=$php->resolveRequest($request);self::assertSame(CanonicalJson::encode($new),CanonicalJson::encode($rust->resolveRequest($request)));
+            self::assertSame($old['result'],$new['result'],$id);
+            $evidence[$id]=['seed'=>42,'winner'=>$new['result']['winner'],'rounds'=>count($new['result']['rounds']),'old'=>$old['consequences'],'new'=>$new['consequences']];
+        }
+        if($path=getenv('WAAR_ISSUE12_EVIDENCE'))file_put_contents($path,json_encode($evidence,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR));
+    }
+
     private function rust(): RustCombatResolver
     {
         return new RustCombatResolver(dirname(__DIR__));

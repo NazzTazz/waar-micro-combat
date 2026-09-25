@@ -37,7 +37,7 @@ class Element {
   const element=selector=>{if(!elements.has(selector))elements.set(selector,new Element());return elements.get(selector)};
   const units=Object.fromEntries(['soldier','spearman','archer','knight'].map(type=>[type,{attack:'7',structure:'18',baseAccuracy:'0.15',accuracySpread:'0.02',strikesPerAttack:1,defendingEfficiency:'1',cost:80,capturable:false}]));
   const weatherIds=['neutral','cloudy','snow','blizzard','heat','canicule','wind','storm','rain','thunderstorm'];
-  const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0}};
+  const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0,woundDamageThreshold:'0.2'}};
   const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawCasualtyRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawCasualtyRatio:.06}]};
   const overviewMeasurement={...structuredClone(measurement),context:{...structuredClone(measurement.context),iterations:50},rows:[]};
   for(const attackerType of Object.keys(units))for(const defenderType of Object.keys(units))for(const side of ['attacker','defender'])overviewMeasurement.rows.push({id:`${attackerType}-vs-${defenderType}/${side}`,scenarioId:`${attackerType}-vs-${defenderType}`,attackerType,defenderType,side,initialCount:5005,winRate:side==='attacker'?.6:.3,drawRate:.1,rawLossRatio:.1,rawWoundedRatio:.05,rawCasualtyRatio:.15,appliedLossRatio:.08,woundedRatio:.04,captureRatio:.01});
@@ -50,7 +50,7 @@ class Element {
   const editZones=x=>listeners.message({source:element('#t27-editor').contentWindow,origin,data:{type:'waar-t27-zones',fingerprint:'editor-fp',document:{schemaVersion:'waar-consequence-editor-zones/0.1',corpusFingerprint:'editor-fp',zones:[{id:measurement.rows[0].id,center:{x,y:.06},radii:{x:.05,y:.1},enabled:true,source:{referenceId:'fp'}}]}}});
   const documentListeners={};
   const document={querySelector:element,createElement:()=>new Element(),addEventListener(name,fn){(documentListeners[name]??=[]).push(fn)},querySelectorAll(selector){
-    if(selector==='[data-combat]')return ['maxRounds','surrenderEnabled','surrenderDeadPercent','tieBreakCriterion','equalityPolicy','lossCompressionPercent','capturePercent'].map(key=>{const input=element('[data-combat='+key+']');input.dataset.combat=key;input.type=key==='surrenderEnabled'?'checkbox':key.includes('Policy')||key.includes('Criterion')?'select':'range';return input});
+    if(selector==='[data-combat]')return ['maxRounds','surrenderEnabled','surrenderDeadPercent','woundDamageThreshold','tieBreakCriterion','equalityPolicy','lossCompressionPercent','capturePercent'].map(key=>{const input=element('[data-combat='+key+']');input.dataset.combat=key;input.type=key==='surrenderEnabled'?'checkbox':key.includes('Policy')||key.includes('Criterion')?'select':'range';return input});
     if(selector==='[data-pick]'||selector==='[data-compare]'){
       const attribute=selector.slice(1,-1),key=attribute==='data-pick'?'pick':'compare';
       return [...element('#search-results').innerHTML.matchAll(new RegExp(attribute+'="(\\d+)"','g'))].map(match=>{const button=element(selector+match[1]);button.dataset[key]=match[1];return button});
@@ -81,7 +81,7 @@ class Element {
   }});
   for(const file of ['model.js','bench.js','app.js']){
     let source=fs.readFileSync(path.join(__dirname,'../public/workshop',file),'utf8');
-    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary};\nfunction renderDuel(result){');
+    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary,consequenceTable};\nfunction renderDuel(result){');
     vm.runInContext(source,context);
   }
   await new Promise(resolve=>setImmediate(resolve));
@@ -139,6 +139,16 @@ class Element {
   assert.equal(element('#rounds-out').textContent,5);
   assert.equal(element('#profile-modified').hidden,false,'engine changes mark the profile modified');
   assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.maxRounds,5);
+  const woundThreshold=element('[data-combat=woundDamageThreshold]');
+  assert.equal(woundThreshold.value,20);
+  woundThreshold.value='0';woundThreshold.oninput();
+  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.woundDamageThreshold,'0','an explicit zero threshold is preserved');
+  woundThreshold.value='20';woundThreshold.oninput();
+  assert.equal(JSON.parse(storage.get('waar-workshop-draft-v1')).profile.combat.woundDamageThreshold,'0.2');
+  await element('#measure').onclick();
+  woundThreshold.value='0';woundThreshold.oninput();
+  assert.match(element('#measure-progress').textContent,/obsolète/,'editing the threshold invalidates the current measurement');
+  woundThreshold.value='20';woundThreshold.oninput();
   await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
   await element('#measure').onclick();
   assert.equal(element('#t27-editor').srcdoc,'T27 fixture');
@@ -206,6 +216,13 @@ class Element {
   assert.match(matrix,/Cohorte source vide/);assert.match(matrix,/Aucune tentative allouée/);
   assert.doesNotMatch(matrix,/NaN|Infinity/);
   assert.match(details,/Round 1/);assert.doesNotMatch(details,/<details[^>]* open/);
+  assert.match(details,/Valides \(≤ seuil\)/,'lightly damaged survivors are not presented as necessarily intact');
+  const projectedSummary=context.reportViews.consequenceSummary(direction,'attacker',{A:10000,B:8000});
+  assert.match(projectedSummary,/Valides en sortie/);
+  assert.doesNotMatch(projectedSummary,/≤ seuil/,'projected survivors do not imply physical healing');
+  const projectedTable=context.reportViews.consequenceTable(direction,'attacker','B');
+  assert.equal((projectedTable.match(/Valides \(≤ seuil\)/g)||[]).length,1,'threshold qualification applies only to raw classification');
+  assert.match(projectedTable,/Valides en sortie/);
   document.hidden=true;await new Promise(resolve=>setImmediate(resolve));await new Promise(resolve=>setImmediate(resolve));
   malformedResponse=true;
   await element('#measure').onclick();

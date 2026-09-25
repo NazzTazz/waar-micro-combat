@@ -51,7 +51,7 @@ async function waitFor(url) {
       [550,'350','250','0.8',15,'1',false],
     ]);
     assert.deepEqual(profilePayload.data.profile.relations,[]);
-    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10});
+    assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10,woundDamageThreshold:'0.2'});
 
     assert.equal(profilePayload.data.profile.weather.neutral.soldier.attack,'1');
     assert.equal(profilePayload.data.profile.weather.blizzard.soldier.attack,'0.875');
@@ -62,6 +62,19 @@ async function waitFor(url) {
     assert.equal(summaryResponse.status,200);
     const summary=(await summaryResponse.json()).data;
     assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
+    assert.equal(summary.consequenceProvenance.policyVersion,'wounded-capture-then-compress/4');
+    assert.equal(summary.consequenceProvenance.samplingProtocol,'sha256-binomial-tree/1');
+    // Scope filter for issue #12: default CI still exercises the complete historical flow.
+    if(process.env.WAAR_TEST_SCOPE==='consequences'){
+      const post=async(route,body)=>{const response=await fetch(origin+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(response.status,200);return (await response.json()).data};
+      const profile=profilePayload.data.profile,snapshot=JSON.stringify(profile);
+      const duel=await post('duel',{profile,armies:{A:{knight:10},B:{soldier:1000}},weather:'neutral',seed:42});
+      for(const direction of duel.directions){assert.equal(direction.consequences.policyVersion,'wounded-capture-then-compress/4');assert.equal(direction.consequences.samplingProtocol,'sha256-binomial-tree/1')}
+      const measurement=await post('measure',{profile,weather:'neutral',seed:42,iterations:1});
+      assert.equal(measurement.context.consequences.policyVersion,'wounded-capture-then-compress/4');
+      assert.equal(JSON.stringify(profile),snapshot);
+      console.log('workshop-http: consequences scope ok (118 Rust combats, no search)');return;
+    }
     assert.deepEqual(summary.rows.map(row=>[row.attacker,row.defender]),[['A','B'],['B','A']]);
     for(const row of summary.rows){assert.equal(row.camps.A.winRate+row.camps.B.winRate+row.drawRate,1);for(const camp of ['A','B'])assert.ok(row.camps[camp].valueLossRate>=0&&row.camps[camp].valueLossRate<=1)}
     for(const row of summary.rows)for(const camp of ['A','B']){const c=row.camps[camp];assert.deepEqual(Object.keys(c.losses),['soldier','spearman','archer','knight']);for(const type of ['spearman','archer','knight'])assert.deepEqual(c.losses[type],{initial:0,dead:0,wounded:0});assert.equal(c.losses.soldier.initial,100);assert.ok(c.losses.soldier.dead>=0&&c.losses.soldier.wounded>=0&&c.prisoners>=0);assert.ok(Math.abs((c.losses.soldier.dead+c.losses.soldier.wounded)/100-c.valueLossRate)<1e-9)}
@@ -76,6 +89,22 @@ async function waitFor(url) {
     const secondResponse=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...saveBody,name:'Testeur-Proposition-2'})});
     assert.equal(secondResponse.status,200,'a second distinct profile replaces the JSON store on every supported OS');
     assert.equal((await (await fetch(origin+'/api/profiles')).json()).data.profiles.length,2);
+    const storedBeforeLock=fs.readFileSync(path.join(temporary,'profiles','profiles.json'),'utf8');
+    const profileLocker=spawn('php',['-r',"$f=fopen(getenv('WAAR_PROFILE_DIRECTORY').'/profiles.lock','c');flock($f,LOCK_EX);echo 'ready';fflush(STDOUT);fgets(STDIN);flock($f,LOCK_UN);"],{env});
+    await once(profileLocker.stdout,'data');
+    const retrySave={...saveBody,name:'Testeur-Apres-Deploiement'};
+    try {
+      const blocked=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(retrySave),signal:AbortSignal.timeout(2000)});
+      assert.equal(blocked.status,503);
+      assert.match((await blocked.json()).errors[0].message,/Réessayez/);
+      assert.equal(fs.readFileSync(path.join(temporary,'profiles','profiles.json'),'utf8'),storedBeforeLock);
+      assert.equal((await fetch(origin+'/api/profiles',{signal:AbortSignal.timeout(2000)})).status,200,'reads remain available while deployment holds the lock');
+      assert.equal((await fetch(origin+'/api/load-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:saved.id}),signal:AbortSignal.timeout(2000)})).status,200);
+    } finally {
+      profileLocker.stdin.end('\n');
+      await once(profileLocker,'exit');
+    }
+    assert.equal((await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(retrySave)})).status,200);
     assert.ok(fs.existsSync(path.join(temporary,'profiles','profiles.json')));
     const invalid=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Invalid',profile:{}})});assert.equal(invalid.status,422);
     const traversal = await fetch(origin + '/..%2Fcomposer.json');
