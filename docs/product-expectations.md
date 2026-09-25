@@ -208,6 +208,16 @@ et **écart ouvert**. « À vérifier » ne signifie ni absent ni rejeté.
 - **État :** règle active. Ne pas relancer T31/T33 pour qualifier une modification
   d'interface, ni confondre combats/seconde, délai HTTP et premier aperçu visible.
   Les décisions et recettes déjà disponibles évitent des recherches répétitives.
+- **Tranche cartouche du 25 septembre 2026, avant livraison :** ATT-01/ATT-11 ;
+  sources lues : cadrage de la soufflerie, issue #19, présent registre, retour
+  de Darthmoule sur la matrice monotype, `DuelService::simulate()` et tests UI/HTTP.
+  Réemploi du batch de 50 combats. La matrice appréciée venait de la PR #11
+  refusée et reste hors de cette livraison, sur décision explicite du PO.
+  Échec à éviter : confondre pertes physiques et sortie projetée. Écart :
+  le cartouche détaillait chaque type mais rendait peu lisibles
+  les indicateurs globaux et le budget ; résultat visé : deux petits tableaux par
+  sens avec victoires, morts, blessés, prisonniers, budget perdu et rounds moyens,
+  détail par unité replié, sans calcul de combat côté JavaScript.
 
 ## Échecs connus à ne pas reproduire
 

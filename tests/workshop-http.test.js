@@ -76,7 +76,7 @@ async function waitFor(url) {
       console.log('workshop-http: consequences scope ok (118 Rust combats, no search)');return;
     }
     assert.deepEqual(summary.rows.map(row=>[row.attacker,row.defender]),[['A','B'],['B','A']]);
-    for(const row of summary.rows){assert.equal(row.camps.A.winRate+row.camps.B.winRate+row.drawRate,1);for(const camp of ['A','B'])assert.ok(row.camps[camp].valueLossRate>=0&&row.camps[camp].valueLossRate<=1)}
+    for(const row of summary.rows){assert.equal(row.camps.A.winRate+row.camps.B.winRate+row.drawRate,1);assert.ok(row.meanRounds>=0&&row.meanRounds<=profilePayload.data.profile.combat.maxRounds);for(const camp of ['A','B'])assert.ok(row.camps[camp].valueLossRate>=0&&row.camps[camp].valueLossRate<=1)}
     for(const row of summary.rows)for(const camp of ['A','B']){const c=row.camps[camp];assert.deepEqual(Object.keys(c.losses),['soldier','spearman','archer','knight']);for(const type of ['spearman','archer','knight'])assert.deepEqual(c.losses[type],{initial:0,dead:0,wounded:0});assert.equal(c.losses.soldier.initial,100);assert.ok(c.losses.soldier.dead>=0&&c.losses.soldier.wounded>=0&&c.prisoners>=0);assert.ok(Math.abs((c.losses.soldier.dead+c.losses.soldier.wounded)/100-c.valueLossRate)<1e-9)}
     const saveBody={name:'Testeur-Proposition-1',profile:profilePayload.data.profile};
     const savedResponse=await fetch(origin+'/api/save-profile',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(saveBody)});
