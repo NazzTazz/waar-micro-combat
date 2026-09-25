@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/D3-physical-thresholds",
+  "sampling": {"repetitions": 2000, "baseSeed": 42, "batchSize": 100},
+  "limits": {"maxCombats": 84000},
+  "axes": {
+    "attack": {"path": "units.soldier.attack", "values": ["8", "4.999999", "5", "5.000001", "24.999999", "25", "25.000001"]},
+    "rounds": {"path": "combat.maxRounds", "values": [20, 1, 2]}
+  },
+  "crosses": {"singles": true, "pairs": [["attack", "rounds"]], "triplets": []},
+  "scenarios": [{
+    "id": "d3-soldier-one-on-one",
+    "directions": "both",
+    "weather": {"A": "neutral", "B": "neutral"},
+    "modifiers": {
+      "A": [{"source": "diagnostic", "id": "accuracy-one", "label": "Précision exacte du diagnostic", "unitType": "soldier", "parameter": "baseAccuracy", "operation": "multiply", "value": "10"}],
+      "B": [{"source": "diagnostic", "id": "accuracy-one", "label": "Précision exacte du diagnostic", "unitType": "soldier", "parameter": "baseAccuracy", "operation": "multiply", "value": "10"}]
+    },
+    "armies": {
+      "A": {"mode": "explicit", "units": {"soldier": 1}},
+      "B": {"mode": "explicit", "units": {"soldier": 1}}
+    },
+    "compositionVariants": [{"id": "reference", "operations": []}]
+  }]
+}

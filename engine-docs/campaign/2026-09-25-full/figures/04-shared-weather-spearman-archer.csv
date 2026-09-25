@@ -1,0 +1,4 @@
+weather,experiment_id,A_wins,samples,A_win_rate_percent,A_raw_dead_mean,B_raw_dead_mean,mean_rounds,budget_A,budget_B,direction
+neutral,fc99451412d760a76f235ab5,0,2000,0,1117.74,790.8055,7,119980,119980,A-B
+wind,e5d7a80d9cfe21f3d125ff97,2000,2000,100,277.9575,846.0135,7,119980,119980,A-B
+storm,56f970969f44506f34ea8a22,2000,2000,100,19.305,853.1845,7,119980,119980,A-B

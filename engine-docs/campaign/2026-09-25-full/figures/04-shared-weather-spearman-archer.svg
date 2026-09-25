@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="575" viewBox="0 0 760 575" role="img" aria-labelledby="title desc">
+<title id="title">Météo commune : lanciers A contre archers B</title>
+<desc id="desc">Victoire de A et morts physiques moyens de A, A attaquant, pour trois météos communes aux deux camps.</desc>
+<rect width="760" height="575" fill="#fbfcff"/>
+<text x="55" y="42" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#16263c">Météo commune : lanciers A contre archers B</text>
+<text x="55" y="66" font-family="Arial,sans-serif" font-size="12" fill="#40536e">1 714 unités par camp · 119 980 or chacun · A attaque · 2 000 combats par point</text>
+<text x="55" y="96" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#16263c">Victoires de A (%)</text>
+<line x1="115" y1="285" x2="625" y2="285" stroke="#dce4ef"/>
+<text x="101" y="289" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">0</text>
+<line x1="115" y1="242.5" x2="625" y2="242.5" stroke="#dce4ef"/>
+<text x="101" y="246.5" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">25</text>
+<line x1="115" y1="200" x2="625" y2="200" stroke="#dce4ef"/>
+<text x="101" y="204" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">50</text>
+<line x1="115" y1="157.5" x2="625" y2="157.5" stroke="#dce4ef"/>
+<text x="101" y="161.5" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">75</text>
+<line x1="115" y1="115" x2="625" y2="115" stroke="#dce4ef"/>
+<text x="101" y="119" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">100</text>
+<circle cx="155" cy="285" r="5" fill="#2463a5"/>
+<text x="155" y="275" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#2463a5">0</text>
+<circle cx="370" cy="115" r="5" fill="#2463a5"/>
+<text x="370" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#2463a5">100</text>
+<circle cx="585" cy="115" r="5" fill="#2463a5"/>
+<text x="585" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#2463a5">100</text>
+<polyline points="155,285 370,115 585,115" fill="none" stroke="#2463a5" stroke-width="2.5"/>
+<text x="55" y="326" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#16263c">Morts physiques moyens de A</text>
+<line x1="115" y1="515" x2="625" y2="515" stroke="#dce4ef"/>
+<text x="101" y="519" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">0</text>
+<line x1="115" y1="472.5" x2="625" y2="472.5" stroke="#dce4ef"/>
+<text x="101" y="476.5" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">300</text>
+<line x1="115" y1="430" x2="625" y2="430" stroke="#dce4ef"/>
+<text x="101" y="434" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">600</text>
+<line x1="115" y1="387.5" x2="625" y2="387.5" stroke="#dce4ef"/>
+<text x="101" y="391.5" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">900</text>
+<line x1="115" y1="345" x2="625" y2="345" stroke="#dce4ef"/>
+<text x="101" y="349" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">1200</text>
+<circle cx="155" cy="356.6535" r="5" fill="#a94044"/>
+<text x="155" y="346.6535" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#a94044">1 117,7</text>
+<circle cx="370" cy="475.6226875" r="5" fill="#a94044"/>
+<text x="370" y="465.6226875" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#a94044">278,0</text>
+<circle cx="585" cy="512.265125" r="5" fill="#a94044"/>
+<text x="585" y="502.265125" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#a94044">19,3</text>
+<polyline points="155,356.6535 370,475.6226875 585,512.265125" fill="none" stroke="#a94044" stroke-width="2.5"/>
+<text x="155" y="536" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#40536e">Neutre</text>
+<text x="370" y="536" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#40536e">Vent</text>
+<text x="585" y="536" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#40536e">Tempête</text>
+<text x="55" y="563" font-family="Arial,sans-serif" font-size="10" fill="#52637a">Comparaison descriptive ; intervalles marginaux et limites dans findings.md, valeurs exactes dans le CSV associé.</text>
+</svg>
