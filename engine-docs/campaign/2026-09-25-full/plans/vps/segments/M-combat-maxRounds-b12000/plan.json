@@ -1,0 +1,414 @@
+{
+    "schemaVersion": "waar-parametric-campaign/1",
+    "profile": "../../../reports/campaign-manual-sol/profile.json",
+    "output": "../../../reports/campagne-coeur/segments/M-combat-maxRounds-b12000",
+    "sampling": {
+        "repetitions": 2000,
+        "baseSeed": 42,
+        "batchSize": 100
+    },
+    "limits": {
+        "maxCombats": 280000
+    },
+    "axes": {
+        "value": {
+            "path": "combat.maxRounds",
+            "values": [
+                20,
+                1,
+                2,
+                3,
+                5,
+                10,
+                30
+            ]
+        }
+    },
+    "crosses": {
+        "singles": true,
+        "pairs": [],
+        "triplets": []
+    },
+    "scenarios": [
+        {
+            "id": "mono-b12000-soldier-soldier",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 1200,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 1200,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-soldier-spearman",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 1200,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 171,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-soldier-archer",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 1200,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 171,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-soldier-knight",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 1200,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 21
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-spearman-spearman",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 171,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 171,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-spearman-archer",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 171,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 171,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-spearman-knight",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 171,
+                        "archer": 0,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 21
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-archer-archer",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 171,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 171,
+                        "knight": 0
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-archer-knight",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 171,
+                        "knight": 0
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 21
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        },
+        {
+            "id": "mono-b12000-knight-knight",
+            "directions": "both",
+            "weather": {
+                "A": "neutral",
+                "B": "neutral"
+            },
+            "modifiers": {
+                "A": [],
+                "B": []
+            },
+            "armies": {
+                "A": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 21
+                    }
+                },
+                "B": {
+                    "mode": "explicit",
+                    "units": {
+                        "soldier": 0,
+                        "spearman": 0,
+                        "archer": 0,
+                        "knight": 21
+                    }
+                }
+            },
+            "compositionVariants": [
+                {
+                    "id": "reference",
+                    "operations": []
+                }
+            ]
+        }
+    ]
+}

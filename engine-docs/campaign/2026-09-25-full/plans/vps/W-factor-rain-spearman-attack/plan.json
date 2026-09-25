@@ -1,0 +1,489 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/W-factor-rain-spearman-attack",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 288000
+  },
+  "axes": {
+    "value": {
+      "path": "weather.rain.spearman.attack",
+      "values": [
+        "1",
+        "0",
+        "0.25",
+        "0.5",
+        "0.75",
+        "0.875"
+      ]
+    }
+  },
+  "crosses": {
+    "singles": true,
+    "pairs": [],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "wfactor-rain-spearman-attack-soldier-b12000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-spearman-b12000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-archer-b12000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-knight-b12000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-soldier-b120000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-spearman-b120000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-archer-b120000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-knight-b120000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-soldier-b360000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-spearman-b360000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-archer-b360000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "wfactor-rain-spearman-attack-knight-b360000",
+      "directions": "both",
+      "weather": {
+        "A": "rain",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+    "allWeather": {
+        "sharedRows": 720,
+        "sharedCombats": 1440000,
+        "differentRows": 12600,
+        "differentCombats": 25200000,
+        "sharedUniqueDirections": 540,
+        "sharedUniqueCombats": 1080000
+    },
+    "presetRowsSharedWeather": 720,
+    "presetRowsDifferentWeather": 1080,
+    "selectedRows": 600,
+    "neutralReferenceRows": 60,
+    "comparisons": 540,
+    "scope": "Only same-weather preset scenarios are compared; asymmetric factor plans are excluded from gameplay conclusions."
+}
