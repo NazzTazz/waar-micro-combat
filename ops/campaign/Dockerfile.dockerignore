@@ -1,0 +1,16 @@
+**
+!autoload.php
+!src/
+!src/**
+!bin/
+!bin/parametric-campaign.php
+!engines/
+!engines/waar-cohort/
+!engines/waar-cohort/rust/
+!engines/waar-cohort/rust/Cargo.toml
+!engines/waar-cohort/rust/Cargo.lock
+!engines/waar-cohort/rust/src/
+!engines/waar-cohort/rust/src/**
+!experiments/
+!experiments/campagne-coeur/
+!experiments/campagne-coeur/**

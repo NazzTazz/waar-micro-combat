@@ -63,14 +63,14 @@ try {
             throw new RuntimeException('Candidate valuation mismatch.');
         }
     }
-    $planned = array_values(array_filter($plan['variants'], static fn(array $v): bool => $v['id'] === CandidateLegacyComparisonBuilder::CANDIDATE_ID));
-    $measured = array_values(array_filter($result['finalists'], static fn(array $v): bool => $v['id'] === CandidateLegacyComparisonBuilder::CANDIDATE_ID));
+    $planned = array_values(array_filter($plan['variants'], static fn (array $v): bool => $v['id'] === CandidateLegacyComparisonBuilder::CANDIDATE_ID));
+    $measured = array_values(array_filter($result['finalists'], static fn (array $v): bool => $v['id'] === CandidateLegacyComparisonBuilder::CANDIDATE_ID));
     if (count($planned) !== 1 || count($measured) !== 1 || $planned[0]['parameterFingerprint'] !== $measured[0]['parameterFingerprint'] || strtolower($planned[0]['sha256']) !== $hashes[$prefix.'inputs/candidate-01.json']) {
         throw new RuntimeException('Candidate identity mismatch.');
     }
     $data = (new CandidateLegacyComparisonBuilder())->build($legacy, $result, $plan);
     $data['inputSha256'] = $hashes;
-    $encode = static fn(array $value): string => json_encode($value, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP)."\n";
+    $encode = static fn (array $value): string => json_encode($value, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP)."\n";
     $html = str_replace(['__ECHARTS__', '__DATA__'], [file_get_contents($root.'/resources/vendor/echarts-5.6.0.min.js'), $encode($data)], file_get_contents($root.'/resources/candidate-legacy-comparison.html'));
     if (!is_dir($output) && !mkdir($output, 0777, true)) {
         throw new RuntimeException('Unable to create output directory.');

@@ -6,7 +6,9 @@ final readonly class MixedCompositionObservationRunner
 {
     public const SCHEMA_VERSION = 'waar-mixed-composition-observation-result/0.1';
 
-    public function __construct(private ExperimentRunner $runner = new ExperimentRunner()) {}
+    public function __construct(private ExperimentRunner $runner = new ExperimentRunner())
+    {
+    }
 
     /** @param array<string, mixed> $plan @return array<string, mixed> */
     public function run(array $plan, string $inputDirectory, ?callable $progress = null): array

@@ -82,7 +82,9 @@ final class FinalistComparisonTest extends TestCase
         $result['finalists'] = [$result['finalists'][0]];
         foreach ($result['finalists'][0]['artifacts'] as $relative) {
             $destination = $temporary.'/'.dirname($relative);
-            if (!is_dir($destination)) mkdir($destination, 0777, true);
+            if (!is_dir($destination)) {
+                mkdir($destination, 0777, true);
+            }
             copy($this->runDirectory.'/'.$relative, $temporary.'/'.$relative);
         }
         file_put_contents($temporary.'/search-result.json', json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");

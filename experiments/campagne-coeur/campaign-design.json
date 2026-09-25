@@ -1,0 +1,324 @@
+{
+  "schemaVersion": "waar-campaign-design/1",
+  "status": "Specification a compiler par Sol; ne pas passer directement au CLI",
+  "profile": "reports/campaign-manual-sol/profile.json; export authentique, aucune reconstruction",
+  "sampling": {
+    "repetitionsPerDirection": 2000,
+    "batchSize": 100,
+    "baseSeed": 42,
+    "seedKey": 0,
+    "directions": "both",
+    "confirmation": {
+      "repetitionsPerDirection": 8000,
+      "baseSeed": 10000042,
+      "separateOutput": true
+    }
+  },
+  "budgets": [
+    12000,
+    120000,
+    360000
+  ],
+  "remainder": "unspent",
+  "unitGrids": {
+    "attack": {
+      "referenceMultipliers": [
+        0.5,
+        0.75,
+        1,
+        1.5,
+        2
+      ]
+    },
+    "structure": {
+      "referenceMultipliers": [
+        0.5,
+        0.75,
+        1,
+        1.5,
+        2
+      ]
+    },
+    "baseAccuracy": {
+      "values": [
+        0.05,
+        0.1,
+        0.2,
+        0.35,
+        0.5,
+        0.7,
+        0.9,
+        1
+      ],
+      "diagnosticValues": [
+        0
+      ]
+    },
+    "accuracySpread": {
+      "values": [
+        0,
+        0.05,
+        0.1,
+        0.2,
+        0.4
+      ],
+      "note": "Verifier signification actuelle; ne pas appeler variation des degats sans preuve"
+    },
+    "strikesPerAttack": {
+      "values": [
+        1,
+        2,
+        3,
+        5,
+        8,
+        12,
+        16,
+        24,
+        32
+      ],
+      "hold": "attack constant"
+    },
+    "defendingEfficiency": {
+      "values": [
+        0.5,
+        0.75,
+        1,
+        1.25,
+        1.5,
+        1.75,
+        2
+      ]
+    },
+    "cost": {
+      "referenceMultipliers": [
+        0.5,
+        0.75,
+        1,
+        1.5,
+        2
+      ],
+      "modes": [
+        "fixedHeadcounts",
+        "fixedBudget"
+      ],
+      "integerRounding": "nearest half up; record effective multiplier"
+    },
+    "capturable": {
+      "values": [
+        false,
+        true
+      ]
+    }
+  },
+  "combatGrids": {
+    "maxRounds": [
+      1,
+      2,
+      3,
+      5,
+      10,
+      20,
+      30
+    ],
+    "surrender": {
+      "disabled": true,
+      "enabledDeadPercent": [
+        5,
+        10,
+        20,
+        35,
+        50,
+        75,
+        100
+      ]
+    },
+    "tieBreakCriterion": "all values accepted by current validator",
+    "equalityPolicy": "all values accepted by current validator",
+    "lossCompressionPercent": [
+      0,
+      5,
+      25,
+      50,
+      75,
+      100
+    ],
+    "capturePercent": [
+      0,
+      10,
+      24,
+      50
+    ],
+    "woundDamageThreshold": [
+      0,
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.5,
+      0.75,
+      1
+    ]
+  },
+  "relations": {
+    "orderedDistinctPairs": "all 12",
+    "factors": [
+      0,
+      0.5,
+      1,
+      1.5,
+      2,
+      3,
+      5,
+      10
+    ],
+    "selfRelations": "inventory and exercise if exposed"
+  },
+  "weather": {
+    "presets": "all actual profile entries",
+    "contexts": [
+      "A-only",
+      "B-only",
+      "both"
+    ],
+    "factorValues": [
+      0,
+      0.25,
+      0.5,
+      0.75,
+      0.875,
+      1
+    ],
+    "mechanisms": [
+      "attack",
+      "baseAccuracy"
+    ],
+    "relevantUnits": "all units; any other field discovered must be added"
+  },
+  "interactions": {
+    "pairs": [
+      [
+        "attack",
+        "strikesPerAttack"
+      ],
+      [
+        "baseAccuracy",
+        "accuracySpread"
+      ],
+      [
+        "attack",
+        "target.structure"
+      ],
+      [
+        "defendingEfficiency",
+        "strikesPerAttack"
+      ],
+      [
+        "strikesPerAttack",
+        "woundDamageThreshold"
+      ],
+      [
+        "maxRounds",
+        "surrender"
+      ],
+      [
+        "lossCompressionPercent",
+        "capturePercent"
+      ],
+      [
+        "capturable",
+        "capturePercent"
+      ],
+      [
+        "cost",
+        "tieBreakCriterion"
+      ]
+    ],
+    "triplets": [
+      [
+        "attack",
+        "strikesPerAttack",
+        "target.structure"
+      ],
+      [
+        "defendingEfficiency",
+        "strikesPerAttack",
+        "woundDamageThreshold"
+      ],
+      [
+        "maxRounds",
+        "surrender",
+        "soldierScreenShare"
+      ]
+    ]
+  },
+  "screens": {
+    "specialists": [
+      "spearman",
+      "archer",
+      "knight"
+    ],
+    "budgetReplacementSoldierShares": [
+      0,
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.65,
+      0.8,
+      0.9,
+      1
+    ],
+    "additionSoldierBudgetRelativeToInitialSpecialistBudget": [
+      0,
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      1
+    ],
+    "opponents": "each fixed pure type, same nominal base budget"
+  },
+  "mixed": {
+    "budgetShareSimplexStep": 0.25,
+    "expectedCompositionsIncludingBoundaries": 35,
+    "opponents": [
+      "four pure types",
+      "25 percent budget per type"
+    ],
+    "archerReplacement": {
+      "fixedShares": {
+        "spearman": 0.2,
+        "knight": 0.2
+      },
+      "archerShares": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6
+      ],
+      "soldierShare": "0.6 - archerShare",
+      "opponents": "same five fixed opponents"
+    }
+  },
+  "refinement": {
+    "winRateChangePercentagePoints": 10,
+    "meanRoundsRelativeChange": 0.2,
+    "lossRateChangePercentagePoints": 5,
+    "maxAdditionalPointsBetweenNeighbors": 4,
+    "alsoTriggerOn": [
+      "local extremum",
+      "winner or economic ranking reversal",
+      "tester example",
+      "analytic physical threshold"
+    ],
+    "confirmationBaseSeed": 10000042
+  },
+  "normalization": "Always union each grid with exact reference, validate, deduplicate; reject invalid values explicitly, never silently clamp",
+  "scope": "Complete inventory and single-factor coverage; selected interactions, not exhaustive continuous space or every combination"
+}

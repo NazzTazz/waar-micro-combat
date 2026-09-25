@@ -1,0 +1,144 @@
+path,plan,values,status
+units.soldier.defendingEfficiency,D2-defense-soldier.json,"[""1"", ""0.5"", ""0.75"", ""1.25"", ""1.5"", ""1.75"", ""2""]",planned; current validator must confirm
+combat.maxRounds,D2-defense-soldier.json,"[20, 1, 2]",planned; current validator must confirm
+units.spearman.defendingEfficiency,D2-defense-spearman.json,"[""2"", ""0.5"", ""0.75"", ""1"", ""1.25"", ""1.5"", ""1.75""]",planned; current validator must confirm
+combat.maxRounds,D2-defense-spearman.json,"[20, 1, 2]",planned; current validator must confirm
+units.archer.defendingEfficiency,D2-defense-archer.json,"[""0.75"", ""0.5"", ""1"", ""1.25"", ""1.5"", ""1.75"", ""2""]",planned; current validator must confirm
+combat.maxRounds,D2-defense-archer.json,"[20, 1, 2]",planned; current validator must confirm
+units.knight.defendingEfficiency,D2-defense-knight.json,"[""1"", ""0.5"", ""0.75"", ""1.25"", ""1.5"", ""1.75"", ""2""]",planned; current validator must confirm
+combat.maxRounds,D2-defense-knight.json,"[20, 1, 2]",planned; current validator must confirm
+units.soldier.attack,M-unit-soldier-attack-fixed-counts.json,"[""8"", ""4"", ""6"", ""12"", ""16""]",planned; current validator must confirm
+units.soldier.structure,M-unit-soldier-structure-fixed-counts.json,"[""25"", ""12.5"", ""18.75"", ""37.5"", ""50""]",planned; current validator must confirm
+units.soldier.baseAccuracy,M-unit-soldier-baseAccuracy-fixed-counts.json,"[""0.1"", ""0"", ""0.05"", ""0.2"", ""0.35"", ""0.5"", ""0.7"", ""0.9"", ""1""]",planned; current validator must confirm
+units.soldier.accuracySpread,M-unit-soldier-accuracySpread-fixed-counts.json,"[""0"", ""0.05"", ""0.1"", ""0.2"", ""0.4""]",planned; current validator must confirm
+units.soldier.strikesPerAttack,M-unit-soldier-strikesPerAttack-fixed-counts.json,"[1, 2, 3, 5, 8, 12, 16, 24, 32]",planned; current validator must confirm
+units.soldier.defendingEfficiency,M-unit-soldier-defendingEfficiency-fixed-counts.json,"[""1"", ""0.5"", ""0.75"", ""1.25"", ""1.5"", ""1.75"", ""2""]",planned; current validator must confirm
+units.soldier.cost,M-unit-soldier-cost-fixed-counts.json,"[10, 5, 8, 15, 20]",planned; current validator must confirm
+units.soldier.cost,M-unit-soldier-cost-fixed-budget.json,"[10, 5, 8, 15, 20]",planned; current validator must confirm
+units.soldier.capturable,M-unit-soldier-capturable-fixed-counts.json,"[true, false]",planned; current validator must confirm
+units.spearman.attack,M-unit-spearman-attack-fixed-counts.json,"[""12"", ""6"", ""9"", ""18"", ""24""]",planned; current validator must confirm
+units.spearman.structure,M-unit-spearman-structure-fixed-counts.json,"[""120"", ""60"", ""90"", ""180"", ""240""]",planned; current validator must confirm
+units.spearman.baseAccuracy,M-unit-spearman-baseAccuracy-fixed-counts.json,"[""0.6"", ""0"", ""0.05"", ""0.1"", ""0.2"", ""0.35"", ""0.5"", ""0.7"", ""0.9"", ""1""]",planned; current validator must confirm
+units.spearman.accuracySpread,M-unit-spearman-accuracySpread-fixed-counts.json,"[""0"", ""0.05"", ""0.1"", ""0.2"", ""0.4""]",planned; current validator must confirm
+units.spearman.strikesPerAttack,M-unit-spearman-strikesPerAttack-fixed-counts.json,"[1, 2, 3, 5, 8, 12, 16, 24, 32]",planned; current validator must confirm
+units.spearman.defendingEfficiency,M-unit-spearman-defendingEfficiency-fixed-counts.json,"[""2"", ""0.5"", ""0.75"", ""1"", ""1.25"", ""1.5"", ""1.75""]",planned; current validator must confirm
+units.spearman.cost,M-unit-spearman-cost-fixed-counts.json,"[70, 35, 53, 105, 140]",planned; current validator must confirm
+units.spearman.cost,M-unit-spearman-cost-fixed-budget.json,"[70, 35, 53, 105, 140]",planned; current validator must confirm
+units.spearman.capturable,M-unit-spearman-capturable-fixed-counts.json,"[false, true]",planned; current validator must confirm
+units.archer.attack,M-unit-archer-attack-fixed-counts.json,"[""70"", ""35"", ""52.5"", ""105"", ""140""]",planned; current validator must confirm
+units.archer.structure,M-unit-archer-structure-fixed-counts.json,"[""50"", ""25"", ""37.5"", ""75"", ""100""]",planned; current validator must confirm
+units.archer.baseAccuracy,M-unit-archer-baseAccuracy-fixed-counts.json,"[""0.35"", ""0"", ""0.05"", ""0.1"", ""0.2"", ""0.5"", ""0.7"", ""0.9"", ""1""]",planned; current validator must confirm
+units.archer.accuracySpread,M-unit-archer-accuracySpread-fixed-counts.json,"[""0"", ""0.05"", ""0.1"", ""0.2"", ""0.4""]",planned; current validator must confirm
+units.archer.strikesPerAttack,M-unit-archer-strikesPerAttack-fixed-counts.json,"[5, 1, 2, 3, 8, 12, 16, 24, 32]",planned; current validator must confirm
+units.archer.defendingEfficiency,M-unit-archer-defendingEfficiency-fixed-counts.json,"[""0.75"", ""0.5"", ""1"", ""1.25"", ""1.5"", ""1.75"", ""2""]",planned; current validator must confirm
+units.archer.cost,M-unit-archer-cost-fixed-counts.json,"[70, 35, 53, 105, 140]",planned; current validator must confirm
+units.archer.cost,M-unit-archer-cost-fixed-budget.json,"[70, 35, 53, 105, 140]",planned; current validator must confirm
+units.archer.capturable,M-unit-archer-capturable-fixed-counts.json,"[false, true]",planned; current validator must confirm
+units.knight.attack,M-unit-knight-attack-fixed-counts.json,"[""350"", ""175"", ""262.5"", ""525"", ""700""]",planned; current validator must confirm
+units.knight.structure,M-unit-knight-structure-fixed-counts.json,"[""250"", ""125"", ""187.5"", ""375"", ""500""]",planned; current validator must confirm
+units.knight.baseAccuracy,M-unit-knight-baseAccuracy-fixed-counts.json,"[""0.7"", ""0"", ""0.05"", ""0.1"", ""0.2"", ""0.35"", ""0.5"", ""0.9"", ""1""]",planned; current validator must confirm
+units.knight.accuracySpread,M-unit-knight-accuracySpread-fixed-counts.json,"[""0"", ""0.05"", ""0.1"", ""0.2"", ""0.4""]",planned; current validator must confirm
+units.knight.strikesPerAttack,M-unit-knight-strikesPerAttack-fixed-counts.json,"[5, 1, 2, 3, 8, 12, 16, 24, 32]",planned; current validator must confirm
+units.knight.defendingEfficiency,M-unit-knight-defendingEfficiency-fixed-counts.json,"[""1"", ""0.5"", ""0.75"", ""1.25"", ""1.5"", ""1.75"", ""2""]",planned; current validator must confirm
+units.knight.cost,M-unit-knight-cost-fixed-counts.json,"[550, 275, 413, 825, 1100]",planned; current validator must confirm
+units.knight.cost,M-unit-knight-cost-fixed-budget.json,"[550, 275, 413, 825, 1100]",planned; current validator must confirm
+units.knight.capturable,M-unit-knight-capturable-fixed-counts.json,"[false, true]",planned; current validator must confirm
+combat.maxRounds,M-combat-maxRounds.json,"[20, 1, 2, 3, 5, 10, 30]",planned; current validator must confirm
+combat.tieBreakCriterion,M-combat-tieBreakCriterion.json,"[""economic"", ""structure""]",planned; current validator must confirm
+combat.equalityPolicy,M-combat-equalityPolicy.json,"[""defender"", ""draw""]",planned; current validator must confirm
+combat.lossCompressionPercent,M-combat-lossCompressionPercent.json,"[5, 0, 25, 50, 75, 100]",planned; current validator must confirm
+combat.capturePercent,M-combat-capturePercent.json,"[24, 0, 10, 50, 100]",planned; current validator must confirm
+combat.woundDamageThreshold,M-combat-woundDamageThreshold.json,"[""0.2"", ""0"", ""0.01"", ""0.05"", ""0.1"", ""0.3"", ""0.5"", ""0.75"", ""1""]",planned; current validator must confirm
+combat.surrender,M-combat-surrender.json,"[{""enabled"": true, ""deadPercent"": 35}, {""enabled"": false}, {""enabled"": true, ""deadPercent"": 5}, {""enabled"": true, ""deadPercent"": 10}, {""enabled"": true, ""deadPercent"": 20}, {""enabled"": true, ""deadPercent"": 50}, {""enabled"": true, ""deadPercent"": 75}, {""enabled"": true, ""deadPercent"": 100}]",planned; current validator must confirm
+relations.soldier>spearman.factor,M-counter-soldier-spearman.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.soldier>archer.factor,M-counter-soldier-archer.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.soldier>knight.factor,M-counter-soldier-knight.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.spearman>soldier.factor,M-counter-spearman-soldier.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.spearman>archer.factor,M-counter-spearman-archer.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.spearman>knight.factor,M-counter-spearman-knight.json,"[""1.5"", ""0"", ""0.5"", ""1"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.archer>soldier.factor,M-counter-archer-soldier.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.archer>spearman.factor,M-counter-archer-spearman.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.archer>knight.factor,M-counter-archer-knight.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.knight>soldier.factor,M-counter-knight-soldier.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.knight>spearman.factor,M-counter-knight-spearman.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+relations.knight>archer.factor,M-counter-knight-archer.json,"[""1"", ""0"", ""0.5"", ""1.5"", ""2"", ""3"", ""5"", ""10""]",planned; current validator must confirm
+weather.neutral.soldier.attack,W-factor-neutral-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.soldier.baseAccuracy,W-factor-neutral-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.spearman.attack,W-factor-neutral-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.spearman.baseAccuracy,W-factor-neutral-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.archer.attack,W-factor-neutral-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.archer.baseAccuracy,W-factor-neutral-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.knight.attack,W-factor-neutral-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.neutral.knight.baseAccuracy,W-factor-neutral-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.soldier.attack,W-factor-cloudy-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.soldier.baseAccuracy,W-factor-cloudy-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.spearman.attack,W-factor-cloudy-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.spearman.baseAccuracy,W-factor-cloudy-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.archer.attack,W-factor-cloudy-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.archer.baseAccuracy,W-factor-cloudy-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.knight.attack,W-factor-cloudy-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.cloudy.knight.baseAccuracy,W-factor-cloudy-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.soldier.attack,W-factor-snow-soldier-attack.json,"[""0.75"", ""0"", ""0.25"", ""0.5"", ""0.875"", ""1""]",planned; current validator must confirm
+weather.snow.soldier.baseAccuracy,W-factor-snow-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.spearman.attack,W-factor-snow-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.spearman.baseAccuracy,W-factor-snow-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.archer.attack,W-factor-snow-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.archer.baseAccuracy,W-factor-snow-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.knight.attack,W-factor-snow-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.snow.knight.baseAccuracy,W-factor-snow-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.soldier.attack,W-factor-blizzard-soldier-attack.json,"[""0.875"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""1""]",planned; current validator must confirm
+weather.blizzard.soldier.baseAccuracy,W-factor-blizzard-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.spearman.attack,W-factor-blizzard-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.spearman.baseAccuracy,W-factor-blizzard-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.archer.attack,W-factor-blizzard-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.archer.baseAccuracy,W-factor-blizzard-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.knight.attack,W-factor-blizzard-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.blizzard.knight.baseAccuracy,W-factor-blizzard-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.soldier.attack,W-factor-heat-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.soldier.baseAccuracy,W-factor-heat-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.spearman.attack,W-factor-heat-spearman-attack.json,"[""0.875"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""1""]",planned; current validator must confirm
+weather.heat.spearman.baseAccuracy,W-factor-heat-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.archer.attack,W-factor-heat-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.archer.baseAccuracy,W-factor-heat-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.knight.attack,W-factor-heat-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.heat.knight.baseAccuracy,W-factor-heat-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.soldier.attack,W-factor-canicule-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.soldier.baseAccuracy,W-factor-canicule-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.spearman.attack,W-factor-canicule-spearman-attack.json,"[""0.75"", ""0"", ""0.25"", ""0.5"", ""0.875"", ""1""]",planned; current validator must confirm
+weather.canicule.spearman.baseAccuracy,W-factor-canicule-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.archer.attack,W-factor-canicule-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.archer.baseAccuracy,W-factor-canicule-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.knight.attack,W-factor-canicule-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.canicule.knight.baseAccuracy,W-factor-canicule-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.soldier.attack,W-factor-wind-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.soldier.baseAccuracy,W-factor-wind-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.spearman.attack,W-factor-wind-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.spearman.baseAccuracy,W-factor-wind-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.archer.attack,W-factor-wind-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.archer.baseAccuracy,W-factor-wind-archer-baseAccuracy.json,"[""0.875"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""1""]",planned; current validator must confirm
+weather.wind.knight.attack,W-factor-wind-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.wind.knight.baseAccuracy,W-factor-wind-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.soldier.attack,W-factor-storm-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.soldier.baseAccuracy,W-factor-storm-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.spearman.attack,W-factor-storm-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.spearman.baseAccuracy,W-factor-storm-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.archer.attack,W-factor-storm-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.archer.baseAccuracy,W-factor-storm-archer-baseAccuracy.json,"[""0.75"", ""0"", ""0.25"", ""0.5"", ""0.875"", ""1""]",planned; current validator must confirm
+weather.storm.knight.attack,W-factor-storm-knight-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.storm.knight.baseAccuracy,W-factor-storm-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.soldier.attack,W-factor-rain-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.soldier.baseAccuracy,W-factor-rain-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.spearman.attack,W-factor-rain-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.spearman.baseAccuracy,W-factor-rain-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.archer.attack,W-factor-rain-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.archer.baseAccuracy,W-factor-rain-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.rain.knight.attack,W-factor-rain-knight-attack.json,"[""0.875"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""1""]",planned; current validator must confirm
+weather.rain.knight.baseAccuracy,W-factor-rain-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.soldier.attack,W-factor-thunderstorm-soldier-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.soldier.baseAccuracy,W-factor-thunderstorm-soldier-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.spearman.attack,W-factor-thunderstorm-spearman-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.spearman.baseAccuracy,W-factor-thunderstorm-spearman-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.archer.attack,W-factor-thunderstorm-archer-attack.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.archer.baseAccuracy,W-factor-thunderstorm-archer-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm
+weather.thunderstorm.knight.attack,W-factor-thunderstorm-knight-attack.json,"[""0.75"", ""0"", ""0.25"", ""0.5"", ""0.875"", ""1""]",planned; current validator must confirm
+weather.thunderstorm.knight.baseAccuracy,W-factor-thunderstorm-knight-baseAccuracy.json,"[""1"", ""0"", ""0.25"", ""0.5"", ""0.75"", ""0.875""]",planned; current validator must confirm

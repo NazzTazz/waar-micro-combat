@@ -28,11 +28,11 @@ final class CombatReplay
             'seed' => $snapshot['seed'],
             'traceLevel' => $snapshot['traceLevel'],
         ];
-        $protocol=$snapshot['stochasticEngineVersion']??null;
-        if($protocol===\App\Game\Random\AddressedRandom::VERSION){
-            $request['stochasticEngineVersion']=$protocol;
-            $request['armyIdentities']=$snapshot['armyIdentities']??null;
-        } elseif($protocol!==\App\Game\Random\StochasticEngineVersion::Lcg31NormalApproximationV1->value || array_key_exists('armyIdentities',$snapshot)) {
+        $protocol = $snapshot['stochasticEngineVersion'] ?? null;
+        if ($protocol === \App\Game\Random\AddressedRandom::VERSION) {
+            $request['stochasticEngineVersion'] = $protocol;
+            $request['armyIdentities'] = $snapshot['armyIdentities'] ?? null;
+        } elseif ($protocol !== \App\Game\Random\StochasticEngineVersion::Lcg31NormalApproximationV1->value || array_key_exists('armyIdentities', $snapshot)) {
             throw new \InvalidArgumentException('Unsupported replay stochastic protocol.');
         }
         foreach (['attacker', 'defender'] as $side) {
@@ -43,7 +43,7 @@ final class CombatReplay
             if (!in_array($settings['policyVersion'] ?? null, [ConsequencePolicy::VERSION, ConsequencePolicy::PROBABILISTIC_VERSION, ConsequencePolicy::ADDRESSED_VERSION], true)) {
                 throw new \InvalidArgumentException('Unsupported replay consequence policy.');
             }
-            $request['consequences'] = ['policyVersion'=>$settings['policyVersion'], 'compressionPercent' => $settings['compressionPercent'], 'capturePercent' => $settings['capturePercent']];
+            $request['consequences'] = ['policyVersion' => $settings['policyVersion'], 'compressionPercent' => $settings['compressionPercent'], 'capturePercent' => $settings['capturePercent']];
         }
         return $request;
     }

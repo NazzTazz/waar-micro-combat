@@ -43,10 +43,17 @@ final readonly class TargetPreferenceMatrix
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
-        $known=array_map(static fn(UnitType $type)=>$type->value,UnitType::cases());if(array_diff(array_keys($data),$known))throw new \InvalidArgumentException('Unknown targeting row.');
+        $known = array_map(static fn (UnitType $type) => $type->value, UnitType::cases());
+        if (array_diff(array_keys($data), $known)) {
+            throw new \InvalidArgumentException('Unknown targeting row.');
+        }
         $weights = [];
         foreach (UnitType::cases() as $attacker) {
-            $row=(array)($data[$attacker->value]??[]);if(array_diff(array_keys($row),['weights'])||!is_array($row['weights']??null)||array_diff(array_keys($row['weights']),$known))throw new \InvalidArgumentException('Invalid targeting row.');$weights[$attacker->value]=$row['weights'];
+            $row = (array)($data[$attacker->value] ?? []);
+            if (array_diff(array_keys($row), ['weights']) || !is_array($row['weights'] ?? null) || array_diff(array_keys($row['weights']), $known)) {
+                throw new \InvalidArgumentException('Invalid targeting row.');
+            }
+            $weights[$attacker->value] = $row['weights'];
         }
         return new self($weights);
     }

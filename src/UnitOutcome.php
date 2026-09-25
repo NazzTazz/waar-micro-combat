@@ -12,7 +12,8 @@ final readonly class UnitOutcome
         public int $initialStructureMicro,
         public int $remainingStructureMicro,
         public int $cost,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, int|string> */
     public function toArray(): array

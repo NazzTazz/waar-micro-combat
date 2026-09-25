@@ -41,8 +41,8 @@ final class CombatResolver
             $this->apply($states[CombatSide::Defender->value], $attackerDamage);
             $this->apply($states[CombatSide::Attacker->value], $defenderDamage);
             if (null !== $onRound) {
-                $onRound(['number'=>$round, 'before'=>$before, 'after'=>$this->traceStates($states),
-                    'attacks'=>['attacker'=>$attackerContributions, 'defender'=>$defenderContributions]]);
+                $onRound(['number' => $round, 'before' => $before, 'after' => $this->traceStates($states),
+                    'attacks' => ['attacker' => $attackerContributions, 'defender' => $defenderContributions]]);
             }
             $rounds[] = [
                 'number' => $round,
@@ -129,14 +129,14 @@ final class CombatResolver
                 $contribution = FixedPoint::mulDivNearest($exposed, $ruleset->damageFactor($actingType, $targetType), FixedPoint::SCALE);
                 $damage[$targetType->value] = FixedPoint::checkedAdd($damage[$targetType->value], $contribution);
                 if (null !== $contributions) {
-                    $contributions[] = ['source'=>$actingType->value, 'target'=>$targetType->value,
-                        'sourceCount'=>$source['survivors'], 'targetCount'=>$exposedCount, 'totalTargetCount'=>$targetCount,
-                        'unitAttackMicro'=>$source['unit']->attackMicro,
-                        'damagePerTargetMicro'=>FixedPoint::mulDivNearest($contribution,1,$exposedCount),
-                        'baseAttackMicro'=>$basePressure, 'defendingFactorMicro'=>$roleFactor,
-                        'afterDefenseMicro'=>$rolePressure, 'randomFactorMicro'=>$randomFactorMicro,
-                        'afterRandomMicro'=>$pressure, 'exposedAttackMicro'=>$exposed,
-                        'counterFactorMicro'=>$ruleset->damageFactor($actingType, $targetType), 'damageMicro'=>$contribution];
+                    $contributions[] = ['source' => $actingType->value, 'target' => $targetType->value,
+                        'sourceCount' => $source['survivors'], 'targetCount' => $exposedCount, 'totalTargetCount' => $targetCount,
+                        'unitAttackMicro' => $source['unit']->attackMicro,
+                        'damagePerTargetMicro' => FixedPoint::mulDivNearest($contribution, 1, $exposedCount),
+                        'baseAttackMicro' => $basePressure, 'defendingFactorMicro' => $roleFactor,
+                        'afterDefenseMicro' => $rolePressure, 'randomFactorMicro' => $randomFactorMicro,
+                        'afterRandomMicro' => $pressure, 'exposedAttackMicro' => $exposed,
+                        'counterFactorMicro' => $ruleset->damageFactor($actingType, $targetType), 'damageMicro' => $contribution];
                 }
             }
         }
@@ -147,13 +147,15 @@ final class CombatResolver
     /** Optional diagnostic snapshot, never used to resolve combat. */
     private function traceStates(array $states): array
     {
-        $snapshot=[];
-        foreach ($states as $side=>$units) foreach ($units as $type=>$row) {
-            $attack=FixedPoint::checkedMultiply($row['survivors'],$row['unit']->attackMicro);
-            $factor=$side===CombatSide::Defender->value?$row['unit']->defendingEfficiencyMicro:FixedPoint::SCALE;
-            $snapshot[$side][$type]=['count'=>$row['survivors'], 'attackMicro'=>$attack,
-                'defendingFactorMicro'=>$factor, 'effectiveAttackMicro'=>FixedPoint::mulDivNearest($attack,$factor,FixedPoint::SCALE),
-                'structureMicro'=>$row['remainingStructureMicro']];
+        $snapshot = [];
+        foreach ($states as $side => $units) {
+            foreach ($units as $type => $row) {
+                $attack = FixedPoint::checkedMultiply($row['survivors'], $row['unit']->attackMicro);
+                $factor = $side === CombatSide::Defender->value ? $row['unit']->defendingEfficiencyMicro : FixedPoint::SCALE;
+                $snapshot[$side][$type] = ['count' => $row['survivors'], 'attackMicro' => $attack,
+                    'defendingFactorMicro' => $factor, 'effectiveAttackMicro' => FixedPoint::mulDivNearest($attack, $factor, FixedPoint::SCALE),
+                    'structureMicro' => $row['remainingStructureMicro']];
+            }
         }
         return $snapshot;
     }

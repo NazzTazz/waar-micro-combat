@@ -1,0 +1,286 @@
+{
+    "schemaVersion": "waar-campaign-segments/1",
+    "status": "previewed",
+    "combatsExecuted": 0,
+    "sourcePlans": [
+        "M-combat-woundDamageThreshold",
+        "M-combat-surrender",
+        "M-combat-maxRounds",
+        "M-combat-lossCompressionPercent",
+        "X-simplex"
+    ],
+    "segments": 27,
+    "combats": 5700000,
+    "rows": [
+        {
+            "source": "M-combat-woundDamageThreshold.json",
+            "segment": "M-combat-woundDamageThreshold-b12000.json",
+            "scenarioCount": 10,
+            "configurations": 90,
+            "directions": 180,
+            "combats": 360000,
+            "maxCombats": 360000,
+            "sha256": "2247b85b90c4571ca62ec28d2af5eb2e5ea6b66f5a51eb9c068ca31c6319af00"
+        },
+        {
+            "source": "M-combat-woundDamageThreshold.json",
+            "segment": "M-combat-woundDamageThreshold-b120000.json",
+            "scenarioCount": 10,
+            "configurations": 90,
+            "directions": 180,
+            "combats": 360000,
+            "maxCombats": 360000,
+            "sha256": "f6db4b315dce021e71b5ed3a48031a8ed97a35bf96c4a91ce93b98d8a3c78df9"
+        },
+        {
+            "source": "M-combat-woundDamageThreshold.json",
+            "segment": "M-combat-woundDamageThreshold-b360000.json",
+            "scenarioCount": 10,
+            "configurations": 90,
+            "directions": 180,
+            "combats": 360000,
+            "maxCombats": 360000,
+            "sha256": "ad5d7d0ef11c176fe082ba11797faf76702efa3e6f374610c52c314de4d12170"
+        },
+        {
+            "source": "M-combat-surrender.json",
+            "segment": "M-combat-surrender-b12000.json",
+            "scenarioCount": 10,
+            "configurations": 80,
+            "directions": 160,
+            "combats": 320000,
+            "maxCombats": 320000,
+            "sha256": "1a98c56cd9daab6246b82844c388d0ecf900740e0403d5061b250d91c1ce60a4"
+        },
+        {
+            "source": "M-combat-surrender.json",
+            "segment": "M-combat-surrender-b120000.json",
+            "scenarioCount": 10,
+            "configurations": 80,
+            "directions": 160,
+            "combats": 320000,
+            "maxCombats": 320000,
+            "sha256": "90c151c6547dd61136ca9dff30a18efce07ec9fde8cfab326f1ba0a16608c4f1"
+        },
+        {
+            "source": "M-combat-surrender.json",
+            "segment": "M-combat-surrender-b360000.json",
+            "scenarioCount": 10,
+            "configurations": 80,
+            "directions": 160,
+            "combats": 320000,
+            "maxCombats": 320000,
+            "sha256": "397d3be17d165767874fa1d1707b5ec921b067a2520e7cb3434dc6f61ed2f8a9"
+        },
+        {
+            "source": "M-combat-maxRounds.json",
+            "segment": "M-combat-maxRounds-b12000.json",
+            "scenarioCount": 10,
+            "configurations": 70,
+            "directions": 140,
+            "combats": 280000,
+            "maxCombats": 280000,
+            "sha256": "4395db946858dd823f766edb7c5fbcea7b3172ed530bef69c46c427d5cbd5759"
+        },
+        {
+            "source": "M-combat-maxRounds.json",
+            "segment": "M-combat-maxRounds-b120000.json",
+            "scenarioCount": 10,
+            "configurations": 70,
+            "directions": 140,
+            "combats": 280000,
+            "maxCombats": 280000,
+            "sha256": "0005fba7fef797bda75a51e7c46a5ccb532bc479f275dfe8455c70f3c0107d1e"
+        },
+        {
+            "source": "M-combat-maxRounds.json",
+            "segment": "M-combat-maxRounds-b360000.json",
+            "scenarioCount": 10,
+            "configurations": 70,
+            "directions": 140,
+            "combats": 280000,
+            "maxCombats": 280000,
+            "sha256": "60db9268f77f2292defe48d8ee32c83acf63020dbc046494a4fc420efb4b581a"
+        },
+        {
+            "source": "M-combat-lossCompressionPercent.json",
+            "segment": "M-combat-lossCompressionPercent-b12000.json",
+            "scenarioCount": 10,
+            "configurations": 60,
+            "directions": 120,
+            "combats": 240000,
+            "maxCombats": 240000,
+            "sha256": "a0316cd3105b0928be3a11579896e4c948bf47c843dd81b7341c1a57795f624b"
+        },
+        {
+            "source": "M-combat-lossCompressionPercent.json",
+            "segment": "M-combat-lossCompressionPercent-b120000.json",
+            "scenarioCount": 10,
+            "configurations": 60,
+            "directions": 120,
+            "combats": 240000,
+            "maxCombats": 240000,
+            "sha256": "6f4ec7121da1b3953eadd7eabb84f4a9355518fc19f0fdc8d7f9ab3b5e34e1c4"
+        },
+        {
+            "source": "M-combat-lossCompressionPercent.json",
+            "segment": "M-combat-lossCompressionPercent-b360000.json",
+            "scenarioCount": 10,
+            "configurations": 60,
+            "directions": 120,
+            "combats": 240000,
+            "maxCombats": 240000,
+            "sha256": "23feaeacee9ea11cf97a0f62d50f42a35f691045190fea63a51e904d0646e130"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b12000-vs-archer.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "098c90909399c00f756b76c232ee0c5917ef1154abf7b65d4915d239c209417c"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b12000-vs-balanced.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "8dba7e7ca813aa0174ee34a867c6a64a0d3ff9facd8fee1fe26c3c712393383f"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b12000-vs-knight.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "ea87b7fd3f84ecadf716355826190d4da99b46842d09cb86ebf778a597417c3b"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b12000-vs-soldier.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "d8d6110eda9cecfc94c504cdf15f834ef2c8408b09f547b65d0d5e19ea90fd76"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b12000-vs-spearman.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "4e8b8be19fcd094697ab7a859485de94209fa954106b8276b53ddff2533b685d"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b120000-vs-archer.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "8f6732100c38bfb3882962467d331f76ed45c0558e3660362be442d5253bbad1"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b120000-vs-balanced.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "fb98dc51491aceafc77ed613b3aa1ff59797a6ce430575b7fc6bb12cbecab624"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b120000-vs-knight.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "a1f14a56e04e6229e9bfed5db5729572eac4da3e4803198dc9b12d8935a3cc7f"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b120000-vs-soldier.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "e5e2a96f25672bf1dcc571626a5946739dcae28c58a9743da67727a6c88729ba"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b120000-vs-spearman.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "540b3db6841651b0f7cde729b1fbf7af861617cbbdc16c5890366f96429820c0"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b360000-vs-archer.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "af4539a9f6af9788d6026960b3d7e8198d9ae9a1941f9dbe9cedc80e005936c9"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b360000-vs-balanced.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "2fb3a20858a9e738b884fddf9fe03613043e2ca5d066a2699e68740de0ad44b9"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b360000-vs-knight.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "3fee42a559a05cdf4848da8ce73a89e4ef7413d575f0082e6a8d930fd0233950"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b360000-vs-soldier.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "bc4f34e781bd634dfe6ce00b0f3eaab21979a5182349407b37606e51b06e7dd4"
+        },
+        {
+            "source": "X-simplex.json",
+            "segment": "X-simplex-b360000-vs-spearman.json",
+            "scenarioCount": 35,
+            "configurations": 35,
+            "directions": 70,
+            "combats": 140000,
+            "maxCombats": 140000,
+            "sha256": "894ccff9338f4bd309a17789b5c5d67fbbca6db31e96952c70afea0e8e712409"
+        }
+    ]
+}

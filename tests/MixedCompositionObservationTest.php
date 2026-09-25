@@ -88,7 +88,9 @@ final class MixedCompositionObservationTest extends TestCase
         }
         try {
             $events = [];
-            $result = (new MixedCompositionObservationRunner())->run($plan, $temporary, static function (int $index, int $count) use (&$events): void { $events[] = [$index, $count]; });
+            $result = (new MixedCompositionObservationRunner())->run($plan, $temporary, static function (int $index, int $count) use (&$events): void {
+                $events[] = [$index, $count];
+            });
             self::assertSame('completed', $result['state']);
             self::assertSame(72, $result['execution']['actualCombatCount']);
             self::assertSame(108, $result['execution']['logicalComparisonCombatCount']);
@@ -154,7 +156,9 @@ final class MixedCompositionObservationTest extends TestCase
         $expected = $this->json($this->root.'/experiments/references/t34-mixed-composition-observation/observation-plan.json');
         unset($expected['frozenCopies']);
         $plan['corpus']['sourcePath'] = $expected['corpus']['sourcePath'];
-        foreach ($plan['variants'] as $index => &$variant) $variant['sourcePath'] = $expected['variants'][$index]['sourcePath'];
+        foreach ($plan['variants'] as $index => &$variant) {
+            $variant['sourcePath'] = $expected['variants'][$index]['sourcePath'];
+        }
         unset($variant);
         self::assertSame($expected, $plan);
     }
@@ -198,11 +202,16 @@ final class MixedCompositionObservationTest extends TestCase
                             $field = &$result;
                         }
                         $key = 'planLink' === $location ? 'planSha256' : 'sha256';
-                        if (null === $invalid) unset($field[$key]);
-                        else $field[$key] = $invalid;
+                        if (null === $invalid) {
+                            unset($field[$key]);
+                        } else {
+                            $field[$key] = $invalid;
+                        }
                         unset($field);
                         $this->writeJson($directory.'/validation-plan.json', $plan);
-                        if ('planLink' !== $location) $result['planSha256'] = hash_file('sha256', $directory.'/validation-plan.json');
+                        if ('planLink' !== $location) {
+                            $result['planSha256'] = hash_file('sha256', $directory.'/validation-plan.json');
+                        }
                         $this->writeJson($directory.'/result.json', $result);
                         $this->assertProvenanceRejected($directory, 'planLink' === $location ? 'T33 plan SHA-256' : 'candidate SHA-256');
                     } finally {
@@ -241,7 +250,8 @@ final class MixedCompositionObservationTest extends TestCase
             self::assertIsResource($process);
             $stdout = stream_get_contents($pipes[1]);
             $stderr = stream_get_contents($pipes[2]);
-            fclose($pipes[1]); fclose($pipes[2]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
             self::assertNotSame(0, proc_close($process));
             self::assertStringContainsString('T33 plan SHA-256', $stderr);
             self::assertStringNotContainsString('manifeste', $stderr);
@@ -256,10 +266,14 @@ final class MixedCompositionObservationTest extends TestCase
     {
         $directory = sys_get_temp_dir().'/waar-r1-'.bin2hex(random_bytes(6));
         mkdir($directory, 0777, true);
-        foreach (['validation-plan.json', 'result.json'] as $name) copy($this->t33.'/'.$name, $directory.'/'.$name);
+        foreach (['validation-plan.json', 'result.json'] as $name) {
+            copy($this->t33.'/'.$name, $directory.'/'.$name);
+        }
         foreach ($this->json($directory.'/validation-plan.json')['frozenCopies'] as $copy) {
             $path = $directory.'/'.$copy['path'];
-            if (!is_dir(dirname($path))) mkdir(dirname($path), 0777, true);
+            if (!is_dir(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
             copy($this->t33.'/'.$copy['path'], $path);
         }
         return $directory;

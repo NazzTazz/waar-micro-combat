@@ -20,7 +20,13 @@ fn run(input: &str) -> Result<Value, String> {
             );
             serde_json::from_str(&output).map_err(|e| e.to_string())
         }
-        _ => Err("operation must be resolve or batch".into()),
+        Some("campaignBatch") => {
+            let output = waar_cohort::resolve_v2_campaign_batch_json(
+                &serde_json::to_string(&request).map_err(|e| e.to_string())?,
+            );
+            serde_json::from_str(&output).map_err(|e| e.to_string())
+        }
+        _ => Err("operation must be resolve, batch or campaignBatch".into()),
     }
 }
 
@@ -50,7 +56,7 @@ mod tests {
             let input = format!("{prefix}{{\"operation\":\"oops\",\"request\":{{}}}}");
             assert_eq!(
                 run(&input).unwrap_err(),
-                "operation must be resolve or batch"
+                "operation must be resolve, batch or campaignBatch"
             );
         }
         assert!(run("not JSON").is_err());

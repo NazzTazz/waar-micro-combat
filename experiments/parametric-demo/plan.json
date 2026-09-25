@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../campagne-coeur/reference-profile.json",
+  "output": "../../reports/parametric-demo-final",
+  "sampling": {"repetitions": 4, "baseSeed": 42, "batchSize": 2},
+  "limits": {"maxCombats": 500},
+  "axes": {
+    "soldier-attack": {"path": "units.soldier.attack", "values": ["7", "9"]},
+    "archer-accuracy": {"path": "units.archer.baseAccuracy", "values": ["0.15", "0.25"]},
+    "surrender-state": {"path": "combat.surrender", "values": [
+      {"enabled": false},
+      {"enabled": true, "deadPercent": 35}
+    ]}
+  },
+  "crosses": {
+    "singles": true,
+    "pairs": [["soldier-attack", "archer-accuracy"]],
+    "triplets": [["soldier-attack", "archer-accuracy", "surrender-state"]]
+  },
+  "scenarios": [{
+    "id": "demo-mixed",
+    "directions": "both",
+    "weather": {"A": "neutral", "B": "wind"},
+    "modifiers": {"A": [], "B": []},
+    "armies": {
+      "A": {"mode": "budgetShares", "budget": 10000, "shares": {"soldier": 0.5, "archer": 0.5}, "fillRemainderWith": null},
+      "B": {"mode": "explicit", "units": {"soldier": 50, "spearman": 20, "archer": 10, "knight": 2}}
+    },
+    "compositionVariants": [
+      {"id": "reference", "operations": []},
+      {"id": "replace-archers-with-soldiers", "operations": [
+        {"camp": "B", "mode": "replaceBudget", "from": "archer", "to": "soldier", "count": 5}
+      ]}
+    ]
+  }]
+}

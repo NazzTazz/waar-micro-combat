@@ -92,7 +92,7 @@ namespace Waar\MicroCombat\Tests {
         public function testFailedFirstSaveLeavesNoPartialStore(): void
         {
             $store = new SharedProfiles($this->directory);
-            $GLOBALS['waarProfileRenameTestHook'] = static fn(): bool => false;
+            $GLOBALS['waarProfileRenameTestHook'] = static fn (): bool => false;
             try {
                 $store->save('First', EngineProfile::defaults());
                 self::fail('A failed first write must be reported.');
@@ -106,14 +106,15 @@ namespace Waar\MicroCombat\Tests {
 
         public function testLoadingAPreThresholdProfileNormalizesWithoutRewritingTheStore(): void
         {
-            mkdir($this->directory,0700,true);
-            $profile=EngineProfile::defaults();unset($profile['combat']['woundDamageThreshold']);
-            $row=['id'=>'legacy','name'=>'Legacy','createdAt'=>'2026-09-20T00:00:00Z','profile'=>$profile];
-            $document=json_encode(['legacy'=>$row],JSON_THROW_ON_ERROR);
-            file_put_contents($this->directory.'/profiles.json',$document);
-            $loaded=(new SharedProfiles($this->directory))->load('legacy');
-            self::assertSame('0',$loaded['profile']['combat']['woundDamageThreshold']);
-            self::assertSame($document,file_get_contents($this->directory.'/profiles.json'));
+            mkdir($this->directory, 0700, true);
+            $profile = EngineProfile::defaults();
+            unset($profile['combat']['woundDamageThreshold']);
+            $row = ['id' => 'legacy', 'name' => 'Legacy', 'createdAt' => '2026-09-20T00:00:00Z', 'profile' => $profile];
+            $document = json_encode(['legacy' => $row], JSON_THROW_ON_ERROR);
+            file_put_contents($this->directory.'/profiles.json', $document);
+            $loaded = (new SharedProfiles($this->directory))->load('legacy');
+            self::assertSame('0', $loaded['profile']['combat']['woundDamageThreshold']);
+            self::assertSame($document, file_get_contents($this->directory.'/profiles.json'));
         }
     }
 }

@@ -27,7 +27,9 @@ final readonly class EngagementRule
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
-        if($unknown=array_diff(array_keys($data),['attackFactor','isProvisional','extraBallChance']))throw new \InvalidArgumentException('Unknown engagement field: '.reset($unknown));
+        if ($unknown = array_diff(array_keys($data), ['attackFactor', 'isProvisional', 'extraBallChance'])) {
+            throw new \InvalidArgumentException('Unknown engagement field: '.reset($unknown));
+        }
         if (array_key_exists('extraBallChance', $data)) {
             throw new \InvalidArgumentException('extraBallChance was removed in waar-cohort-v2; use strikesPerAttack.');
         }

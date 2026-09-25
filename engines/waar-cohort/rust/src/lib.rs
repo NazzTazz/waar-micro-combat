@@ -205,6 +205,9 @@ pub fn resolve_v2_json(input: &str) -> String {
 pub fn resolve_v2_batch_json(input: &str) -> String {
     v2::resolve_batch_json(input)
 }
+pub fn resolve_v2_campaign_batch_json(input: &str) -> String {
+    v2::resolve_campaign_batch_json(input)
+}
 
 fn ffi_call(input_json: *const c_char, batch: bool) -> *mut c_char {
     let outcome = catch_unwind(AssertUnwindSafe(|| {
