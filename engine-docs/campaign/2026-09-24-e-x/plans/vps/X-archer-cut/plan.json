@@ -1,0 +1,4221 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/X-archer-cut",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 420000
+  },
+  "axes": {},
+  "crosses": {
+    "singles": true,
+    "pairs": [],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "x-archer-cut-00-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b12000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1200,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b12000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b12000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 171,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b12000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b12000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 300,
+            "spearman": 42,
+            "archer": 42,
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b120000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 12000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b120000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b120000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 1714,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b120000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b120000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 3000,
+            "spearman": 428,
+            "archer": 428,
+            "knight": 54
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-00-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.6,
+            "spearman": 0.2,
+            "archer": 0.0,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-01-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.5,
+            "spearman": 0.2,
+            "archer": 0.1,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-02-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.4,
+            "spearman": 0.2,
+            "archer": 0.2,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-03-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.3,
+            "spearman": 0.2,
+            "archer": 0.3,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-04-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.2,
+            "spearman": 0.2,
+            "archer": 0.4,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-05-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.1,
+            "spearman": 0.2,
+            "archer": 0.5,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b360000-vs-soldier",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 36000,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b360000-vs-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b360000-vs-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 5142,
+            "knight": 0
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b360000-vs-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "x-archer-cut-06-b360000-vs-balanced",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 0.0,
+            "spearman": 0.2,
+            "archer": 0.6,
+            "knight": 0.2
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 9000,
+            "spearman": 1285,
+            "archer": 1285,
+            "knight": 163
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ]
+}

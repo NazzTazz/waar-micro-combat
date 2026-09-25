@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/C3-spearman-defense-independent",
+  "sampling": {"repetitions": 8000, "baseSeed": 10000042, "batchSize": 100},
+  "limits": {"maxCombats": 32000},
+  "axes": {
+    "defense": {"path": "units.spearman.defendingEfficiency", "values": ["2", "1"]}
+  },
+  "crosses": {"singles": true, "pairs": [], "triplets": []},
+  "scenarios": [{
+    "id": "c3-spearman-n100", "directions": "both",
+    "weather": {"A": "neutral", "B": "neutral"},
+    "modifiers": {"A": [], "B": []},
+    "armies": {"A": {"mode": "explicit", "units": {"spearman": 100}}, "B": {"mode": "explicit", "units": {"spearman": 100}}},
+    "compositionVariants": [{"id": "reference", "operations": []}]
+  }]
+}

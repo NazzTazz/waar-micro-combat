@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="720" viewBox="0 0 900 720">
+<rect width="100%" height="100%" fill="#fbfcff"/>
+<text x="45" y="36" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#182233">X — archers remplacent des soldats</text>
+<text x="45" y="60" font-family="Arial,sans-serif" font-size="12" fill="#475569">Budget cible A 120 000 ; B mixte 25 % par type ; météo neutre</text>
+<text x="45" y="91" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#182233">Victoires A (%)</text>
+<line x1="95" y1="226" x2="795" y2="226" stroke="#d8e1ed"/>
+<text x="85" y="230" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">0.0</text>
+<line x1="95" y1="166" x2="795" y2="166" stroke="#d8e1ed"/>
+<text x="85" y="170" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">50.0</text>
+<line x1="95" y1="106" x2="795" y2="106" stroke="#d8e1ed"/>
+<text x="85" y="110" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">100.0</text>
+<circle cx="95.0" cy="203.0" r="3.5" fill="#2563eb"/>
+<circle cx="211.7" cy="107.6" r="3.5" fill="#2563eb"/>
+<circle cx="328.3" cy="106.0" r="3.5" fill="#2563eb"/>
+<circle cx="445.0" cy="106.0" r="3.5" fill="#2563eb"/>
+<circle cx="561.7" cy="189.6" r="3.5" fill="#2563eb"/>
+<circle cx="678.3" cy="222.2" r="3.5" fill="#2563eb"/>
+<circle cx="795.0" cy="226.0" r="3.5" fill="#2563eb"/>
+<polyline points="95.0,203.0 211.7,107.6 328.3,106.0 445.0,106.0 561.7,189.6 678.3,222.2 795.0,226.0" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="95.0" cy="106.2" r="3.5" fill="#dc2626"/>
+<circle cx="211.7" cy="118.8" r="3.5" fill="#dc2626"/>
+<circle cx="328.3" cy="180.3" r="3.5" fill="#dc2626"/>
+<circle cx="445.0" cy="223.8" r="3.5" fill="#dc2626"/>
+<circle cx="561.7" cy="226.0" r="3.5" fill="#dc2626"/>
+<circle cx="678.3" cy="226.0" r="3.5" fill="#dc2626"/>
+<circle cx="795.0" cy="226.0" r="3.5" fill="#dc2626"/>
+<polyline points="95.0,106.2 211.7,118.8 328.3,180.3 445.0,223.8 561.7,226.0 678.3,226.0 795.0,226.0" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<text x="45" y="284" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#182233">Rounds moyens</text>
+<line x1="95" y1="419" x2="795" y2="419" stroke="#d8e1ed"/>
+<text x="85" y="423" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">0.0</text>
+<line x1="95" y1="359" x2="795" y2="359" stroke="#d8e1ed"/>
+<text x="85" y="363" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">4.0</text>
+<line x1="95" y1="299" x2="795" y2="299" stroke="#d8e1ed"/>
+<text x="85" y="303" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">8.0</text>
+<circle cx="95.0" cy="308.1" r="3.5" fill="#2563eb"/>
+<circle cx="211.7" cy="329.0" r="3.5" fill="#2563eb"/>
+<circle cx="328.3" cy="344.0" r="3.5" fill="#2563eb"/>
+<circle cx="445.0" cy="359.0" r="3.5" fill="#2563eb"/>
+<circle cx="561.7" cy="359.0" r="3.5" fill="#2563eb"/>
+<circle cx="678.3" cy="374.0" r="3.5" fill="#2563eb"/>
+<circle cx="795.0" cy="374.0" r="3.5" fill="#2563eb"/>
+<polyline points="95.0,308.1 211.7,329.0 328.3,344.0 445.0,359.0 561.7,359.0 678.3,374.0 795.0,374.0" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="95.0" cy="329.0" r="3.5" fill="#dc2626"/>
+<circle cx="211.7" cy="341.4" r="3.5" fill="#dc2626"/>
+<circle cx="328.3" cy="344.0" r="3.5" fill="#dc2626"/>
+<circle cx="445.0" cy="344.2" r="3.5" fill="#dc2626"/>
+<circle cx="561.7" cy="359.0" r="3.5" fill="#dc2626"/>
+<circle cx="678.3" cy="374.0" r="3.5" fill="#dc2626"/>
+<circle cx="795.0" cy="374.0" r="3.5" fill="#dc2626"/>
+<polyline points="95.0,329.0 211.7,341.4 328.3,344.0 445.0,344.2 561.7,359.0 678.3,374.0 795.0,374.0" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<text x="45" y="477" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#182233">Morts physiques A (moyenne)</text>
+<line x1="95" y1="612" x2="795" y2="612" stroke="#d8e1ed"/>
+<text x="85" y="616" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">0.0</text>
+<line x1="95" y1="552" x2="795" y2="552" stroke="#d8e1ed"/>
+<text x="85" y="556" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">1427.0</text>
+<line x1="95" y1="492" x2="795" y2="492" stroke="#d8e1ed"/>
+<text x="85" y="496" text-anchor="end" font-family="Arial,sans-serif" font-size="11" fill="#52637a">2854.0</text>
+<circle cx="95.0" cy="492.1" r="3.5" fill="#2563eb"/>
+<circle cx="211.7" cy="519.1" r="3.5" fill="#2563eb"/>
+<circle cx="328.3" cy="537.1" r="3.5" fill="#2563eb"/>
+<circle cx="445.0" cy="555.0" r="3.5" fill="#2563eb"/>
+<circle cx="561.7" cy="554.0" r="3.5" fill="#2563eb"/>
+<circle cx="678.3" cy="574.3" r="3.5" fill="#2563eb"/>
+<circle cx="795.0" cy="583.7" r="3.5" fill="#2563eb"/>
+<polyline points="95.0,492.1 211.7,519.1 328.3,537.1 445.0,555.0 561.7,554.0 678.3,574.3 795.0,583.7" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+<circle cx="95.0" cy="512.7" r="3.5" fill="#dc2626"/>
+<circle cx="211.7" cy="527.9" r="3.5" fill="#dc2626"/>
+<circle cx="328.3" cy="529.0" r="3.5" fill="#dc2626"/>
+<circle cx="445.0" cy="527.3" r="3.5" fill="#dc2626"/>
+<circle cx="561.7" cy="548.6" r="3.5" fill="#dc2626"/>
+<circle cx="678.3" cy="572.4" r="3.5" fill="#dc2626"/>
+<circle cx="795.0" cy="586.6" r="3.5" fill="#dc2626"/>
+<polyline points="95.0,512.7 211.7,527.9 328.3,529.0 445.0,527.3 561.7,548.6 678.3,572.4 795.0,586.6" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+<text x="95.0" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">0</text>
+<text x="211.7" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">10</text>
+<text x="328.3" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">20</text>
+<text x="445.0" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">30</text>
+<text x="561.7" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">40</text>
+<text x="678.3" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">50</text>
+<text x="795.0" y="632" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#334155">60</text>
+<text x="95" y="680" font-family="Arial,sans-serif" font-size="12" fill="#2563eb">● A attaque B</text>
+<text x="240" y="680" font-family="Arial,sans-serif" font-size="12" fill="#dc2626">● B attaque A</text>
+<text x="45" y="707" font-family="Arial,sans-serif" font-size="11" fill="#52637a">Niveau = pourcentage du budget cible ; 2 000 combats par point et sens. Données et budgets exacts : CSV associé.</text>
+</svg>

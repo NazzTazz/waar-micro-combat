@@ -1,0 +1,661 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/D1-small-mirrors",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 80000
+  },
+  "axes": {},
+  "crosses": {
+    "singles": true,
+    "pairs": [],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "d1-soldier-n1",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 1
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-soldier-n5",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 5
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-soldier-n10",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 10
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 10
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-soldier-n50",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 50
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 50
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-soldier-n100",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 100
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 100
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-spearman-n1",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 1
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 1
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-spearman-n5",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 5
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-spearman-n10",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 10
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 10
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-spearman-n50",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 50
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 50
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-spearman-n100",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 100
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 100
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-archer-n1",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 1
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 1
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-archer-n5",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 5
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-archer-n10",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 10
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 10
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-archer-n50",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 50
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 50
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-archer-n100",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 100
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 100
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-knight-n1",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "knight": 1
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "knight": 1
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-knight-n5",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "knight": 5
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "knight": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-knight-n10",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "knight": 10
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "knight": 10
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-knight-n50",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "knight": 50
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "knight": 50
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d1-knight-n100",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "knight": 100
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "knight": 100
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ]
+}

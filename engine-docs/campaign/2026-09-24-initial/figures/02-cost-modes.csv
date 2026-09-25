@@ -1,0 +1,11 @@
+archer_cost,mode,experiment_id,scenario_id,direction,samples,A_wins,A_win_rate_percent,mean_rounds,A_spearmen,B_archers,budget_A,budget_B,A_raw_dead_mean,B_raw_dead_mean
+35,fixed-counts,a4ef23c4666c8333c67e0986,mono-b120000-spearman-archer,A-B,2000,1937,96.85,7,1714,1714,119980,59990,1117.74,790.8055
+35,fixed-budget,4199fb82d4010b2db750fee1,mono-b120000-spearman-archer,A-B,2000,0,0,4,1714,3428,119980,119980,1714,0
+53,fixed-counts,0906559a0aea2140632bde46,mono-b120000-spearman-archer,A-B,2000,167,8.35,7,1714,1714,119980,90842,1117.74,790.8055
+53,fixed-budget,28b2b059dc885f854bf32de6,mono-b120000-spearman-archer,A-B,2000,0,0,5,1714,2264,119980,119992,865.1745,43.1835
+70,fixed-counts,e03c8d62aa94aae4fc0f13f1,mono-b120000-spearman-archer,A-B,2000,0,0,7,1714,1714,119980,119980,1117.74,790.8055
+70,fixed-budget,784540a28b255b12e68fd3da,mono-b120000-spearman-archer,A-B,2000,0,0,7,1714,1714,119980,119980,1117.74,790.8055
+105,fixed-counts,022fa585fe5801ed56901d77,mono-b120000-spearman-archer,A-B,2000,0,0,7,1714,1714,119980,179970,1117.74,790.8055
+105,fixed-budget,26e0c19c7df363769ad8af4a,mono-b120000-spearman-archer,A-B,2000,2000,100,5,1714,1142,119980,119910,0.01,677.0825
+140,fixed-counts,d5ffb97db0e89b94615f0f42,mono-b120000-spearman-archer,A-B,2000,0,0,7,1714,1714,119980,239960,1117.74,790.8055
+140,fixed-budget,db74e6a1e90a744daf42eedb,mono-b120000-spearman-archer,A-B,2000,2000,100,4,1714,857,119980,119980,0,567.422

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../../reports/campaign-manual-sol/profile.json",
+  "output": "../../reports/campagne-coeur/D4-decision-rules",
+  "sampling": {"repetitions": 2000, "baseSeed": 42, "batchSize": 100},
+  "limits": {"maxCombats": 96000},
+  "axes": {
+    "criterion": {"path": "combat.tieBreakCriterion", "values": ["economic", "structure"]},
+    "equality": {"path": "combat.equalityPolicy", "values": ["defender", "draw"]},
+    "rounds": {"path": "combat.maxRounds", "values": [20, 1, 2]}
+  },
+  "crosses": {"singles": true, "pairs": [], "triplets": [["criterion", "equality", "rounds"]]},
+  "scenarios": [
+    {
+      "id": "d4-exact-equality",
+      "directions": "both",
+      "weather": {"A": "neutral", "B": "neutral"},
+      "modifiers": {
+        "A": [{"source": "diagnostic", "id": "zero-attack", "label": "Aucun dégât pour égalité exacte", "unitType": "soldier", "parameter": "attack", "operation": "multiply", "value": "0"}],
+        "B": [{"source": "diagnostic", "id": "zero-attack", "label": "Aucun dégât pour égalité exacte", "unitType": "soldier", "parameter": "attack", "operation": "multiply", "value": "0"}]
+      },
+      "armies": {
+        "A": {"mode": "explicit", "units": {"soldier": 1}},
+        "B": {"mode": "explicit", "units": {"soldier": 1}}
+      },
+      "compositionVariants": [{"id": "reference", "operations": []}]
+    },
+    {
+      "id": "d4-asymmetric-one-on-one",
+      "directions": "both",
+      "weather": {"A": "neutral", "B": "neutral"},
+      "modifiers": {"A": [], "B": []},
+      "armies": {
+        "A": {"mode": "explicit", "units": {"archer": 1}},
+        "B": {"mode": "explicit", "units": {"spearman": 1}}
+      },
+      "compositionVariants": [{"id": "reference", "operations": []}]
+    }
+  ]
+}

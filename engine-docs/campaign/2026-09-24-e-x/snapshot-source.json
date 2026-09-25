@@ -1,0 +1,299 @@
+﻿{
+    "remoteAfterAtUtc":  "2026-09-24T20:27:49.943002+00:00",
+    "startedAtUtc":  "2026-09-24T20:26:06.593017+00:00",
+    "finishedAtUtc":  "2026-09-24T20:27:54.3411803Z",
+    "pc":  [
+
+           ],
+    "schemaVersion":  "waar-analysis-snapshot/1",
+    "remoteRoot":  "/home/debian/waar-campaign/results",
+    "remoteBefore":  [
+                         {
+                             "path":  "E-add-archer",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26787680,
+                             "listingSha256":  "4a89b1ea2c1ba16eee9bac749d23dc225a59630d2c1a4bbcb3ea382e71103bef",
+                             "coreSha256":  {
+                                                "manifest.json":  "c4d6cccd4f0b606f727c39a5997dbbebefda59617fb68122753b48824faac4db",
+                                                "plan.json":  "311039915235fd4abd451d66367fd1d13015a9cfb41b3b6d21c498e6e3c24856",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "49f0a3b4e377c2a72187cc2272ebf7d4722e943f4a792d65e95f9a525466de31"
+                                            }
+                         },
+                         {
+                             "path":  "E-add-knight",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26752064,
+                             "listingSha256":  "1b34a5c3b34f2680920d08b635a9df20ea34010ab3322d7fe062679cbb99a945",
+                             "coreSha256":  {
+                                                "manifest.json":  "58b8ceb6b17353a983eb351ec5f45c78ccb9751f7ee8beef800732d1cce7f272",
+                                                "plan.json":  "c83d787c843bdd67b177c1f69cd6cb44240dfb6cf72821dbe7dcb79bd83cef7a",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "21428d05f486cbffabed0ffed0d828c0d9c6edf2701ac6caadaad6389ea852e7"
+                                            }
+                         },
+                         {
+                             "path":  "E-add-spearman",
+                             "completedCombats":  336000,
+                             "fileCount":  1769,
+                             "totalBytes":  26794656,
+                             "listingSha256":  "a74ca92bd75834363f6854919210c9317785774f3da97ed9da0a8efd65c7b3c2",
+                             "coreSha256":  {
+                                                "manifest.json":  "223c652e294338bbca91248f87c2cb557b92b2110ad5b0d5db6c82af2ad196a3",
+                                                "plan.json":  "b810673868667038478643644a9581428d81af4e03ecd90aa203494aabf59407",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "a583cca6fdc525e4cd59c9f9ffb22c65af91b19e7e452405d383de979963f776"
+                                            }
+                         },
+                         {
+                             "path":  "E-replace-archer",
+                             "completedCombats":  480000,
+                             "fileCount":  2525,
+                             "totalBytes":  38296856,
+                             "listingSha256":  "4eb46017197861743c8d589ac23d753e89c9d109fcdfcb957ec0278db5340417",
+                             "coreSha256":  {
+                                                "manifest.json":  "c6d290d7d379b8d49235951b1b305e36a979b1136d458ef001ea701b5bef38ff",
+                                                "plan.json":  "da632e5408718b41ca35054f8d0e65b2df6b34b90ee4a8d3fd6dd93000c516e9",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "bbf00bf1262fcd881d61d0a4d7868425d459cf4e03af38b3782b953be4e43cff"
+                                            }
+                         },
+                         {
+                             "path":  "E-replace-knight",
+                             "completedCombats":  480000,
+                             "fileCount":  2525,
+                             "totalBytes":  38253365,
+                             "listingSha256":  "4c529587bb2ce0cc04edfe14ddd8748216ef35c84cae2364b19f62cdf55bb1ce",
+                             "coreSha256":  {
+                                                "manifest.json":  "00fe4d616dce7da1d3947ab799e65281738732e46bd2618cacd36de71b494346",
+                                                "plan.json":  "e0a66bf03ba05e31b7fb257ed7c5c64149bcb88573393c39456e557d611dcaf3",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "b1e95bcfd3f507a43ddc5487ca63fbd55cc97aa8604d21367067204280047bcd"
+                                            }
+                         },
+                         {
+                             "path":  "E-replace-spearman",
+                             "completedCombats":  480000,
+                             "fileCount":  2525,
+                             "totalBytes":  38298140,
+                             "listingSha256":  "b748f8666df6152c926bcc49060301fcb5a05d612f07b6b6484c2cf03e422049",
+                             "coreSha256":  {
+                                                "manifest.json":  "e6e46d9d56aba312aa6d5c645fed3686b64439d5f3ffab7eee052cfd27975470",
+                                                "plan.json":  "0fd13aaca39f6a579bf28c8b4d07e334803bd750d85b065be60e88dd67a117a3",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "0f5e33dbe6a1489bf4f2e4d5a8731884d7f74a4005fc5f08dea8f825242ca16b"
+                                            }
+                         },
+                         {
+                             "path":  "X-archer-cut",
+                             "completedCombats":  420000,
+                             "fileCount":  2210,
+                             "totalBytes":  33660493,
+                             "listingSha256":  "0a48b5efa5ccd1920758d8b816953294429adb05fdc343bccd7aa473d6d26b60",
+                             "coreSha256":  {
+                                                "manifest.json":  "f159e87e228c68209896e696bb638e03221f6dd7fdcd88c2e794e497144a41d5",
+                                                "plan.json":  "4fdb0a8eabacb97dca0fa1c2ab0c3f45040117905dad402864f579be27d39d58",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "a256d64e9e8bd49fb3082df8f30428b4497fcbeeb03fa711b33bc445045d23ab"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b12000-vs-archer",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11168295,
+                             "listingSha256":  "59460aff0441366a4d6dbeb322eef50805ccba1d0ee6d72a979012dd4d37b3b6",
+                             "coreSha256":  {
+                                                "manifest.json":  "4595f83e6ce5c80bfeecd2634cb619497332e9152fec735aadc3d1e97fb6278a",
+                                                "plan.json":  "098c90909399c00f756b76c232ee0c5917ef1154abf7b65d4915d239c209417c",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "208a66e3f4ad1a4e4c38d6002154109029a68d24ca7fc46253dde73419b59abe"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b12000-vs-balanced",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11219709,
+                             "listingSha256":  "0f0cbebec2255db48ff71fa7ea6d51f4f60ae707ec21e1b3e4368394378ad758",
+                             "coreSha256":  {
+                                                "manifest.json":  "a2b709ae86e82d8923bf7b6b87623ddf757322d462142b0f4505d08a4149ec86",
+                                                "plan.json":  "8dba7e7ca813aa0174ee34a867c6a64a0d3ff9facd8fee1fe26c3c712393383f",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "f9340411a351257c0c98ed62c97b3f93c8fe86bf9f1d631cc8fcd2e2d446e83e"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b12000-vs-knight",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11154840,
+                             "listingSha256":  "04f78c8fa2620767b7c1415c983ebb707c85d70c074a3da337786777d847b495",
+                             "coreSha256":  {
+                                                "manifest.json":  "4c1384fca4416a74374dd6748b1c1b158a30569a97ff7488b58289ba635c84de",
+                                                "plan.json":  "ea87b7fd3f84ecadf716355826190d4da99b46842d09cb86ebf778a597417c3b",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "28f02d61f92a90cb4578aed56246ac9db753eb2866c36449f548114b263516ba"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b12000-vs-soldier",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11181852,
+                             "listingSha256":  "a9ea1a236025281983ff163fb0dfa2ce65bf0527a10dfd8c2c4d5b0bb1c8633e",
+                             "coreSha256":  {
+                                                "manifest.json":  "dd48ca6acf0fe00c27dfc72fedbbef0f95529479281cef55497b7bcbac072307",
+                                                "plan.json":  "d8d6110eda9cecfc94c504cdf15f834ef2c8408b09f547b65d0d5e19ea90fd76",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "b7f57808cc7cbd27227a622a30cb027bf9ece470a2865658ed8db7bd22b9d11c"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b12000-vs-spearman",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11171451,
+                             "listingSha256":  "2c4fcf598724bcedf25a5888835880cd1cceebc4cafcbb769c327d2f04a8e25e",
+                             "coreSha256":  {
+                                                "manifest.json":  "b3eadbb89285bea814f5f68053529a7887634990aee8f7b1e1f344c288ef6e82",
+                                                "plan.json":  "4e8b8be19fcd094697ab7a859485de94209fa954106b8276b53ddff2533b685d",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "19f6bc3428194b2f0b721348acbf34f19ac663e8d03aa6ff6a5536b85248d7b3"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b120000-vs-archer",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11196190,
+                             "listingSha256":  "a1f9220965894867b98d1ab733fead7b2eabc46af1702efaf679298258c58199",
+                             "coreSha256":  {
+                                                "manifest.json":  "6ab98d65e8da81370537fc6684896f312eb700f2db4e94211c0f6d9ae0fe9569",
+                                                "plan.json":  "8f6732100c38bfb3882962467d331f76ed45c0558e3660362be442d5253bbad1",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "f9ae8e8183f44c6ca25c285ecbe06bd7b60e30a1840c62acb6591d475f1f0c64"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b120000-vs-balanced",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11280014,
+                             "listingSha256":  "4c9dc74c5d77c6d5784593796359bc199c4b5fd9aab5e5678b8ab9247b1cc666",
+                             "coreSha256":  {
+                                                "manifest.json":  "7c479bf09b9828a134d460450eafa87404396d08764388ccfa711bcc75ccccba",
+                                                "plan.json":  "fb98dc51491aceafc77ed613b3aa1ff59797a6ce430575b7fc6bb12cbecab624",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "8f44fcfba030f8c74a58e7b160ca276a094e7e91852d1269d420c8c9aef4a7da"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b120000-vs-knight",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11182032,
+                             "listingSha256":  "dc93f8ae05f3741cb0d8c7788aa180b4d3a85dcfe2a66cff312fb4a55a0eea30",
+                             "coreSha256":  {
+                                                "manifest.json":  "dfce6be6db543b1c5208f5df15eaee7c7050462d95ec94ed9436858adb9cec1b",
+                                                "plan.json":  "a1f14a56e04e6229e9bfed5db5729572eac4da3e4803198dc9b12d8935a3cc7f",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "63e8fb714cd3349d8266c5bda41bf107fa62c906a5e9481e5472353f171846c7"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b120000-vs-soldier",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11212487,
+                             "listingSha256":  "e3ceef6e1c94657b6aec6798334be78f18017727175e9631efb08302b822e74b",
+                             "coreSha256":  {
+                                                "manifest.json":  "ab158f090a4993b0f09ad88d78279e896a3f9efe068965280c68a2b6c3cafddd",
+                                                "plan.json":  "e5e2a96f25672bf1dcc571626a5946739dcae28c58a9743da67727a6c88729ba",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "6b2a93697ae3063dbf7b20a584dd7f0f979b8eef3a769d902578c1b706a937b8"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b120000-vs-spearman",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11202712,
+                             "listingSha256":  "76f72d31524e146e168ed16596364966617c83dc4a53971f6b9a9353aab45646",
+                             "coreSha256":  {
+                                                "manifest.json":  "88320b7ee75b31c09471f5de001dfd71bf2863f8905a8a2722c9f70ef5d42a32",
+                                                "plan.json":  "540b3db6841651b0f7cde729b1fbf7af861617cbbdc16c5890366f96429820c0",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "04b2be06092bf4fb3ce12e0efead4f4501ea9a9d2cf5d457781d89aa3010cfb9"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b360000-vs-archer",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11210447,
+                             "listingSha256":  "f1dcf00d1d6a8a3611d83c0643b3bda46ff89fb05bdf40c9ad6320eb61ab29b6",
+                             "coreSha256":  {
+                                                "manifest.json":  "922bba07cf2c24f9fb78a0f430529a95aa938d74abf500874472bb8ffbece8f2",
+                                                "plan.json":  "af4539a9f6af9788d6026960b3d7e8198d9ae9a1941f9dbe9cedc80e005936c9",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "64a8465910cfd597b4cd05196e88a9b1be07d9def006d74e16ecb31a1cb61870"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b360000-vs-balanced",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11314062,
+                             "listingSha256":  "c9e0bb98c8745b3f041058b15e2c0c84b3edd9cd10b32484e12525eb1c0e90b5",
+                             "coreSha256":  {
+                                                "manifest.json":  "b66e768367324354c32c0e2ba2084f747a167f2f301aef7f70c2216d4fe086fb",
+                                                "plan.json":  "2fb3a20858a9e738b884fddf9fe03613043e2ca5d066a2699e68740de0ad44b9",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "77546623925e0f12683a794a4193a42727d8d3e6c15ae759b5871ecc81edf65e"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b360000-vs-knight",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11193083,
+                             "listingSha256":  "e67499dca9b0b882de56f1b4eb33211d30770addf11a3b0a3d12b8ec38de055c",
+                             "coreSha256":  {
+                                                "manifest.json":  "d3354d6c93fe13ae0584ef73fc326b3543966a2e7a51dd13f02106392af08659",
+                                                "plan.json":  "3fee42a559a05cdf4848da8ce73a89e4ef7413d575f0082e6a8d930fd0233950",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "141fb5d262c889d89f3bf110094d83de0d0b900af2201a2592160544ef92cafc"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b360000-vs-soldier",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11227390,
+                             "listingSha256":  "16fd2bf223c3a007af5eac27478142c80426f527f100c2205b5d6761b0efdee0",
+                             "coreSha256":  {
+                                                "manifest.json":  "4458b3defdcd45c73bf2f4707b38fa663702087407d9974ca59f32b1f7fb2a5f",
+                                                "plan.json":  "bc4f34e781bd634dfe6ce00b0f3eaab21979a5182349407b37606e51b06e7dd4",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "3846d8081ac36af3c0889e4bb004c2954400b9bf97ab2167de20499cfe91a04c"
+                                            }
+                         },
+                         {
+                             "path":  "segments/X-simplex-b360000-vs-spearman",
+                             "completedCombats":  140000,
+                             "fileCount":  740,
+                             "totalBytes":  11218256,
+                             "listingSha256":  "7adf7c1556445e5bbb523719bb6cd25bb44b73146e002cb57f4b5fce8c1227b0",
+                             "coreSha256":  {
+                                                "manifest.json":  "8e025d4e1aad5d1a6008f86b91b85cfbe5500e89eb35c5216e7e262bc38ac7b1",
+                                                "plan.json":  "894ccff9338f4bd309a17789b5c5d67fbbca6db31e96952c70afea0e8e712409",
+                                                "profile.json":  "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+                                                "exports/results.csv":  "a9e09120fa674cc7aae10d7695e6ebcd5173123c731d8ef63485d03e3aa57d0e"
+                                            }
+                         }
+                     ],
+    "pcRoot":  "C:\\Users\\trist\\PhpstormProjects\\waar-micro-combat\\reports\\campagne-coeur"
+}
