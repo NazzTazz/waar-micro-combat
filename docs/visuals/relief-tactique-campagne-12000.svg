@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Relief tactique du profil Nazz-Eq-20%-Rc2</title>
+  <desc id="desc">Relief axonométrique de seize confrontations monotypes. Les tours rouges représentent un avantage à l'attaquant, les volumes bleus sous le plan un avantage au défenseur. Données X-simplex à 12 000 Or, 4 000 combats par orientation.</desc>
+  <defs>
+    <filter id="floor-shadow" x="-20%" y="-30%" width="150%" height="180%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#02040d" flood-opacity=".5"/></filter>
+    <filter id="block-shadow" x="-30%" y="-30%" width="170%" height="190%"><feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#02040d" flood-opacity=".42"/></filter>
+    <linearGradient id="red-scale" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#34233a"/><stop offset="1" stop-color="#f05252"/></linearGradient>
+    <linearGradient id="blue-scale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#303954"/><stop offset="1" stop-color="#4f8cff"/></linearGradient>
+    <style>
+      .title{font:700 28px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#f4f7ff}
+      .subtitle{font:400 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#9aa8c3}
+      .axis-title{font:700 12px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#9aa8c3;letter-spacing:.08em}
+      .unit{font:700 11px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#f4f7ff;text-anchor:middle}
+      .small{font:500 12px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#909fba}
+      .panel-title{font:700 16px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#f4f7ff}
+      .panel-text{font:400 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#bbc5da}
+      .mono{font:700 13px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#edf2ff}
+      .ground{fill:#141d32;stroke:#53617d;stroke-width:1.5}
+      .grid{stroke:#3b4864;stroke-width:1;fill:none}
+      .block{filter:url(#block-shadow)}
+      .block .side-left,.block .side-right,.block .cap{stroke:#0b1020;stroke-opacity:.5;stroke-width:1}
+      .block.attack .cap{fill:#f05252}.block.attack .side-left{fill:#ad3240}.block.attack .side-right{fill:#d43e49}
+      .block.defense .cap{fill:#4f8cff}.block.defense .side-left{fill:#2853a1}.block.defense .side-right{fill:#386fc9}
+      .block.neutral .cap{fill:#8290aa}.block.neutral .side-left{fill:#515e78}.block.neutral .side-right{fill:#68758e}
+      .block-value{font:800 12px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#fff;text-anchor:middle;paint-order:stroke;stroke:#0b1020;stroke-width:3;stroke-opacity:.65}
+      .badge{fill:#202a43;stroke:#53617d;stroke-width:1}
+    </style>
+  </defs>
+
+  <rect width="1200" height="820" rx="24" fill="#0b1020"/>
+  <text x="50" y="52" class="title">Relief tactique</text>
+  <text x="50" y="78" class="subtitle">Nazz-Eq-20%-Rc2 · monotypes à 12 000 Or · météo neutre · 4 000 combats par orientation</text>
+
+  <!-- Shadow and equilibrium plane. -->
+  <polygon points="430,170 790,354 430,538 70,354" fill="#060a15" opacity=".7" transform="translate(0 28)" filter="url(#floor-shadow)"/>
+  <polygon points="430,170 790,354 430,538 70,354" class="ground"/>
+  <g class="grid">
+    <path d="M430 170L70 354M520 216L160 400M610 262L250 446M700 308L340 492M790 354L430 538"/>
+    <path d="M430 170L790 354M340 216L700 400M250 262L610 446M160 308L520 492M70 354L430 538"/>
+  </g>
+
+  <!-- Axis labels; fixed order is part of the signature. -->
+  <text x="642" y="132" class="axis-title" transform="rotate(27 642 132)">DÉFENSEUR</text>
+  <g><circle cx="495" cy="154" r="17" class="badge"/><text x="495" y="158" class="unit">S</text><circle cx="585" cy="200" r="17" class="badge"/><text x="585" y="204" class="unit">L</text><circle cx="675" cy="246" r="17" class="badge"/><text x="675" y="250" class="unit">A</text><circle cx="765" cy="292" r="17" class="badge"/><text x="765" y="296" class="unit">C</text></g>
+  <text x="162" y="205" class="axis-title" transform="rotate(-27 162 205)">ATTAQUANT</text>
+  <g><circle cx="340" cy="173" r="17" class="badge"/><text x="340" y="177" class="unit">S</text><circle cx="250" cy="219" r="17" class="badge"/><text x="250" y="223" class="unit">L</text><circle cx="160" cy="265" r="17" class="badge"/><text x="160" y="269" class="unit">A</text><circle cx="70" cy="311" r="17" class="badge"/><text x="70" y="315" class="unit">C</text></g>
+
+  <!-- Blocks are drawn back to front. Height = attacker wins minus defender wins. -->
+  <g class="block neutral"><title>Soldat attaque Soldat : 49,0 % attaque, 0 % nul, 51,0 % défense ; avantage −1,9 points</title><polygon points="368,218 430,250 430,248 368,216" class="side-left"/><polygon points="430,250 492,218 492,216 430,248" class="side-right"/><polygon points="430,186 492,218 430,250 368,218" class="cap"/><text x="430" y="223" class="block-value">−2</text></g>
+  <g class="block defense"><title>Soldat attaque Lancier : 0 % attaque, 0 % nul, 100 % défense ; avantage −100 points</title><polygon points="458,367 520,399 520,294 458,262" class="side-left"/><polygon points="520,399 582,367 582,262 520,294" class="side-right"/><polygon points="520,335 582,367 520,399 458,367" class="cap"/><text x="520" y="372" class="block-value">−100</text></g>
+  <g class="block defense"><title>Lancier attaque Soldat : 0,4 % attaque, 0 % nul, 99,7 % défense ; avantage −99,3 points</title><polygon points="278,366.3 340,398.3 340,294 278,262" class="side-left"/><polygon points="340,398.3 402,366.3 402,262 340,294" class="side-right"/><polygon points="340,334.3 402,366.3 340,398.3 278,366.3" class="cap"/><text x="340" y="371.3" class="block-value">−99</text></g>
+  <g class="block defense"><title>Soldat attaque Archer : 25,5 % attaque, 0 % nul, 74,5 % défense ; avantage −49 points</title><polygon points="548,359.4 610,391.4 610,340 548,308" class="side-left"/><polygon points="610,391.4 672,359.4 672,308 610,340" class="side-right"/><polygon points="610,327.4 672,359.4 610,391.4 548,359.4" class="cap"/><text x="610" y="364.4" class="block-value">−49</text></g>
+  <g class="block defense"><title>Lancier attaque Lancier : 0 % attaque, 0 % nul, 100 % défense ; avantage −100 points</title><polygon points="368,413 430,445 430,340 368,308" class="side-left"/><polygon points="430,445 492,413 492,308 430,340" class="side-right"/><polygon points="430,381 492,413 430,445 368,413" class="cap"/><text x="430" y="418" class="block-value">−100</text></g>
+  <g class="block attack"><title>Archer attaque Soldat : 100 % attaque, 0 % nul, 0 % défense ; avantage +100 points</title><polygon points="188,203 250,235 250,340 188,308" class="side-left"/><polygon points="250,235 312,203 312,308 250,340" class="side-right"/><polygon points="250,171 312,203 250,235 188,203" class="cap"/><text x="250" y="208" class="block-value">+100</text></g>
+  <g class="block attack"><title>Soldat attaque Chevalier : 69,2 % attaque, 0 % nul, 30,8 % défense ; avantage +38,4 points</title><polygon points="638,313.7 700,345.7 700,386 638,354" class="side-left"/><polygon points="700,345.7 762,313.7 762,354 700,386" class="side-right"/><polygon points="700,281.7 762,313.7 700,345.7 638,313.7" class="cap"/><text x="700" y="318.7" class="block-value">+38</text></g>
+  <g class="block defense"><title>Lancier attaque Archer : 13,8 % attaque, 0 % nul, 86,2 % défense ; avantage −72,5 points</title><polygon points="458,430.1 520,462.1 520,386 458,354" class="side-left"/><polygon points="520,462.1 582,430.1 582,354 520,386" class="side-right"/><polygon points="520,398.1 582,430.1 520,462.1 458,430.1" class="cap"/><text x="520" y="435.1" class="block-value">−72</text></g>
+  <g class="block defense"><title>Archer attaque Lancier : 0 % attaque, 0 % nul, 100 % défense ; avantage −100 points</title><polygon points="278,459 340,491 340,386 278,354" class="side-left"/><polygon points="340,491 402,459 402,354 340,386" class="side-right"/><polygon points="340,427 402,459 340,491 278,459" class="cap"/><text x="340" y="464" class="block-value">−100</text></g>
+  <g class="block defense"><title>Chevalier attaque Soldat : 30,8 % attaque, 0 % nul, 69,2 % défense ; avantage −38,4 points</title><polygon points="98,394.3 160,426.3 160,386 98,354" class="side-left"/><polygon points="160,426.3 222,394.3 222,354 160,386" class="side-right"/><polygon points="160,362.3 222,394.3 160,426.3 98,394.3" class="cap"/><text x="160" y="399.3" class="block-value">−38</text></g>
+  <g class="block attack"><title>Lancier attaque Chevalier : 81,8 % attaque, 0 % nul, 18,2 % défense ; avantage +63,5 points</title><polygon points="548,333.3 610,365.3 610,432 548,400" class="side-left"/><polygon points="610,365.3 672,333.3 672,400 610,432" class="side-right"/><polygon points="610,301.3 672,333.3 610,365.3 548,333.3" class="cap"/><text x="610" y="338.3" class="block-value">+64</text></g>
+  <g class="block attack"><title>Archer attaque Archer : 100 % attaque, 0 % nul, 0 % défense ; avantage +100 points</title><polygon points="368,295 430,327 430,432 368,400" class="side-left"/><polygon points="430,327 492,295 492,400 430,432" class="side-right"/><polygon points="430,263 492,295 430,327 368,295" class="cap"/><text x="430" y="300" class="block-value">+100</text></g>
+  <g class="block defense"><title>Chevalier attaque Lancier : 0 % attaque, 0 % nul, 100 % défense ; avantage −100 points</title><polygon points="188,505 250,537 250,432 188,400" class="side-left"/><polygon points="250,537 312,505 312,400 250,432" class="side-right"/><polygon points="250,473 312,505 250,537 188,505" class="cap"/><text x="250" y="510" class="block-value">−100</text></g>
+  <g class="block neutral"><title>Archer attaque Chevalier : 50,5 % attaque, 0 % nul, 49,5 % défense ; avantage +0,9 point</title><polygon points="458,445 520,477 520,478 458,446" class="side-left"/><polygon points="520,477 582,445 582,446 520,478" class="side-right"/><polygon points="520,413 582,445 520,477 458,445" class="cap"/><text x="520" y="450" class="block-value">+1</text></g>
+  <g class="block attack"><title>Chevalier attaque Archer : 92,2 % attaque, 0 % nul, 7,9 % défense ; avantage +84,3 points</title><polygon points="278,357.5 340,389.5 340,478 278,446" class="side-left"/><polygon points="340,389.5 402,357.5 402,446 340,478" class="side-right"/><polygon points="340,325.5 402,357.5 340,389.5 278,357.5" class="cap"/><text x="340" y="362.5" class="block-value">+84</text></g>
+  <g class="block defense"><title>Chevalier attaque Chevalier : 42,5 % attaque, 0 % nul, 57,5 % défense ; avantage −15 points</title><polygon points="368,507.8 430,539.8 430,524 368,492" class="side-left"/><polygon points="430,539.8 492,507.8 492,492 430,524" class="side-right"/><polygon points="430,475.8 492,507.8 430,539.8 368,507.8" class="cap"/><text x="430" y="512.8" class="block-value">−15</text></g>
+
+  <!-- Reading panel. -->
+  <g transform="translate(835 122)">
+    <rect width="315" height="575" rx="18" fill="#11182b" stroke="#2b3854"/>
+    <text x="26" y="42" class="panel-title">La hauteur est signée</text>
+    <text x="26" y="72" class="mono">victoires attaque</text>
+    <text x="26" y="93" class="mono">− victoires défense</text>
+
+    <g transform="translate(28 122)">
+      <rect x="0" y="0" width="28" height="88" rx="8" fill="url(#red-scale)"/>
+      <rect x="0" y="88" width="28" height="88" rx="8" fill="url(#blue-scale)"/>
+      <line x1="-7" y1="88" x2="42" y2="88" stroke="#f4f7ff" stroke-width="2"/>
+      <text x="48" y="12" class="panel-text">+100 · attaque domine</text>
+      <text x="48" y="93" class="panel-text">0 · équilibre</text>
+      <text x="48" y="175" class="panel-text">−100 · défense domine</text>
+    </g>
+
+    <line x1="26" y1="326" x2="289" y2="326" stroke="#2b3854"/>
+    <text x="26" y="360" class="panel-title">Signature observée</text>
+    <rect x="26" y="382" width="12" height="12" rx="3" fill="#4f8cff"/><text x="50" y="393" class="panel-text">muraille bleue face au Lancier</text>
+    <rect x="26" y="416" width="12" height="12" rx="3" fill="#f05252"/><text x="50" y="427" class="panel-text">tours Archer → Soldat / Archer</text>
+    <rect x="26" y="450" width="12" height="12" rx="3" fill="#f05252"/><text x="50" y="461" class="panel-text">tour Chevalier → Archer</text>
+    <rect x="26" y="484" width="12" height="12" rx="3" fill="#8290aa"/><text x="50" y="495" class="panel-text">Archer → Chevalier presque plat</text>
+
+    <line x1="26" y1="524" x2="289" y2="524" stroke="#2b3854"/>
+    <text x="26" y="552" class="small">Parcelles séparées : aucune interpolation</text>
+  </g>
+
+  <text x="50" y="785" class="small">S = Soldat · L = Lancier · A = Archer · C = Chevalier · plan horizontal = équilibre</text>
+  <text x="1150" y="785" class="small" text-anchor="end">Source : campagne optimisée / X-simplex</text>
+</svg>

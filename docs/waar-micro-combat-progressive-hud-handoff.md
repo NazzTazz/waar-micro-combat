@@ -32,6 +32,10 @@ campagne `X-simplex`, au budget effectivement mesuré de 12 000 Or et avec
   rôle ;
 - la [matrice triangulaire](visuals/matrice-combat-campagne-12000.svg) offre le
   balayage le plus compact des seize orientations.
+- le [Relief tactique](visuals/relief-tactique-campagne-12000.svg) extrude les
+  seize orientations autour du plan d'équilibre : tours rouges pour l'avantage
+  attaquant, volumes bleus pour l'avantage défenseur, sans interpolation entre
+  les quatre types d'unités.
 
 Ces prototypes servent à comparer les grammaires visuelles, sans remplacer le
 périmètre 30 000 Or décrit ci-dessous.
