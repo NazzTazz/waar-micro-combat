@@ -34,7 +34,7 @@ async function waitFor(url) {
   const port = await freePort();
   const origin = `http://127.0.0.1:${port}`;
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'waar-demo-http-'));
-  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', WAAR_PROFILE_DIRECTORY:path.join(temporary,'profiles'), TMP:temporary, TEMP:temporary, TMPDIR:temporary};
+  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', WAAR_B1_DIAGNOSTIC:'1', WAAR_PROFILE_DIRECTORY:path.join(temporary,'profiles'), TMP:temporary, TEMP:temporary, TMPDIR:temporary};
   const server = spawn('php', ['-S', `127.0.0.1:${port}`, '-t', 'public/workshop', 'bin/workshop-router.php'], {cwd: path.join(__dirname, '..'), env, stdio: 'ignore'});
   try {
     await waitFor(origin + '/');
@@ -60,6 +60,8 @@ async function waitFor(url) {
     assert.equal(profilePayload.data.profile.weather.storm.archer.baseAccuracy,'1');
     const summaryResponse=await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{soldier:100}},weather:'neutral',seed:42,requestId:'live-test'})});
     assert.equal(summaryResponse.status,200);
+    assert.equal(summaryResponse.headers.get('x-waar-b1-request-id'),'live-test');
+    assert.match(summaryResponse.headers.get('server-timing'),/^parse;dur=\d+\.\d{3}, lock;dur=\d+\.\d{3}, service;dur=\d+\.\d{3}, encode;dur=\d+\.\d{3}$/);
     const summary=(await summaryResponse.json()).data;
     assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
     assert.equal(summary.consequenceProvenance.policyVersion,'wounded-capture-then-compress/4');

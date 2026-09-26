@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "waar-b1-measurements/1",
+  "status": "completed",
+  "start": "2026-09-26T12:59:19.310Z",
+  "head": "05ebe6f3f2c29c9faf80e28a2558ed60c13e130f",
+  "machine": "DESKTOP-JFVSFN5",
+  "os": "win32",
+  "release": "10.0.19045",
+  "arch": "x64",
+  "cpus": [
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz"
+  ],
+  "node": "v24.19.0",
+  "php": "PHP 8.2.33 (cli) (built: Jul 28 2026 10:27:30) (NTS Visual C++ 2019 x64)",
+  "binaryHash": "f262de83bd163bac7b966d774340478312b9a030de87855893140e59b62c3c3e",
+  "corpusHash": "93eea332dce3faec5b61b5f395d6d41b0683dc877ded2cf1a02b5ef3d8ed72d7",
+  "budget": {
+    "maxCombats": 250000,
+    "maxSeconds": 600,
+    "priorCombats": 18846,
+    "priorSeconds": 180
+  },
+  "results": [],
+  "completedCombats": 18966,
+  "attemptedCombats": 18966,
+  "parity": [],
+  "partition": {
+    "key": "nazz/mixed-120000",
+    "transport": "rust",
+    "groups": [
+      {
+        "groupSize": 20,
+        "arrivalMs": [
+          5482.2842
+        ],
+        "rangeHashes": [
+          "56b47d81d889f94b11340c2c9572ad8bb1c3ff9e183b997abee1ba6de9200cd0"
+        ],
+        "totalMs": 5485.668900000001,
+        "mergedHash": "56b47d81d889f94b11340c2c9572ad8bb1c3ff9e183b997abee1ba6de9200cd0"
+      },
+      {
+        "groupSize": 10,
+        "arrivalMs": [
+          4059.2096,
+          9639.3442
+        ],
+        "rangeHashes": [
+          "1d00d05d1616e87a6f6bc2e09c9aea45a9116679856b6a2d9dc2b5a6b4bba209",
+          "d6aeedd29f537877104a91423852780eeaf9b6672985d27b9fb412a28265adb7"
+        ],
+        "totalMs": 9641.625,
+        "mergedHash": "56b47d81d889f94b11340c2c9572ad8bb1c3ff9e183b997abee1ba6de9200cd0"
+      },
+      {
+        "groupSize": 5,
+        "arrivalMs": [
+          2405.7875999999997,
+          4926.032599999999,
+          7206.2858000000015,
+          9063.6217
+        ],
+        "rangeHashes": [
+          "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+          "927363b7ac0107b289d0836d39c59034686eb7598abaa60765e1eeb12e499a57",
+          "8367d53c7f8763e1be4617809bb5b141ae6a2c9c534b357985fe2a61facae6ee",
+          "fbdb331a582c2733e8a5e6eaf99f4bd85117bec5d62187e9e6e71d20d9d69ca3"
+        ],
+        "totalMs": 9067.2379,
+        "mergedHash": "56b47d81d889f94b11340c2c9572ad8bb1c3ff9e183b997abee1ba6de9200cd0"
+      }
+    ],
+    "exact": true
+  },
+  "end": "2026-09-26T12:59:43.857Z",
+  "elapsedSeconds": 204.2399009
+}

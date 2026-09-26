@@ -1,0 +1,3210 @@
+{
+    "schemaVersion": "waar-b1-corpus/1",
+    "baseHead": "05ebe6f3f2c29c9faf80e28a2558ed60c13e130f",
+    "seed": 42,
+    "weather": "neutral",
+    "profiles": {
+        "nazz": {
+            "path": "experiments/campagne-coeur/reference-profile.json",
+            "sha256": "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+            "id": "saved-fbecd00cc0d0dcb6a60e614e",
+            "label": "Nazz-Eq-20%-Rc2",
+            "semanticFingerprint": "71045f48b0fb5556787468bd239316453758e2fd02102acf8100f884e9f64bd7",
+            "maxRounds": 20
+        },
+        "test2": {
+            "path": "resources/workshop-default-profile.json",
+            "sha256": "4bbd105de3ab5e545a423b3cc0cedc9a92381e1f81b0b834321b967bb1a1c966",
+            "id": "test-2",
+            "label": "Test 2",
+            "semanticFingerprint": "b7352c1250a2cf83d4c08d9268ae38044d5f32fc0b2d8f8fa6c1dd5e70f7e0fe",
+            "maxRounds": 20
+        }
+    },
+    "cases": {
+        "nazz/archer-5-mirror": {
+            "profile": "nazz",
+            "armyA": {
+                "archer": 5
+            },
+            "armyB": {
+                "archer": 5
+            },
+            "costA": 350,
+            "costB": 350,
+            "nominalBudget": null,
+            "totalUnits": 10,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@71045f48b0fb5556",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "8",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.1",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "0.75",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.7",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1.5",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.35"
+                    },
+                    "tieBreak": {
+                        "criterion": "economic",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 24
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "nazz/spear-171-knight-21": {
+            "profile": "nazz",
+            "armyA": {
+                "spearman": 171
+            },
+            "armyB": {
+                "knight": 21
+            },
+            "costA": 11970,
+            "costB": 11550,
+            "nominalBudget": null,
+            "totalUnits": 192,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@71045f48b0fb5556",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "8",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.1",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "0.75",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.7",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1.5",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.35"
+                    },
+                    "tieBreak": {
+                        "criterion": "economic",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 24
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 171
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 21
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 21
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 171
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "nazz/soldier-12000-spear-1714": {
+            "profile": "nazz",
+            "armyA": {
+                "soldier": 12000
+            },
+            "armyB": {
+                "spearman": 1714
+            },
+            "costA": 120000,
+            "costB": 119980,
+            "nominalBudget": null,
+            "totalUnits": 13714,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@71045f48b0fb5556",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "8",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.1",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "0.75",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.7",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1.5",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.35"
+                    },
+                    "tieBreak": {
+                        "criterion": "economic",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 24
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 12000
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 1714
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 1714
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 12000
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "nazz/mixed-120000": {
+            "profile": "nazz",
+            "armyA": {
+                "soldier": 3000,
+                "spearman": 428,
+                "archer": 428,
+                "knight": 54
+            },
+            "armyB": {
+                "soldier": 3000,
+                "spearman": 428,
+                "archer": 428,
+                "knight": 54
+            },
+            "costA": 119620,
+            "costB": 119620,
+            "nominalBudget": 120000,
+            "totalUnits": 7820,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@71045f48b0fb5556",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "8",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.1",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "0.75",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.7",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1.5",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.35"
+                    },
+                    "tieBreak": {
+                        "criterion": "economic",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 24
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "nazz/mixed-scale-800000": {
+            "profile": "nazz",
+            "armyA": {
+                "soldier": 20000,
+                "spearman": 2857,
+                "archer": 2857,
+                "knight": 363
+            },
+            "armyB": {
+                "soldier": 20000,
+                "spearman": 2857,
+                "archer": 2857,
+                "knight": 363
+            },
+            "costA": 799630,
+            "costB": 799630,
+            "nominalBudget": 800000,
+            "totalUnits": 52154,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@71045f48b0fb5556",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "8",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.1",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "0.75",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.7",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1.5",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.35"
+                    },
+                    "tieBreak": {
+                        "criterion": "economic",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 24
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 20000,
+                                "spearman": 2857,
+                                "archer": 2857,
+                                "knight": 363
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 20000,
+                                "spearman": 2857,
+                                "archer": 2857,
+                                "knight": 363
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 20000,
+                                "spearman": 2857,
+                                "archer": 2857,
+                                "knight": 363
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 20000,
+                                "spearman": 2857,
+                                "archer": 2857,
+                                "knight": 363
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "nazz/monotypes-16": {
+            "profile": "nazz",
+            "scenarios": 16,
+            "budgetPerCamp": 400400,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@71045f48b0fb5556",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "8",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.1",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "0.75",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.7",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1.5",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.35"
+                    },
+                    "tieBreak": {
+                        "criterion": "economic",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 24
+                },
+                "scenarios": [
+                    {
+                        "id": "soldier-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "soldier-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "soldier-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "soldier-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "test2/archer-5-mirror": {
+            "profile": "test2",
+            "armyA": {
+                "archer": 5
+            },
+            "armyB": {
+                "archer": 5
+            },
+            "costA": 350,
+            "costB": 350,
+            "nominalBudget": null,
+            "totalUnits": 10,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@b7352c1250a2cf83",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "9",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.11",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.8",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 15,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.5"
+                    },
+                    "tieBreak": {
+                        "criterion": "structure",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 10
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "test2/spear-171-knight-21": {
+            "profile": "test2",
+            "armyA": {
+                "spearman": 171
+            },
+            "armyB": {
+                "knight": 21
+            },
+            "costA": 11970,
+            "costB": 11550,
+            "nominalBudget": null,
+            "totalUnits": 192,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@b7352c1250a2cf83",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "9",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.11",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.8",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 15,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.5"
+                    },
+                    "tieBreak": {
+                        "criterion": "structure",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 10
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 171
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 21
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 21
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 171
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "test2/soldier-12000-spear-1714": {
+            "profile": "test2",
+            "armyA": {
+                "soldier": 12000
+            },
+            "armyB": {
+                "spearman": 1714
+            },
+            "costA": 120000,
+            "costB": 119980,
+            "nominalBudget": null,
+            "totalUnits": 13714,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@b7352c1250a2cf83",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "9",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.11",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.8",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 15,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.5"
+                    },
+                    "tieBreak": {
+                        "criterion": "structure",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 10
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 12000
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 1714
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 1714
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 12000
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "test2/mixed-120000": {
+            "profile": "test2",
+            "armyA": {
+                "soldier": 3000,
+                "spearman": 428,
+                "archer": 428,
+                "knight": 54
+            },
+            "armyB": {
+                "soldier": 3000,
+                "spearman": 428,
+                "archer": 428,
+                "knight": 54
+            },
+            "costA": 119620,
+            "costB": 119620,
+            "nominalBudget": 120000,
+            "totalUnits": 7820,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@b7352c1250a2cf83",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "9",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.11",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.8",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 15,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.5"
+                    },
+                    "tieBreak": {
+                        "criterion": "structure",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 10
+                },
+                "scenarios": [
+                    {
+                        "id": "A-B",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "B-A",
+                        "seedKey": 0,
+                        "armyIdentities": {
+                            "attacker": "B",
+                            "defender": "A"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 3000,
+                                "spearman": 428,
+                                "archer": 428,
+                                "knight": 54
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        },
+        "test2/monotypes-16": {
+            "profile": "test2",
+            "scenarios": 16,
+            "budgetPerCamp": 400400,
+            "request": {
+                "schemaVersion": "waar-combat-batch-request/2",
+                "stochasticEngineVersion": "sha256-binomial-tree/1",
+                "ruleset": {
+                    "schemaVersion": "waar-cohort-ruleset/2",
+                    "modelVersion": "waar-cohort-v2",
+                    "version": "waar-cohort-v2@b7352c1250a2cf83",
+                    "units": [
+                        {
+                            "type": "soldier",
+                            "attack": "9",
+                            "structure": "25",
+                            "cost": 10,
+                            "baseAccuracy": "0.11",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "1",
+                            "capturable": true
+                        },
+                        {
+                            "type": "spearman",
+                            "attack": "12",
+                            "structure": "120",
+                            "cost": 70,
+                            "baseAccuracy": "0.6",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 1,
+                            "defendingEfficiency": "2",
+                            "capturable": false
+                        },
+                        {
+                            "type": "archer",
+                            "attack": "70",
+                            "structure": "50",
+                            "cost": 70,
+                            "baseAccuracy": "0.35",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 5,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        },
+                        {
+                            "type": "knight",
+                            "attack": "350",
+                            "structure": "250",
+                            "cost": 550,
+                            "baseAccuracy": "0.8",
+                            "accuracySpread": "0",
+                            "strikesPerAttack": 15,
+                            "defendingEfficiency": "1",
+                            "capturable": false
+                        }
+                    ],
+                    "targetingMode": "proportional",
+                    "targeting": {
+                        "soldier": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "spearman": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "archer": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        },
+                        "knight": {
+                            "weights": {
+                                "soldier": 1,
+                                "spearman": 1,
+                                "archer": 1,
+                                "knight": 1
+                            }
+                        }
+                    },
+                    "engagements": {
+                        "soldier": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "spearman": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "archer": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        },
+                        "knight": {
+                            "soldier": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "spearman": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "archer": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            },
+                            "knight": {
+                                "attackFactor": "1",
+                                "isProvisional": false
+                            }
+                        }
+                    },
+                    "maxRounds": 20,
+                    "surrender": {
+                        "enabled": true,
+                        "deadRatio": "0.5"
+                    },
+                    "tieBreak": {
+                        "criterion": "structure",
+                        "equality": "defender"
+                    },
+                    "woundDamageThreshold": "0.2"
+                },
+                "baseSeed": 42,
+                "iterations": 100,
+                "startIteration": 0,
+                "totalIterations": 100,
+                "consequences": {
+                    "policyVersion": "wounded-capture-then-compress/4",
+                    "compressionPercent": 5,
+                    "capturePercent": 10
+                },
+                "scenarios": [
+                    {
+                        "id": "soldier-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "soldier-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "soldier-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "soldier-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "spearman-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "archer-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-soldier",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "soldier": 40040
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-spearman",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "spearman": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-archer",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "archer": 5720
+                            },
+                            "modifiers": []
+                        }
+                    },
+                    {
+                        "id": "knight-vs-knight",
+                        "armyIdentities": {
+                            "attacker": "A",
+                            "defender": "B"
+                        },
+                        "attacker": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        },
+                        "defender": {
+                            "units": {
+                                "knight": 728
+                            },
+                            "modifiers": []
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

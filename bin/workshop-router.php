@@ -20,6 +20,11 @@ if (isset($editorAssets[$path])) {
     return;
 }
 if (str_starts_with($path, '/api/')) {
+    $b1Diagnostic = getenv('WAAR_B1_DIAGNOSTIC') === '1' && in_array($path, ['/api/duel-summary', '/api/duel', '/api/measure'], true);
+    if ($b1Diagnostic) {
+        $b1Received = hrtime(true);
+        $b1LockNanoseconds = 0;
+    }
     \Waar\MicroCombat\Workshop\JsonApiRuntime::begin($path);
     try {
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -40,9 +45,16 @@ if (str_starts_with($path, '/api/')) {
         if (!is_array($request) || ($request !== [] && array_is_list($request))) {
             throw new InvalidArgumentException('Objet JSON attendu.');
         }
+        if ($b1Diagnostic) {
+            $b1Parsed = hrtime(true);
+            $_SERVER['WAAR_B1_REQUEST_ID'] = (string)($request['requestId'] ?? '');
+        }
         // A private shared demo has a single compute slot; never queue costly jobs.
         // The OS releases the lock even if PHP exits unexpectedly.
         if (getenv('WAAR_DEMO_SERIALIZE') === '1' && in_array($path, ['/api/duel', '/api/duel-summary', '/api/measure', '/api/search', '/api/optimize'], true)) {
+            if ($b1Diagnostic) {
+                $b1LockStarted = hrtime(true);
+            }
             $computeLock = fopen(sys_get_temp_dir().'/waar-demo-compute.lock', 'c');
             if ($computeLock === false) {
                 throw new RuntimeException('Calcul temporairement indisponible.', 503);
@@ -51,6 +63,12 @@ if (str_starts_with($path, '/api/')) {
                 header('Retry-After: 10');
                 throw new RuntimeException('Un calcul est déjà en cours dans la démonstration. Réessayez après sa fin.', 429);
             }
+            if ($b1Diagnostic) {
+                $b1LockNanoseconds = hrtime(true) - $b1LockStarted;
+            }
+        }
+        if ($b1Diagnostic) {
+            $b1ServiceStarted = hrtime(true);
         }
         $result = match([$path, $_SERVER['REQUEST_METHOD'] ?? 'GET']) {
             ['/api/profiles', 'GET'] => (new \Waar\MicroCombat\Workshop\SharedProfiles())->listing(),
@@ -70,7 +88,17 @@ if (str_starts_with($path, '/api/')) {
             ['/api/optimize', 'POST'] => (new EvolutionaryProfileOptimizer())->optimize($request['profile'] ?? [], $request['zones'] ?? [], (string)($request['weather'] ?? 'neutral'), $request['seed'] ?? 314159, $request['budget'] ?? 32, $request['iterations'] ?? 100, $request['bounds'] ?? [], $request['measurementBaseSeed'] ?? 42),
             default => throw new RuntimeException('Route API inconnue.', 404),
         };
-        echo json_encode(['ok' => true, 'data' => $result], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($b1Diagnostic) {
+            $b1ServiceEnded = hrtime(true);
+        }
+        $responseBody = json_encode(['ok' => true, 'data' => $result], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($b1Diagnostic) {
+            $b1Encoded = hrtime(true);
+            $milliseconds = static fn (int $nanos): string => number_format($nanos / 1_000_000, 3, '.', '');
+            header('Server-Timing: parse;dur='.$milliseconds($b1Parsed - $b1Received).', lock;dur='.$milliseconds($b1LockNanoseconds).', service;dur='.$milliseconds($b1ServiceEnded - $b1ServiceStarted).', encode;dur='.$milliseconds($b1Encoded - $b1ServiceEnded));
+            header('X-Waar-B1-Request-Id: '.preg_replace('/[^A-Za-z0-9_-]/', '', substr((string)($request['requestId'] ?? ''), 0, 64)));
+        }
+        echo $responseBody;
     } catch (ProfileValidationException $e) {
         http_response_code(422);
         echo json_encode(['ok' => false, 'errors' => $e->errors], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

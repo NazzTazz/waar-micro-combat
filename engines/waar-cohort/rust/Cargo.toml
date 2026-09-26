@@ -4,12 +4,20 @@ version = "0.2.0"
 edition = "2021"
 publish = false
 
+[features]
+b1-profile = []
+
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [[bin]]
 name = "waar-cohort-cli"
 path = "src/main.rs"
+
+[[bin]]
+name = "b1-rng-bench"
+path = "src/bin/b1_rng_bench.rs"
+required-features = ["b1-profile"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
