@@ -18,10 +18,12 @@ final class ParametricCampaignRunner
     public function run(array $loaded, ?int $stopAfterLots = null): array
     {
         $plan = $loaded['plan'];
+        $stochasticVersion = $plan['stochasticEngineVersion'] ?? CohortRequestFactory::STOCHASTIC_VERSION;
         $profile = $loaded['profile'];
         $output = $loaded['outputPath'];
         $preview = ParametricCampaign::preview($plan, $profile);
         $provenance = $this->provenance();
+        $provenance['stochasticEngineVersion'] = $stochasticVersion;
         $identity = ['schemaVersion' => 'waar-parametric-run/1', 'planSha256' => hash_file('sha256', $loaded['planPath']), 'profileSha256' => hash_file('sha256', $loaded['profilePath']), 'effectivePlanSha256' => hash('sha256', ParametricCampaign::canonicalJson($plan)), 'engine' => $provenance, 'sampling' => $plan['sampling']];
         $manifestPath = $output.'/manifest.json';
         if (is_file($manifestPath)) {
@@ -55,7 +57,7 @@ final class ParametricCampaignRunner
                 if (isset($completed['keys'][$key])) {
                     continue;
                 }
-                $request = ParametricCampaign::batchRequest($experiment, $plan['sampling']['baseSeed'], $start, $count, $plan['sampling']['repetitions']);
+                $request = ParametricCampaign::batchRequest($experiment, $plan['sampling']['baseSeed'], $start, $count, $plan['sampling']['repetitions'], $stochasticVersion);
                 $t0 = hrtime(true);
                 try {
                     $response = $this->runtime->batch($request);

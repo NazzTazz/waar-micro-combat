@@ -11,6 +11,7 @@ use Waar\MicroCombat\Workshop\EngineProfile;
 final class ParametricCampaign
 {
     public const SCHEMA = 'waar-parametric-campaign/1';
+    public const OPTIMIZED_STOCHASTIC_VERSION = 'sha256-splitmix-occupancy/1';
     public const TYPES = ['soldier', 'spearman', 'archer', 'knight'];
 
     /** @return array{plan:array<string,mixed>,profile:array<string,mixed>,planPath:string,profilePath:string,outputPath:string} */
@@ -19,7 +20,8 @@ final class ParametricCampaign
         $planPath = realpath($planPath) ?: throw new \InvalidArgumentException("Plan introuvable : {$planPath}");
         $plan = self::jsonFile($planPath);
         $base = dirname($planPath);
-        self::exactKeys($plan, ['schemaVersion', 'profile', 'output', 'sampling', 'limits', 'axes', 'crosses', 'scenarios'], 'plan');
+        $required = ['schemaVersion', 'profile', 'output', 'sampling', 'limits', 'axes', 'crosses', 'scenarios'];
+        self::exactKeys($plan, isset($plan['stochasticEngineVersion']) ? [...$required, 'stochasticEngineVersion'] : $required, 'plan');
         if (($plan['schemaVersion'] ?? null) !== self::SCHEMA) {
             throw new \InvalidArgumentException('schemaVersion de campagne incompatible.');
         }
@@ -108,7 +110,7 @@ final class ParametricCampaign
     }
 
     /** @return array<string,mixed> */
-    public static function batchRequest(array $experiment, int $baseSeed, int $start, int $iterations, int $total): array
+    public static function batchRequest(array $experiment, int $baseSeed, int $start, int $iterations, int $total, string $stochasticVersion = CohortRequestFactory::STOCHASTIC_VERSION): array
     {
         $profile = EngineProfile::fromArray($experiment['profile']);
         $factory = new CohortRequestFactory();
@@ -119,13 +121,13 @@ final class ParametricCampaign
             $combat = $factory->combat($profile, $experiment['armies'][$a]['units'], $experiment['armies'][$d]['units'], $baseSeed, $experiment['weather'][$a], $experiment['weather'][$d], $experiment['modifiers'][$a], $experiment['modifiers'][$d], 'none', $a, $d);
             $scenarios[] = ['id' => $a.'-'.$d, 'seedKey' => 0, 'armyIdentities' => $combat['armyIdentities'], 'attacker' => $combat['attacker'], 'defender' => $combat['defender']];
         }
-        return ['schemaVersion' => 'waar-combat-campaign-batch-request/1', 'stochasticEngineVersion' => CohortRequestFactory::STOCHASTIC_VERSION, 'ruleset' => $profile->ruleset(), 'baseSeed' => $baseSeed, 'iterations' => $iterations, 'startIteration' => $start, 'totalIterations' => $total, 'consequences' => ['policyVersion' => CohortRequestFactory::POLICY_VERSION, 'compressionPercent' => $profile->lossCompressionPercent, 'capturePercent' => $profile->capturePercent], 'scenarios' => $scenarios];
+        return ['schemaVersion' => 'waar-combat-campaign-batch-request/1', 'stochasticEngineVersion' => $stochasticVersion, 'ruleset' => $profile->ruleset(), 'baseSeed' => $baseSeed, 'iterations' => $iterations, 'startIteration' => $start, 'totalIterations' => $total, 'consequences' => ['policyVersion' => CohortRequestFactory::POLICY_VERSION, 'compressionPercent' => $profile->lossCompressionPercent, 'capturePercent' => $profile->capturePercent], 'scenarios' => $scenarios];
     }
 
     public static function assertResponse(array $response, array $request): void
     {
         CohortRequestFactory::assertProvenance($response['consequenceProvenance'] ?? [], $request['consequences']);
-        CohortRequestFactory::assertBatchRandomProvenance($response, $request['scenarios']);
+        CohortRequestFactory::assertBatchRandomProvenance($response, $request['scenarios'], $request['stochasticEngineVersion']);
         if (($response['unitOrder'] ?? null) !== self::TYPES || ($response['projectedCategoryOrder'] ?? null) !== ['healthy', 'wounded', 'dead', 'prisoners']) {
             throw new \RuntimeException('Ordre batch incompatible.');
         }
@@ -174,6 +176,14 @@ final class ParametricCampaign
 
     private static function validatePlan(array $plan, array $profile): void
     {
+        $version = $plan['stochasticEngineVersion'] ?? CohortRequestFactory::STOCHASTIC_VERSION;
+        if (!in_array($version, [CohortRequestFactory::STOCHASTIC_VERSION, self::OPTIMIZED_STOCHASTIC_VERSION], true)) {
+            throw new \InvalidArgumentException('Protocole stochastique de campagne inconnu.');
+        }
+        $optimized = $version === self::OPTIMIZED_STOCHASTIC_VERSION;
+        if ($optimized && $profile['combat']['maxRounds'] > 20) {
+            throw new \InvalidArgumentException('La campagne optimisée limite le profil à 20 rounds.');
+        }
         $sampling = $plan['sampling'] ?? null;
         if (!is_array($sampling) || array_is_list($sampling)) {
             throw new \InvalidArgumentException('sampling doit être un objet.');
@@ -201,6 +211,12 @@ final class ParametricCampaign
                 throw new \InvalidArgumentException("Axe {$id} incomplet.");
             }
             foreach ($axis['values'] as $value) {
+                if ($optimized && ($axis['path'] === 'combat.maxRounds' && (!is_int($value) || $value > 20))) {
+                    throw new \InvalidArgumentException('La campagne optimisée limite les axes à 20 rounds.');
+                }
+                if ($optimized && str_starts_with($axis['path'], 'weather.')) {
+                    throw new \InvalidArgumentException('Les effets météo ne sont pas configurables dans la campagne optimisée.');
+                }
                 $candidate = self::applyAxis($profile, $id, $axis, $value);
                 $errors = EngineProfile::validate($candidate);
                 if ($errors) {
@@ -230,7 +246,17 @@ final class ParametricCampaign
                     throw new \InvalidArgumentException("Météo {$camp} invalide dans {$id}.");
                 }
                 self::validateModifiers($scenario['modifiers'][$camp] ?? null, "{$id}.modifiers.{$camp}");
+                if ($optimized) {
+                    foreach ($scenario['modifiers'][$camp] as $modifier) {
+                        if (($modifier['source'] ?? null) === 'weather') {
+                            throw new \InvalidArgumentException("Effet météo manuel interdit dans {$id}.");
+                        }
+                    }
+                }
                 self::validateArmy($scenario['armies'][$camp] ?? null, "{$id}.armies.{$camp}");
+            }
+            if ($optimized && $scenario['weather']['A'] !== $scenario['weather']['B']) {
+                throw new \InvalidArgumentException("Météo différente entre A et B dans {$id}.");
             }
             foreach (self::compositionVariants($scenario) as $variant) {
                 self::armies($scenario, $variant, EngineProfile::fromArray($profile)->costs());

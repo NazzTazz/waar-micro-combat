@@ -25,23 +25,23 @@ final readonly class CohortRequestFactory
         }
     }
 
-    public static function assertRandomProvenance(array $actual, array $identities): void
+    public static function assertRandomProvenance(array $actual, array $identities, string $expectedVersion = self::STOCHASTIC_VERSION): void
     {
-        if (($actual['stochasticEngineVersion'] ?? null) !== self::STOCHASTIC_VERSION
+        if (($actual['stochasticEngineVersion'] ?? null) !== $expectedVersion
             || ($actual['armyIdentities']['attacker'] ?? null) !== ($identities['attacker'] ?? null)
             || ($actual['armyIdentities']['defender'] ?? null) !== ($identities['defender'] ?? null)) {
             throw new \RuntimeException('Protocole aléatoire ou identités A/B du runtime incompatibles : reconstruisez Rust et remesurez.');
         }
     }
 
-    public static function assertBatchRandomProvenance(array $batch, array $requestedScenarios): void
+    public static function assertBatchRandomProvenance(array $batch, array $requestedScenarios, string $expectedVersion = self::STOCHASTIC_VERSION): void
     {
         $actual = array_column($batch['scenarios'] ?? [], null, 'id');
         foreach ($requestedScenarios as $scenario) {
             self::assertRandomProvenance([
                 'stochasticEngineVersion' => $batch['stochasticEngineVersion'] ?? null,
                 'armyIdentities' => $actual[$scenario['id']]['armyIdentities'] ?? null,
-            ], $scenario['armyIdentities']);
+            ], $scenario['armyIdentities'], $expectedVersion);
         }
     }
 

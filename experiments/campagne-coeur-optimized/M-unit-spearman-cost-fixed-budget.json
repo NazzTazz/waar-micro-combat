@@ -1,0 +1,465 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../campagne-coeur/reference-profile.json",
+  "output": "../../reports/campagne-coeur-optimized/M-unit-spearman-cost-fixed-budget",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 240000
+  },
+  "axes": {
+    "value": {
+      "path": "units.spearman.cost",
+      "values": [
+        70,
+        35,
+        53,
+        105,
+        140
+      ]
+    }
+  },
+  "crosses": {
+    "singles": true,
+    "pairs": [],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "mono-b12000-soldier-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "soldier": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b12000-spearman-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b12000-spearman-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "archer": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b12000-spearman-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 12000,
+          "shares": {
+            "knight": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b120000-soldier-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "soldier": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b120000-spearman-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b120000-spearman-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "archer": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b120000-spearman-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 120000,
+          "shares": {
+            "knight": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b360000-soldier-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "soldier": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b360000-spearman-spearman",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b360000-spearman-archer",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "archer": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "mono-b360000-spearman-knight",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "spearman": 1
+          },
+          "fillRemainderWith": null
+        },
+        "B": {
+          "mode": "budgetShares",
+          "budget": 360000,
+          "shares": {
+            "knight": 1
+          },
+          "fillRemainderWith": null
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ],
+  "stochasticEngineVersion": "sha256-splitmix-occupancy/1"
+}

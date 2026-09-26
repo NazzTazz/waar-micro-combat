@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../campagne-coeur/reference-profile.json",
+  "output": "../../reports/campagne-coeur-optimized/M-counter-spearman-knight",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 96000
+  },
+  "axes": {
+    "value": {
+      "path": "relations.spearman>knight.factor",
+      "values": [
+        "1.5",
+        "0",
+        "0.5",
+        "1",
+        "2",
+        "3",
+        "5",
+        "10"
+      ]
+    }
+  },
+  "crosses": {
+    "singles": true,
+    "pairs": [],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "counter-spearman-knight-b12000",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 171,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 21
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "counter-spearman-knight-b120000",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 1714,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 218
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "counter-spearman-knight-b360000",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 5142,
+            "archer": 0,
+            "knight": 0
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "soldier": 0,
+            "spearman": 0,
+            "archer": 0,
+            "knight": 654
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ],
+  "stochasticEngineVersion": "sha256-splitmix-occupancy/1"
+}

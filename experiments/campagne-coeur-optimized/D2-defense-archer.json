@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../campagne-coeur/reference-profile.json",
+  "output": "../../reports/campagne-coeur-optimized/D2-defense-archer",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 168000
+  },
+  "axes": {
+    "defense": {
+      "path": "units.archer.defendingEfficiency",
+      "values": [
+        "0.75",
+        "0.5",
+        "1",
+        "1.25",
+        "1.5",
+        "1.75",
+        "2"
+      ]
+    },
+    "rounds": {
+      "path": "combat.maxRounds",
+      "values": [
+        20,
+        1,
+        2
+      ]
+    }
+  },
+  "crosses": {
+    "singles": true,
+    "pairs": [
+      [
+        "defense",
+        "rounds"
+      ]
+    ],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "d2-archer-n5",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 5
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 5
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    },
+    {
+      "id": "d2-archer-n100",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "archer": 100
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "archer": 100
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ],
+  "stochasticEngineVersion": "sha256-splitmix-occupancy/1"
+}

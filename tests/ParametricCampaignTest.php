@@ -174,6 +174,39 @@ final class ParametricCampaignTest extends TestCase
         self::assertSame(4000, $preview['combats']);
     }
 
+    public function testOptimizedCampaignRequiresSharedWeatherAndUsesDistinctProtocol(): void
+    {
+        $plan = $this->plan();
+        $plan['stochasticEngineVersion'] = ParametricCampaign::OPTIMIZED_STOCHASTIC_VERSION;
+        $plan['scenarios'][0]['weather'] = ['A' => 'wind', 'B' => 'wind'];
+        $loaded = ParametricCampaign::load($this->writePlan($plan)['plan']);
+        $experiment = iterator_to_array(ParametricCampaign::experiments($loaded['plan'], $loaded['profile']))[0];
+        $request = ParametricCampaign::batchRequest($experiment, 42, 0, 1, 1, $plan['stochasticEngineVersion']);
+        self::assertSame(ParametricCampaign::OPTIMIZED_STOCHASTIC_VERSION, $request['stochasticEngineVersion']);
+        self::assertSame('wind', $experiment['weather']['A']);
+        self::assertSame('wind', $experiment['weather']['B']);
+
+        $plan['scenarios'][0]['weather']['B'] = 'neutral';
+        $this->expectExceptionMessage('Météo différente entre A et B');
+        ParametricCampaign::load($this->writePlan($plan)['plan']);
+    }
+
+    public function testOptimizedCampaignRejectsRoundThirtyAndWeatherEffectAxes(): void
+    {
+        $plan = $this->plan();
+        $plan['stochasticEngineVersion'] = ParametricCampaign::OPTIMIZED_STOCHASTIC_VERSION;
+        $plan['axes'] = ['rounds' => ['path' => 'combat.maxRounds', 'values' => [20, 30]]];
+        try {
+            ParametricCampaign::load($this->writePlan($plan)['plan']);
+            self::fail('A 30-round optimized plan was accepted.');
+        } catch (\InvalidArgumentException $error) {
+            self::assertStringContainsString('20 rounds', $error->getMessage());
+        }
+        $plan['axes'] = ['weather' => ['path' => 'weather.wind.archer.attack', 'values' => ['0.5']]];
+        $this->expectExceptionMessage('effets météo ne sont pas configurables');
+        ParametricCampaign::load($this->writePlan($plan)['plan']);
+    }
+
     private function plan(): array
     {
         return['schemaVersion' => ParametricCampaign::SCHEMA, 'profile' => 'profile.json', 'output' => 'out', 'sampling' => ['repetitions' => 2, 'baseSeed' => 42, 'batchSize' => 1], 'limits' => ['maxCombats' => 1000], 'axes' => [], 'crosses' => ['singles' => true, 'pairs' => [], 'triplets' => []], 'scenarios' => [['id' => 's', 'directions' => 'both', 'weather' => ['A' => 'neutral', 'B' => 'neutral'], 'modifiers' => ['A' => [], 'B' => []], 'armies' => ['A' => ['mode' => 'explicit', 'units' => ['soldier' => 10]], 'B' => ['mode' => 'explicit', 'units' => ['soldier' => 10]]], 'compositionVariants' => [['id' => 'reference', 'operations' => []]]]]];

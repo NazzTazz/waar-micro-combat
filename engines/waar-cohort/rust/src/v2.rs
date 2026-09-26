@@ -2291,6 +2291,55 @@ mod tests {
         );
         assert!((dead as f64 / 1000.0 - 11.964).abs() < 2.0, "dead={dead}");
     }
+
+    #[cfg(feature = "fast-impact")]
+    #[test]
+    fn occupancy_marginals_track_individual_draws_across_cohort_sizes() {
+        for (units, impacts) in [
+            (5, 6),
+            (100, 120),
+            (1000, 300),
+            (10000, 1000),
+            (10000, 30000),
+        ] {
+            let mut zero = 0u64;
+            let mut one = 0u64;
+            let trials = 400u64;
+            for seed in 0..trials {
+                let mut rng = FastRng {
+                    state: seed + 18_417,
+                };
+                let histogram = occupancy_histogram(units, impacts, &mut rng);
+                assert_eq!(histogram.iter().map(|(_, count)| count).sum::<u32>(), units);
+                assert_eq!(
+                    histogram
+                        .iter()
+                        .map(|(hits, count)| hits * count)
+                        .sum::<u32>(),
+                    impacts
+                );
+                zero += histogram
+                    .iter()
+                    .find(|(hits, _)| *hits == 0)
+                    .map_or(0, |(_, count)| *count as u64);
+                one += histogram
+                    .iter()
+                    .find(|(hits, _)| *hits == 1)
+                    .map_or(0, |(_, count)| *count as u64);
+            }
+            let p = 1.0 / units as f64;
+            let expected_zero = units as f64 * (1.0 - p).powi(impacts as i32);
+            let expected_one = impacts as f64 * (1.0 - p).powi(impacts as i32 - 1);
+            for (observed, expected) in [(zero, expected_zero), (one, expected_one)] {
+                let mean = observed as f64 / trials as f64;
+                let tolerance = (0.035 * units as f64).max(1.0);
+                assert!(
+                    (mean - expected).abs() < tolerance,
+                    "units={units} impacts={impacts} observed={mean} expected={expected}"
+                );
+            }
+        }
+    }
     #[test]
     fn targeting_probabilities_remain_finite_without_erasing_the_tail() {
         let weights = [(1, 1e16), (1, 2.9), (1, 0.01)];

@@ -1,0 +1,644 @@
+{
+  "schemaVersion": "waar-optimized-campaign-inventory/1",
+  "sourceManifestSha256": "7f781f3bfcc77f8b337b9484c8314d2f91950121476fd8911470980003e10493",
+  "profileSha256": "4018d6ce3fdab2705dd6d3b5f1b78959ee6e86c653ce5e02b7627cae78557765",
+  "stochasticEngineVersion": "sha256-splitmix-occupancy/1",
+  "weatherPolicy": "same-preset-for-A-and-B; fixed-preset-effects",
+  "maximumRounds": 20,
+  "sourcePlans": 159,
+  "omittedWeatherFactorPlans": 80,
+  "plans": [
+    {
+      "plan": "plan-reference.json",
+      "phase": "M0",
+      "sourceSha256": "265b1576685f8012f6139db5e0da494848cfca397fa381f081012f78464a2742",
+      "planSha256": "540797d104ebc7734712f54ed68a3973a072ae5d4126aab79abed37e477b0e4a",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "D1-small-mirrors.json",
+      "phase": "D1",
+      "sourceSha256": "b6364e95af403b36dd4686ab0f8878ae292c56cc894994fcfc3e38e01c5ebb65",
+      "planSha256": "a4c2c62c19a0538767b2e886fe0ede8abf7c42200ba55e4ff90eb6a7afd09d03",
+      "scenarios": 20,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "D2-defense-soldier.json",
+      "phase": "D2",
+      "sourceSha256": "a169ba866746a0e9eb8ebf1b0bc638c5366facec7f4c50b8240c24fc46d2e4a1",
+      "planSha256": "54bd1b71891974f2bb20cf604027c01b8c2a68cbd8d026d2788164ae152974da",
+      "scenarios": 1,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "D2-defense-spearman.json",
+      "phase": "D2",
+      "sourceSha256": "08fb0450878d56df4f312d98857bc279dc267648717ce953a32872e8eb469305",
+      "planSha256": "b9155c78cb9b9bcf56b4990548fba805a3f22fe6f1c555cc907f2284df7e874f",
+      "scenarios": 1,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "D2-defense-archer.json",
+      "phase": "D2",
+      "sourceSha256": "59da0be7475bed011016191f4508b286e4827791a8c6d227b75a7ce2cef9c209",
+      "planSha256": "d0b6e67485213057a8d9bc94dbbe72749200ee17b2333c561643168f8329be32",
+      "scenarios": 2,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "D2-defense-knight.json",
+      "phase": "D2",
+      "sourceSha256": "c1dc82cb4c590469b8cb40b6d8687df05b555acd76f14d702b579b9827dd125f",
+      "planSha256": "dd138a17505e00f354bb100edf9f4ddd58317137d015882d46f8f24c50fb0f02",
+      "scenarios": 1,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-attack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "a09caf066da2493fbf4c91b3314523076cee7685462fc188675a6eeafc5fc852",
+      "planSha256": "31fac619feadf30aa6c3221caaa8b7418d020d3a60ae6672941c17d328b8e7a7",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-structure-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "23d9ae61c74d3981e1e21e99d3df42c1c1b5a3925d363ffa92b489992fc887e7",
+      "planSha256": "dfa61ca0896e65a88447ab68cd91423cd06effae71eaf3e8e63574f0b837585a",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "d93bfedb161e9cc05c3ab1c1186384e62c6eb7f4858831f960ea9d89ce0f7ced",
+      "planSha256": "2af23c4916346bd99300360eaccfb57afe6f930e306bf56849a4493d1cb51b04",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "578edb5d68ea65b6a4e83a062250c07a48265d9cb4e5cda70f0ed04c90a58852",
+      "planSha256": "2be815f81a503abce41f3d9827294b67ca3940ebee26c300af6ed8c7fcdc15fb",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "37e5292c51e5e1ed9bd0fe0919d0bd2e445f1d6111f82be49aa890c13f9c63a8",
+      "planSha256": "2f7883db7a7ed20f5c8c36c5f4bf915c41d4844342153e8e4c688e8b3a54e00e",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "0c5c9fd4e92f7905bd6d79077e348fcc6cde214dae5f8dda8959c70f498214e1",
+      "planSha256": "24b87bacf2a3ce32aa4b832973c59d277d123811608d715bb0eb47372a556745",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-cost-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "397b60c49cfe63cbe51133bd04cf83683717594c602ffde68caa762d8d31eed0",
+      "planSha256": "42774bdb4da4b3281090df8951ad3bc00d501eb2f8d6c99d3d8d0fba4ae60e78",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-cost-fixed-budget.json",
+      "phase": "M",
+      "sourceSha256": "0766aa9a3b114adb10879a453701459cb53cb676091fc4be6e15bd7956181567",
+      "planSha256": "6e499c00e75f467fc3065d0b4a9d28b0adb77b3b527c0792188ac1f024738acd",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-soldier-capturable-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "bb1fb205b9f9823a1877d7ddc1716e386a427be65931c7b78d5bf21e78dd60f2",
+      "planSha256": "6049080b1f223f14f8a0b0e8bc679b844dcbcd131682ee499f388f505e8f0294",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-attack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "2d285a66ad514cfc855bf19d5683edc5670cedc72e1c262fd3601deb1fdd9365",
+      "planSha256": "e5a18774880c777d0df6ede8a6de5549218ac6755e80d0ddd8e64bdbdcb0892c",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-structure-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "8539b1cd8813d9b1aef6291cb5f53921d99c8e00bf43d95de847a78b8151f66e",
+      "planSha256": "11d4df4712ddcf3c8c0c26ac6248b6bcb02533520ac78463e72a045bf33d59b3",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "769e96c7f5f2be01a64b3525b6ebffd880b332886a6923f3079a575231437e8c",
+      "planSha256": "cd9b817c1cc22b80382533fff407cbaecca119d4f715dca11432a0a2687b36fc",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "e69a77602664b9e7179df87d59022effce1c3c237a470783177dc8808ef64904",
+      "planSha256": "4b842f74e3e363a084c1c09628ac59f87617b893c6d8d0a786eec2e5b08a9337",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "19be8f6083f2542fa27b06308804c0b29253b515580b781647c78bc384d5288d",
+      "planSha256": "d5668060a0ba10a2c183d167e162a7ae12bf31d3fb88eba91f099af4d4612b21",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "d62cad65f12912fe498651d1b72e8deae9655c3f9483c86bf3024c15e27b1ff3",
+      "planSha256": "e491ebb70bf55367c9278f8679d554bbfeb94222069b8cc434769e524b188ee1",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-cost-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "765be9dfa06021fc75ba3b4f1e1cab24165c990c20e680fe599b8717e197ee74",
+      "planSha256": "179ffa977bf92b5c42775863db552e1e2e21145450775016b5fdaa9442faea40",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-cost-fixed-budget.json",
+      "phase": "M",
+      "sourceSha256": "8069f944e63c81fbed8749a1962498c0bc7a7bd7dcaa6167c4327d207e7fed7b",
+      "planSha256": "91bbcdbb43c1439fe8d2e4b9889574337ab84e6ba634d854d0dbf25e8d07420f",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-spearman-capturable-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "d6d583aeae975d5d579b339fe82ea15347684c9523c485cb3ad0c0c47c169a98",
+      "planSha256": "48758671bfe39ded489cb164574056c5d0fc526161b3075d95017ec2ac70b4ba",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-attack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "18f160abb9ae39f3c672bb2605c2acba9139f44dbf010885558884e53c520190",
+      "planSha256": "309a8205c51b0e22a93b7e6598ec7ecddec5236cf353fedeb86039da2e195e08",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-structure-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "4468d7f8c090741e06087be24db51e8be264b812c0105dbda9bb5c8a05a8eafc",
+      "planSha256": "b78a8e691976feb1dc5d087865fa6392ad2c0c3bb27dc8da8c6092753cdd56ee",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "7bf1be3c60b7a69ae5d187c9d849d1bb11a883838b87139b665a86aa66342103",
+      "planSha256": "4f26adde902cbb8abe6aab82331448256fd18fd613983137e673cfb10415b80a",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "0f5edf9e3d92d33a983e0f47df0dee4d15286a88ab8a29fb907d6cfc3c5d5b68",
+      "planSha256": "58c8f227b9ea4ec38dcc2af9b5cfed27603d5f056f5d68dbed02c8a98cd93af5",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "1f4bfe99be92430dca43b9e8972e09b3fcfe189b95ded12329c4362150ae2cd9",
+      "planSha256": "45f451fb830bb27a7cebc67d95fab0dbde540a5340f97c4047547f9d334a0da4",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "1e225e5aeec9f44732e2b37560f7f1d9db5dfaf88e6feed04b788013bfe25a74",
+      "planSha256": "1ae08c24ac27ed667bee727b7b0a9230227c1b5399c8aa2dff7b4333fe39ad84",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-cost-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "8b7c214aa38599f844b7ca2c52a13578726237e575ef2b899393378197e866b7",
+      "planSha256": "4d51844ae51620a854cd8bb932ffae264550520cf00add2d872915e229c4c4fd",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-cost-fixed-budget.json",
+      "phase": "M",
+      "sourceSha256": "3fd25cef3fdb0e0372f85da0a2fbf22ed84062383b89d00edcc3ab5fdc170472",
+      "planSha256": "c9127de23ee0e12c30dd0348e17f1f40ccd9321bf5935b9ea3000fb76882e5bb",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-archer-capturable-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "1baf1c1e2371d37e791a860097a442592dd49c8cd18c869b2818c12ef822fc95",
+      "planSha256": "0a3e35d46160c5b8ccc68eb03dd36518ac57829c99039162e0078b92c4370af7",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-attack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "8a89a81e1975d09359a079f94faafa1bd7ba0d7653caa210f12628a6f7c8f856",
+      "planSha256": "52b5294f81564cb0e664f5fc74f2061a1823fc3fadc904e3fd5923777acf489c",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-structure-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "27413994db1d90b321e1f993df53fef66d3b65c5b2535354c88fe3846583b271",
+      "planSha256": "ea2a0a008d068eea43dc16bc96a36436eea56da0ef74010768a9f02508efb8bf",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-baseAccuracy-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "dcb3d36f23804cd7a1a033091ec7049a0973d1891d4b2404f2180986ab034b9b",
+      "planSha256": "67d4726a8e0f8801b55a1c78549ce226f51fd4ce40d1ae0b0d694a5468d67340",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-accuracySpread-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "e80c245a7bc25759fc7adc21fba6d026162fd55fcee7593d23c88edf1f5c55df",
+      "planSha256": "6f3f52b20e8704f6c40ff454120df572de76412695010cbe9c37b83e10c4c4c7",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-strikesPerAttack-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "d781f2f59b0453de88110c2bc099ff629352d54e2cdde961f7c20701a0d6a830",
+      "planSha256": "78f3b3c18fb8d88a2b6ba48b08cc862f70a1d3d85d162fc787d8c3ce89a71949",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-defendingEfficiency-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "f53e71c61b9800a2802b7a8985df66a47552abbe5ec43f79364788e92cc7e498",
+      "planSha256": "902d4064e0c13dffadc8e97374e5194514b5454f032e92021576f053ff75d1af",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-cost-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "b7747e467b28cad003733985ba0dbab46eac176e314385f84c149d564b5a64d3",
+      "planSha256": "ba795e1446169059681cf710664afad070715988c207b1484857d152263803e5",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-cost-fixed-budget.json",
+      "phase": "M",
+      "sourceSha256": "9f26c46dbfcfdd8a64ce6dca91c9ec0d2f1d20ee698d72ee4cc667d809b2f35b",
+      "planSha256": "b2b65a83774fe581a685d10b33b7a60dafc804b6b8c563e6593862b699ceb10e",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-unit-knight-capturable-fixed-counts.json",
+      "phase": "M",
+      "sourceSha256": "ff21fbbe56e913f961163711ea2a79ce01b53ca263e8e3cc6ff7ba86dbd79a18",
+      "planSha256": "881208f53b1ef9d1a8f1736834a7f1113c040a90a90c5598e9627a19e014e424",
+      "scenarios": 12,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-maxRounds.json",
+      "phase": "M",
+      "sourceSha256": "133829416d873e739c5cd914a4ce4428293f0430f5a4cc655de23b2360d99680",
+      "planSha256": "5a438e4f7de9f36a8063569aef80c43056bcf15735c6f79b0b7c64a702c85b49",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-tieBreakCriterion.json",
+      "phase": "M",
+      "sourceSha256": "a4d32e0b2d2850ff6264e1e46d9bc922e1942d5768887863645454c6bed51427",
+      "planSha256": "2b7b4b3fa2a258fefab1f2dd1764dc7ec909d5e78e6e27f3d9566ae3a33a7440",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-equalityPolicy.json",
+      "phase": "M",
+      "sourceSha256": "1d4602d247ab7e1c3a9a37dcc1896a9778f25a5e5eae0be2fcb1623be2cb13c3",
+      "planSha256": "9259821260fa0a45cc0b8f739b60bfe621099ab92b353c1b84736b22db6a5b68",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-lossCompressionPercent.json",
+      "phase": "M",
+      "sourceSha256": "8a7ca2b27293ad1348981618b24b4da02808ff097792e3a16ede26306bb78fc2",
+      "planSha256": "1554fa73ae4e8537d81f644f8ba9994122f07cce782ff0d030756355844f52d5",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-capturePercent.json",
+      "phase": "M",
+      "sourceSha256": "1115cf2ac94af827a8220948c6b87802e33b27dbc4d16980ca97168ce22fc0ae",
+      "planSha256": "456e48bd2d3509c79af65832994cf5abd45e697b342926b1bad32c2bad620eb7",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-woundDamageThreshold.json",
+      "phase": "M",
+      "sourceSha256": "54b9b4dc59a07718020d151cae3668cd91a78691c6843d055fda46848a672551",
+      "planSha256": "d7be7c38ec68ab3fca48b302fdb0bb944ba575c6e6d959cdd5ef2937ce18d48a",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-combat-surrender.json",
+      "phase": "M",
+      "sourceSha256": "d08ed48fabe218f13dbfd3c96f6360acfd208e43dc4e368eea139d9292b4b3a9",
+      "planSha256": "a11be890edc1ba0cb201f30d9e46861e157522dd2cce76d808ca2464cfd9b8f9",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-soldier-spearman.json",
+      "phase": "M",
+      "sourceSha256": "eefed97b95c2f2594004b1ad3bed1a6477ee82298134a501a0d1970c43a3e9a9",
+      "planSha256": "0e60e9b276ad77f4cac5d4ae4b4f32193deaac7a16d9d43541b58c5318cfc60e",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-soldier-archer.json",
+      "phase": "M",
+      "sourceSha256": "f3ce579772bdb2140304f07ff974c0b5bf41127fb2dbf2192880f652b7aef11a",
+      "planSha256": "0f3c70c17be8d97fa697362d8963c8e335886bc79efada40eb0edbd231cf8be8",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-soldier-knight.json",
+      "phase": "M",
+      "sourceSha256": "2cf310f4823181d8bb399aca35e10e4e8519489f4c6c31d33a64d7e2e6f2e962",
+      "planSha256": "077b3b498bc8c20621ab54ca2dc23e2dbbf126c441c2a4ab8b65db65ea6d97f4",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-spearman-soldier.json",
+      "phase": "M",
+      "sourceSha256": "4d8ea2a42bcd948af443a0f726d952926452429aa3e32bdf997d423b79d8b2af",
+      "planSha256": "0b511ee2c643b162b7dab9be4313589acdd9146e3d42e6f9aa9493ab679e9f19",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-spearman-archer.json",
+      "phase": "M",
+      "sourceSha256": "d898b966e36c2c89d1a762a7302257215cb9502796ad3a2f0e117f6d80567038",
+      "planSha256": "0dc6899fbdc35ef4428a23363c79e76da1284e19e3f92ffb6b0e6bfcbb290995",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-spearman-knight.json",
+      "phase": "M",
+      "sourceSha256": "8daf4637ec0c743f34b499fa052393c0ab4a69e19b262f9b9efcf8c3a09a2b8e",
+      "planSha256": "82b54d14632983389b505894a183911d098d0ef4288b2c21fbcecd1686a3c200",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-archer-soldier.json",
+      "phase": "M",
+      "sourceSha256": "4197551306ca15ef2366c25b7b46042c2b72b0a111dd256c06b7c54edcb799fc",
+      "planSha256": "96d0d3e0b1ec67cf943d14b3fd71afe58c137618e975799dd21d88bf3dc7bf84",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-archer-spearman.json",
+      "phase": "M",
+      "sourceSha256": "987cc7346f70b87435e8698d2effe151f4fa136b68a48e639669aa653ea59905",
+      "planSha256": "1af4936b28520714ca088a8cb89eaac0b3a39d9794c856938dbf024f6db46261",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-archer-knight.json",
+      "phase": "M",
+      "sourceSha256": "daee03c56389fb1c4e773d3d0bce32a1c7d9166f25bdad5e5f16172108991e2b",
+      "planSha256": "4f0e429c99b47f76d6b5686d2a3a443a1eacf46199fec9ce351a2cc2209a53a9",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-knight-soldier.json",
+      "phase": "M",
+      "sourceSha256": "0e19ffa92390fbce5fb22d45a5cfe5848923bcfb7329133d981e628292d7cf73",
+      "planSha256": "ee7d4d18a9e19e25ae41ff73cae83d403155382ed9a39b4b7d07d88b56178305",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-knight-spearman.json",
+      "phase": "M",
+      "sourceSha256": "d69590585e34a07a155b994cb1e108ebe63b3a17dadabbda32f33d7a70f054a3",
+      "planSha256": "7934600d3909a71d9d3fbba9616506f2723960a38c27e4b5d748b7e9bed21d51",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-counter-knight-archer.json",
+      "phase": "M",
+      "sourceSha256": "909d4172bc10e701af9a0c8296ebc3c50967633fdd22ba6599f5fb7e771ce1aa",
+      "planSha256": "bd67f77971f724ee968933eda15c3ee6ca8609c66e58c85405dbde1d65648d68",
+      "scenarios": 3,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-neutral.json",
+      "phase": "W",
+      "sourceSha256": "fd4f9bafe85cd77f4e959748424d0c890e7ad22a81d18907d0633553a3effd55",
+      "planSha256": "4cd741fdbc9875d8a3c11a4442d8d8a7b18cef3e7ac7b94db26a59551736c9e0",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-cloudy.json",
+      "phase": "W",
+      "sourceSha256": "f264bbbdde218b838bf7f537675658cfc07ce299ad1795ea30f649dbf715d8ae",
+      "planSha256": "ef9e29fd975c00f5e97878d14f0f0a832a77791acd26d67004ec38bd401fcfef",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-snow.json",
+      "phase": "W",
+      "sourceSha256": "75781f87c9940fcfce6ed665d59cb710769d2ab9f81eca6f5cf99304a82f48d1",
+      "planSha256": "86d58f030d30950204b5c55267d9bedb6b6256b1453f09166d27252c59d0329f",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-blizzard.json",
+      "phase": "W",
+      "sourceSha256": "a6a2a9501215c7bf76c872eab8b18e6626dd5d8c0050973f16f35abe93c4a8a4",
+      "planSha256": "cc332bcc2a1bb55348698fb327146d0042b1a9b5fde77b7f90f328c835145804",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-heat.json",
+      "phase": "W",
+      "sourceSha256": "0bffc224fd948293de2b01ec45ee4dcb68d27490925ff5a356307cc87359fbe7",
+      "planSha256": "d70365b7936f75b94c492deb9b635d3c860b6e60afd17701deddcadd0c74c207",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-canicule.json",
+      "phase": "W",
+      "sourceSha256": "c647db4c6fcc5557be428f3e0d11ab01dd783f60dd5c710724aed9cd1288553a",
+      "planSha256": "84562baaa57a2bb27117c96234b69f99e8ab55c8f6d205ef7ef153f27e2436dd",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-wind.json",
+      "phase": "W",
+      "sourceSha256": "85dbb8eedb64b387a53233780b773b0c0f3bdb98839658e861a43e920bbded2e",
+      "planSha256": "14ffaf4afdd9bbe8c53ed25e39eb37e1062151df5312afc57cd7caa9a6c57226",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-storm.json",
+      "phase": "W",
+      "sourceSha256": "f623fc2040c1554e4637b64d0d126b91f7267d6db4d757a427b8ed4f680484e8",
+      "planSha256": "71ba8b6ef0af74bacb8250521308a7274c1ce4e655586f92315d45a94b5f6f51",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-rain.json",
+      "phase": "W",
+      "sourceSha256": "c63328e871dc268fef3f3b8037785fec111c50a9cb692a87e2343d14000b5c00",
+      "planSha256": "8e51f52d60b44be6df91dd0db74301eea829ed11ca88243fcb09ccf12c285d70",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "M-weather-preset-thunderstorm.json",
+      "phase": "W",
+      "sourceSha256": "1ee0f33a3953757da7528a709b1782020ddd70f11fd2fb93bfc027b8284fe70c",
+      "planSha256": "961ccc28d318af87c0b0b4cfd0635268253e598d2772c6653ff685560cdc7235",
+      "scenarios": 30,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "E-replace-spearman.json",
+      "phase": "E",
+      "sourceSha256": "0fd13aaca39f6a579bf28c8b4d07e334803bd750d85b065be60e88dd67a117a3",
+      "planSha256": "42d6d201a966ceac27bbffe0af00d618564e6d840e3224e30212b8b1af67333a",
+      "scenarios": 120,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "E-add-spearman.json",
+      "phase": "E",
+      "sourceSha256": "b810673868667038478643644a9581428d81af4e03ecd90aa203494aabf59407",
+      "planSha256": "d469df30af50bfc1d9fd1dcb4eb26044aa506d85208ed78346291233bff74c3a",
+      "scenarios": 84,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "E-replace-archer.json",
+      "phase": "E",
+      "sourceSha256": "da632e5408718b41ca35054f8d0e65b2df6b34b90ee4a8d3fd6dd93000c516e9",
+      "planSha256": "9ee1dd966ffc0fd6023db1c6f55ea1b78ef078fb458f158804ba711984f82866",
+      "scenarios": 120,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "E-add-archer.json",
+      "phase": "E",
+      "sourceSha256": "311039915235fd4abd451d66367fd1d13015a9cfb41b3b6d21c498e6e3c24856",
+      "planSha256": "35562aecba3fa677d2fd56db682a57fe4aef82154277bb34956b84ea9e705105",
+      "scenarios": 84,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "E-replace-knight.json",
+      "phase": "E",
+      "sourceSha256": "e0a66bf03ba05e31b7fb257ed7c5c64149bcb88573393c39456e557d611dcaf3",
+      "planSha256": "8fc1c95fc59122a2d9bdac6d4af0cb8b2f4cccf7560afbe5d5917da5d206e52a",
+      "scenarios": 120,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "E-add-knight.json",
+      "phase": "E",
+      "sourceSha256": "c83d787c843bdd67b177c1f69cd6cb44240dfb6cf72821dbe7dcb79bd83cef7a",
+      "planSha256": "b3a12b1fe801177c2cf61b2949c8c83ba128ca78b40f204eecc371d71568d08d",
+      "scenarios": 84,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "X-simplex.json",
+      "phase": "X",
+      "sourceSha256": "79866837aba459fccf018739b1999d67e543802c102bc4ee9afb27e4b11fa4b7",
+      "planSha256": "6588f1f134eb80fc43d40bb9409553562bd48c831ab0120fcdbcfc4ed7c0a6ae",
+      "scenarios": 525,
+      "repetitionsPerDirection": 2000
+    },
+    {
+      "plan": "X-archer-cut.json",
+      "phase": "X",
+      "sourceSha256": "4fdb0a8eabacb97dca0fa1c2ab0c3f45040117905dad402864f579be27d39d58",
+      "planSha256": "ac68207f6e9ce757292258151d61088988a8dead71913230fbc2422d252a0181",
+      "scenarios": 105,
+      "repetitionsPerDirection": 2000
+    }
+  ]
+}

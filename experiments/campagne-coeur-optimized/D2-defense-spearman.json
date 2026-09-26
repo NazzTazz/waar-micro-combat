@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "waar-parametric-campaign/1",
+  "profile": "../campagne-coeur/reference-profile.json",
+  "output": "../../reports/campagne-coeur-optimized/D2-defense-spearman",
+  "sampling": {
+    "repetitions": 2000,
+    "baseSeed": 42,
+    "batchSize": 100
+  },
+  "limits": {
+    "maxCombats": 84000
+  },
+  "axes": {
+    "defense": {
+      "path": "units.spearman.defendingEfficiency",
+      "values": [
+        "2",
+        "0.5",
+        "0.75",
+        "1",
+        "1.25",
+        "1.5",
+        "1.75"
+      ]
+    },
+    "rounds": {
+      "path": "combat.maxRounds",
+      "values": [
+        20,
+        1,
+        2
+      ]
+    }
+  },
+  "crosses": {
+    "singles": true,
+    "pairs": [
+      [
+        "defense",
+        "rounds"
+      ]
+    ],
+    "triplets": []
+  },
+  "scenarios": [
+    {
+      "id": "d2-spearman-n100",
+      "directions": "both",
+      "weather": {
+        "A": "neutral",
+        "B": "neutral"
+      },
+      "modifiers": {
+        "A": [],
+        "B": []
+      },
+      "armies": {
+        "A": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 100
+          }
+        },
+        "B": {
+          "mode": "explicit",
+          "units": {
+            "spearman": 100
+          }
+        }
+      },
+      "compositionVariants": [
+        {
+          "id": "reference",
+          "operations": []
+        }
+      ]
+    }
+  ],
+  "stochasticEngineVersion": "sha256-splitmix-occupancy/1"
+}
