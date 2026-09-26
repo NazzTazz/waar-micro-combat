@@ -1,0 +1,589 @@
+{
+  "schemaVersion": "waar-b1-measurements/1",
+  "status": "completed",
+  "start": "2026-09-26T13:07:37.433Z",
+  "head": "05ebe6f3f2c29c9faf80e28a2558ed60c13e130f",
+  "machine": "DESKTOP-JFVSFN5",
+  "os": "win32",
+  "release": "10.0.19045",
+  "arch": "x64",
+  "cpus": [
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz"
+  ],
+  "node": "v24.19.0",
+  "php": "PHP 8.2.33 (cli) (built: Jul 28 2026 10:27:30) (NTS Visual C++ 2019 x64)",
+  "binaryHash": "07b70e503251dfd83723c9eb995213bee0ab9a83fbaa4c9f8028cd7a11d64aba",
+  "corpusHash": "93eea332dce3faec5b61b5f395d6d41b0683dc877ded2cf1a02b5ef3d8ed72d7",
+  "budget": {
+    "maxCombats": 250000,
+    "maxSeconds": 600,
+    "priorCombats": 19738,
+    "priorSeconds": 228
+  },
+  "results": [
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 3,
+      "warmups": [
+        {
+          "elapsedMs": 737.5797,
+          "hash": "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        551.4294,
+        492.47010000000023,
+        468.8519000000001
+      ],
+      "hashes": [
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+      ],
+      "profileStats": [
+        {
+          "kind": "B1_PROFILE",
+          "addressedRandom": {
+            "consequenceCalls": 250,
+            "hitCalls": 1278,
+            "impactCalls": 13272,
+            "integerCalls": 320,
+            "targetCalls": 960,
+            "treeSteps": 100078
+          },
+          "allocationWaves": 320,
+          "combats": 10,
+          "maxCohortsPerType": 44,
+          "otherNs": 585700,
+          "prepareNs": 171100,
+          "projectionNs": 7379800,
+          "rawAggregationNs": 17400,
+          "reallocationWaves": 0,
+          "resolveFastNs": 534266700,
+          "rngSamples": [
+            {
+              "army": "A",
+              "n": 3000,
+              "p": 0.7672634271099744,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 708,
+              "p": 0.4703296703296703,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 359,
+              "p": 0.8879668049792531,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 2292,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 349,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 324,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 35,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/knight"
+            },
+            {
+              "army": "A",
+              "n": 428,
+              "p": 0.7672634271099744,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 97,
+              "p": 0.4703296703296703,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 56,
+              "p": 0.8879668049792531,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 331,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 187,
+              "p": 0.075,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/soldier/17000000"
+            },
+            {
+              "army": "A",
+              "n": 41,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 28,
+              "p": 0.07710280373831775,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/spearman/112000000"
+            },
+            {
+              "army": "A",
+              "n": 49,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 28,
+              "p": 0.08644859813084112,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/archer/42000000"
+            }
+          ],
+          "rounds": 40,
+          "totalNs": 542420700
+        },
+        {
+          "kind": "B1_TRANSPORT",
+          "outputBytes": 1767,
+          "runNs": 550570900,
+          "serializeNs": 25600,
+          "writeFlushNs": 25800
+        },
+        {
+          "kind": "B1_PROFILE",
+          "addressedRandom": {
+            "consequenceCalls": 250,
+            "hitCalls": 1278,
+            "impactCalls": 13272,
+            "integerCalls": 320,
+            "targetCalls": 960,
+            "treeSteps": 100078
+          },
+          "allocationWaves": 320,
+          "combats": 10,
+          "maxCohortsPerType": 44,
+          "otherNs": 374300,
+          "prepareNs": 123900,
+          "projectionNs": 6157900,
+          "rawAggregationNs": 16100,
+          "reallocationWaves": 0,
+          "resolveFastNs": 480075500,
+          "rngSamples": [
+            {
+              "army": "A",
+              "n": 3000,
+              "p": 0.7672634271099744,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 708,
+              "p": 0.4703296703296703,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 359,
+              "p": 0.8879668049792531,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 2292,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 349,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 324,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 35,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/knight"
+            },
+            {
+              "army": "A",
+              "n": 428,
+              "p": 0.7672634271099744,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 97,
+              "p": 0.4703296703296703,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 56,
+              "p": 0.8879668049792531,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 331,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 187,
+              "p": 0.075,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/soldier/17000000"
+            },
+            {
+              "army": "A",
+              "n": 41,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 28,
+              "p": 0.07710280373831775,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/spearman/112000000"
+            },
+            {
+              "army": "A",
+              "n": 49,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 28,
+              "p": 0.08644859813084112,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/archer/42000000"
+            }
+          ],
+          "rounds": 40,
+          "totalNs": 486747700
+        },
+        {
+          "kind": "B1_TRANSPORT",
+          "outputBytes": 1767,
+          "runNs": 492048100,
+          "serializeNs": 37700,
+          "writeFlushNs": 22800
+        },
+        {
+          "kind": "B1_PROFILE",
+          "addressedRandom": {
+            "consequenceCalls": 250,
+            "hitCalls": 1278,
+            "impactCalls": 13272,
+            "integerCalls": 320,
+            "targetCalls": 960,
+            "treeSteps": 100078
+          },
+          "allocationWaves": 320,
+          "combats": 10,
+          "maxCohortsPerType": 44,
+          "otherNs": 398800,
+          "prepareNs": 128200,
+          "projectionNs": 6201800,
+          "rawAggregationNs": 14800,
+          "reallocationWaves": 0,
+          "resolveFastNs": 455866100,
+          "rngSamples": [
+            {
+              "army": "A",
+              "n": 3000,
+              "p": 0.7672634271099744,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 708,
+              "p": 0.4703296703296703,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 359,
+              "p": 0.8879668049792531,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "target/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 2292,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 349,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 324,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 35,
+              "p": 0.1,
+              "round": 1,
+              "seed": 42,
+              "unit": "soldier",
+              "usage": "hit/0/knight"
+            },
+            {
+              "army": "A",
+              "n": 428,
+              "p": 0.7672634271099744,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 97,
+              "p": 0.4703296703296703,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 56,
+              "p": 0.8879668049792531,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "target/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 331,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/soldier"
+            },
+            {
+              "army": "A",
+              "n": 187,
+              "p": 0.075,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/soldier/17000000"
+            },
+            {
+              "army": "A",
+              "n": 41,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/spearman"
+            },
+            {
+              "army": "A",
+              "n": 28,
+              "p": 0.07710280373831775,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/spearman/112000000"
+            },
+            {
+              "army": "A",
+              "n": 49,
+              "p": 0.6,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "hit/0/archer"
+            },
+            {
+              "army": "A",
+              "n": 28,
+              "p": 0.08644859813084112,
+              "round": 1,
+              "seed": 42,
+              "unit": "spearman",
+              "usage": "impact/0/archer/42000000"
+            }
+          ],
+          "rounds": 40,
+          "totalNs": 462609700
+        },
+        {
+          "kind": "B1_TRANSPORT",
+          "outputBytes": 1767,
+          "runNs": 468501200,
+          "serializeNs": 23300,
+          "writeFlushNs": 21500
+        }
+      ],
+      "errors": [],
+      "identicalReplays": true
+    }
+  ],
+  "completedCombats": 19778,
+  "attemptedCombats": 19778,
+  "parity": [],
+  "end": "2026-09-26T13:07:39.972Z",
+  "elapsedSeconds": 230.3208688
+}

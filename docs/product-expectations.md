@@ -5,6 +5,12 @@ de fonctions reconstruites sans exploiter les quinze jours d'historique disponib
 But : retrouver une décision et son implémentation avant de proposer autre chose.
 Ce fichier est un index maintenu, pas une nouvelle spécification du moteur.
 
+## Reprise courante — B1, 26 septembre 2026
+
+- **Suivi :** [issue #25](https://github.com/NazzTazz/waar-micro-combat/issues/25), suite de #24 ; attentes ATT-01/02/03/04/07/08/10/11/14. Branche locale `bench/issue-25-b1` issue de `main` / `origin/main` à `05ebe6f3f2c29c9faf80e28a2558ed60c13e130f` au départ de la mesure. Voir le [rapport B1 et ses données](benchmarks/2026-09-26-b1/README.md) pour le contrôle d'histoire, le corpus, les résultats et les limites.
+- **Réalisé localement :** geste navigateur chronométré, corpus Nazz/Test 2, pilote borné processus PHP/Rust contre Rust persistant, profils natifs, partition exacte et timings HTTP activables par variable d'environnement. Aucun changement de gameplay, d'objectif ou de parcours utilisateur. Sur le geste Test 2 mesuré, saisie → DOM 900,2 ms ; sur le mélange Nazz, `resolve_fast` domine le profil natif. Le découpage 4 × 5 avance le premier résultat à 2,4 s et augmente le total par rapport à 1 × 20. Ce constat n'est ni une optimisation livrée ni une acceptation PO.
+- **Vérification et reste :** parités exactes des résultats comparables et contrôle de partition exact ; 161 tests PHP / 24 132 assertions, suite JavaScript, smoke 2 400 combats, Rust normal et diagnostic passants. Ouvrir la PR B1 sur #25, puis examiner les pistes classées dans le rapport. Fichiers non suivis préexistants et scripts locaux `reports/issue25-b1/` conservés hors de la livraison. Aucun déploiement ou contrôle VPS.
+
 ## Comment reprendre un travail
 
 1. Repérer les attentes concernées ci-dessous. Lire leurs sources, y compris les
