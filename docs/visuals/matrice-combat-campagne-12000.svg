@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" role="img" aria-labelledby="title desc">
+  <title id="title">Matrice triangulaire du profil Nazz-Eq-20%-Rc2</title>
+  <desc id="desc">Matrice quatre par quatre des confrontations monotypes. Les lignes sont les attaquants et les colonnes les défenseurs. Le triangle supérieur gauche rouge indique les victoires de l'attaquant ; le triangle inférieur droit bleu les victoires du défenseur. Données X-simplex à 12 000 Or, 4 000 combats par orientation.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#030611" flood-opacity=".38"/></filter>
+    <clipPath id="cell-clip" clipPathUnits="objectBoundingBox"><rect width="1" height="1" rx=".1"/></clipPath>
+    <style>
+      .title{font:700 28px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#f4f7ff}
+      .subtitle{font:400 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#9aa8c3}
+      .head{font:700 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#e9efff;text-anchor:middle}
+      .side{font:700 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#e9efff;text-anchor:end}
+      .pct{font:700 15px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#f7f9ff}
+      .cell-note{font:600 10px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#dce4f5}
+      .small{font:500 12px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#909fba}
+      .panel-title{font:700 16px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#f4f7ff}
+      .panel-text{font:400 14px system-ui,-apple-system,"Segoe UI",sans-serif;fill:#bbc5da}
+      .mono{font:700 13px ui-monospace,SFMono-Regular,Consolas,monospace}
+      .attack{fill:#f05252}.defense{fill:#4f8cff}.draw{fill:#8290aa}
+      polygon.attack,polygon.defense{clip-path:url(#cell-clip)}
+      .outline{fill:none;stroke:#53617d;stroke-width:1.5}
+      .diagonal{stroke:#dce4f5;stroke-opacity:.45;stroke-width:1.5}
+    </style>
+  </defs>
+  <rect width="1200" height="850" rx="24" fill="#0b1020"/>
+  <text x="50" y="52" class="title">Matrice de combat</text>
+  <text x="50" y="78" class="subtitle">Nazz-Eq-20%-Rc2 · monotypes à 12 000 Or · météo neutre · 4 000 combats par orientation</text>
+
+  <text x="455" y="112" class="small" text-anchor="middle">DÉFENSEUR</text>
+  <text x="235" y="151" class="head">Soldat</text>
+  <text x="380" y="151" class="head">Lancier</text>
+  <text x="525" y="151" class="head">Archer</text>
+  <text x="670" y="151" class="head">Chevalier</text>
+  <text x="73" y="462" class="small" text-anchor="middle" transform="rotate(-90 73 462)">ATTAQUANT</text>
+  <text x="145" y="250" class="side">Soldat</text>
+  <text x="145" y="395" class="side">Lancier</text>
+  <text x="145" y="540" class="side">Archer</text>
+  <text x="145" y="685" class="side">Chevalier</text>
+
+  <!-- Row: Soldier attacks -->
+  <g transform="translate(170 180)" filter="url(#shadow)"><title>Soldat attaque Soldat : 49 % attaque, 0 % nul, 51 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".551"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".569"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">49,0</text><text x="115" y="114" class="pct" text-anchor="end">51,0</text><text x="65" y="68" class="cell-note" text-anchor="middle" transform="rotate(-45 65 68)">miroir</text></g>
+  <g transform="translate(315 180)" filter="url(#shadow)"><title>Soldat attaque Lancier : 0 % attaque, 0 % nul, 100 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".12"/><polygon points="130,0 130,130 0,130" class="defense"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">0</text><text x="115" y="114" class="pct" text-anchor="end">100</text></g>
+  <g transform="translate(460 180)" filter="url(#shadow)"><title>Soldat attaque Archer : 25,5 % attaque, 0 % nul, 74,5 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".344"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".776"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">25,5</text><text x="115" y="114" class="pct" text-anchor="end">74,5</text></g>
+  <g transform="translate(605 180)" filter="url(#shadow)"><title>Soldat attaque Chevalier : 69,2 % attaque, 0 % nul, 30,8 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".729"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".391"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">69,2</text><text x="115" y="114" class="pct" text-anchor="end">30,8</text></g>
+
+  <!-- Row: Spearman attacks -->
+  <g transform="translate(170 325)" filter="url(#shadow)"><title>Lancier attaque Soldat : 0,4 % attaque, 0 % nul, 99,7 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".123"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".997"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">0,4</text><text x="115" y="114" class="pct" text-anchor="end">99,7</text></g>
+  <g transform="translate(315 325)" filter="url(#shadow)"><title>Lancier attaque Lancier : 0 % attaque, 0 % nul, 100 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".12"/><polygon points="130,0 130,130 0,130" class="defense"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">0</text><text x="115" y="114" class="pct" text-anchor="end">100</text><text x="65" y="68" class="cell-note" text-anchor="middle" transform="rotate(-45 65 68)">miroir</text></g>
+  <g transform="translate(460 325)" filter="url(#shadow)"><title>Lancier attaque Archer : 13,8 % attaque, 0 % nul, 86,2 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".241"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".879"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">13,8</text><text x="115" y="114" class="pct" text-anchor="end">86,2</text></g>
+  <g transform="translate(605 325)" filter="url(#shadow)"><title>Lancier attaque Chevalier : 81,8 % attaque, 0 % nul, 18,2 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".840"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".280"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">81,8</text><text x="115" y="114" class="pct" text-anchor="end">18,2</text></g>
+
+  <!-- Row: Archer attacks -->
+  <g transform="translate(170 470)" filter="url(#shadow)"><title>Archer attaque Soldat : 100 % attaque, 0 % nul, 0 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".12"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">100</text><text x="115" y="114" class="pct" text-anchor="end">0</text></g>
+  <g transform="translate(315 470)" filter="url(#shadow)"><title>Archer attaque Lancier : 0 % attaque, 0 % nul, 100 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".12"/><polygon points="130,0 130,130 0,130" class="defense"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">0</text><text x="115" y="114" class="pct" text-anchor="end">100</text></g>
+  <g transform="translate(460 470)" filter="url(#shadow)"><title>Archer attaque Archer : 100 % attaque, 0 % nul, 0 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".12"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">100</text><text x="115" y="114" class="pct" text-anchor="end">0</text><text x="65" y="68" class="cell-note" text-anchor="middle" transform="rotate(-45 65 68)">miroir</text></g>
+  <g transform="translate(605 470)" filter="url(#shadow)"><title>Archer attaque Chevalier : 50,5 % attaque, 0 % nul, 49,5 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".564"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".556"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">50,5</text><text x="115" y="114" class="pct" text-anchor="end">49,5</text></g>
+
+  <!-- Row: Knight attacks -->
+  <g transform="translate(170 615)" filter="url(#shadow)"><title>Chevalier attaque Soldat : 30,8 % attaque, 0 % nul, 69,2 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".391"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".729"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">30,8</text><text x="115" y="114" class="pct" text-anchor="end">69,2</text></g>
+  <g transform="translate(315 615)" filter="url(#shadow)"><title>Chevalier attaque Lancier : 0 % attaque, 0 % nul, 100 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".12"/><polygon points="130,0 130,130 0,130" class="defense"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">0</text><text x="115" y="114" class="pct" text-anchor="end">100</text></g>
+  <g transform="translate(460 615)" filter="url(#shadow)"><title>Chevalier attaque Archer : 92,2 % attaque, 0 % nul, 7,9 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".931"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".188"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">92,2</text><text x="115" y="114" class="pct" text-anchor="end">7,9</text></g>
+  <g transform="translate(605 615)" filter="url(#shadow)"><title>Chevalier attaque Chevalier : 42,5 % attaque, 0 % nul, 57,5 % défense</title><rect width="130" height="130" rx="14" fill="#141d32"/><polygon points="0,0 130,0 0,130" class="attack" fill-opacity=".494"/><polygon points="130,0 130,130 0,130" class="defense" fill-opacity=".626"/><line x1="130" y1="0" x2="0" y2="130" class="diagonal"/><rect width="130" height="130" rx="14" class="outline"/><text x="15" y="28" class="pct">42,5</text><text x="115" y="114" class="pct" text-anchor="end">57,5</text><text x="65" y="68" class="cell-note" text-anchor="middle" transform="rotate(-45 65 68)">miroir</text></g>
+
+  <!-- Reading panel -->
+  <g transform="translate(790 150)">
+    <rect width="360" height="595" rx="18" fill="#11182b" stroke="#2b3854"/>
+    <text x="26" y="42" class="panel-title">Une case, une orientation</text>
+    <g transform="translate(26 68)">
+      <rect width="150" height="150" rx="15" fill="#141d32"/>
+      <polygon points="0,0 150,0 0,150" class="attack" fill-opacity=".75"/>
+      <polygon points="150,0 150,150 0,150" class="defense" fill-opacity=".45"/>
+      <line x1="150" y1="0" x2="0" y2="150" class="diagonal"/>
+      <rect width="150" height="150" rx="15" class="outline"/>
+      <text x="16" y="30" class="pct">attaque</text>
+      <text x="134" y="132" class="pct" text-anchor="end">défense</text>
+    </g>
+    <text x="198" y="95" class="panel-text">La ligne attaque.</text>
+    <text x="198" y="119" class="panel-text">La colonne défend.</text>
+    <text x="198" y="158" class="panel-text">La vivacité porte</text>
+    <text x="198" y="180" class="panel-text">le taux de victoire.</text>
+    <text x="198" y="219" class="panel-text">Le chiffre donne</text>
+    <text x="198" y="241" class="panel-text">la valeur exacte.</text>
+
+    <line x1="26" y1="250" x2="334" y2="250" stroke="#2b3854"/>
+    <text x="26" y="286" class="panel-title">Lecture par motifs</text>
+    <rect x="26" y="310" width="18" height="18" rx="5" class="attack"/><text x="56" y="324" class="panel-text">rouge vif : attaque dominante</text>
+    <rect x="26" y="346" width="18" height="18" rx="5" class="defense"/><text x="56" y="360" class="panel-text">bleu vif : défense dominante</text>
+    <rect x="26" y="382" width="18" height="18" rx="5" class="draw"/><text x="56" y="396" class="panel-text">gris : nuls, si présents</text>
+
+    <text x="26" y="445" class="panel-text">Les cases symétriques montrent</text>
+    <text x="26" y="467" class="panel-text">la confrontation dans l'autre rôle.</text>
+    <text x="26" y="503" class="panel-text">La diagonale mesure le biais de rôle</text>
+    <text x="26" y="525" class="panel-text">entre deux armées identiques.</text>
+
+    <line x1="26" y1="552" x2="334" y2="552" stroke="#2b3854"/>
+    <text x="26" y="579" class="small">Nuls observés dans ce corpus : 0 %</text>
+  </g>
+
+  <text x="50" y="816" class="small">Rouge = victoire de l'attaquant · bleu = victoire du défenseur · chaque case agrège 4 000 combats</text>
+  <text x="1150" y="816" class="small" text-anchor="end">Source : campagne optimisée / X-simplex</text>
+</svg>

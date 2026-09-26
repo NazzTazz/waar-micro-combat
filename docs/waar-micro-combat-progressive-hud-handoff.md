@@ -20,12 +20,21 @@ référence. Recalculer ces effectifs si les coûts du profil changent.
 
 ## Surface principale
 
-Un [prototype figé de Rose de combat](visuals/rose-combat-campagne-12000.svg)
-illustre une autre vue synthétique à partir des résultats réels de la campagne
-`X-simplex` : douze confrontations orientées sur une silhouette polaire et les
-quatre miroirs au centre. Il utilise le budget effectivement mesuré de 12 000
-Or et 4 000 combats agrégés par orientation ; ce prototype sert à juger la
-grammaire visuelle, sans remplacer le périmètre 30 000 Or décrit ci-dessous.
+Trois prototypes figés utilisent exactement les mêmes résultats réels de la
+campagne `X-simplex`, au budget effectivement mesuré de 12 000 Or et avec
+4 000 combats agrégés par orientation :
+
+- la [Rose de combat](visuals/rose-combat-campagne-12000.svg) transforme les
+  douze confrontations orientées en une silhouette polaire et place les quatre
+  miroirs au centre ;
+- les [rubans aller-retour](visuals/rubans-combat-campagne-12000.svg)
+  privilégient la lecture détaillée des six paires et de leurs changements de
+  rôle ;
+- la [matrice triangulaire](visuals/matrice-combat-campagne-12000.svg) offre le
+  balayage le plus compact des seize orientations.
+
+Ces prototypes servent à comparer les grammaires visuelles, sans remplacer le
+périmètre 30 000 Or décrit ci-dessous.
 
 Une matrice **4 × 4** : ligne = monotype attaquant ; colonne = monotype
 défenseur. Chaque case est coupée par la diagonale descendante :
