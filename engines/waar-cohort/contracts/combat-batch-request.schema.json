@@ -5,14 +5,14 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "ruleset", "baseSeed", "iterations", "scenarios"],
   "allOf": [{
-    "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" } } },
+    "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "enum": ["sha256-binomial-tree/1", "sha256-splitmix-occupancy/1"] } } },
     "then": { "properties": { "scenarios": { "items": { "required": ["armyIdentities"] } }, "consequences": { "required": ["policyVersion"], "properties": { "policyVersion": { "const": "wounded-capture-then-compress/4" } } } } },
     "else": { "properties": { "scenarios": { "items": { "not": { "required": ["armyIdentities"] } } }, "consequences": { "properties": { "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"] } } } } }
   }],
   "properties": {
     "schemaVersion": { "const": "waar-combat-batch-request/2" },
     "ruleset": { "$ref": "ruleset.schema.json" },
-    "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1"] },
+    "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1", "sha256-splitmix-occupancy/1"] },
     "baseSeed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
     "iterations": { "type": "integer", "minimum": 1, "maximum": 100 },
     "startIteration": { "type": "integer", "minimum": 0, "default": 0 },

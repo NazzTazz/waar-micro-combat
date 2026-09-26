@@ -58,6 +58,7 @@ const ACCURACY_VERSION: &str = "waar-accuracy-uniform-v1";
 const CONSEQUENCE_VERSION: &str = "wounded-capture-then-compress/2";
 const PROBABILISTIC_VERSION: &str = "wounded-capture-then-compress/3";
 const ADDRESSED_POLICY: &str = "wounded-capture-then-compress/4";
+const FAST_IMPACT_PROTOCOL: &str = "sha256-splitmix-occupancy/1";
 fn historical_stochastic() -> String {
     STOCHASTIC_ENGINE_VERSION.into()
 }
@@ -86,10 +87,17 @@ fn validate_random(
             if matches!(ids.attacker.as_str(), "A" | "B")
                 && matches!(ids.defender.as_str(), "A" | "B")
                 && ids.attacker != ids.defender => {}
+        (FAST_IMPACT_PROTOCOL, Some(ids))
+            if cfg!(feature = "fast-impact")
+                && matches!(ids.attacker.as_str(), "A" | "B")
+                && matches!(ids.defender.as_str(), "A" | "B")
+                && ids.attacker != ids.defender => {}
         _ => return Err("unsupported stochastic protocol or invalid armyIdentities".into()),
     }
     if let Some(settings) = policy {
-        if (settings.policy_version == ADDRESSED_POLICY) != (version == ADDRESSED_PROTOCOL) {
+        if (settings.policy_version == ADDRESSED_POLICY)
+            != matches!(version, ADDRESSED_PROTOCOL | FAST_IMPACT_PROTOCOL)
+        {
             return Err("incompatible consequence and stochastic protocols".into());
         }
     }
@@ -778,12 +786,18 @@ fn resolve_action(
     accuracies: &[Micro; 4],
     defending: bool,
     addressed: Option<&AddressedRandom>,
+    fast_impact: bool,
 ) -> Result<Action, String> {
     let mut target = target_start.clone();
     let mut matrix = empty_matrix(prepared, rules, accuracies, defending, source)?;
     let before = target.dead_total();
     let mut attempts = 0u64;
     let mut hits = 0u64;
+    let mut fast = if fast_impact {
+        addressed.map(|random| FastRng::from_domain(random, "action"))
+    } else {
+        None
+    };
     for acting in UnitType::ALL {
         let i = acting.index();
         let count = source.living_type(i);
@@ -801,7 +815,11 @@ fn resolve_action(
             }
             let allocations = b1_time!(
                 B1_ALLOCATE_NS,
-                allocate(pending, acting, &target, rules, rng, addressed, wave)
+                if let Some(fast) = fast.as_mut() {
+                    fast_allocate(pending, acting, &target, rules, fast)
+                } else {
+                    allocate(pending, acting, &target, rules, rng, addressed, wave)
+                }
             );
             let mut reallocated = 0u32;
             for target_type in UnitType::ALL {
@@ -813,18 +831,26 @@ fn resolve_action(
                 let probability = accuracies[i].units() as f64 / FIXED_SCALE as f64;
                 let sampled = b1_time!(
                     B1_HIT_NS,
-                    match addressed {
-                        Some(random) => random.binomial(
-                            allocated,
-                            probability,
-                            type_name(acting),
-                            &format!("hit/{wave}/{}", type_name(target_type)),
-                        ),
-                        None => rng.binomial(allocated, probability),
+                    if let Some(fast) = fast.as_mut() {
+                        fast.binomial(allocated, probability)
+                    } else {
+                        match addressed {
+                            Some(random) => random.binomial(
+                                allocated,
+                                probability,
+                                type_name(acting),
+                                &format!("hit/{wave}/{}", type_name(target_type)),
+                            ),
+                            None => rng.binomial(allocated, probability),
+                        }
                     }
                 );
                 let damage = matrix[i][j].damage_per_hit;
-                let needed = b1_time!(B1_NEEDED_NS, impacts_needed(&target, j, damage))?;
+                let needed = if fast.is_some() {
+                    None
+                } else {
+                    b1_time!(B1_NEEDED_NS, impacts_needed(&target, j, damage))?
+                };
                 let (mut consumed, mut applied) = (allocated, sampled);
                 if let Some(needed) = needed {
                     if sampled as u64 >= needed {
@@ -838,19 +864,26 @@ fn resolve_action(
                     }
                 }
                 let absorbed = if applied > 0 {
-                    b1_time!(
-                        B1_APPLY_NS,
-                        apply_impacts(
-                            &mut target,
-                            j,
-                            applied,
-                            damage,
-                            rng,
-                            addressed,
-                            acting,
-                            wave,
-                        )
-                    )?
+                    if let Some(fast) = fast.as_mut() {
+                        b1_time!(
+                            B1_APPLY_NS,
+                            apply_impacts_fast(&mut target, j, applied, damage, fast)
+                        )?
+                    } else {
+                        b1_time!(
+                            B1_APPLY_NS,
+                            apply_impacts(
+                                &mut target,
+                                j,
+                                applied,
+                                damage,
+                                rng,
+                                addressed,
+                                acting,
+                                wave,
+                            )
+                        )?
+                    }
                 } else {
                     0
                 };
@@ -962,6 +995,241 @@ fn impacts_needed(army: &Army, i: usize, damage: Micro) -> Result<Option<u64>, S
     }
     Ok(Some(needed))
 }
+struct FastRng {
+    state: u64,
+}
+
+impl FastRng {
+    fn from_domain(random: &AddressedRandom, usage: &str) -> Self {
+        let hash = Sha256::digest(random.domain("physics", usage).as_bytes());
+        Self {
+            state: u64::from_le_bytes(hash[..8].try_into().unwrap()),
+        }
+    }
+
+    fn draw(&mut self) -> u64 {
+        self.state = self.state.wrapping_add(0x9e3779b97f4a7c15);
+        let mut value = self.state;
+        value = (value ^ (value >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
+        value = (value ^ (value >> 27)).wrapping_mul(0x94d049bb133111eb);
+        value ^ (value >> 31)
+    }
+
+    fn uniform(&mut self) -> f64 {
+        ((self.draw() >> 11) as f64 + 0.5) / 9007199254740992.0
+    }
+
+    fn binomial(&mut self, n: u32, p: f64) -> u32 {
+        if n == 0 || p <= 0.0 {
+            return 0;
+        }
+        if p >= 1.0 {
+            return n;
+        }
+        let (p, reverse) = if p > 0.5 { (1.0 - p, true) } else { (p, false) };
+        let sample = if n <= 64 {
+            (0..n).filter(|_| self.uniform() < p).count() as u32
+        } else if n as f64 * p < 30.0 {
+            let limit = (-p).ln_1p();
+            let mut position = 0.0;
+            let mut count = 0;
+            loop {
+                position += (self.uniform().ln() / limit).floor() + 1.0;
+                if position > n as f64 {
+                    break;
+                }
+                count += 1;
+            }
+            count
+        } else {
+            let u1 = self.uniform();
+            let u2 = self.uniform();
+            let normal = (-2.0 * u1.ln()).sqrt() * (2.0 * std::f64::consts::PI * u2).cos();
+            (n as f64 * p + normal * (n as f64 * p * (1.0 - p)).sqrt())
+                .round()
+                .clamp(0.0, n as f64) as u32
+        };
+        if reverse {
+            n - sample
+        } else {
+            sample
+        }
+    }
+}
+
+fn fast_allocate(
+    attempts: u32,
+    acting: UnitType,
+    target: &Army,
+    rules: &Ruleset,
+    rng: &mut FastRng,
+) -> [u32; 4] {
+    let living: Vec<_> = UnitType::ALL
+        .into_iter()
+        .filter(|t| target.living_type(t.index()) > 0)
+        .collect();
+    let weights: Vec<_> = living
+        .iter()
+        .map(|t| (target.living_type(t.index()), rules.weight(acting, *t)))
+        .collect();
+    let mut result = [0; 4];
+    let mut remaining = attempts;
+    for (position, t) in living.iter().enumerate() {
+        let value = if position + 1 == living.len() {
+            remaining
+        } else {
+            rng.binomial(remaining, target_probability(&weights[position..]))
+        };
+        result[t.index()] = value;
+        remaining -= value;
+    }
+    result
+}
+
+fn occupancy_histogram(units: u32, impacts: u32, rng: &mut FastRng) -> Vec<(u32, u32)> {
+    if impacts == 0 {
+        return vec![(0, units)];
+    }
+    if units == 1 {
+        return vec![(impacts, 1)];
+    }
+    let p = 1.0 / units as f64;
+    let mean = impacts as f64 * p;
+    let mut weights = Vec::<(u32, f64)>::new();
+    if mean < 50.0 {
+        let mut probability = (impacts as f64 * (-p).ln_1p()).exp();
+        let mut total = 0.0;
+        for k in 0..=impacts.min(512) {
+            weights.push((k, probability));
+            total += probability;
+            if total >= 1.0 - 1e-12 {
+                break;
+            }
+            probability *= (impacts - k) as f64 / (k + 1) as f64 * p / (1.0 - p);
+        }
+    } else {
+        let deviation = (impacts as f64 * p * (1.0 - p)).sqrt();
+        let low = (mean - 8.0 * deviation).floor().max(0.0) as u32;
+        let high = (mean + 8.0 * deviation).ceil().min(impacts as f64) as u32;
+        for k in low..=high {
+            let z = (k as f64 - mean) / deviation;
+            weights.push((k, (-0.5 * z * z).exp()));
+        }
+    }
+    let mut probability_left: f64 = weights.iter().map(|(_, p)| *p).sum();
+    let mut units_left = units;
+    let mut histogram = BTreeMap::<u32, u32>::new();
+    for (position, &(hits, weight)) in weights.iter().enumerate() {
+        let count = if position + 1 == weights.len() {
+            units_left
+        } else {
+            rng.binomial(units_left, (weight / probability_left).clamp(0.0, 1.0))
+        };
+        if count > 0 {
+            histogram.insert(hits, count);
+        }
+        units_left -= count;
+        probability_left -= weight;
+    }
+    let mut assigned: i64 = histogram
+        .iter()
+        .map(|(hits, count)| *hits as i64 * *count as i64)
+        .sum();
+    // Condition the sampled marginal categories on the known total impact count.
+    // Move a bounded number of members per category instead of walking one
+    // randomly selected individual for every missing or excess impact.
+    while assigned != impacts as i64 {
+        let raise = assigned < impacts as i64;
+        let eligible: Vec<_> = histogram
+            .iter()
+            .filter(|(hits, count)| **count > 0 && (raise || **hits > 0))
+            .map(|(hits, count)| (*hits, *count))
+            .collect();
+        let mut capacity: u32 = eligible.iter().map(|(_, count)| count).sum();
+        let mut remaining = assigned.abs_diff(impacts as i64).min(capacity as u64) as u32;
+        let moved = remaining;
+        for (hits, count) in eligible {
+            let take = if count == capacity {
+                remaining
+            } else {
+                rng.binomial(remaining, count as f64 / capacity as f64)
+                    .clamp(
+                        remaining.saturating_sub(capacity - count),
+                        count.min(remaining),
+                    )
+            };
+            if take > 0 {
+                *histogram.get_mut(&hits).unwrap() -= take;
+                *histogram
+                    .entry(if raise { hits + 1 } else { hits - 1 })
+                    .or_default() += take;
+            }
+            remaining -= take;
+            capacity -= count;
+        }
+        assigned += if raise { moved as i64 } else { -(moved as i64) };
+    }
+    histogram
+        .into_iter()
+        .filter(|(_, count)| *count > 0)
+        .collect()
+}
+
+fn apply_impacts_fast(
+    army: &mut Army,
+    i: usize,
+    impacts: u32,
+    damage: Micro,
+    rng: &mut FastRng,
+) -> Result<i64, String> {
+    let cohorts = &army.cohorts[i];
+    let total_units: u32 = cohorts.iter().map(|c| c.count).sum();
+    if total_units == 0 {
+        return Ok(0);
+    }
+    let before: i64 = cohorts
+        .iter()
+        .map(|c| c.structure.units() * c.count as i64)
+        .sum();
+    let mut updated = BTreeMap::<i64, u32>::new();
+    let mut deaths = 0u32;
+    let mut remaining_impacts = impacts;
+    let mut remaining_units = total_units;
+    for cohort in cohorts {
+        let allocated = if cohort.count == remaining_units {
+            remaining_impacts
+        } else {
+            rng.binomial(
+                remaining_impacts,
+                cohort.count as f64 / remaining_units as f64,
+            )
+        };
+        remaining_impacts -= allocated;
+        remaining_units -= cohort.count;
+        for (hit_count, count) in occupancy_histogram(cohort.count, allocated, rng) {
+            let remaining = cohort.structure.subtract_repeated(hit_count, damage)?;
+            if remaining.units() <= 0 {
+                deaths += count;
+            } else {
+                *updated.entry(remaining.units()).or_default() += count;
+            }
+        }
+    }
+    army.cohorts[i] = updated
+        .into_iter()
+        .map(|(structure, count)| Cohort {
+            structure: Micro::from_units(structure),
+            count,
+        })
+        .collect();
+    army.dead[i] += deaths;
+    let after: i64 = army.cohorts[i]
+        .iter()
+        .map(|c| c.structure.units() * c.count as i64)
+        .sum();
+    Ok(before - after)
+}
+
 fn apply_impacts(
     army: &mut Army,
     i: usize,
@@ -1232,6 +1500,7 @@ fn resolve_fast(
                 &av,
                 false,
                 request.addressed(round, "attacker").as_ref(),
+                request.stochastic_engine_version == FAST_IMPACT_PROTOCOL,
             )
         )?;
         let da = b1_time!(
@@ -1245,6 +1514,7 @@ fn resolve_fast(
                 &dv,
                 true,
                 request.addressed(round, "defender").as_ref(),
+                request.stochastic_engine_version == FAST_IMPACT_PROTOCOL,
             )
         )?;
         d = aa.target;
@@ -1407,6 +1677,7 @@ fn resolve_core(
                 &av,
                 false,
                 request.addressed(round, "attacker").as_ref(),
+                request.stochastic_engine_version == FAST_IMPACT_PROTOCOL,
             )?;
             let da = resolve_action(
                 &d_start,
@@ -1417,6 +1688,7 @@ fn resolve_core(
                 &dv,
                 true,
                 request.addressed(round, "defender").as_ref(),
+                request.stochastic_engine_version == FAST_IMPACT_PROTOCOL,
             )?;
             d = aa.target.clone();
             a = da.target.clone();
@@ -1893,8 +2165,11 @@ fn resolve_batch_typed(
         scenarios.push(row);
     }
     let mut output = json!({"schemaVersion":"waar-combat-batch-result/2","modelVersion":MODEL_VERSION,"unitOrder":["soldier","spearman","archer","knight"],"projectedCategoryOrder":["healthy","wounded","dead","prisoners"],"iterations":batch.iterations,"startIteration":batch.start_iteration,"iterationRange":{"start":batch.start_iteration,"endExclusive":end_iteration.unwrap(),"total":total_iterations,"complete":batch.start_iteration==0&&batch.iterations==total_iterations},"totalCombats":batch.iterations as usize*batch.scenarios.len(),"scenarios":scenarios});
-    if batch.stochastic_engine_version == ADDRESSED_PROTOCOL {
-        output["stochasticEngineVersion"] = json!(ADDRESSED_PROTOCOL);
+    if matches!(
+        batch.stochastic_engine_version.as_str(),
+        ADDRESSED_PROTOCOL | FAST_IMPACT_PROTOCOL
+    ) {
+        output["stochasticEngineVersion"] = json!(batch.stochastic_engine_version);
     }
     if let Some(threshold) = batch.ruleset.wound_damage_threshold {
         output["classificationProvenance"] = json!({"woundDamageThreshold":threshold});
@@ -1968,6 +2243,54 @@ pub fn resolve_campaign_batch_json(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(feature = "fast-impact")]
+    #[test]
+    fn experimental_occupancy_protocol_requires_army_identities() {
+        let ids = Some(ArmyIdentities {
+            attacker: "A".into(),
+            defender: "B".into(),
+        });
+        assert!(validate_random(FAST_IMPACT_PROTOCOL, &ids, None).is_ok());
+        assert!(validate_random(FAST_IMPACT_PROTOCOL, &None, None).is_err());
+        assert!(validate_random(ADDRESSED_PROTOCOL, &ids, None).is_ok());
+    }
+
+    #[cfg(feature = "fast-impact")]
+    #[test]
+    fn individual_impact_histogram_matches_darthmoule_case() {
+        let mut intact = 0u64;
+        let mut wounded = 0u64;
+        let mut dead = 0u64;
+        for seed in 0..1000 {
+            let mut rng = FastRng { state: seed };
+            let histogram = occupancy_histogram(100, 120, &mut rng);
+            assert_eq!(histogram.iter().map(|(_, count)| count).sum::<u32>(), 100);
+            assert_eq!(
+                histogram
+                    .iter()
+                    .map(|(hits, count)| hits * count)
+                    .sum::<u32>(),
+                120
+            );
+            for (hits, count) in histogram {
+                match hits {
+                    0 => intact += count as u64,
+                    1 | 2 => wounded += count as u64,
+                    _ => dead += count as u64,
+                }
+            }
+        }
+        assert!(
+            (intact as f64 / 1000.0 - 29.938).abs() < 2.0,
+            "intact={intact}"
+        );
+        assert!(
+            (wounded as f64 / 1000.0 - 58.098).abs() < 2.0,
+            "wounded={wounded}"
+        );
+        assert!((dead as f64 / 1000.0 - 11.964).abs() < 2.0, "dead={dead}");
+    }
     #[test]
     fn targeting_probabilities_remain_finite_without_erasing_the_tail() {
         let weights = [(1, 1e16), (1, 2.9), (1, 0.01)];

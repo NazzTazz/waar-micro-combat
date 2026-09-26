@@ -5,7 +5,12 @@ de fonctions reconstruites sans exploiter les quinze jours d'historique disponib
 But : retrouver une décision et son implémentation avant de proposer autre chose.
 Ce fichier est un index maintenu, pas une nouvelle spécification du moteur.
 
-## Reprise courante — B1, 26 septembre 2026
+## Reprise courante — prototype d'impacts, 26 septembre 2026
+
+- **Branche et base :** `experiment/fast-impact-physics`, issue du HEAD B1 `2beec7e` de la [PR brouillon #26](https://github.com/NazzTazz/waar-micro-combat/pull/26). Prototype isolé derrière `fast-impact`, protocole Rust `sha256-splitmix-occupancy/1`. Voir le [rapport et ses limites](benchmarks/2026-09-26-fast-impact-prototype.md). Les fichiers non suivis préexistants restent locaux ; mesures brutes et binaires sous `reports/issue25-b1/` (ignorés). Aucun déploiement ou acceptation PO.
+- **Réalisé et reste :** cas 120 impacts/100 unités vérifié, conservation exacte des impacts dans l'histogramme, 371 combats/s sur le mélange 120 000 et 215 combats/s sur le mélange 800 000 dans le processus Rust persistant. Vérifier les distributions sur plusieurs rounds et l'effet des autres règles ; exposer ensuite le protocole dans l'orchestration PHP et exercer la soufflerie avant sélection par défaut. L'ancien protocole reste celui demandé par l'application.
+
+## Reprise historique — B1, 26 septembre 2026
 
 - **Suivi :** [issue #25](https://github.com/NazzTazz/waar-micro-combat/issues/25), suite de #24 ; [PR brouillon #26](https://github.com/NazzTazz/waar-micro-combat/pull/26), commit initial `7dc4e7f`, contre-mesure `8aae797`. Attentes ATT-01/02/03/04/07/08/10/11/14. Branche `bench/issue-25-b1` issue de `main` / `origin/main` à `05ebe6f3f2c29c9faf80e28a2558ed60c13e130f` au départ de la mesure. Voir le [rapport B1 et ses données](benchmarks/2026-09-26-b1/README.md) pour le contrôle d'histoire, le corpus, les résultats et les limites.
 - **Réalisé sur la branche :** geste navigateur chronométré, corpus Nazz/Test 2, pilote borné processus PHP/Rust contre Rust persistant, profils natifs, partition exacte et timings HTTP activables par variable d'environnement. Aucun changement de gameplay, d'objectif ou de parcours utilisateur. Sur le geste Test 2 mesuré, saisie → DOM 900,2 ms. Après critique du premier profil trop large, la contre-mesure situe 70,7–71,1 % de `resolve_fast` du mélange Nazz dans le sampler de l'arbre de répartition des impacts ; 79 383 nœuds pour dix combats. Le découpage 4 × 5 avance le premier résultat à 2,4 s et augmente le total par rapport à 1 × 20. Ce constat n'est ni une optimisation livrée ni une acceptation PO.
