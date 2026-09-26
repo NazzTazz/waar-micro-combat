@@ -9,14 +9,14 @@
     "ruleset": { "$ref": "ruleset.schema.json" },
     "attacker": { "$ref": "#/$defs/side" },
     "defender": { "$ref": "#/$defs/side" },
-    "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1"] },
+    "stochasticEngineVersion": { "enum": ["lcg31-binomial-normal-v1", "sha256-binomial-tree/1", "sha256-splitmix-occupancy/1"] },
     "armyIdentities": { "$ref": "#/$defs/armyIdentities" },
     "seed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
     "traceLevel": { "enum": ["none", "full"], "default": "full" },
     "consequences": { "$ref": "#/$defs/consequences" }
   },
   "allOf": [{
-    "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" } } },
+    "if": { "required": ["stochasticEngineVersion"], "properties": { "stochasticEngineVersion": { "enum": ["sha256-binomial-tree/1", "sha256-splitmix-occupancy/1"] } } },
     "then": { "required": ["armyIdentities"], "properties": { "consequences": { "required": ["policyVersion"], "properties": { "policyVersion": { "const": "wounded-capture-then-compress/4" } } } } },
     "else": { "not": { "required": ["armyIdentities"] }, "properties": { "consequences": { "properties": { "policyVersion": { "enum": ["wounded-capture-then-compress/2", "wounded-capture-then-compress/3"] } } } } }
   }],

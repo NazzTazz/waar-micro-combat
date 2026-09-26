@@ -5,7 +5,7 @@
   "required": ["schemaVersion", "modelVersion", "unitOrder", "projectedCategoryOrder", "iterations", "startIteration", "iterationRange", "totalCombats", "scenarios"],
   "properties": {
     "schemaVersion": { "const": "waar-combat-batch-result/2" },
-    "stochasticEngineVersion": { "const": "sha256-binomial-tree/1" },
+    "stochasticEngineVersion": { "enum": ["sha256-binomial-tree/1", "sha256-splitmix-occupancy/1"] },
     "modelVersion": { "const": "waar-cohort-v2" },
     "unitOrder": { "const": ["soldier", "spearman", "archer", "knight"] },
     "projectedCategoryOrder": { "const": ["healthy", "wounded", "dead", "prisoners"] },
