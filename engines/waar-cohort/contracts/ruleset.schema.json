@@ -20,7 +20,7 @@
           "attack": { "$ref": "#/$defs/decimal" }, "structure": { "$ref": "#/$defs/decimal" },
           "cost": { "type": "integer", "minimum": 1, "maximum": 400400 },
           "baseAccuracy": { "$ref": "#/$defs/decimal" }, "accuracySpread": { "$ref": "#/$defs/decimal" },
-          "strikesPerAttack": { "type": "integer", "minimum": 1, "maximum": 32 },
+          "strikesPerAttack": { "type": "integer", "minimum": 1, "maximum": 10 },
           "defendingEfficiency": { "$ref": "#/$defs/decimal" }, "capturable": { "type": "boolean" }
         }
       }

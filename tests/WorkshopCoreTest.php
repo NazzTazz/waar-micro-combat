@@ -125,6 +125,18 @@ final class WorkshopCoreTest extends TestCase
         self::assertContains('out_of_range', $codes);
     }
 
+    public function testStrikesPerAttackStopsAtTen(): void
+    {
+        $profile = EngineProfile::defaults();
+        $profile['units']['soldier']['strikesPerAttack'] = 10;
+        self::assertSame([], EngineProfile::validate($profile));
+
+        $profile['units']['soldier']['strikesPerAttack'] = 11;
+        $errors = EngineProfile::validate($profile);
+        self::assertContains('units.soldier.strikesPerAttack', array_column($errors, 'path'));
+        self::assertStringContainsString('1 et 10', $errors[0]['message']);
+    }
+
     public function testFingerprintIsSemanticAndDeterministic(): void
     {
         $a = EngineProfile::defaults();

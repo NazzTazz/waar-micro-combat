@@ -38,7 +38,7 @@
       "structure": "250",
       "baseAccuracy": "0.8",
       "accuracySpread": "0",
-      "strikesPerAttack": 15,
+      "strikesPerAttack": 10,
       "defendingEfficiency": "1",
       "cost": 550,
       "capturable": false

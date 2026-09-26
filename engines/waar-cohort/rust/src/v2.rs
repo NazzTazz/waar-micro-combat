@@ -315,7 +315,7 @@ impl Ruleset {
                 || unit.accuracy_spread.units() < 0
                 || unit.accuracy_spread.units() > FIXED_SCALE
                 || unit.strikes_per_attack == 0
-                || unit.strikes_per_attack > 32
+                || unit.strikes_per_attack > 10
                 || unit.defending_efficiency.units() < 0
                 || unit.defending_efficiency.units() > 10 * FIXED_SCALE
             {
@@ -466,7 +466,7 @@ fn prepare(rules: &Ruleset, mut modifiers: Vec<Modifier>) -> Result<PreparedSide
             || unit.accuracy_spread.units() < 0
             || unit.accuracy_spread.units() > FIXED_SCALE
             || unit.strikes == 0
-            || unit.strikes > 32
+            || unit.strikes > 10
             || unit.defense.units() < 0
             || unit.defense.units() > 10 * FIXED_SCALE
         {

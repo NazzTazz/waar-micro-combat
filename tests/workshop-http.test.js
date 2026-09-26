@@ -48,7 +48,7 @@ async function waitFor(url) {
       [10,'9','25','0.11',1,'1',true],
       [70,'12','120','0.6',1,'2',false],
       [70,'70','50','0.35',5,'1',false],
-      [550,'350','250','0.8',15,'1',false],
+      [550,'350','250','0.8',10,'1',false],
     ]);
     assert.deepEqual(profilePayload.data.profile.relations,[]);
     assert.deepEqual(profilePayload.data.profile.combat,{maxRounds:20,surrenderEnabled:true,surrenderDeadPercent:50,tieBreakCriterion:'structure',equalityPolicy:'defender',lossCompressionPercent:5,capturePercent:10,woundDamageThreshold:'0.2'});
