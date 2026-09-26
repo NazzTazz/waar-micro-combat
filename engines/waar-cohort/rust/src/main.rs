@@ -1,6 +1,8 @@
 //! JSONL diagnostic CLI. A study still crosses JSON only once (operation=batch).
 use serde_json::{json, Value};
 use std::io::{self, BufRead, Write};
+#[cfg(feature = "b1-profile")]
+use std::time::Instant;
 
 fn run(input: &str) -> Result<Value, String> {
     // Windows shell pipelines can prepend the UTF-8 byte-order mark.
@@ -33,16 +35,35 @@ fn run(input: &str) -> Result<Value, String> {
 fn main() {
     let mut output = io::BufWriter::new(io::stdout().lock());
     for line in io::stdin().lock().lines() {
+        #[cfg(feature = "b1-profile")]
+        let b1_started = Instant::now();
         let result = match line {
             Ok(input) => run(&input).unwrap_or_else(|error| json!({"error": error})),
             Err(error) => json!({"error": error.to_string()}),
         };
-        if writeln!(output, "{result}")
-            .and_then(|_| output.flush())
-            .is_err()
-        {
+        #[cfg(feature = "b1-profile")]
+        let b1_run_ns = b1_started.elapsed().as_nanos();
+        #[cfg(feature = "b1-profile")]
+        let b1_serialized = result.to_string();
+        #[cfg(feature = "b1-profile")]
+        let b1_serialize_ns = b1_started.elapsed().as_nanos() - b1_run_ns;
+        #[cfg(feature = "b1-profile")]
+        let write_result = writeln!(output, "{b1_serialized}").and_then(|_| output.flush());
+        #[cfg(not(feature = "b1-profile"))]
+        let write_result = writeln!(output, "{result}").and_then(|_| output.flush());
+        if write_result.is_err() {
             break;
         }
+        #[cfg(feature = "b1-profile")]
+        eprintln!(
+            "B1_TRANSPORT {}",
+            json!({
+                "runNs": b1_run_ns,
+                "serializeNs": b1_serialize_ns,
+                "writeFlushNs": b1_started.elapsed().as_nanos() - b1_run_ns - b1_serialize_ns,
+                "outputBytes": b1_serialized.len(),
+            })
+        );
     }
 }
 

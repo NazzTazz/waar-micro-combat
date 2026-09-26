@@ -1,0 +1,41 @@
+[
+  {
+    "kind": "probe-ready",
+    "t": 11772.800000071526
+  },
+  {
+    "kind": "attack-input",
+    "t": 11854.399999976158,
+    "value": ""
+  },
+  {
+    "kind": "attack-input",
+    "t": 11870.200000047684,
+    "value": "10"
+  },
+  {
+    "attack": "10",
+    "kind": "fetch-start",
+    "requestId": "2",
+    "t": 12182.100000023842,
+    "url": "/api/duel-summary"
+  },
+  {
+    "kind": "fetch-end",
+    "requestId": "2",
+    "serverRequestId": "2",
+    "serverTiming": "parse;dur=1.120, lock;dur=0.465, service;dur=569.826, encode;dur=0.052",
+    "status": 200,
+    "t": 12763.5,
+    "url": "/api/duel-summary"
+  },
+  {
+    "kind": "dom-live",
+    "t": 12770.399999976158,
+    "text": "A attaque B20 rounds en moyenneIndicateurABVictoires50 %50 %Morts2,11,7Blessés2,32,6Prisonniers0,10,2Budget perdu4,4 %4,"
+  },
+  {
+    "kind": "next-frame",
+    "t": 12775.600000023842
+  }
+]

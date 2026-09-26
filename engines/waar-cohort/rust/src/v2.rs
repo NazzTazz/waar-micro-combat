@@ -7,6 +7,48 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, HashSet};
+#[cfg(feature = "b1-profile")]
+use std::sync::atomic::{AtomicU64, Ordering};
+#[cfg(feature = "b1-profile")]
+use std::time::Instant;
+
+#[cfg(feature = "b1-profile")]
+static B1_WAVES: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_REALLOCATION_WAVES: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_MAX_COHORTS_PER_TYPE: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_ACTION_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_ALLOCATE_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_HIT_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_NEEDED_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_APPLY_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_ACCURACY_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_IMPACT_PREP_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_IMPACT_PICK_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_IMPACT_UPDATE_NS: AtomicU64 = AtomicU64::new(0);
+#[cfg(feature = "b1-profile")]
+static B1_IMPACT_FINAL_NS: AtomicU64 = AtomicU64::new(0);
+
+macro_rules! b1_time {
+    ($counter:ident, $expression:expr) => {{
+        #[cfg(feature = "b1-profile")]
+        let started = Instant::now();
+        let result = $expression;
+        #[cfg(feature = "b1-profile")]
+        $counter.fetch_add(started.elapsed().as_nanos() as u64, Ordering::Relaxed);
+        result
+    }};
+}
 
 const REQUEST_SCHEMA: &str = "waar-combat-request/2";
 const RULESET_SCHEMA: &str = "waar-cohort-ruleset/2";
@@ -750,7 +792,17 @@ fn resolve_action(
         attempts += pending as u64;
         let mut wave = 0;
         while pending > 0 && target.living() > 0 {
-            let allocations = allocate(pending, acting, &target, rules, rng, addressed, wave);
+            #[cfg(feature = "b1-profile")]
+            {
+                B1_WAVES.fetch_add(1, Ordering::Relaxed);
+                if wave > 0 {
+                    B1_REALLOCATION_WAVES.fetch_add(1, Ordering::Relaxed);
+                }
+            }
+            let allocations = b1_time!(
+                B1_ALLOCATE_NS,
+                allocate(pending, acting, &target, rules, rng, addressed, wave)
+            );
             let mut reallocated = 0u32;
             for target_type in UnitType::ALL {
                 let j = target_type.index();
@@ -759,17 +811,20 @@ fn resolve_action(
                     continue;
                 }
                 let probability = accuracies[i].units() as f64 / FIXED_SCALE as f64;
-                let sampled = match addressed {
-                    Some(random) => random.binomial(
-                        allocated,
-                        probability,
-                        type_name(acting),
-                        &format!("hit/{wave}/{}", type_name(target_type)),
-                    ),
-                    None => rng.binomial(allocated, probability),
-                };
+                let sampled = b1_time!(
+                    B1_HIT_NS,
+                    match addressed {
+                        Some(random) => random.binomial(
+                            allocated,
+                            probability,
+                            type_name(acting),
+                            &format!("hit/{wave}/{}", type_name(target_type)),
+                        ),
+                        None => rng.binomial(allocated, probability),
+                    }
+                );
                 let damage = matrix[i][j].damage_per_hit;
-                let needed = impacts_needed(&target, j, damage)?;
+                let needed = b1_time!(B1_NEEDED_NS, impacts_needed(&target, j, damage))?;
                 let (mut consumed, mut applied) = (allocated, sampled);
                 if let Some(needed) = needed {
                     if sampled as u64 >= needed {
@@ -783,15 +838,18 @@ fn resolve_action(
                     }
                 }
                 let absorbed = if applied > 0 {
-                    apply_impacts(
-                        &mut target,
-                        j,
-                        applied,
-                        damage,
-                        rng,
-                        addressed,
-                        acting,
-                        wave,
+                    b1_time!(
+                        B1_APPLY_NS,
+                        apply_impacts(
+                            &mut target,
+                            j,
+                            applied,
+                            damage,
+                            rng,
+                            addressed,
+                            acting,
+                            wave,
+                        )
                     )?
                 } else {
                     0
@@ -914,7 +972,11 @@ fn apply_impacts(
     acting: UnitType,
     wave: u32,
 ) -> Result<i64, String> {
+    #[cfg(feature = "b1-profile")]
+    let b1_stage = Instant::now();
     let mut cohorts = army.cohorts[i].clone();
+    #[cfg(feature = "b1-profile")]
+    B1_MAX_COHORTS_PER_TYPE.fetch_max(cohorts.len() as u64, Ordering::Relaxed);
     if addressed.is_some() {
         cohorts.sort_by_key(|c| c.structure.units());
     }
@@ -924,6 +986,12 @@ fn apply_impacts(
         .sum();
     let mut remaining_hits = impacts;
     let mut remaining_units: u32 = cohorts.iter().map(|c| c.count).sum();
+    #[cfg(feature = "b1-profile")]
+    {
+        B1_IMPACT_PREP_NS.fetch_add(b1_stage.elapsed().as_nanos() as u64, Ordering::Relaxed);
+    }
+    #[cfg(feature = "b1-profile")]
+    let b1_stage = Instant::now();
     let mut allocations = Vec::new();
     for (index, c) in cohorts.iter().enumerate() {
         let value = if index + 1 == cohorts.len() {
@@ -947,6 +1015,12 @@ fn apply_impacts(
         remaining_hits -= value;
         remaining_units -= c.count;
     }
+    #[cfg(feature = "b1-profile")]
+    {
+        B1_IMPACT_PICK_NS.fetch_add(b1_stage.elapsed().as_nanos() as u64, Ordering::Relaxed);
+    }
+    #[cfg(feature = "b1-profile")]
+    let b1_stage = Instant::now();
     let mut updated = Vec::new();
     let mut deaths = 0;
     for (c, allocated) in cohorts.into_iter().zip(allocations) {
@@ -956,10 +1030,22 @@ fn apply_impacts(
         append_damage(&mut updated, &mut deaths, &c, rest, per + 1, damage)?;
     }
     army.replace(i, updated, deaths);
+    #[cfg(feature = "b1-profile")]
+    {
+        B1_IMPACT_UPDATE_NS.fetch_add(b1_stage.elapsed().as_nanos() as u64, Ordering::Relaxed);
+    }
+    #[cfg(feature = "b1-profile")]
+    let b1_stage = Instant::now();
+    #[cfg(feature = "b1-profile")]
+    B1_MAX_COHORTS_PER_TYPE.fetch_max(army.cohorts[i].len() as u64, Ordering::Relaxed);
     let after: i64 = army.cohorts[i]
         .iter()
         .map(|c| c.structure.units() * c.count as i64)
         .sum();
+    #[cfg(feature = "b1-profile")]
+    {
+        B1_IMPACT_FINAL_NS.fetch_add(b1_stage.elapsed().as_nanos() as u64, Ordering::Relaxed);
+    }
     Ok(before - after)
 }
 fn append_damage(
@@ -1103,51 +1189,63 @@ fn resolve_fast(
         for t in UnitType::ALL {
             let i = t.index();
             av[i] = if a_start.living_type(i) > 0 {
-                event_accuracy(
-                    request,
-                    round,
-                    "attacker",
-                    t,
-                    ap.units[i].base_accuracy,
-                    ap.units[i].accuracy_spread,
+                b1_time!(
+                    B1_ACCURACY_NS,
+                    event_accuracy(
+                        request,
+                        round,
+                        "attacker",
+                        t,
+                        ap.units[i].base_accuracy,
+                        ap.units[i].accuracy_spread,
+                    )
                 )
                 .0
             } else {
                 ap.units[i].base_accuracy
             };
             dv[i] = if d_start.living_type(i) > 0 {
-                event_accuracy(
-                    request,
-                    round,
-                    "defender",
-                    t,
-                    dp.units[i].base_accuracy,
-                    dp.units[i].accuracy_spread,
+                b1_time!(
+                    B1_ACCURACY_NS,
+                    event_accuracy(
+                        request,
+                        round,
+                        "defender",
+                        t,
+                        dp.units[i].base_accuracy,
+                        dp.units[i].accuracy_spread,
+                    )
                 )
                 .0
             } else {
                 dp.units[i].base_accuracy
             };
         }
-        let aa = resolve_action(
-            &a_start,
-            &d_start,
-            ap,
-            &request.ruleset,
-            &mut rng,
-            &av,
-            false,
-            request.addressed(round, "attacker").as_ref(),
+        let aa = b1_time!(
+            B1_ACTION_NS,
+            resolve_action(
+                &a_start,
+                &d_start,
+                ap,
+                &request.ruleset,
+                &mut rng,
+                &av,
+                false,
+                request.addressed(round, "attacker").as_ref(),
+            )
         )?;
-        let da = resolve_action(
-            &d_start,
-            &a_start,
-            dp,
-            &request.ruleset,
-            &mut rng,
-            &dv,
-            true,
-            request.addressed(round, "defender").as_ref(),
+        let da = b1_time!(
+            B1_ACTION_NS,
+            resolve_action(
+                &d_start,
+                &a_start,
+                dp,
+                &request.ruleset,
+                &mut rng,
+                &dv,
+                true,
+                request.addressed(round, "defender").as_ref(),
+            )
         )?;
         d = aa.target;
         a = da.target;
@@ -1619,6 +1717,33 @@ fn resolve_batch_typed(
     expected_schema: &str,
     maximum_total_iterations: u32,
 ) -> Result<Value, String> {
+    #[cfg(feature = "b1-profile")]
+    let b1_started = Instant::now();
+    #[cfg(feature = "b1-profile")]
+    crate::addressed_random::b1_reset();
+    #[cfg(feature = "b1-profile")]
+    {
+        B1_WAVES.store(0, Ordering::Relaxed);
+        B1_REALLOCATION_WAVES.store(0, Ordering::Relaxed);
+        B1_MAX_COHORTS_PER_TYPE.store(0, Ordering::Relaxed);
+        for counter in [
+            &B1_ACTION_NS,
+            &B1_ALLOCATE_NS,
+            &B1_HIT_NS,
+            &B1_NEEDED_NS,
+            &B1_APPLY_NS,
+            &B1_ACCURACY_NS,
+            &B1_IMPACT_PREP_NS,
+            &B1_IMPACT_PICK_NS,
+            &B1_IMPACT_UPDATE_NS,
+            &B1_IMPACT_FINAL_NS,
+        ] {
+            counter.store(0, Ordering::Relaxed);
+        }
+    }
+    #[cfg(feature = "b1-profile")]
+    let (mut b1_prepare, mut b1_resolve, mut b1_raw, mut b1_project, mut b1_rounds) =
+        (0u128, 0u128, 0u128, 0u128, 0u64);
     let total_iterations = batch
         .total_iterations
         .unwrap_or(batch.start_iteration.saturating_add(batch.iterations));
@@ -1642,6 +1767,8 @@ fn resolve_batch_typed(
     let mut scenarios = Vec::new();
     let mut scenario_ids = HashSet::new();
     for scenario in &batch.scenarios {
+        #[cfg(feature = "b1-profile")]
+        let b1_stage = Instant::now();
         if scenario.id.trim().is_empty()
             || !scenario_ids.insert(scenario.id.clone())
             || scenario.seed_key.is_some_and(|key| key < 0 || key > 2_147)
@@ -1659,6 +1786,10 @@ fn resolve_batch_typed(
         validate_side(&scenario.defender)?;
         let ap = prepare(&batch.ruleset, scenario.attacker.modifiers.clone())?;
         let dp = prepare(&batch.ruleset, scenario.defender.modifiers.clone())?;
+        #[cfg(feature = "b1-profile")]
+        {
+            b1_prepare += b1_stage.elapsed().as_nanos();
+        }
         let mut wins = [0u64; 3];
         let mut round_sum = 0u64;
         let mut ad = [0u64; 4];
@@ -1680,7 +1811,16 @@ fn resolve_batch_typed(
                 stochastic_engine_version: batch.stochastic_engine_version.clone(),
                 army_identities: scenario.army_identities.clone(),
             };
+            #[cfg(feature = "b1-profile")]
+            let b1_stage = Instant::now();
             let (a, d, winner, rounds) = resolve_fast(&request, &ap, &dp)?;
+            #[cfg(feature = "b1-profile")]
+            {
+                b1_resolve += b1_stage.elapsed().as_nanos();
+                b1_rounds += rounds as u64;
+            }
+            #[cfg(feature = "b1-profile")]
+            let b1_stage = Instant::now();
             round_sum += rounds as u64;
             match winner {
                 Some("attacker") => wins[0] += 1,
@@ -1693,6 +1833,12 @@ fn resolve_batch_typed(
                 aw[i] += a.wounded(i, &ap, wound_threshold) as u64;
                 dw[i] += d.wounded(i, &dp, wound_threshold) as u64;
             }
+            #[cfg(feature = "b1-profile")]
+            {
+                b1_raw += b1_stage.elapsed().as_nanos();
+            }
+            #[cfg(feature = "b1-profile")]
+            let b1_stage = Instant::now();
             if let Some(settings) = &batch.consequences {
                 for i in 0..4 {
                     let ai = projected_counts(
@@ -1720,6 +1866,10 @@ fn resolve_batch_typed(
                         projected_d[i][k] += di[k] as u64;
                     }
                 }
+            }
+            #[cfg(feature = "b1-profile")]
+            {
+                b1_project += b1_stage.elapsed().as_nanos();
             }
         }
         let attacker_initial: [u32; 4] = std::array::from_fn(|i| {
@@ -1751,6 +1901,39 @@ fn resolve_batch_typed(
     }
     if let Some(settings) = &batch.consequences {
         output["consequenceProvenance"] = json!({"policyVersion":settings.policy_version,"samplingProtocol":sampling_protocol(&settings.policy_version),"compressionPercent":settings.compression_percent,"capturePercent":settings.capture_percent});
+    }
+    #[cfg(feature = "b1-profile")]
+    {
+        let total = b1_started.elapsed().as_nanos();
+        let measured = b1_prepare + b1_resolve + b1_raw + b1_project;
+        eprintln!(
+            "B1_PROFILE {}",
+            json!({
+                "totalNs": total,
+                "prepareNs": b1_prepare,
+                "resolveFastNs": b1_resolve,
+                "rawAggregationNs": b1_raw,
+                "projectionNs": b1_project,
+                "otherNs": total.saturating_sub(measured),
+                "rounds": b1_rounds,
+                "combats": batch.iterations as usize * batch.scenarios.len(),
+                "addressedRandom": crate::addressed_random::b1_counts(),
+                "rngSamples": crate::addressed_random::b1_samples(),
+                "allocationWaves": B1_WAVES.load(Ordering::Relaxed),
+                "reallocationWaves": B1_REALLOCATION_WAVES.load(Ordering::Relaxed),
+                "maxCohortsPerType": B1_MAX_COHORTS_PER_TYPE.load(Ordering::Relaxed),
+                "resolveActionNs": B1_ACTION_NS.load(Ordering::Relaxed),
+                "targetAllocationNs": B1_ALLOCATE_NS.load(Ordering::Relaxed),
+                "hitSamplingNs": B1_HIT_NS.load(Ordering::Relaxed),
+                "impactCountNs": B1_NEEDED_NS.load(Ordering::Relaxed),
+                "impactApplicationNs": B1_APPLY_NS.load(Ordering::Relaxed),
+                "accuracyNs": B1_ACCURACY_NS.load(Ordering::Relaxed),
+                "impactPreparationNs": B1_IMPACT_PREP_NS.load(Ordering::Relaxed),
+                "impactAllocationNs": B1_IMPACT_PICK_NS.load(Ordering::Relaxed),
+                "impactUpdateNs": B1_IMPACT_UPDATE_NS.load(Ordering::Relaxed),
+                "impactFinalNs": B1_IMPACT_FINAL_NS.load(Ordering::Relaxed),
+            })
+        );
     }
     Ok(output)
 }
@@ -1925,5 +2108,58 @@ mod tests {
         };
         assert_eq!(rows(&a), rows(&b));
         assert_eq!(a.dead, b.dead);
+    }
+
+    #[cfg(feature = "b1-profile")]
+    #[test]
+    fn b1_fragmented_impacts_probe() {
+        let random = AddressedRandom::new(42, "B", 1);
+        let fixture = |fragmented: bool| {
+            let mut army = Army {
+                cohorts: std::array::from_fn(|_| Vec::new()),
+                dead: [0; 4],
+                initial: [0, 0, 5, 0],
+            };
+            let rows: &[(i64, u32)] = if fragmented {
+                &[(20, 2), (10, 3)]
+            } else {
+                &[(20, 5)]
+            };
+            army.replace(
+                2,
+                rows.iter()
+                    .map(|(s, n)| Cohort {
+                        structure: Micro::from_units(s * FIXED_SCALE),
+                        count: *n,
+                    })
+                    .collect(),
+                0,
+            );
+            army
+        };
+        for fragmented in [false, true] {
+            let started = Instant::now();
+            let mut checksum = 0i64;
+            for _ in 0..1000 {
+                let mut army = fixture(fragmented);
+                let damage = apply_impacts(
+                    &mut army,
+                    2,
+                    4,
+                    Micro::from_units(5 * FIXED_SCALE),
+                    &mut CombatRng::new(42),
+                    Some(&random),
+                    UnitType::Spearman,
+                    0,
+                )
+                .unwrap();
+                checksum += damage + army.dead[2] as i64;
+            }
+            eprintln!(
+                "B1_FRAGMENTATION {}",
+                json!({"fixture":"addressed_cohorts_have_stable_order_after_merge","fragmented":fragmented,"iterations":1000,"elapsedNs":started.elapsed().as_nanos(),"checksum":checksum})
+            );
+            assert!(checksum > 0);
+        }
     }
 }

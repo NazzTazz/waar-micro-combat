@@ -1,0 +1,1654 @@
+{
+  "schemaVersion": "waar-b1-measurements/1",
+  "status": "partial-partition-error",
+  "start": "2026-09-26T12:54:26.011Z",
+  "head": "05ebe6f3f2c29c9faf80e28a2558ed60c13e130f",
+  "machine": "DESKTOP-JFVSFN5",
+  "os": "win32",
+  "release": "10.0.19045",
+  "arch": "x64",
+  "cpus": [
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz"
+  ],
+  "node": "v24.19.0",
+  "php": "PHP 8.2.33 (cli) (built: Jul 28 2026 10:27:30) (NTS Visual C++ 2019 x64)",
+  "binaryHash": "f262de83bd163bac7b966d774340478312b9a030de87855893140e59b62c3c3e",
+  "corpusHash": "93eea332dce3faec5b61b5f395d6d41b0683dc877ded2cf1a02b5ef3d8ed72d7",
+  "budget": {
+    "maxCombats": 250000,
+    "maxSeconds": 600,
+    "priorCombats": 4020,
+    "priorSeconds": 25
+  },
+  "results": [
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 359.94309999999996,
+          "hash": "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        60.7441,
+        67.84360000000015,
+        72.19970000000012,
+        69.4572999999998,
+        56.125999999999976
+      ],
+      "hashes": [
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 132.05259999999998,
+          "hash": "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        4.876699999999801,
+        5.69419999999991,
+        5.510099999999966,
+        4.757099999999809,
+        4.376700000000028
+      ],
+      "hashes": [
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 372.34860000000003,
+          "hash": "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        79.73950000000013,
+        91.97749999999996,
+        81.01560000000018,
+        49.0650999999998,
+        77.73689999999988
+      ],
+      "hashes": [
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 86.60219999999981,
+          "hash": "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        8.592000000000098,
+        8.741399999999885,
+        8.94860000000017,
+        9.3453999999997,
+        8.200700000000325
+      ],
+      "hashes": [
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+        "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 20,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 296.61969999999974,
+          "hash": "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1"
+        }
+      ],
+      "combatsPerCall": 40,
+      "timingsMs": [
+        71.93060000000014,
+        82.84450000000015,
+        61.60400000000027,
+        112.07279999999992,
+        83.8786
+      ],
+      "hashes": [
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 20,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 121.11569999999983,
+          "hash": "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1"
+        }
+      ],
+      "combatsPerCall": 40,
+      "timingsMs": [
+        27.590299999999843,
+        32.92330000000038,
+        31.91500000000042,
+        27.279700000000048,
+        34.82699999999977
+      ],
+      "hashes": [
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+        "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 50,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 642.8924999999999,
+          "hash": "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66"
+        }
+      ],
+      "combatsPerCall": 100,
+      "timingsMs": [
+        175.83789999999954,
+        123.05180000000018,
+        142.36229999999978,
+        133.29530000000068,
+        140.13500000000022
+      ],
+      "hashes": [
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 50,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 292.09330000000045,
+          "hash": "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66"
+        }
+      ],
+      "combatsPerCall": 100,
+      "timingsMs": [
+        77.84219999999914,
+        86.26209999999992,
+        83.63400000000001,
+        78.07849999999962,
+        77.79789999999957
+      ],
+      "hashes": [
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+        "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 100,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 679.5325000000003,
+          "hash": "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2"
+        }
+      ],
+      "combatsPerCall": 200,
+      "timingsMs": [
+        226.9427999999998,
+        208.47699999999986,
+        196.27130000000034,
+        279.4443000000001,
+        247.47629999999936
+      ],
+      "hashes": [
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 100,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 305.84720000000016,
+          "hash": "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2"
+        }
+      ],
+      "combatsPerCall": 200,
+      "timingsMs": [
+        235.33149999999932,
+        217.1885000000002,
+        207.3072000000011,
+        240.1855000000014,
+        167.67250000000058
+      ],
+      "hashes": [
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+        "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 558.503999999999,
+          "hash": "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        69.76379999999881,
+        61.09379999999874,
+        70.50530000000072,
+        63.40270000000055,
+        71.5013999999992
+      ],
+      "hashes": [
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 151.7475000000013,
+          "hash": "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        8.1179000000011,
+        11.211100000000442,
+        10.846599999998944,
+        9.35570000000007,
+        10.728900000000067
+      ],
+      "hashes": [
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+        "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 575.5751999999993,
+          "hash": "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        85.77050000000054,
+        70.45529999999962,
+        103.41109999999935,
+        95.59189999999944,
+        66.99879999999939
+      ],
+      "hashes": [
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 143.14559999999983,
+          "hash": "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        23.972600000000966,
+        28.966199999998935,
+        21.73320000000058,
+        34.09559999999874,
+        27.245899999999892
+      ],
+      "hashes": [
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+        "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 20,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 645.275599999999,
+          "hash": "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05"
+        }
+      ],
+      "combatsPerCall": 40,
+      "timingsMs": [
+        179.48539999999957,
+        214.3118000000013,
+        170.52209999999832,
+        155.8737000000001,
+        149.17849999999999
+      ],
+      "hashes": [
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 20,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 213.41519999999946,
+          "hash": "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05"
+        }
+      ],
+      "combatsPerCall": 40,
+      "timingsMs": [
+        81.36009999999987,
+        83.132599999999,
+        85.1890000000003,
+        61.50300000000061,
+        69.68289999999979
+      ],
+      "hashes": [
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+        "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 50,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 738.9855000000007,
+          "hash": "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b"
+        }
+      ],
+      "combatsPerCall": 100,
+      "timingsMs": [
+        275.46450000000004,
+        290.1436999999987,
+        228.39949999999953,
+        261.6338999999989,
+        260.446100000001
+      ],
+      "hashes": [
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 50,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 327.67479999999887,
+          "hash": "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b"
+        }
+      ],
+      "combatsPerCall": 100,
+      "timingsMs": [
+        198.57530000000042,
+        250.3113000000012,
+        375.91929999999775,
+        350.84370000000126,
+        487.5779000000002
+      ],
+      "hashes": [
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+        "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 100,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 100,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 988.8204000000005,
+          "hash": "79823c3ee41232e3d0a9a107896cbb2a0c38e88bb26238cdfdfc5af10e9d074e"
+        }
+      ],
+      "combatsPerCall": 200,
+      "timingsMs": [
+        735.6201999999976,
+        493.9478999999992,
+        407.3996999999981,
+        301.31920000000173,
+        307.6644000000015
+      ],
+      "hashes": [
+        "79823c3ee41232e3d0a9a107896cbb2a0c38e88bb26238cdfdfc5af10e9d074e",
+        "79823c3ee41232e3d0a9a107896cbb2a0c38e88bb26238cdfdfc5af10e9d074e",
+        "79823c3ee41232e3d0a9a107896cbb2a0c38e88bb26238cdfdfc5af10e9d074e",
+        "79823c3ee41232e3d0a9a107896cbb2a0c38e88bb26238cdfdfc5af10e9d074e",
+        "79823c3ee41232e3d0a9a107896cbb2a0c38e88bb26238cdfdfc5af10e9d074e"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 370.8906999999999,
+          "hash": "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        96.03410000000076,
+        93.46259999999893,
+        110.91050000000178,
+        107.10139999999956,
+        121.7589999999982
+      ],
+      "hashes": [
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 253.24269999999888,
+          "hash": "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        64.00590000000011,
+        56.82780000000275,
+        53.9529999999977,
+        55.172200000000885,
+        66.02859999999782
+      ],
+      "hashes": [
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+        "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 817.4952999999987,
+          "hash": "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        396.4125000000022,
+        422.1208000000006,
+        398.3442000000032,
+        307.7056999999986,
+        406.6042000000016
+      ],
+      "hashes": [
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 397.33569999999963,
+          "hash": "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        370.7416999999987,
+        336.3022000000019,
+        361.53789999999935,
+        285.1271000000015,
+        294.0476000000017
+      ],
+      "hashes": [
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+        "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 20,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 40,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 20,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 868.2054000000062,
+          "hash": "68b8153b89eff105014bf52efa7149b581ac282433b1c15d8fcae030c3be25be"
+        }
+      ],
+      "combatsPerCall": 40,
+      "timingsMs": [
+        900.6551000000036,
+        770.2027999999991,
+        632.6028000000006,
+        592.5471000000034,
+        609.9458999999988
+      ],
+      "hashes": [
+        "68b8153b89eff105014bf52efa7149b581ac282433b1c15d8fcae030c3be25be",
+        "68b8153b89eff105014bf52efa7149b581ac282433b1c15d8fcae030c3be25be",
+        "68b8153b89eff105014bf52efa7149b581ac282433b1c15d8fcae030c3be25be",
+        "68b8153b89eff105014bf52efa7149b581ac282433b1c15d8fcae030c3be25be",
+        "68b8153b89eff105014bf52efa7149b581ac282433b1c15d8fcae030c3be25be"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 50,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 100,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 50,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 100,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 100,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 100,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 1107.3594999999987,
+          "hash": "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        459.9892000000036,
+        432.87970000000496,
+        587.3150000000023,
+        353.90849999999773,
+        334.2193000000043
+      ],
+      "hashes": [
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 367.941899999998,
+          "hash": "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        202.81590000000142,
+        210.26729999999952,
+        206.3706999999995,
+        185.47819999999774,
+        187.1640000000043
+      ],
+      "hashes": [
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 1406.823599999996,
+          "hash": "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        1658.1003000000055,
+        1358.7945000000036,
+        1165.702400000002,
+        1203.7909
+      ],
+      "hashes": [
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+      ],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 5,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 1606.850900000005,
+          "hash": "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+        }
+      ],
+      "combatsPerCall": 10,
+      "timingsMs": [
+        784.5594999999958,
+        708.2062000000005,
+        571.0273000000016,
+        629.0270000000019,
+        717.0335999999952
+      ],
+      "hashes": [
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+        "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 20,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 40,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 20,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 40,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 50,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 100,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 50,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 100,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 100,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 100,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-scale-800000",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 2,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-scale-800000",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 2,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-scale-800000",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 10,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-scale-800000",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 10,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 2,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 808.402900000001,
+          "hash": "995d91719a73db1926d84dd88ebe0ff0fccd97de282d571ab1b4c7b3ef90af7e"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        590.1440000000002,
+        474.79430000000866,
+        547.0559999999969,
+        496.6405999999988,
+        562.2137000000075
+      ],
+      "hashes": [
+        "995d91719a73db1926d84dd88ebe0ff0fccd97de282d571ab1b4c7b3ef90af7e",
+        "995d91719a73db1926d84dd88ebe0ff0fccd97de282d571ab1b4c7b3ef90af7e",
+        "995d91719a73db1926d84dd88ebe0ff0fccd97de282d571ab1b4c7b3ef90af7e",
+        "995d91719a73db1926d84dd88ebe0ff0fccd97de282d571ab1b4c7b3ef90af7e",
+        "995d91719a73db1926d84dd88ebe0ff0fccd97de282d571ab1b4c7b3ef90af7e"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 10,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 10,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 20,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 40,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 20,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 40,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 50,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 100,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 50,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 100,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 100,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/mixed-120000",
+      "iterations": 100,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 200,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 1,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 1431.2168999999994,
+          "hash": "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3"
+        }
+      ],
+      "combatsPerCall": 16,
+      "timingsMs": [
+        374.57880000000296,
+        358.47789999999804,
+        475.314200000008,
+        339.4131000000052,
+        366.8159000000014
+      ],
+      "hashes": [
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 592.7973999999958,
+          "hash": "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3"
+        }
+      ],
+      "combatsPerCall": 16,
+      "timingsMs": [
+        266.5728999999992,
+        293.54389999998966,
+        210.06209999999555,
+        175.81179999999586,
+        164.50680000000284
+      ],
+      "hashes": [
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+        "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 5,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 80,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 5,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 1604.205099999992,
+          "hash": "e5ed66925b13033d41233beab70d58e615bdbedf3031584e20f57551ec6e5822"
+        }
+      ],
+      "combatsPerCall": 80,
+      "timingsMs": [
+        1482.8471999999892,
+        1254.9661999999953,
+        1109.8581000000122,
+        1024.0782000000181,
+        1162.8142999999982
+      ],
+      "hashes": [
+        "e5ed66925b13033d41233beab70d58e615bdbedf3031584e20f57551ec6e5822",
+        "e5ed66925b13033d41233beab70d58e615bdbedf3031584e20f57551ec6e5822",
+        "e5ed66925b13033d41233beab70d58e615bdbedf3031584e20f57551ec6e5822",
+        "e5ed66925b13033d41233beab70d58e615bdbedf3031584e20f57551ec6e5822",
+        "e5ed66925b13033d41233beab70d58e615bdbedf3031584e20f57551ec6e5822"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 20,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 320,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 20,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 320,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 100,
+      "transport": "php",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 1600,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 100,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [],
+      "combatsPerCall": 1600,
+      "timingsMs": [],
+      "hashes": [],
+      "profileStats": [],
+      "errors": [
+        {
+          "attempt": 0,
+          "message": "Error: watchdog-timeout"
+        }
+      ],
+      "identicalReplays": true
+    }
+  ],
+  "completedCombats": 12470,
+  "attemptedCombats": 18846,
+  "parity": [
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 1,
+      "exact": true,
+      "phpHash": "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+      "rustHash": "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 5,
+      "exact": true,
+      "phpHash": "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4",
+      "rustHash": "d3f42fe06ddf7e0ae7f01a4e7382d54aa331389edd7d961c000e2f9f933024d4"
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 20,
+      "exact": true,
+      "phpHash": "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1",
+      "rustHash": "abebfa30bf45f0fe349fa78d9842f2abde48a94e24822bed10afff1ea49feab1"
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 50,
+      "exact": true,
+      "phpHash": "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66",
+      "rustHash": "cd687c3ff5dd7cf9d30b8fe369b86e2410d73e9cb78bd1371c563881691d2d66"
+    },
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 100,
+      "exact": true,
+      "phpHash": "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2",
+      "rustHash": "8493c18d4d62ea6642663322969ace72b0b284088dcfa1f50969fa7ea6fd60c2"
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 1,
+      "exact": true,
+      "phpHash": "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba",
+      "rustHash": "b2198b80cad3736641689c67f661c807e8561a0989c14cc51e40f2f02f1669ba"
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 5,
+      "exact": true,
+      "phpHash": "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a",
+      "rustHash": "0ebeba68a619b20cf3ed9994fbe3240f0de17f14b9230c70562e5a9e9cd6198a"
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 20,
+      "exact": true,
+      "phpHash": "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05",
+      "rustHash": "3c4fa65d4a038955a3b73dbaf53826163fe66369c495a9523af0c1711b341b05"
+    },
+    {
+      "key": "nazz/spear-171-knight-21",
+      "iterations": 50,
+      "exact": true,
+      "phpHash": "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b",
+      "rustHash": "4b5c479057e2487eab2b33419ad7dfe1ddc5a9dfee0b4487b9dfc186fc37191b"
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 1,
+      "exact": true,
+      "phpHash": "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959",
+      "rustHash": "0ea94991988f86d427da2309a54fcc232428db3bc87786e4276fd557b9977959"
+    },
+    {
+      "key": "nazz/soldier-12000-spear-1714",
+      "iterations": 5,
+      "exact": true,
+      "phpHash": "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138",
+      "rustHash": "7ebc119f6f010af6bfb4b562abe50964f50c315bb7ec9804b1d3372bf3cb0138"
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 1,
+      "exact": true,
+      "phpHash": "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+      "rustHash": "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 5,
+      "exact": true,
+      "phpHash": "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5",
+      "rustHash": "e5314f118da87153107ab2fc027f8d0dd42ae9ce0fd57a89d212d79820b14cc5"
+    },
+    {
+      "key": "test2/monotypes-16",
+      "iterations": 1,
+      "exact": true,
+      "phpHash": "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3",
+      "rustHash": "63bf72477a2f56e7161d6c0bcf56377bdf536341b1af7b0f2908b6070c0b1ad3"
+    }
+  ],
+  "partition": {
+    "key": "nazz/mixed-120000",
+    "transport": "rust",
+    "groups": [
+      {
+        "groupSize": 100,
+        "arrivalMs": [],
+        "rangeHashes": [],
+        "totalMs": null,
+        "error": "Error: watchdog-timeout"
+      }
+    ],
+    "exact": null
+  },
+  "stopReason": "partition-error",
+  "end": "2026-09-26T12:56:59.848Z",
+  "elapsedSeconds": 178.48968969999999
+}

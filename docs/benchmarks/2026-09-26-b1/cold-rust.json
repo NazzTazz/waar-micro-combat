@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "waar-b1-measurements/1",
+  "status": "completed",
+  "start": "2026-09-26T13:20:20.808Z",
+  "head": "05ebe6f3f2c29c9faf80e28a2558ed60c13e130f",
+  "machine": "DESKTOP-JFVSFN5",
+  "os": "win32",
+  "release": "10.0.19045",
+  "arch": "x64",
+  "cpus": [
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz",
+    "Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz"
+  ],
+  "node": "v24.19.0",
+  "php": "PHP 8.2.33 (cli) (built: Jul 28 2026 10:27:30) (NTS Visual C++ 2019 x64)",
+  "binaryHash": "cea2bfca26ca259a0b8687e4f736441f17ff3c5aaa041e2666659aeffadd0d13",
+  "corpusHash": "93eea332dce3faec5b61b5f395d6d41b0683dc877ded2cf1a02b5ef3d8ed72d7",
+  "budget": {
+    "maxCombats": 250000,
+    "maxSeconds": 600,
+    "priorCombats": 19802,
+    "priorSeconds": 239
+  },
+  "results": [
+    {
+      "key": "nazz/archer-5-mirror",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 216.4831999999999,
+          "hash": "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        361.36799999999994,
+        283.9462000000001,
+        290.2633000000001,
+        171.42759999999998,
+        382.15419999999995
+      ],
+      "spawnMs": [
+        42.10910000000001,
+        15.020299999999907,
+        15.031399999999849,
+        22.343000000000075,
+        12.303199999999833,
+        16.480299999999716
+      ],
+      "hashes": [
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f",
+        "ff9396c274a28787a5884197a0d112f93a47743ea346548a49d9f022222b0a0f"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    },
+    {
+      "key": "nazz/mixed-120000",
+      "iterations": 1,
+      "transport": "rust",
+      "repetitions": 5,
+      "warmups": [
+        {
+          "elapsedMs": 1388.4394000000002,
+          "hash": "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+        }
+      ],
+      "combatsPerCall": 2,
+      "timingsMs": [
+        589.6545999999998,
+        667.7988000000005,
+        785.0562,
+        802.9781999999996,
+        668.6582000000008
+      ],
+      "spawnMs": [
+        14.803099999999631,
+        13.607600000000275,
+        15.82839999999942,
+        13.33140000000003,
+        13.22019999999975,
+        13.794700000000375
+      ],
+      "hashes": [
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d",
+        "7ac0509fedfe27876f7b6fec8ecfaacb88a17d109f6304d27e3910632096186d"
+      ],
+      "profileStats": [],
+      "errors": [],
+      "identicalReplays": true
+    }
+  ],
+  "completedCombats": 19826,
+  "attemptedCombats": 19826,
+  "parity": [],
+  "end": "2026-09-26T13:20:28.543Z",
+  "elapsedSeconds": 246.1997129
+}
