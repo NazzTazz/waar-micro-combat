@@ -42,6 +42,16 @@ combats/s avec deux slots de 1 vCPU. Ces chiffres incluent les changements de
 nombre de rounds et de taille des cohortes provoqués par les paramètres : ce
 ne sont pas des microbenchmarks du coût d'une instruction isolée.
 
+Dans les plans de composition `X`, en classant chaque lot d'après le nombre de
+types présents dans ses armées initiales, les **deux armées mixtes** totalisent
+456 000 combats en 811,152 s, soit **562 combats/s par slot**. Le détail est
+589/s dans `X-simplex` et 469/s dans `X-archer-cut`. Si « armées mixtes »
+signifie **au moins un camp mixte**, les plans `X` totalisent 2 328 000 combats
+en 2 662,641 s, soit **874/s par slot**. En incluant aussi les plans de
+composition `E`, ce dernier débit est **998/s par slot** pour 4 344 000
+combats. Ces moyennes sont pondérées par le temps effectivement mesuré, et les
+plans `E` n'ont aucun duel avec deux camps mixtes.
+
 ### Classement des plans les plus lents
 
 Le [classement complet des 79 plans](2026-09-26-optimized-plan-ranking.csv)
