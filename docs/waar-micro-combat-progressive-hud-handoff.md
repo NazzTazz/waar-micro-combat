@@ -20,6 +20,13 @@ référence. Recalculer ces effectifs si les coûts du profil changent.
 
 ## Surface principale
 
+Un [prototype figé de Rose de combat](visuals/rose-combat-campagne-12000.svg)
+illustre une autre vue synthétique à partir des résultats réels de la campagne
+`X-simplex` : douze confrontations orientées sur une silhouette polaire et les
+quatre miroirs au centre. Il utilise le budget effectivement mesuré de 12 000
+Or et 4 000 combats agrégés par orientation ; ce prototype sert à juger la
+grammaire visuelle, sans remplacer le périmètre 30 000 Or décrit ci-dessous.
+
 Une matrice **4 × 4** : ligne = monotype attaquant ; colonne = monotype
 défenseur. Chaque case est coupée par la diagonale descendante :
 
