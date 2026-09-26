@@ -121,7 +121,10 @@ class Worker {
       }
     });
     this.child.stderr.setEncoding('utf8');
-    this.child.stderr.on('data', chunk => {this.errors += chunk.slice(0, 4000)});
+    this.child.stderr.on('data', chunk => {
+      const room = 262144 - this.errors.length;
+      if (room > 0) this.errors += chunk.slice(0, room);
+    });
     this.child.once('exit', code => {if (this.pending) {this.pending.reject(new Error(`Worker exited ${code}: ${this.errors}`)); this.pending = null}});
   }
   async call(request, timeout) {
