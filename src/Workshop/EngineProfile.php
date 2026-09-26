@@ -122,8 +122,8 @@ final readonly class EngineProfile
                 foreach ([['attack', 0, 1000], ['structure', 0.000001, 1000], ['baseAccuracy', 0, 1], ['accuracySpread', 0, 1], ['defendingEfficiency', 0, 10]] as [$field,$min,$max]) {
                     self::decimalError($unit[$field] ?? null, 'units.'.$type.'.'.$field, $min, $max, $add);
                 }
-                if (!is_int($unit['strikesPerAttack'] ?? null) || $unit['strikesPerAttack'] < 1 || $unit['strikesPerAttack'] > 32) {
-                    $add('out_of_range', 'units.'.$type.'.strikesPerAttack', 'Nombre entier de frappes attendu entre 1 et 32.');
+                if (!is_int($unit['strikesPerAttack'] ?? null) || $unit['strikesPerAttack'] < 1 || $unit['strikesPerAttack'] > 10) {
+                    $add('out_of_range', 'units.'.$type.'.strikesPerAttack', 'Nombre entier de frappes attendu entre 1 et 10.');
                 }
                 if (!is_int($unit['cost'] ?? null) || $unit['cost'] < 1 || $unit['cost'] > 400400) {
                     $add('out_of_range', 'units.'.$type.'.cost', 'Coût entier attendu entre 1 et 400 400.');

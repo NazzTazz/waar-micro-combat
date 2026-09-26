@@ -15,6 +15,28 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class CohortWorkshopIntegrationTest extends TestCase
 {
+    public function testNativeEngineRejectsStrikesAboveTenAfterModifiers(): void
+    {
+        $profile = EngineProfile::defaults();
+        $profile['combat']['maxRounds'] = 1;
+        $profile['units']['soldier']['strikesPerAttack'] = 10;
+        $request = [
+            'profile' => $profile,
+            'armies' => ['A' => ['soldier' => 1], 'B' => ['soldier' => 1]],
+            'weather' => ['A' => 'neutral', 'B' => 'neutral'],
+            'seed' => 42,
+        ];
+        self::assertCount(2, (new DuelService())->simulate($request)['directions']);
+
+        $request['modifiers'] = ['A' => [[
+            'source' => 'training', 'id' => 'double-strikes', 'label' => 'Double frappes',
+            'unitType' => 'soldier', 'parameter' => 'strikesPerAttack',
+            'operation' => 'multiply', 'value' => '2',
+        ]], 'B' => []];
+        $this->expectExceptionMessage('prepared value outside supported range');
+        (new DuelService())->simulate($request);
+    }
+
     public function testCompleteBatchParityIncludesOptionalCanonicalClassificationProvenance(): void
     {
         $values = EngineProfile::defaults();
