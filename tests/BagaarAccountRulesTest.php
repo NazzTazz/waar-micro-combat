@@ -42,15 +42,15 @@ final class BagaarAccountRulesTest extends TestCase
     {
         $agent = AccountRules::initial('script', 'scripteur');
         $target = AccountRules::initial('target', 'grenouille');
-        $target['glory'] = 6;
+        $target['glory'] = 30;
         $target['army']['knight'] = 5;
         $target['gold'] = 900;
-        $result = AccountRules::spy($agent, $target, 10);
-        self::assertSame(['gold' => 900, 'armyTotal' => 5, 'glory' => 6, 'morale' => 'high'], $result['spies']['target']);
+        $result = AccountRules::spy($agent, $target, 30);
+        self::assertSame(['gold' => 900, 'armyTotal' => 5, 'glory' => 30, 'morale' => 'high'], $result['spies']['target']);
         self::assertArrayNotHasKey('army', $result['spies']['target']);
-        $target['glory'] = 11;
+        $target['glory'] = 31;
         $this->expectException(\DomainException::class);
-        AccountRules::spy($result, $target, 10);
+        AccountRules::spy($result, $target, 30);
     }
 
     public function testHourlyAttritionAndPrisonerLossesAreDeterministic(): void

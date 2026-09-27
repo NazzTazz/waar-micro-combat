@@ -59,8 +59,8 @@ final class EraSimulator
         return ['schemaVersion' => 'waar-bagaar-era/1', 'manifest' => [
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
-            'spyRange' => 10, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => 'bagaar-builtin-policies/2', 'hostRuleVersion' => 'bagaar-host-rules/1',
+            'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
+            'decisionVersion' => 'bagaar-builtin-policies/3', 'hostRuleVersion' => 'bagaar-host-rules/2',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
             'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
@@ -166,7 +166,7 @@ final class EraSimulator
                 $state['players'][$id]['cyclePhase'] = $action['value'];
                 break;
             case 'spy':
-                $target = $state['players'][$action['target']] ?? null;
+                $target = $state['players'][$action['target']] ?? $state['villages'][$action['target']] ?? null;
                 if ($target === null) {
                     throw new \DomainException('Cible d’espionnage inconnue.');
                 }
@@ -179,7 +179,11 @@ final class EraSimulator
             default:
                 throw new \DomainException('Action inconnue.');
         }
-        $state['events'][] = ['tick' => $state['tick'], 'type' => $type, 'actor' => $id];
+        $event = ['tick' => $state['tick'], 'type' => $type, 'actor' => $id];
+        if ($type === 'spy') {
+            $event['target'] = $action['target'];
+        }
+        $state['events'][] = $event;
     }
 
     private function attack(array &$state, string $id, string $targetId, string $weather, int $index): void
@@ -193,6 +197,7 @@ final class EraSimulator
             throw new \DomainException('Quota de village atteint.');
         }
         $attacker = $state['players'][$id];
+        $attackerArmyGold = HostRules::armyValue($attacker['army'], $this->profile->costs());
         if (!HostRules::canAttack($attacker['glory'], $defender['glory'], $attacker['attacks'], $defender['defenses'])
             || array_sum($attacker['army']) === 0 || array_sum($defender['army']) === 0) {
             throw new \DomainException('Portée, quota ou armée insuffisante.');
@@ -212,6 +217,13 @@ final class EraSimulator
         $loot = ($report['result']['winner'] ?? null) === 'attacker'
             ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.$ordinal) % ($upper - $lower + 1) : 0;
         $result = CombatTransition::apply($attacker, $defender, $report, $loot, $village);
+        if ($village) {
+            if ($result['event']['winner'] === 'attacker') {
+                unset($result['attacker']['villageFailures'][$targetId]);
+            } else {
+                $result['attacker']['villageFailures'][$targetId] = $attackerArmyGold;
+            }
+        }
         $state['players'][$id] = $result['attacker'];
         $state['players'][$id]['record'][$result['event']['winner'] === 'attacker' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
         if ($village) {

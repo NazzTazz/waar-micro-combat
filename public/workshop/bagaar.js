@@ -129,6 +129,7 @@ function eventLabel(event){
   if(event.type==='rwaa-ended')return `Fin du règne de ${displayName(event.actor)}`;
   if(event.type==='candidate')return `${displayName(event.actor)} devient prétendant`;
   if(event.type==='village')return `${event.id} apparaît`;
+  if(event.type==='spy')return `${displayName(event.actor)} espionne ${displayName(event.target)}`;
   if(event.type==='rejected')return `${displayName(event.actor)} · ${event.action} refusé`;
   return `${displayName(event.actor)||'Jeu'} · ${event.type}`;
 }

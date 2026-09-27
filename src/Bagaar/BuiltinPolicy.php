@@ -68,7 +68,17 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if ($this->name === 'ascenseur' && in_array($self['cyclePhase'], ['build', 'surrender'], true)) {
             return null;
         }
-        if (in_array($this->name, ['scripteur', 'ascenseur'], true)) {
+        if ($this->name === 'fermier' || ($this->name === 'grenouille' && $observation['tick'] < 0.75 * $observation['totalTicks'])
+            || ($this->name === 'ascenseur' && $self['cyclePhase'] === 'rebuild')) {
+            $limit = $this->name === 'grenouille' ? self::attackLimit($self, 1) : min(3, self::attackLimit($self, 3));
+            if (self::attemptCount($attempts, 'attack') < $limit) {
+                $spy = $this->villageSpyCandidate($observation);
+                if ($spy !== null) {
+                    return ['type' => 'spy', 'target' => $spy];
+                }
+            }
+        }
+        if ($this->name === 'scripteur' || ($this->name === 'ascenseur' && $self['cyclePhase'] !== 'rebuild')) {
             $spy = self::attempted($attempts, 'spy') ? null : $this->spyCandidate($observation);
             if ($spy !== null) {
                 return ['type' => 'spy', 'target' => $spy];
@@ -107,7 +117,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             return null;
         }
         foreach ($view['targets'] as $target) {
-            if ($target['kind'] !== 'player' || abs($target['glory'] - $self['glory']) > ($view['spyRange'] ?? 10)
+            if ($target['kind'] !== 'player' || abs($target['glory'] - $self['glory']) > ($view['spyRange'] ?? 30)
                 || self::attempted($view['attempts'], 'spy', $target['id'])) {
                 continue;
             }
@@ -117,6 +127,54 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             }
         }
         return null;
+    }
+
+    private function villageSpyCandidate(array $view): ?string
+    {
+        $self = $view['self'];
+        if ($self['gold'] < HostRules::espionageCost($self['glory'])) {
+            return null;
+        }
+        $ownValue = HostRules::armyValue($self['army'], $view['costs']);
+        foreach ($view['targets'] as $target) {
+            if ($target['kind'] !== 'village' || abs($target['glory'] - $self['glory']) > HostRules::ATTACK_RANGE
+                || abs($target['glory'] - $self['glory']) > ($view['spyRange'] ?? 30)
+                || self::attempted($view['attempts'], 'spy', $target['id'])
+                || $ownValue < 1.25 * ($self['villageFailures'][$target['id']] ?? 0)) {
+                continue;
+            }
+            $report = $view['reports'][$target['id']] ?? null;
+            if ($report !== null && $view['tick'] - $report['tick'] < 6
+                && ($report['tick'] === $view['tick']
+                    || $ownValue < 1.5 * self::estimatedVillageArmyValue($view['costs'], $report))) {
+                continue;
+            }
+            return $target['id'];
+        }
+        return null;
+    }
+
+    private static function villageTarget(array $view, array $villages): ?string
+    {
+        $self = $view['self'];
+        $ownValue = HostRules::armyValue($self['army'], $view['costs']);
+        foreach ($villages as $village) {
+            $report = $view['reports'][$village['id']] ?? null;
+            if (($report['tick'] ?? null) !== $view['tick']
+                || $ownValue < 1.5 * self::estimatedVillageArmyValue($view['costs'], $report)
+                || $ownValue < 1.25 * ($self['villageFailures'][$village['id']] ?? 0)) {
+                continue;
+            }
+            return $village['id'];
+        }
+        return null;
+    }
+
+    /** Estimate from the reported headcount, never from the hidden village army. */
+    private static function estimatedVillageArmyValue(array $costs, array $report): float
+    {
+        $estimatedUnitCost = $costs['soldier'] * 0.5 + $costs['spearman'] * 0.35 + $costs['knight'] * 0.15;
+        return $report['armyTotal'] * $estimatedUnitCost;
     }
 
     private function attack(array $view): ?array
@@ -142,13 +200,15 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 ? ['type' => 'attack', 'target' => $players[0]['id']] : null;
         }
         if ($this->name === 'grenouille' && $view['tick'] < 0.75 * $view['totalTicks']) {
-            return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 1)
-                ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
+            $target = self::villageTarget($view, $villages);
+            return $target !== null && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 1)
+                ? ['type' => 'attack', 'target' => $target] : null;
         }
         if ($this->name === 'fermier') {
             if ($villages !== []) {
-                return self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
-                    ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
+                $target = self::villageTarget($view, $villages);
+                return $target !== null && self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
+                    ? ['type' => 'attack', 'target' => $target] : null;
             }
             foreach ($players as $player) {
                 if (in_array($player['id'], $self['fridges'] ?? [], true) && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 3)) {
@@ -178,8 +238,9 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         }
         if ($this->name === 'ascenseur') {
             if ($self['cyclePhase'] === 'rebuild') {
-                return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
-                    ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
+                $target = self::villageTarget($view, $villages);
+                return $target !== null && self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
+                    ? ['type' => 'attack', 'target' => $target] : null;
             }
             if (self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 2)) {
                 return null;
@@ -191,10 +252,10 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 $bScore = ($bReport['armyTotal'] ?? 0) / ($b['glory'] + 1);
                 return [-$aScore, $a['id']] <=> [-$bScore, $b['id']];
             });
-            $target = $players[0] ?? $villages[0] ?? null;
+            $target = $players[0] ?? null;
             return $target === null ? null : ['type' => 'attack', 'target' => $target['id']];
         }
-        $target = $players[0] ?? $villages[0] ?? null;
+        $target = $players[0] ?? null;
         return $target === null || self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 2)
             ? null : ['type' => 'attack', 'target' => $target['id']];
     }
