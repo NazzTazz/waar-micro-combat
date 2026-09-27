@@ -20,6 +20,9 @@ final class JsonApiRuntime
         if ($path === '/api/measure') {
             set_time_limit(600);
         }
+        if ($path === '/api/bagaar-step') {
+            set_time_limit(600);
+        }
         if (in_array($path, ['/api/search', '/api/optimize'], true)) {
             set_time_limit(4800);
         }

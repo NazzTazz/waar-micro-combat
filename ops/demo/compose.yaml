@@ -6,8 +6,10 @@ services:
     environment:
       WAAR_DEMO_SERIALIZE: '1'
       WAAR_PROFILE_DIRECTORY: /var/lib/waar-profiles
+      WAAR_BAGAAR_RUN_DIRECTORY: /var/lib/waar-bagaar
     volumes:
       - profile-saves:/var/lib/waar-profiles
+      - bagaar-runs:/var/lib/waar-bagaar
     networks:
       wai-edge:
         aliases: [waar-engine-demo]
@@ -32,3 +34,4 @@ networks:
 
 volumes:
   profile-saves:
+  bagaar-runs:

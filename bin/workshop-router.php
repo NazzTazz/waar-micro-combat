@@ -10,14 +10,33 @@ use Waar\MicroCombat\Workshop\MonotypeMeasurementService;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
 use Waar\MicroCombat\Workshop\ConsequenceObjectives;
 use Waar\MicroCombat\Workshop\T27Editor;
+use Waar\MicroCombat\Bagaar\BagaarService;
 
 require dirname(__DIR__).'/autoload.php';
 $public = dirname(__DIR__).'/public/workshop';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+if (str_starts_with($path, '/api/bagaar-') || str_starts_with($path, '/bagaar-export/')) {
+    ini_set('memory_limit', '256M');
+}
 $editorAssets = ['/editor/echarts.js' => 'vendor/echarts-5.6.0.min.js', '/editor/model.js' => 'acceptance-zones-model.js', '/editor/app.js' => 'acceptance-overlay-app.js'];
 if (isset($editorAssets[$path])) {
     header('Content-Type: application/javascript; charset=utf-8');
     readfile(dirname(__DIR__).'/resources/'.$editorAssets[$path]);
+    return;
+}
+if (preg_match('~^/bagaar-export/([a-f0-9]{32})\.json$~', $path, $match)) {
+    try {
+        set_time_limit(0);
+        $store = new \Waar\MicroCombat\Bagaar\RunStore();
+        $store->read($match[1]);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Content-Disposition: attachment; filename="bagaar-'.$match[1].'.json"');
+        header('Cache-Control: no-store');
+        $store->outputExport($match[1]);
+    } catch (Throwable $error) {
+        http_response_code(404);
+        echo 'Simulation introuvable.';
+    }
     return;
 }
 if (str_starts_with($path, '/api/')) {
@@ -76,6 +95,10 @@ if (str_starts_with($path, '/api/')) {
             ['/api/save-profile', 'POST'] => (new \Waar\MicroCombat\Workshop\SharedProfiles())->save(is_string($request['name'] ?? null) ? $request['name'] : '', is_array($request['profile'] ?? null) ? $request['profile'] : []),
             ['/api/load-profile', 'POST'] => (new \Waar\MicroCombat\Workshop\SharedProfiles())->load(is_string($request['id'] ?? null) ? $request['id'] : ''),
             ['/api/default-profile', 'GET'] => ['profile' => json_decode(file_get_contents(dirname(__DIR__).'/resources/workshop-default-profile.json'), true, 128, JSON_THROW_ON_ERROR)],
+            ['/api/bagaar-start', 'POST'] => (new BagaarService())->start($request),
+            ['/api/bagaar-step', 'POST'] => (new BagaarService())->advance($request),
+            ['/api/bagaar-resume', 'POST'] => (new BagaarService())->resume($request),
+            ['/api/bagaar-combat', 'POST'] => (new BagaarService())->combat($request),
             ['/api/migrate-profile', 'POST'] => (new EngineProfileMigrator())->migrate(is_array($request['profile'] ?? null) ? $request['profile'] : []),
             ['/api/editor', 'POST'] => (new T27Editor())->render($request['profile'] ?? [], $request['measurement'] ?? [], $request['zones'] ?? []),
             ['/api/validate', 'POST'] => ['errors' => EngineProfile::validate($request['profile'] ?? [], match($request['mode'] ?? 'complete') {

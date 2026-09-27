@@ -19,6 +19,7 @@ RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf \
     && printf 'ServerTokens Prod\nServerSignature Off\n' > /etc/apache2/conf-enabled/demo-security.conf \
     && printf 'memory_limit=256M\nexpose_php=Off\nlog_errors=On\ndisplay_errors=Off\n' > /usr/local/etc/php/conf.d/demo.ini
 RUN mkdir -p /var/lib/waar-profiles && chown www-data:www-data /var/lib/waar-profiles && chmod 700 /var/lib/waar-profiles
+RUN mkdir -p /var/lib/waar-bagaar && chown www-data:www-data /var/lib/waar-bagaar && chmod 700 /var/lib/waar-bagaar
 ENV WAAR_COHORT_RUNTIME=rust
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD php -r 'exit(@file_get_contents("http://127.0.0.1:8080/api/default-profile") === false ? 1 : 0);'

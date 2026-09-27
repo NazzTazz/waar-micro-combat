@@ -1,0 +1,278 @@
+<?php
+
+namespace Waar\MicroCombat\Bagaar;
+
+/** Local, isolated run persistence. The host game's database is never touched. */
+final class RunStore
+{
+    public function __construct(private readonly string $directory = '')
+    {
+    }
+
+    public function create(array $document): string
+    {
+        $directory = $this->directory();
+        $id = bin2hex(random_bytes(16));
+        $path = $directory.DIRECTORY_SEPARATOR.$id.'.json';
+        $handle = fopen($path, 'x+');
+        if ($handle === false) {
+            throw new \RuntimeException('Impossible de créer la simulation Bagaar.');
+        }
+        try {
+            $this->write($handle, $document);
+        } finally {
+            fclose($handle);
+        }
+        return $id;
+    }
+
+    public function read(string $id): array
+    {
+        return $this->withLocked($id, LOCK_SH, static fn (array $document): array => $document);
+    }
+
+    public function update(string $id, callable $change): array
+    {
+        return $this->withLocked($id, LOCK_EX, function (array $document, $handle) use ($change, $id): array {
+            $updated = $change($document);
+            if (!is_array($updated)) {
+                throw new \LogicException('État de simulation invalide.');
+            }
+            if (($updated['state']['archiveDetached'] ?? false) === true) {
+                $batch = $updated['state']['combats'];
+                $updated['state']['combats'] = [];
+                $this->appendAndWrite($id, $handle, $updated, $batch);
+            } else {
+                $this->write($handle, $updated);
+            }
+            return $updated;
+        });
+    }
+
+    public function readCombat(string $id, int $index): array
+    {
+        return $this->withLocked($id, LOCK_SH, function (array $document) use ($id, $index): array {
+            $state = $document['state'];
+            if (($state['archiveDetached'] ?? false) !== true) {
+                return $state['combats'][$index] ?? throw new \RuntimeException('Combat introuvable.', 404);
+            }
+            if ($index >= ($state['combatCount'] ?? 0)) {
+                throw new \RuntimeException('Combat introuvable.', 404);
+            }
+            $archive = @fopen($this->archivePath($id), 'rb');
+            if ($archive === false) {
+                throw new \RuntimeException('Archive de combats introuvable.', 404);
+            }
+            try {
+                for ($position = 0; ($line = fgets($archive)) !== false; $position++) {
+                    if ($position === $index) {
+                        return json_decode($line, true, 512, JSON_THROW_ON_ERROR);
+                    }
+                }
+            } finally {
+                fclose($archive);
+            }
+            throw new \RuntimeException('Combat introuvable.', 404);
+        });
+    }
+
+    /** Stream the original export shape without materializing every archived combat. */
+    public function outputExport(string $id): void
+    {
+        $this->withLocked($id, LOCK_SH, function (array $document) use ($id): array {
+            echo '{';
+            $firstRoot = true;
+            foreach ($document as $key => $value) {
+                if (!$firstRoot) {
+                    echo ',';
+                }
+                $firstRoot = false;
+                echo json_encode((string) $key, JSON_THROW_ON_ERROR), ':';
+                if ($key !== 'state') {
+                    echo json_encode($value, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    continue;
+                }
+                echo '{';
+                $firstState = true;
+                foreach ($value as $stateKey => $stateValue) {
+                    if (!$firstState) {
+                        echo ',';
+                    }
+                    $firstState = false;
+                    echo json_encode((string) $stateKey, JSON_THROW_ON_ERROR), ':';
+                    if ($stateKey !== 'combats') {
+                        echo json_encode($stateValue, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                        continue;
+                    }
+                    echo '[';
+                    $firstCombat = true;
+                    if (($value['archiveDetached'] ?? false) === true) {
+                        $archive = @fopen($this->archivePath($id), 'rb');
+                        if ($archive !== false) {
+                            try {
+                                $remaining = $value['combatCount'] ?? 0;
+                                while ($remaining-- > 0 && ($line = fgets($archive)) !== false) {
+                                    if (!$firstCombat) {
+                                        echo ',';
+                                    }
+                                    $firstCombat = false;
+                                    echo trim($line);
+                                }
+                            } finally {
+                                fclose($archive);
+                            }
+                        }
+                    } else {
+                        foreach ($stateValue as $combat) {
+                            if (!$firstCombat) {
+                                echo ',';
+                            }
+                            $firstCombat = false;
+                            echo json_encode($combat, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                        }
+                    }
+                    echo ']';
+                }
+                echo '}';
+            }
+            echo '}';
+            return [];
+        });
+    }
+
+    private function withLocked(string $id, int $mode, callable $callback): array
+    {
+        if (!preg_match('/^[a-f0-9]{32}$/', $id)) {
+            throw new \InvalidArgumentException('Identifiant de simulation invalide.');
+        }
+        $path = $this->directory().DIRECTORY_SEPARATOR.$id.'.json';
+        $handle = @fopen($path, 'r+');
+        if ($handle === false) {
+            throw new \RuntimeException('Simulation introuvable.', 404);
+        }
+        try {
+            if (!flock($handle, $mode)) {
+                throw new \RuntimeException('Simulation temporairement indisponible.', 503);
+            }
+            $content = stream_get_contents($handle);
+            $document = json_decode($content ?: '', true, 512, JSON_THROW_ON_ERROR);
+            if (!is_array($document)) {
+                throw new \RuntimeException('Simulation corrompue.');
+            }
+            unset($content);
+            if ($mode === LOCK_EX && ($document['state']['archiveDetached'] ?? false) !== true) {
+                $this->detachLegacyArchive($id, $document, $handle);
+            }
+            return $callback($document, $handle);
+        } finally {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+        }
+    }
+
+    private function directory(): string
+    {
+        $configured = getenv('WAAR_BAGAAR_RUN_DIRECTORY');
+        $directory = $this->directory !== '' ? $this->directory
+            : ($configured !== false && $configured !== '' ? $configured : sys_get_temp_dir().DIRECTORY_SEPARATOR.'waar-bagaar-runs');
+        if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
+            throw new \RuntimeException('Répertoire Bagaar inaccessible.');
+        }
+        return $directory;
+    }
+
+    private function write($handle, array $document): void
+    {
+        $json = json_encode($document, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        rewind($handle);
+        if (!ftruncate($handle, 0)) {
+            throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
+        }
+        $offset = 0;
+        while ($offset < strlen($json)) {
+            $written = fwrite($handle, substr($json, $offset));
+            if ($written === false || $written === 0) {
+                throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
+            }
+            $offset += $written;
+        }
+        if (!fflush($handle)) {
+            throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
+        }
+    }
+
+    private function archivePath(string $id): string
+    {
+        return $this->directory().DIRECTORY_SEPARATOR.$id.'.combats';
+    }
+
+    private function detachLegacyArchive(string $id, array &$document, $handle): void
+    {
+        $path = $this->archivePath($id);
+        $temporary = $path.'.migrate-'.bin2hex(random_bytes(4));
+        $archive = fopen($temporary, 'xb');
+        if ($archive === false) {
+            throw new \RuntimeException('Impossible de créer l’archive de combats.');
+        }
+        try {
+            foreach ($document['state']['combats'] as $combat) {
+                $this->writeArchiveLine($archive, $combat);
+            }
+            fflush($archive);
+        } finally {
+            fclose($archive);
+        }
+        if (is_file($path)) {
+            unlink($path);
+        }
+        if (!rename($temporary, $path)) {
+            throw new \RuntimeException('Migration de l’archive de combats impossible.');
+        }
+        $document['state']['combatCount'] = count($document['state']['combats']);
+        $document['state']['archiveDetached'] = true;
+        $document['state']['combats'] = [];
+        $this->write($handle, $document);
+    }
+
+    private function appendAndWrite(string $id, $handle, array $document, array $batch): void
+    {
+        if ($batch === []) {
+            $this->write($handle, $document);
+            return;
+        }
+        $archive = fopen($this->archivePath($id), 'c+b');
+        if ($archive === false) {
+            throw new \RuntimeException('Archive de combats inaccessible.');
+        }
+        if (fseek($archive, 0, SEEK_END) !== 0) {
+            fclose($archive);
+            throw new \RuntimeException('Archive de combats inaccessible.');
+        }
+        $offset = ftell($archive);
+        try {
+            foreach ($batch as $combat) {
+                $this->writeArchiveLine($archive, $combat);
+            }
+            fflush($archive);
+            $this->write($handle, $document);
+        } catch (\Throwable $error) {
+            ftruncate($archive, $offset);
+            throw $error;
+        } finally {
+            fclose($archive);
+        }
+    }
+
+    private function writeArchiveLine($handle, array $combat): void
+    {
+        $line = json_encode($combat, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)."\n";
+        $offset = 0;
+        while ($offset < strlen($line)) {
+            $written = fwrite($handle, substr($line, $offset));
+            if ($written === false || $written === 0) {
+                throw new \RuntimeException('Écriture de l’archive de combats impossible.');
+            }
+            $offset += $written;
+        }
+    }
+}
