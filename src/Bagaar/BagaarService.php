@@ -109,7 +109,7 @@ final class BagaarService
             'grenouille' => [['eloise', 'Éloïse'], ['farid', 'Farid'], ['gaelle', 'Gaëlle'], ['hugo', 'Hugo']],
             'ascenseur' => [['iris', 'Iris'], ['jules', 'Jules'], ['kamel', 'Kamel'], ['lea', 'Léa']],
             'fermier' => [['malo', 'Malo'], ['nina', 'Nina'], ['oscar', 'Oscar'], ['pauline', 'Pauline']],
-            'scripteur' => [['quentin', 'Quentin'], ['romane', 'Romane'], ['sami', 'Sami'], ['tess', 'Tess']],
+            'scripteur' => [['quentin', 'Quentin'], ['romane', 'Romane'], ['sami', 'Sami'], ['hacker', 'Hacker']],
             'casual' => [['ugo', 'Ugo'], ['victoire', 'Victoire'], ['william', 'William'], ['zoe', 'Zoé']],
         ];
         $activities = ['all-day', 'office', 'evening', 'early'];
@@ -120,6 +120,8 @@ final class BagaarService
                 $accounts[] = ['id' => $id, 'name' => $name, 'policy' => $policy,
                     'activity' => $policy === 'casual' ? ['casual-morning', 'casual-noon', 'casual-evening', 'casual-night'][$index] : $activities[$index],
                     'aggressionPercent' => $aggressions[$index],
+                    ...($id === 'hacker' ? ['hacker' => true] : []),
+                    ...($id === 'zoe' ? ['protester' => true] : []),
                     ...($policy === 'grenouille' ? ['soldierParadigm' => $soldierFrog] : [])];
             }
         }

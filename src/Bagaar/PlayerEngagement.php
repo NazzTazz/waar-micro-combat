@@ -20,6 +20,10 @@ final class PlayerEngagement
         }
         $variant = hexdec(substr(hash('sha256', $player['id']), 0, 2));
         $player['recentCombats'] = [];
+        if (($player['pauses'] ?? 0) >= 1 && $losses === count($recent) && $variant % 2 === 0) {
+            $player['pauseUntil'] = null;
+            return [$player, 'reset'];
+        }
         if (($player['pauses'] ?? 0) >= 1 || $variant % 4 === 0) {
             $player['status'] = 'abandoned';
             $player['pauseUntil'] = null;

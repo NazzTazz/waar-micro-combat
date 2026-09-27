@@ -13,7 +13,7 @@ final class PlayerObservation
         }
         $targets = [];
         foreach ($state['players'] as $otherId => $player) {
-            if ($otherId !== $id) {
+            if ($otherId !== $id && ($player['joinedTick'] ?? 0) < $state['tick']) {
                 $targets[] = ['id' => $otherId, 'name' => $player['name'] ?? $otherId, 'glory' => $player['glory'], 'kind' => 'player'];
             }
         }

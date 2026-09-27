@@ -28,6 +28,14 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if (($self['status'] ?? 'active') === 'pause') {
             return ['goal' => 'Faire une pause', 'method' => 'Revenir au tick '.$self['pauseUntil'].'.'];
         }
+        if ($this->name === 'scripteur' && ($self['hacker'] ?? false)) {
+            return ['goal' => "Emmerder l’admin qui regarde la simulation",
+                'method' => "Faire abandonner des comptes placés pour écrire « PD » sur le plan ; faire descendre ceux qui ont choisi la reddition automatique pour dégager le dessin."];
+        }
+        if ($this->name === 'casual' && ($self['protester'] ?? false)) {
+            return ['goal' => 'COUCOU JE SUIS UNE BALISE',
+                'method' => 'Acheter deux soldats séparément à chaque connexion pour faire clignoter deux fois le point en bleu.'];
+        }
         if ($this->name === 'rageux' && ($self['rageTarget'] ?? null) !== null && $tick <= ($self['rageUntil'] ?? 0)) {
             return ['goal' => 'Détruire '.($names[$self['rageTarget']] ?? $self['rageTarget']),
                 'method' => 'Répliquer jusqu’à trois fois par heure pendant trois heures.'];
@@ -42,7 +50,17 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $mine = HostRules::mineUpgrade($self['mineLevel']);
         if ($self['glory'] >= $mine['glory'] && $self['gold'] < $mine['gold']) {
             return ['goal' => 'Monter la mine suivante',
-                'method' => 'Économiser '.($mine['gold'] - $self['gold']).' Or tout en recrutant.'];
+                'method' => $this->name === 'scripteur'
+                    ? 'Suspendre le recrutement et économiser '.($mine['gold'] - $self['gold']).' Or pour gagner '
+                        .(HostRules::mineProduction($mine['level']) - HostRules::mineProduction($self['mineLevel'])).' Or par tick.'
+                    : 'Économiser '.($mine['gold'] - $self['gold']).' Or tout en recrutant.'];
+        }
+        $mineGloryGap = $mine['glory'] - $self['glory'];
+        if ($this->name === 'scripteur' && $mineGloryGap >= 1 && $mineGloryGap <= 5) {
+            return ['goal' => 'Monter la mine suivante',
+                'method' => 'Gagner '.$mineGloryGap.' Glwaare par des attaques très favorables, puis épargner '
+                    .$mine['gold'].' Or pour gagner '
+                    .(HostRules::mineProduction($mine['level']) - HostRules::mineProduction($self['mineLevel'])).' Or par tick.'];
         }
         return match ($this->name) {
             'rageux' => ['goal' => 'Agrandir mon armée', 'method' => 'Recruter des archers et riposter aux attaques.'],
@@ -61,8 +79,9 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $self = $observation['self'];
         $attempts = $observation['attempts'];
         $costs = $observation['costs'];
-        if ($this->name === 'ascenseur' && !$self['autoSurrender'] && !self::attempted($attempts, 'autoSurrender')) {
-            return ['type' => 'autoSurrender', 'enabled' => true];
+        if ($this->name === 'ascenseur' && $self['autoSurrender'] !== ($self['cyclePhase'] === 'surrender')
+            && !self::attempted($attempts, 'autoSurrender')) {
+            return ['type' => 'autoSurrender', 'enabled' => $self['cyclePhase'] === 'surrender'];
         }
         if ($this->name === 'ascenseur' && !self::attempted($attempts, 'phase')) {
             $armyGold = HostRules::armyValue($self['army'], $costs);
@@ -77,6 +96,11 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 return ['type' => 'phase', 'value' => 'raid'];
             }
         }
+        if (!$self['autoSurrender'] && $self['defenseLossStreak'] >= HostRules::SURRENDER_LOSSES
+            && ($self['villageCautious'] ?? false) && $self['glory'] >= 40
+            && !self::attempted($attempts, 'surrender')) {
+            return ['type' => 'surrender'];
+        }
         if ($this->name === 'scripteur' && array_sum($self['hospital']) > 0 && !self::attempted($attempts, 'heal')) {
             return ['type' => 'heal'];
         }
@@ -86,7 +110,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 return ['type' => 'mine'];
             }
         }
-        if (!self::attempted($attempts, 'hospital') && $self['hospitalLevel'] === 0) {
+        if ($this->name === 'casual' && ($self['protester'] ?? false)) {
+            return self::attemptCount($attempts, 'recruit') < 2 && $self['gold'] >= $costs['soldier']
+                ? ['type' => 'recruit', 'units' => ['soldier' => 1]] : null;
+        }
+        if (!self::attempted($attempts, 'hospital') && $self['hospitalLevel'] === 0
+            && !($this->name === 'scripteur' && self::savingForMine($self))) {
             $hospital = HostRules::hospitalUpgrade(0);
             if ($self['gold'] >= $hospital['gold']) {
                 return ['type' => 'hospital'];
@@ -136,6 +165,9 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 && $view['tick'] <= ($self['rageUntil'] ?? 0))
             || ($this->name === 'fermier' && $view['tick'] >= 0.75 * $view['totalTicks']);
         $savingForMine = !$urgentRaid && $self['glory'] >= $mine['glory'] && $self['gold'] < $mine['gold'];
+        if ($this->name === 'scripteur' && $savingForMine) {
+            return null;
+        }
         $budget = (int) floor($self['gold'] * ($savingForMine ? 0.25 : ($this->name === 'grenouille' ? 0.7 : 0.5)));
         if ($budget < min($view['costs'])) {
             return null;
@@ -164,6 +196,8 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             return null;
         }
         $targets = $view['targets'];
+        $mineGap = self::mineGloryGap($self);
+        $minePlan = $this->name === 'scripteur' && !($self['hacker'] ?? false) && $mineGap >= 1 && $mineGap <= 5;
         if ($this->name === 'fermier' && $view['tick'] >= 0.75 * $view['totalTicks']) {
             usort($targets, static fn (array $a, array $b): int =>
                 [($b['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $b['glory'], $a['id']]
@@ -171,11 +205,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         }
         foreach ($targets as $target) {
             if ($target['kind'] !== 'player' || abs($target['glory'] - $self['glory']) > ($view['spyRange'] ?? 30)
+                || ($minePlan && abs($target['glory'] - $self['glory']) > HostRules::ATTACK_RANGE)
                 || self::attempted($view['attempts'], 'spy', $target['id'])) {
                 continue;
             }
             $report = $view['reports'][$target['id']] ?? null;
-            if ($report === null || ($view['tick'] - ($report['tick'] ?? -100)) >= 6) {
+            if ($report === null || ($view['tick'] - ($report['tick'] ?? -100)) >= ($minePlan || ($self['hacker'] ?? false) ? 2 : 6)) {
                 return $target['id'];
             }
         }
@@ -313,10 +348,36 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 ? ['type' => 'attack', 'target' => $target] : null;
         }
         if ($this->name === 'scripteur') {
+            if ($self['hacker'] ?? false) {
+                if (self::attemptCount($view['attempts'], 'attack') >= min(5, self::attackLimit($self, 5))) {
+                    return null;
+                }
+                $target = HackerPlan::choose($players, $view['reports'], $view['costs'],
+                    HostRules::armyValue($self['army'], $view['costs']), $view['tick'], $self['hackerVictims'] ?? []);
+                return $target === null ? null : ['type' => 'attack', 'target' => $target];
+            }
             if (self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 1)) {
                 return null;
             }
             $ownValue = HostRules::armyValue($self['army'], $view['costs']);
+            $mineGap = self::mineGloryGap($self);
+            if ($mineGap >= 1 && $mineGap <= 5) {
+                $safe = [];
+                foreach ($players as $player) {
+                    $report = $view['reports'][$player['id']] ?? null;
+                    if ($report === null || $view['tick'] - ($report['tick'] ?? -100) > 2) {
+                        continue;
+                    }
+                    $estimatedValue = $report['armyTotal'] * array_sum($view['costs']) / count($view['costs']);
+                    if ($ownValue >= 3 * $estimatedValue) {
+                        $safe[] = ['id' => $player['id'], 'value' => $estimatedValue];
+                    }
+                }
+                usort($safe, static fn (array $a, array $b): int => [$a['value'], $a['id']] <=> [$b['value'], $b['id']]);
+                if ($safe !== []) {
+                    return ['type' => 'attack', 'target' => $safe[0]['id']];
+                }
+            }
             foreach ($players as $player) {
                 $report = $view['reports'][$player['id']] ?? null;
                 if ($report === null || $view['tick'] - ($report['tick'] ?? -100) > 6) {
@@ -365,6 +426,17 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         }
         $villageTarget = self::villageTarget($view, $villages);
         return $villageTarget === null ? null : ['type' => 'attack', 'target' => $villageTarget];
+    }
+
+    private static function mineGloryGap(array $self): int
+    {
+        return HostRules::mineUpgrade($self['mineLevel'])['glory'] - $self['glory'];
+    }
+
+    private static function savingForMine(array $self): bool
+    {
+        $mine = HostRules::mineUpgrade($self['mineLevel']);
+        return $self['glory'] >= $mine['glory'] && $self['gold'] < $mine['gold'];
     }
 
     private static function playerOpportunity(array $view, array $players, bool $endgame): ?string

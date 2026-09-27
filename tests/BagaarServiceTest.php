@@ -25,6 +25,9 @@ final class BagaarServiceTest extends TestCase
             self::assertContains('all-day', array_column($started['accounts'], 'activity'));
             self::assertContains('casual-morning', array_column($started['accounts'], 'activity'));
             self::assertContains('Chloé', array_column($started['accounts'], 'name'));
+            self::assertContains('Hacker', array_column($started['accounts'], 'name'));
+            self::assertSame(1, count(array_filter($started['accounts'],
+                static fn (array $account): bool => $account['name'] === 'Hacker' && $account['policy'] === 'scripteur')));
             self::assertGreaterThan(1, count(array_unique(array_column($started['accounts'], 'aggressionPercent'))));
         } finally {
             foreach (glob($directory.DIRECTORY_SEPARATOR.'*') ?: [] as $path) {

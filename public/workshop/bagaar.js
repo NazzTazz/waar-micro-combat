@@ -23,7 +23,7 @@ function refreshProgress(){
 function writeSvgText(root,x,y,value,attributes={}){const node=svg('text',{x,y,...attributes});node.textContent=value;root.append(node)}
 function frameFlashes(tick){
   const byId=new Map();
-  const add=(id,color)=>{if(!id)return;const list=byId.get(id)||[];if(!list.includes(color))list.push(color);byId.set(id,list)};
+  const add=(id,color,repeat=false)=>{if(!id)return;const list=byId.get(id)||[];if(repeat||!list.includes(color))list.push(color);byId.set(id,list)};
   for(const event of events){
     if(event.tick!==tick)continue;
     if(event.type==='combat'){
@@ -33,8 +33,9 @@ function frameFlashes(tick){
       if(event.surrender)add(event.defender,'#ffffff');
     }else if(event.type==='rwaa')add(event.actor,'#ffe45f');
     else if(event.type==='rwaa-ended')add(event.actor,'#ff9c4a');
-    else if(event.type==='recruit')add(event.actor,'#61aaff');
+    else if(event.type==='recruit')add(event.actor,'#61aaff',true);
     else if(event.type==='heal')add(event.actor,'#fa80c7');
+    else if(event.type==='surrender')add(event.actor,'#ffffff');
   }
   return byId;
 }
@@ -68,7 +69,8 @@ function renderChart(){
   for(const point of current.points){
     const trail=frames.slice(Math.max(0,played-12),played).map(frame=>frame.points.find(candidate=>candidate.id===point.id)).filter(Boolean);
     if(trail.length>1)chart.append(svg('polyline',{points:trail.map(item=>`${x(item.armyGold)},${y(item.glory)}`).join(' '),fill:'none',stroke:colors[point.policy],opacity:'.55','stroke-width':2}));
-    const circle=svg('circle',{class:'point',cx:x(point.armyGold),cy:y(point.glory),r:selected===point.id?8:6,fill:colors[point.policy],'aria-selected':selected===point.id,tabindex:0,role:'button','aria-label':`${point.name||point.id} : ${number.format(point.armyGold)} Or investis, ${point.glory} Glwaare`});
+    const abandoned=point.status==='abandoned';
+    const circle=svg('circle',{class:'point',cx:x(point.armyGold),cy:y(point.glory),r:selected===point.id?8:6,fill:abandoned?'#eef3fa':colors[point.policy],stroke:abandoned?'#4d596d':'none','stroke-width':abandoned?2:0,'aria-selected':selected===point.id,tabindex:0,role:'button','aria-label':`${point.name||point.id} : ${number.format(point.armyGold)} Or investis, ${point.glory} Glwaare${abandoned?' ; jeu abandonné':''}`});
     circle.addEventListener('click',()=>{selected=point.id;render()});
     circle.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selected=point.id;render()}});
     chart.append(circle);
@@ -109,6 +111,7 @@ function renderPlayer(){
   const rows=[['Glwaare',point.glory],["Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]];
   if(point.kind==='village')rows.push(['Or maximum',number.format(point.goldMax??point.gold)],['Abondement par tick',`${number.format(point.goldRefill??0)} Or`]);
   else rows.push(['État',statusNames[point.status]||statusNames.active],['Objectif',point.goal||'—'],['Moyen choisi',point.method||'—'],['Mine',`Niveau ${point.mineLevel??0}`],['Production horaire',`${number.format(point.mineProduction??0)} Or`],['Activité',activityNames[point.activity]||'Toute la journée'],['Agressivité',`${point.aggressionPercent??100} %`]);
+  if(point.kind!=='village'&&point.resetCount>0)rows.push(['Remises à zéro',point.resetCount]);
   rows.push(['Soldats',number.format(point.army?.soldier??0)],['Lanciers',number.format(point.army?.spearman??0)],['Archers',number.format(point.army?.archer??0)],['Chevaliers',number.format(point.army?.knight??0)]);
   if(point.kind!=='village')rows.push(['Combats gagnés / nuls / perdus',`${point.record?.wins??0} / ${point.record?.draws??0} / ${point.record?.losses??0}`]);
   for(const [label,value] of rows){
@@ -135,8 +138,12 @@ function eventLabel(event){
   if(event.type==='candidate')return `${displayName(event.actor)} devient prétendant`;
   if(event.type==='village')return `${event.id} apparaît`;
   if(event.type==='spy')return `${displayName(event.actor)} espionne ${displayName(event.target)}`;
+  if(event.type==='recruit')return `${displayName(event.actor)} recrute ${number.format(Object.values(event.units||{}).reduce((total,count)=>total+count,0))} unité(s)`;
   if(event.type==='pause')return `${displayName(event.actor)} fait une pause`;
   if(event.type==='abandon')return `${displayName(event.actor)} abandonne le jeu`;
+  if(event.type==='reset')return `${displayName(event.actor)} repart de zéro`;
+  if(event.type==='arrival')return `${displayName(event.actor)} rejoint l'ère`;
+  if(event.type==='surrender')return `${displayName(event.actor)} se rend`;
   if(event.type==='return')return `${displayName(event.actor)} revient jouer`;
   if(event.type==='rejected')return `${displayName(event.actor)} · ${event.action} refusé`;
   return `${displayName(event.actor)||'Jeu'} · ${event.type}`;
