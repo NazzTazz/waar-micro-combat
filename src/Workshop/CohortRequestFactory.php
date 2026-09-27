@@ -6,11 +6,23 @@ final readonly class CohortRequestFactory
 {
     public const POLICY_VERSION = 'wounded-capture-then-compress/4';
     public const SAMPLING_PROTOCOL = 'sha256-binomial-tree/1';
-    public const STOCHASTIC_VERSION = 'sha256-binomial-tree/1';
+    public const STOCHASTIC_VERSION = 'sha256-splitmix-occupancy/1';
 
-    public static function consequenceContext(EngineProfile $profile): array
+    public function __construct(private string $stochasticVersion = self::STOCHASTIC_VERSION)
     {
-        return ['stochasticEngineVersion' => self::STOCHASTIC_VERSION, 'armyIdentityConvention' => 'A/B', 'policyVersion' => self::POLICY_VERSION, 'samplingProtocol' => self::SAMPLING_PROTOCOL,
+        if (!in_array($stochasticVersion, [self::STOCHASTIC_VERSION, 'sha256-binomial-tree/1'], true)) {
+            throw new \InvalidArgumentException('Protocole stochastique inconnu.');
+        }
+    }
+
+    public function stochasticVersion(): string
+    {
+        return $this->stochasticVersion;
+    }
+
+    public static function consequenceContext(EngineProfile $profile, string $stochasticVersion = self::STOCHASTIC_VERSION): array
+    {
+        return ['stochasticEngineVersion' => $stochasticVersion, 'armyIdentityConvention' => 'A/B', 'policyVersion' => self::POLICY_VERSION, 'samplingProtocol' => self::SAMPLING_PROTOCOL,
             'lossCompressionPercent' => $profile->lossCompressionPercent, 'capturePercent' => $profile->capturePercent,
             'woundDamageThreshold' => $profile->woundDamageThreshold];
     }
@@ -25,23 +37,23 @@ final readonly class CohortRequestFactory
         }
     }
 
-    public static function assertRandomProvenance(array $actual, array $identities): void
+    public static function assertRandomProvenance(array $actual, array $identities, string $expected = self::STOCHASTIC_VERSION): void
     {
-        if (($actual['stochasticEngineVersion'] ?? null) !== self::STOCHASTIC_VERSION
+        if (($actual['stochasticEngineVersion'] ?? null) !== $expected
             || ($actual['armyIdentities']['attacker'] ?? null) !== ($identities['attacker'] ?? null)
             || ($actual['armyIdentities']['defender'] ?? null) !== ($identities['defender'] ?? null)) {
             throw new \RuntimeException('Protocole aléatoire ou identités A/B du runtime incompatibles : reconstruisez Rust et remesurez.');
         }
     }
 
-    public static function assertBatchRandomProvenance(array $batch, array $requestedScenarios): void
+    public static function assertBatchRandomProvenance(array $batch, array $requestedScenarios, string $expected = self::STOCHASTIC_VERSION): void
     {
         $actual = array_column($batch['scenarios'] ?? [], null, 'id');
         foreach ($requestedScenarios as $scenario) {
             self::assertRandomProvenance([
                 'stochasticEngineVersion' => $batch['stochasticEngineVersion'] ?? null,
                 'armyIdentities' => $actual[$scenario['id']]['armyIdentities'] ?? null,
-            ], $scenario['armyIdentities']);
+            ], $scenario['armyIdentities'], $expected);
         }
     }
 
@@ -67,7 +79,7 @@ final readonly class CohortRequestFactory
     ): array {
         return [
             'schemaVersion' => 'waar-combat-request/2',
-            'stochasticEngineVersion' => self::STOCHASTIC_VERSION,
+            'stochasticEngineVersion' => $this->stochasticVersion,
             'armyIdentities' => ['attacker' => $attackerIdentity, 'defender' => $defenderIdentity],
             'ruleset' => $profile->ruleset(),
             'seed' => $seed,
@@ -94,7 +106,7 @@ final readonly class CohortRequestFactory
         }
         return [
             'schemaVersion' => 'waar-combat-batch-request/2',
-            'stochasticEngineVersion' => self::STOCHASTIC_VERSION,
+            'stochasticEngineVersion' => $this->stochasticVersion,
             'ruleset' => $profile->ruleset(),
             'baseSeed' => $baseSeed,
             'iterations' => $iterations,

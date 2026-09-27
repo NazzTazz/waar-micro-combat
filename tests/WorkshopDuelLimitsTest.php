@@ -4,7 +4,7 @@ namespace Waar\MicroCombat\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Waar\MicroCombat\Workshop\{DuelService,EngineProfile,ProcessCohortRuntime,ProfileValidationException};
+use Waar\MicroCombat\Workshop\{CohortRequestFactory,DuelService,EngineProfile,ProcessCohortRuntime,ProfileValidationException};
 
 require_once dirname(__DIR__).'/autoload.php';
 
@@ -34,8 +34,9 @@ final class WorkshopDuelLimitsTest extends TestCase
         foreach ([0, 8, 100] as $compression) {
             $p['combat']['lossCompressionPercent'] = $compression;
             $request = ['profile' => $p, 'armies' => ['A' => ['soldier' => 1000000], 'B' => ['soldier' => 1000000]], 'seed' => 42];
-            $native = (new DuelService())->simulate($request);
-            $php = (new DuelService(new ProcessCohortRuntime(null, 'php')))->simulate($request);
+            $referenceRequests = new CohortRequestFactory('sha256-binomial-tree/1');
+            $native = (new DuelService(new ProcessCohortRuntime(null, 'rust'), $referenceRequests))->simulate($request);
+            $php = (new DuelService(new ProcessCohortRuntime(null, 'php'), $referenceRequests))->simulate($request);
             foreach ($native['directions'] as $i => $direction) {
                 self::assertEquals($direction['consequences'], $php['directions'][$i]['consequences']);
                 foreach (['attacker', 'defender'] as $side) {

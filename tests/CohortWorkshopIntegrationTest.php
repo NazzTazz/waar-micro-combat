@@ -41,7 +41,9 @@ final class CohortWorkshopIntegrationTest extends TestCase
     {
         $values = EngineProfile::defaults();
         $values['combat']['maxRounds'] = 1;
-        $batch = (new CohortRequestFactory())->monotypes(EngineProfile::fromArray($values), 'neutral', 42, 1);
+        // This test checks the retained PHP/Rust reference implementation. The
+        // production factory now selects the Rust-only occupancy protocol.
+        $batch = (new CohortRequestFactory('sha256-binomial-tree/1'))->monotypes(EngineProfile::fromArray($values), 'neutral', 42, 1);
         $batch['scenarios'] = array_slice($batch['scenarios'], 0, 1);
         $php = new ProcessCohortRuntime(null, 'php');
         $rust = new ProcessCohortRuntime();
@@ -212,22 +214,16 @@ final class CohortWorkshopIntegrationTest extends TestCase
         self::assertSame(CohortRequestFactory::SAMPLING_PROTOCOL, $direction['consequences']['samplingProtocol']);
     }
 
-    public function testPhpDiagnosticRuntimeUsesTheSameVersionedBoundary(): void
+    public function testPhpDiagnosticRuntimeRetainsTheAddressedReferenceBoundary(): void
     {
         $profile = EngineProfile::fromArray(EngineProfile::defaults());
-        $request = (new CohortRequestFactory())->combat($profile, ['soldier' => 10], ['archer' => 5], 42, 'neutral', 'neutral');
+        $request = (new CohortRequestFactory('sha256-binomial-tree/1'))->combat($profile, ['soldier' => 10], ['archer' => 5], 42, 'neutral', 'neutral');
         self::assertSame(CohortRequestFactory::POLICY_VERSION, $request['consequences']['policyVersion']);
         $runtime = new ProcessCohortRuntime(null, 'php');
         $result = $runtime->resolve($request);
         self::assertSame('php', $runtime->provenance()['kind']);
         self::assertSame('waar-combat-result/2', $result['result']['schemaVersion']);
         self::assertSame('waar-cohort-v2', $result['result']['modelVersion']);
-        $php = (new MonotypeMeasurementService($runtime))->measure($profile->toArray(), 'neutral', 42, 1);
-        $rust = (new MonotypeMeasurementService())->measure($profile->toArray(), 'neutral', 42, 1);
-        self::assertSame($rust['rows'], $php['rows']);
-        self::assertSame($rust['context']['consequences'], $php['context']['consequences']);
-        self::assertSame(CohortRequestFactory::POLICY_VERSION, $php['context']['consequences']['policyVersion']);
-        self::assertSame($profile->semanticFingerprint(), $php['profileFingerprint']);
-        self::assertSame('php', $php['context']['runtime']['kind']);
+        self::assertSame('sha256-binomial-tree/1', $result['result']['snapshot']['stochasticEngineVersion']);
     }
 }

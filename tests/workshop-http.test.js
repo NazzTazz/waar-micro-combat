@@ -34,7 +34,7 @@ async function waitFor(url) {
   const port = await freePort();
   const origin = `http://127.0.0.1:${port}`;
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'waar-demo-http-'));
-  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', WAAR_PROFILE_DIRECTORY:path.join(temporary,'profiles'), TMP:temporary, TEMP:temporary, TMPDIR:temporary};
+  const env = {...process.env, WAAR_DEMO_SERIALIZE:'1', WAAR_B1_DIAGNOSTIC:'1', WAAR_PROFILE_DIRECTORY:path.join(temporary,'profiles'), TMP:temporary, TEMP:temporary, TMPDIR:temporary};
   const server = spawn('php', ['-S', `127.0.0.1:${port}`, '-t', 'public/workshop', 'bin/workshop-router.php'], {cwd: path.join(__dirname, '..'), env, stdio: 'ignore'});
   try {
     await waitFor(origin + '/');
@@ -60,10 +60,22 @@ async function waitFor(url) {
     assert.equal(profilePayload.data.profile.weather.storm.archer.baseAccuracy,'1');
     const summaryResponse=await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{soldier:100}},weather:'neutral',seed:42,requestId:'live-test'})});
     assert.equal(summaryResponse.status,200);
+    assert.equal(summaryResponse.headers.get('x-waar-b1-request-id'),'live-test');
+    assert.match(summaryResponse.headers.get('server-timing'),/^parse;dur=\d+\.\d{3}, lock;dur=\d+\.\d{3}, service;dur=\d+\.\d{3}, encode;dur=\d+\.\d{3}$/);
     const summary=(await summaryResponse.json()).data;
     assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
     assert.equal(summary.consequenceProvenance.policyVersion,'wounded-capture-then-compress/4');
     assert.equal(summary.consequenceProvenance.samplingProtocol,'sha256-binomial-tree/1');
+    const hudResponse=await fetch(origin+'/api/combat-hud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestId:'hud-0',profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{archer:50}},weather:'neutral',modifiers:{A:[],B:[]},seed:42,startIteration:0})});
+    assert.equal(hudResponse.status,200);
+    const hud=(await hudResponse.json()).data;
+    assert.equal(hud.requestId,'hud-0');assert.equal(hud.totalCombats,1100);assert.equal(hud.rows.length,18);
+    assert.equal(hud.stochasticEngineVersion,'sha256-splitmix-occupancy/1');
+    assert.deepEqual(hud.iterationRange,{start:0,endExclusive:50,total:250});
+    const hudRows=Object.fromEntries(hud.rows.map(row=>[row.id,row]));
+    assert.equal(hudRows['monotype:soldier>soldier'].samples,100);
+    assert.equal(hudRows['monotype:soldier>archer'].samples,50);
+    assert.equal(hudRows['free:A>B'].samples,50);assert.equal(hudRows['free:B>A'].samples,50);
     // Scope filter for issue #12: default CI still exercises the complete historical flow.
     if(process.env.WAAR_TEST_SCOPE==='consequences'){
       const post=async(route,body)=>{const response=await fetch(origin+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(response.status,200);return (await response.json()).data};
@@ -135,6 +147,7 @@ async function waitFor(url) {
       assert.equal(busy.headers.get('retry-after'),'10');
       assert.match((await busy.json()).errors[0].message,/déjà en cours/);
       assert.equal((await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,429);
+      assert.equal((await fetch(origin+'/api/combat-hud',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,429);
       assert.equal((await fetch(origin+'/api/default-profile')).status,200);
     } finally { const exited=once(locker,'exit');locker.kill();await exited; }
     const post=async(path,body)=>{const response=await fetch(origin+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const payload=await response.json();assert.equal(response.status,200,JSON.stringify(payload));return payload.data};

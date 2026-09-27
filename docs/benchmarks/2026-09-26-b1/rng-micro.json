@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "waar-b1-rng-microbenchmark-runs/1",
+  "source": "reports/issue25-b1/native-profile.json",
+  "sourceHash": "e24a61560b77676c5e337f855bba3accc9fadb36bcc07613fde2d149fb439b99",
+  "binaryHash": "e6c0ba74b7084c1acc94f974bb67b78ea2ff783d385e6c713f393b2d3c3cfcfd",
+  "samples": [
+    {
+      "army": "A",
+      "n": 3000,
+      "p": 0.7672634271099744,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "target/0/soldier"
+    },
+    {
+      "army": "A",
+      "n": 708,
+      "p": 0.4703296703296703,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "target/0/spearman"
+    },
+    {
+      "army": "A",
+      "n": 359,
+      "p": 0.8879668049792531,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "target/0/archer"
+    },
+    {
+      "army": "A",
+      "n": 2292,
+      "p": 0.1,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "hit/0/soldier"
+    },
+    {
+      "army": "A",
+      "n": 349,
+      "p": 0.1,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "hit/0/spearman"
+    },
+    {
+      "army": "A",
+      "n": 324,
+      "p": 0.1,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "hit/0/archer"
+    },
+    {
+      "army": "A",
+      "n": 35,
+      "p": 0.1,
+      "round": 1,
+      "seed": 42,
+      "unit": "soldier",
+      "usage": "hit/0/knight"
+    },
+    {
+      "army": "A",
+      "n": 428,
+      "p": 0.7672634271099744,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "target/0/soldier"
+    },
+    {
+      "army": "A",
+      "n": 97,
+      "p": 0.4703296703296703,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "target/0/spearman"
+    },
+    {
+      "army": "A",
+      "n": 56,
+      "p": 0.8879668049792531,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "target/0/archer"
+    },
+    {
+      "army": "A",
+      "n": 331,
+      "p": 0.6,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "hit/0/soldier"
+    },
+    {
+      "army": "A",
+      "n": 187,
+      "p": 0.075,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "impact/0/soldier/17000000"
+    },
+    {
+      "army": "A",
+      "n": 41,
+      "p": 0.6,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "hit/0/spearman"
+    },
+    {
+      "army": "A",
+      "n": 28,
+      "p": 0.07710280373831775,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "impact/0/spearman/112000000"
+    },
+    {
+      "army": "A",
+      "n": 49,
+      "p": 0.6,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "hit/0/archer"
+    },
+    {
+      "army": "A",
+      "n": 28,
+      "p": 0.08644859813084112,
+      "round": 1,
+      "seed": 42,
+      "unit": "spearman",
+      "usage": "impact/0/archer/42000000"
+    }
+  ],
+  "runs": [
+    {
+      "binomialInclusiveNs": 131765000,
+      "checksum": 482700,
+      "domainNs": 2620000,
+      "repetitions": 100,
+      "samples": 16,
+      "schemaVersion": "waar-b1-rng-microbenchmark/1"
+    },
+    {
+      "binomialInclusiveNs": 124876200,
+      "checksum": 482700,
+      "domainNs": 3466400,
+      "repetitions": 100,
+      "samples": 16,
+      "schemaVersion": "waar-b1-rng-microbenchmark/1"
+    },
+    {
+      "binomialInclusiveNs": 108636200,
+      "checksum": 482700,
+      "domainNs": 2908900,
+      "repetitions": 100,
+      "samples": 16,
+      "schemaVersion": "waar-b1-rng-microbenchmark/1"
+    },
+    {
+      "binomialInclusiveNs": 89069000,
+      "checksum": 482700,
+      "domainNs": 3582100,
+      "repetitions": 100,
+      "samples": 16,
+      "schemaVersion": "waar-b1-rng-microbenchmark/1"
+    },
+    {
+      "binomialInclusiveNs": 88850100,
+      "checksum": 482700,
+      "domainNs": 2330700,
+      "repetitions": 100,
+      "samples": 16,
+      "schemaVersion": "waar-b1-rng-microbenchmark/1"
+    }
+  ]
+}
