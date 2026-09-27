@@ -5,7 +5,7 @@ namespace Waar\MicroCombat\Bagaar;
 /** Explicit first-version behavior; a scripted policy can later implement PlayerPolicy. */
 final readonly class BuiltinPolicy implements PlayerPolicy
 {
-    public const NAMES = ['rageux', 'grenouille', 'ascenseur', 'fermier', 'scripteur'];
+    public const NAMES = ['rageux', 'grenouille', 'ascenseur', 'fermier', 'scripteur', 'casual'];
 
     public function __construct(private string $name)
     {
@@ -18,6 +18,37 @@ final readonly class BuiltinPolicy implements PlayerPolicy
     {
         return $this->name === 'scripteur' && array_sum($observation['self']['hospital']) > 0
             ? ['type' => 'heal'] : null;
+    }
+
+    public function intention(array $self, int $tick, int $totalTicks, array $names): array
+    {
+        if (($self['status'] ?? 'active') === 'abandoned') {
+            return ['goal' => 'Jeu abandonné', 'method' => 'Aucune action prévue ; le compte reste attaquable.'];
+        }
+        if (($self['status'] ?? 'active') === 'pause') {
+            return ['goal' => 'Faire une pause', 'method' => 'Revenir au tick '.$self['pauseUntil'].'.'];
+        }
+        if ($this->name === 'rageux' && ($self['rageTarget'] ?? null) !== null && $tick <= ($self['rageUntil'] ?? 0)) {
+            return ['goal' => 'Détruire '.($names[$self['rageTarget']] ?? $self['rageTarget']),
+                'method' => 'Répliquer jusqu’à trois fois par heure pendant trois heures.'];
+        }
+        if ($this->name === 'fermier' && $tick >= 0.75 * $totalTicks) {
+            return ['goal' => 'Gagner la couronne', 'method' => 'Espionner les joueurs en tête et attaquer les cibles abordables.'];
+        }
+        $mine = HostRules::mineUpgrade($self['mineLevel']);
+        if ($self['glory'] >= $mine['glory'] && $self['gold'] < $mine['gold']) {
+            return ['goal' => 'Monter la mine suivante', 'method' => 'Économiser '.($mine['gold'] - $self['gold']).' Or.'];
+        }
+        return match ($this->name) {
+            'rageux' => ['goal' => 'Prendre l’avantage', 'method' => 'Recruter des archers et riposter aux attaques.'],
+            'grenouille' => $tick < 0.75 * $totalTicks
+                ? ['goal' => 'Préparer la percée', 'method' => 'Accumuler une armée sans monter trop vite en Glwaare.']
+                : ['goal' => 'Prendre la tête', 'method' => 'Engager l’armée accumulée contre les rivaux.'],
+            'ascenseur' => ['goal' => 'Remonter en puissance', 'method' => 'Alterner raids, reddition et reconstruction.'],
+            'fermier' => ['goal' => 'Bâtir une armée pour gagner', 'method' => 'Développer la mine, espionner et saisir les occasions.'],
+            'scripteur' => ['goal' => 'Gagner la couronne', 'method' => 'Optimiser mine, renseignement, combats et soins.'],
+            'casual' => ['goal' => 'Développer le royaume', 'method' => 'Jouer un ou deux ticks par jour, recruter et saisir une occasion.'],
+        };
     }
 
     public function next(array $observation): ?array
@@ -68,6 +99,13 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if ($this->name === 'ascenseur' && in_array($self['cyclePhase'], ['build', 'surrender'], true)) {
             return null;
         }
+        if ($this->name === 'fermier' && ($observation['tick'] % 6 === 0 || $observation['tick'] >= 0.75 * $observation['totalTicks'])
+            && !self::attempted($attempts, 'spy')) {
+            $spy = $this->spyCandidate($observation);
+            if ($spy !== null) {
+                return ['type' => 'spy', 'target' => $spy];
+            }
+        }
         if ($this->name === 'fermier' || ($this->name === 'grenouille' && $observation['tick'] < 0.75 * $observation['totalTicks'])
             || ($this->name === 'ascenseur' && $self['cyclePhase'] === 'rebuild')) {
             $limit = $this->name === 'grenouille' ? self::attackLimit($self, 1) : min(3, self::attackLimit($self, 3));
@@ -78,7 +116,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 }
             }
         }
-        if ($this->name === 'scripteur' || ($this->name === 'ascenseur' && $self['cyclePhase'] !== 'rebuild')) {
+        if ($this->name === 'scripteur' || $this->name === 'casual' || ($this->name === 'ascenseur' && $self['cyclePhase'] !== 'rebuild')) {
             $spy = self::attempted($attempts, 'spy') ? null : $this->spyCandidate($observation);
             if ($spy !== null) {
                 return ['type' => 'spy', 'target' => $spy];
@@ -90,6 +128,13 @@ final readonly class BuiltinPolicy implements PlayerPolicy
     private function recruitment(array $view): ?array
     {
         $self = $view['self'];
+        $mine = HostRules::mineUpgrade($self['mineLevel']);
+        $urgentRaid = ($this->name === 'rageux' && ($self['rageTarget'] ?? null) !== null
+                && $view['tick'] <= ($self['rageUntil'] ?? 0))
+            || ($this->name === 'fermier' && $view['tick'] >= 0.75 * $view['totalTicks']);
+        if (!$urgentRaid && $self['glory'] >= $mine['glory'] && $self['gold'] < $mine['gold']) {
+            return null;
+        }
         $budget = (int) floor($self['gold'] * ($this->name === 'grenouille' ? 0.7 : 0.5));
         if ($budget < min($view['costs'])) {
             return null;
@@ -101,6 +146,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 ? ['spearman' => 1.0] : ['knight' => 0.55, 'spearman' => 0.45],
             'fermier' => ['soldier' => 0.65, 'spearman' => 0.35],
             'scripteur' => ['soldier' => 0.4, 'spearman' => 0.25, 'archer' => 0.2, 'knight' => 0.15],
+            'casual' => ['soldier' => 0.6, 'archer' => 0.4],
         };
         $units = HostRules::emptyArmy();
         foreach ($weights as $type => $share) {
@@ -116,7 +162,13 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if ($self['gold'] < $price) {
             return null;
         }
-        foreach ($view['targets'] as $target) {
+        $targets = $view['targets'];
+        if ($this->name === 'fermier' && $view['tick'] >= 0.75 * $view['totalTicks']) {
+            usort($targets, static fn (array $a, array $b): int =>
+                [($b['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $b['glory'], $a['id']]
+                <=> [($a['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $a['glory'], $b['id']]);
+        }
+        foreach ($targets as $target) {
             if ($target['kind'] !== 'player' || abs($target['glory'] - $self['glory']) > ($view['spyRange'] ?? 30)
                 || self::attempted($view['attempts'], 'spy', $target['id'])) {
                 continue;
@@ -185,6 +237,14 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $villages = array_values(array_filter($eligible, static fn (array $target): bool => $target['kind'] === 'village'));
         $players = array_values(array_filter($eligible, static fn (array $target): bool => $target['kind'] === 'player'));
         if ($this->name === 'rageux') {
+            $rageTarget = $self['rageTarget'] ?? null;
+            if ($rageTarget !== null && $view['tick'] <= ($self['rageUntil'] ?? 0)) {
+                foreach ($players as $player) {
+                    if ($player['id'] === $rageTarget && self::attemptCount($view['attempts'], 'attack', $rageTarget) < min(3, self::attackLimit($self, 3))) {
+                        return ['type' => 'attack', 'target' => $rageTarget];
+                    }
+                }
+            }
             foreach ($view['events'] as $event) {
                 $enemy = $event['attacker'] ?? null;
                 if (($event['defender'] ?? null) !== $self['id'] || $enemy === null || ($event['tick'] ?? -1) < $view['tick'] - 1) {
@@ -205,17 +265,30 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 ? ['type' => 'attack', 'target' => $target] : null;
         }
         if ($this->name === 'fermier') {
-            if ($villages !== []) {
-                $target = self::villageTarget($view, $villages);
-                return $target !== null && self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
-                    ? ['type' => 'attack', 'target' => $target] : null;
+            if (self::attemptCount($view['attempts'], 'attack') >= min(3, self::attackLimit($self, 3))) {
+                return null;
+            }
+            $endgame = $view['tick'] >= 0.75 * $view['totalTicks'];
+            $opportunity = self::playerOpportunity($view, $players, $endgame);
+            if ($opportunity !== null && ($endgame || $view['tick'] % 6 === 0)) {
+                return ['type' => 'attack', 'target' => $opportunity];
+            }
+            $target = self::villageTarget($view, $villages);
+            if ($target !== null) {
+                return ['type' => 'attack', 'target' => $target];
             }
             foreach ($players as $player) {
-                if (in_array($player['id'], $self['fridges'] ?? [], true) && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 3)) {
+                if ($villages === [] && in_array($player['id'], $self['fridges'] ?? [], true)
+                    && isset($view['reports'][$player['id']]) && $view['tick'] - $view['reports'][$player['id']]['tick'] <= 6) {
                     return ['type' => 'attack', 'target' => $player['id']];
                 }
             }
             return null;
+        }
+        if ($this->name === 'casual') {
+            $target = self::playerOpportunity($view, $players, false);
+            return $target !== null && !self::attempted($view['attempts'], 'attack')
+                ? ['type' => 'attack', 'target' => $target] : null;
         }
         if ($this->name === 'scripteur') {
             if (self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 1)) {
@@ -258,6 +331,29 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $target = $players[0] ?? null;
         return $target === null || self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 2)
             ? null : ['type' => 'attack', 'target' => $target['id']];
+    }
+
+    private static function playerOpportunity(array $view, array $players, bool $endgame): ?string
+    {
+        $self = $view['self'];
+        $ownValue = HostRules::armyValue($self['army'], $view['costs']);
+        if ($endgame) {
+            usort($players, static fn (array $a, array $b): int =>
+                [($b['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $b['glory'], $a['id']]
+                <=> [($a['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $a['glory'], $b['id']]);
+        }
+        $unitCost = $view['costs']['soldier'] * 0.5 + $view['costs']['spearman'] * 0.3
+            + $view['costs']['archer'] * 0.1 + $view['costs']['knight'] * 0.1;
+        foreach ($players as $player) {
+            $report = $view['reports'][$player['id']] ?? null;
+            if ($report === null || $view['tick'] - ($report['tick'] ?? -100) > 6) {
+                continue;
+            }
+            if ($ownValue >= ($endgame ? 1.1 : 1.3) * $report['armyTotal'] * $unitCost) {
+                return $player['id'];
+            }
+        }
+        return null;
     }
 
     private static function attempted(array $attempts, string $type, ?string $target = null): bool

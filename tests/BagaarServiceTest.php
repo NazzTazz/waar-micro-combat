@@ -17,12 +17,13 @@ final class BagaarServiceTest extends TestCase
         $service = new BagaarService(new RunStore($directory));
         try {
             $started = $service->start(['profile' => EngineProfile::defaults(), 'totalTicks' => 1, 'soldierFrog' => true]);
-            self::assertCount(20, $started['accounts']);
-            foreach (['rageux', 'grenouille', 'ascenseur', 'fermier', 'scripteur'] as $policy) {
+            self::assertCount(24, $started['accounts']);
+            foreach (['rageux', 'grenouille', 'ascenseur', 'fermier', 'scripteur', 'casual'] as $policy) {
                 self::assertSame(4, count(array_filter($started['accounts'], static fn (array $account): bool => $account['policy'] === $policy)));
             }
             self::assertContains('office', array_column($started['accounts'], 'activity'));
             self::assertContains('all-day', array_column($started['accounts'], 'activity'));
+            self::assertContains('casual-morning', array_column($started['accounts'], 'activity'));
             self::assertContains('Chloé', array_column($started['accounts'], 'name'));
             self::assertGreaterThan(1, count(array_unique(array_column($started['accounts'], 'aggressionPercent'))));
         } finally {

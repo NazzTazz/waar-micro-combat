@@ -46,7 +46,9 @@ final class VillageRules
         $limit = array_sum($caps['army']);
         $next = $current < $limit ? min($limit, $current + (int) ceil($limit * 0.25)) : $limit;
         $village['army'] = self::army($village['glory'], $next);
-        $village['gold'] = min($caps['gold'], $village['gold'] + (int) ceil($caps['gold'] * 0.10));
+        $village['goldMax'] = $caps['gold'];
+        $village['goldRefill'] = (int) ceil($caps['gold'] * 0.10);
+        $village['gold'] = min($caps['gold'], $village['gold'] + $village['goldRefill']);
         return $village;
     }
 

@@ -110,6 +110,7 @@ final class BagaarService
             'ascenseur' => [['iris', 'Iris'], ['jules', 'Jules'], ['kamel', 'Kamel'], ['lea', 'Léa']],
             'fermier' => [['malo', 'Malo'], ['nina', 'Nina'], ['oscar', 'Oscar'], ['pauline', 'Pauline']],
             'scripteur' => [['quentin', 'Quentin'], ['romane', 'Romane'], ['sami', 'Sami'], ['tess', 'Tess']],
+            'casual' => [['ugo', 'Ugo'], ['victoire', 'Victoire'], ['william', 'William'], ['zoe', 'Zoé']],
         ];
         $activities = ['all-day', 'office', 'evening', 'early'];
         $aggressions = [105, 80, 120, 95];
@@ -117,7 +118,8 @@ final class BagaarService
         foreach ($groups as $policy => $members) {
             foreach ($members as $index => [$id, $name]) {
                 $accounts[] = ['id' => $id, 'name' => $name, 'policy' => $policy,
-                    'activity' => $activities[$index], 'aggressionPercent' => $aggressions[$index],
+                    'activity' => $policy === 'casual' ? ['casual-morning', 'casual-noon', 'casual-evening', 'casual-night'][$index] : $activities[$index],
+                    'aggressionPercent' => $aggressions[$index],
                     ...($policy === 'grenouille' ? ['soldierParadigm' => $soldierFrog] : [])];
             }
         }
