@@ -41,6 +41,30 @@ final class BagaarPoliciesTest extends TestCase
         self::assertNull($policy->next($view));
     }
 
+    public function testAggressionChangesRetaliationCountButVillageQuotaRemainsThree(): void
+    {
+        $view = self::view('rageux');
+        $view['events'] = [['tick' => 1, 'attacker' => 'enemy', 'defender' => 'self', 'winner' => 'attacker']];
+        $view['attempts'][] = ['type' => 'attack', 'target' => 'enemy'];
+        $view['attempts'][] = ['type' => 'attack', 'target' => 'enemy'];
+        $view['self']['aggressionPercent'] = 80;
+        self::assertNull((new BuiltinPolicy('rageux'))->next($view));
+        $view['self']['aggressionPercent'] = 120;
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('rageux'))->next($view));
+        $view['attempts'][] = ['type' => 'attack', 'target' => 'enemy'];
+        $view['attempts'][] = ['type' => 'attack', 'target' => 'enemy'];
+        self::assertNull((new BuiltinPolicy('rageux'))->next($view));
+
+        $farmer = self::view('fermier');
+        $farmer['self']['aggressionPercent'] = 120;
+        $farmer['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
+        for ($i = 0; $i < 3; $i++) {
+            self::assertSame(['type' => 'attack', 'target' => 'village-20'], (new BuiltinPolicy('fermier'))->next($farmer));
+            $farmer['attempts'][] = ['type' => 'attack', 'target' => 'village-20'];
+        }
+        self::assertNull((new BuiltinPolicy('fermier'))->next($farmer));
+    }
+
     public function testGrenouilleWaitsThenCanAttackPlayers(): void
     {
         $view = self::view('grenouille');
@@ -66,6 +90,16 @@ final class BagaarPoliciesTest extends TestCase
         $view['self']['hospital']['soldier'] = 0;
         self::assertNull((new BuiltinPolicy('scripteur'))->next($view));
         $view['reports']['enemy'] = ['tick' => 1, 'gold' => 10000, 'armyTotal' => 1, 'glory' => 0, 'morale' => 'high'];
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('scripteur'))->next($view));
+    }
+
+    public function testScripteurAggressionChangesHisProfitabilityThreshold(): void
+    {
+        $view = self::view('scripteur');
+        $view['reports']['enemy'] = ['tick' => 1, 'gold' => 10000, 'armyTotal' => 36, 'glory' => 0, 'morale' => 'high'];
+        $view['self']['aggressionPercent'] = 80;
+        self::assertNull((new BuiltinPolicy('scripteur'))->next($view));
+        $view['self']['aggressionPercent'] = 120;
         self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('scripteur'))->next($view));
     }
 

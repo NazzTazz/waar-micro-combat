@@ -20,7 +20,7 @@ final class EraSimulator
         $this->requests = new CohortRequestFactory();
     }
 
-    /** @param list<array{id:string,policy:string,soldierParadigm?:bool}> $accounts */
+    /** @param list<array{id:string,policy:string,name?:string,activity?:string,aggressionPercent?:int,soldierParadigm?:bool}> $accounts */
     public function start(int $seed, int $totalTicks, array $accounts): array
     {
         if ($seed < 0 || $seed > 2147483647 || $totalTicks < 1 || $totalTicks > 1440 || count($accounts) < 2 || count($accounts) > 20) {
@@ -30,10 +30,21 @@ final class EraSimulator
         foreach ($accounts as $entry) {
             $id = $entry['id'] ?? null;
             $policy = $entry['policy'] ?? null;
+            $name = $entry['name'] ?? $id;
+            $activity = $entry['activity'] ?? 'all-day';
+            $aggression = $entry['aggressionPercent'] ?? 100;
             if (!is_string($id) || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $id) || isset($players[$id]) || !in_array($policy, BuiltinPolicy::NAMES, true)) {
                 throw new \InvalidArgumentException('Identifiant ou profil joueur invalide.');
             }
+            if (!is_string($name) || trim($name) === '' || strlen($name) > 64
+                || !is_string($activity) || !in_array($activity, PlayerSchedule::WINDOWS, true)
+                || !is_int($aggression) || $aggression < 60 || $aggression > 140) {
+                throw new \InvalidArgumentException('Identité ou rythme joueur invalide.');
+            }
             $players[$id] = AccountRules::initial($id, $policy);
+            $players[$id]['name'] = $name;
+            $players[$id]['activity'] = $activity;
+            $players[$id]['aggressionPercent'] = $aggression;
             if ($policy === 'grenouille') {
                 $players[$id]['soldierParadigm'] = (bool)($entry['soldierParadigm'] ?? false);
             }
@@ -49,7 +60,7 @@ final class EraSimulator
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 10, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => 'bagaar-builtin-policies/1', 'hostRuleVersion' => 'bagaar-host-rules/1',
+            'decisionVersion' => 'bagaar-builtin-policies/2', 'hostRuleVersion' => 'bagaar-host-rules/1',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
             'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'frames' => []];
@@ -86,6 +97,9 @@ final class EraSimulator
         $this->checkRwaa($state);
         $this->ensureVillages($state);
         foreach (array_keys($state['players']) as $id) {
+            if (!PlayerSchedule::isActive($state['players'][$id]['activity'], $tick)) {
+                continue;
+            }
             $attempts = [];
             $policy = new BuiltinPolicy($state['players'][$id]['policy']);
             for ($actionIndex = 0; $actionIndex < 16; $actionIndex++) {
@@ -107,9 +121,10 @@ final class EraSimulator
         foreach ($state['players'] as $id => $player) {
             $value = HostRules::armyValue($player['army'], $this->profile->costs());
             $state['players'][$id]['peakArmyGold'] = max($player['peakArmyGold'], $value);
-            $points[] = ['id' => $id, 'kind' => 'player', 'policy' => $player['policy'],
-                'armyGold' => $value,
-                'glory' => $player['glory'], 'gold' => $player['gold']];
+            $points[] = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
+                'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
+                'mineLevel' => $player['mineLevel'], 'mineProduction' => HostRules::mineProduction($player['mineLevel']),
+                'record' => $player['record'], 'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent']];
         }
         $villages = [];
         foreach ($state['villages'] as $id => $village) {
@@ -197,11 +212,13 @@ final class EraSimulator
             ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.count($state['combats'])) % ($upper - $lower + 1) : 0;
         $result = CombatTransition::apply($attacker, $defender, $report, $loot, $village);
         $state['players'][$id] = $result['attacker'];
+        $state['players'][$id]['record'][$result['event']['winner'] === 'attacker' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
         if ($village) {
             $state['villages'][$targetId] = $result['defender'];
             $state['villageAttacks'][$id][$targetId] = ($state['villageAttacks'][$id][$targetId] ?? 0) + 1;
         } else {
             $state['players'][$targetId] = $result['defender'];
+            $state['players'][$targetId]['record'][$result['event']['winner'] === 'defender' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
             if ($result['event']['surrender'] && $state['players'][$targetId]['policy'] === 'ascenseur') {
                 $state['players'][$targetId]['cyclePhase'] = 'rebuild';
             }
@@ -232,7 +249,8 @@ final class EraSimulator
         $state['combats'][] = ['format' => self::COMBAT_ARCHIVE_FORMAT,
             'payload' => base64_encode($compressed), 'event' => $event];
         foreach ([$id, $targetId] as $participant) {
-            if (!isset($state['players'][$participant])) {
+            if (!isset($state['players'][$participant])
+                || !PlayerSchedule::isActive($state['players'][$participant]['activity'], $state['tick'])) {
                 continue;
             }
             $policy = new BuiltinPolicy($state['players'][$participant]['policy']);

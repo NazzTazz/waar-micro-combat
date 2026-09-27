@@ -11,6 +11,30 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class BagaarServiceTest extends TestCase
 {
+    public function testDefaultRosterHasFourNamedPlayersPerPolicyWithDifferentSchedules(): void
+    {
+        $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'waar-bagaar-roster-'.bin2hex(random_bytes(6));
+        $service = new BagaarService(new RunStore($directory));
+        try {
+            $started = $service->start(['profile' => EngineProfile::defaults(), 'totalTicks' => 1, 'soldierFrog' => true]);
+            self::assertCount(20, $started['accounts']);
+            foreach (['rageux', 'grenouille', 'ascenseur', 'fermier', 'scripteur'] as $policy) {
+                self::assertSame(4, count(array_filter($started['accounts'], static fn (array $account): bool => $account['policy'] === $policy)));
+            }
+            self::assertContains('office', array_column($started['accounts'], 'activity'));
+            self::assertContains('all-day', array_column($started['accounts'], 'activity'));
+            self::assertContains('Chloé', array_column($started['accounts'], 'name'));
+            self::assertGreaterThan(1, count(array_unique(array_column($started['accounts'], 'aggressionPercent'))));
+        } finally {
+            foreach (glob($directory.DIRECTORY_SEPARATOR.'*.json') ?: [] as $path) {
+                unlink($path);
+            }
+            if (is_dir($directory)) {
+                rmdir($directory);
+            }
+        }
+    }
+
     public function testRunCanAdvanceAndResumeWithoutExposingStateMutationToClient(): void
     {
         $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'waar-bagaar-test-'.bin2hex(random_bytes(6));

@@ -133,32 +133,32 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                     continue;
                 }
                 foreach ($players as $player) {
-                    if ($player['id'] === $enemy && self::attemptCount($view['attempts'], 'attack', $enemy) < 3) {
+                    if ($player['id'] === $enemy && self::attemptCount($view['attempts'], 'attack', $enemy) < self::attackLimit($self, 3)) {
                         return ['type' => 'attack', 'target' => $enemy];
                     }
                 }
             }
-            return $players !== [] && self::attemptCount($view['attempts'], 'attack') < 1
+            return $players !== [] && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 1)
                 ? ['type' => 'attack', 'target' => $players[0]['id']] : null;
         }
         if ($this->name === 'grenouille' && $view['tick'] < 0.75 * $view['totalTicks']) {
-            return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < 1
+            return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 1)
                 ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
         }
         if ($this->name === 'fermier') {
             if ($villages !== []) {
-                return self::attemptCount($view['attempts'], 'attack') < 3
+                return self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
                     ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
             }
             foreach ($players as $player) {
-                if (in_array($player['id'], $self['fridges'] ?? [], true) && self::attemptCount($view['attempts'], 'attack') < 3) {
+                if (in_array($player['id'], $self['fridges'] ?? [], true) && self::attemptCount($view['attempts'], 'attack') < self::attackLimit($self, 3)) {
                     return ['type' => 'attack', 'target' => $player['id']];
                 }
             }
             return null;
         }
         if ($this->name === 'scripteur') {
-            if (self::attemptCount($view['attempts'], 'attack') >= 1) {
+            if (self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 1)) {
                 return null;
             }
             $ownValue = HostRules::armyValue($self['army'], $view['costs']);
@@ -169,7 +169,8 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 }
                 $meanCost = array_sum($view['costs']) / count($view['costs']);
                 $estimatedValue = $report['armyTotal'] * $meanCost;
-                if ($ownValue >= 1.5 * $estimatedValue && $report['gold'] * 0.1 > $ownValue * 0.03) {
+                $aggression = ($self['aggressionPercent'] ?? 100) / 100;
+                if ($ownValue >= 1.5 / $aggression * $estimatedValue && $report['gold'] * 0.1 > $ownValue * 0.03 / $aggression) {
                     return ['type' => 'attack', 'target' => $player['id']];
                 }
             }
@@ -177,10 +178,10 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         }
         if ($this->name === 'ascenseur') {
             if ($self['cyclePhase'] === 'rebuild') {
-                return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < 3
+                return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < min(3, self::attackLimit($self, 3))
                     ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
             }
-            if (self::attemptCount($view['attempts'], 'attack') >= 2) {
+            if (self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 2)) {
                 return null;
             }
             usort($players, static function (array $a, array $b) use ($view): int {
@@ -194,13 +195,18 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             return $target === null ? null : ['type' => 'attack', 'target' => $target['id']];
         }
         $target = $players[0] ?? $villages[0] ?? null;
-        return $target === null || self::attemptCount($view['attempts'], 'attack') >= 2
+        return $target === null || self::attemptCount($view['attempts'], 'attack') >= self::attackLimit($self, 2)
             ? null : ['type' => 'attack', 'target' => $target['id']];
     }
 
     private static function attempted(array $attempts, string $type, ?string $target = null): bool
     {
         return self::attemptCount($attempts, $type, $target) > 0;
+    }
+
+    private static function attackLimit(array $self, int $base): int
+    {
+        return max(1, (int) round($base * ($self['aggressionPercent'] ?? 100) / 100));
     }
 
     private static function attemptCount(array $attempts, string $type, ?string $target = null): int

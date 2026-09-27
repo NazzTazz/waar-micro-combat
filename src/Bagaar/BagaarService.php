@@ -21,7 +21,11 @@ final class BagaarService
         $profile = EngineProfile::fromArray($profileInput);
         $seed = $request['seed'] ?? 42;
         $totalTicks = $request['totalTicks'] ?? 1440;
-        $accounts = $request['accounts'] ?? self::defaultAccounts();
+        $soldierFrog = $request['soldierFrog'] ?? false;
+        if (!is_bool($soldierFrog)) {
+            throw new \InvalidArgumentException('Option des Grenouilles invalide.');
+        }
+        $accounts = $request['accounts'] ?? self::defaultAccounts($soldierFrog);
         if (!is_int($seed) || !is_int($totalTicks) || !is_array($accounts) || !array_is_list($accounts)) {
             throw new \InvalidArgumentException('Paramètres de simulation invalides.');
         }
@@ -29,7 +33,8 @@ final class BagaarService
         $id = $this->runs->create(['profile' => $profileInput, 'state' => $state]);
         return ['runId' => $id, 'manifest' => $state['manifest'], 'tick' => 0,
             'totalTicks' => $totalTicks, 'accounts' => array_map(static fn (array $player): array =>
-                ['id' => $player['id'], 'policy' => $player['policy']], array_values($state['players']))];
+                ['id' => $player['id'], 'name' => $player['name'], 'policy' => $player['policy'],
+                    'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent']], array_values($state['players']))];
     }
 
     public function advance(array $request): array
@@ -85,14 +90,25 @@ final class BagaarService
             'eventCount' => count($state['events']), 'combatCount' => count($state['combats'])];
     }
 
-    private static function defaultAccounts(): array
+    private static function defaultAccounts(bool $soldierFrog): array
     {
-        return [
-            ['id' => 'rageux', 'policy' => 'rageux'],
-            ['id' => 'grenouille', 'policy' => 'grenouille', 'soldierParadigm' => false],
-            ['id' => 'ascenseur', 'policy' => 'ascenseur'],
-            ['id' => 'fermier', 'policy' => 'fermier'],
-            ['id' => 'scripteur', 'policy' => 'scripteur'],
+        $groups = [
+            'rageux' => [['axel', 'Axel'], ['bruno', 'Bruno'], ['chloe', 'Chloé'], ['dorian', 'Dorian']],
+            'grenouille' => [['eloise', 'Éloïse'], ['farid', 'Farid'], ['gaelle', 'Gaëlle'], ['hugo', 'Hugo']],
+            'ascenseur' => [['iris', 'Iris'], ['jules', 'Jules'], ['kamel', 'Kamel'], ['lea', 'Léa']],
+            'fermier' => [['malo', 'Malo'], ['nina', 'Nina'], ['oscar', 'Oscar'], ['pauline', 'Pauline']],
+            'scripteur' => [['quentin', 'Quentin'], ['romane', 'Romane'], ['sami', 'Sami'], ['tess', 'Tess']],
         ];
+        $activities = ['all-day', 'office', 'evening', 'early'];
+        $aggressions = [105, 80, 120, 95];
+        $accounts = [];
+        foreach ($groups as $policy => $members) {
+            foreach ($members as $index => [$id, $name]) {
+                $accounts[] = ['id' => $id, 'name' => $name, 'policy' => $policy,
+                    'activity' => $activities[$index], 'aggressionPercent' => $aggressions[$index],
+                    ...($policy === 'grenouille' ? ['soldierParadigm' => $soldierFrog] : [])];
+            }
+        }
+        return $accounts;
     }
 }

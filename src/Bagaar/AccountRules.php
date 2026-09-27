@@ -13,7 +13,8 @@ final class AccountRules
             'prisoners' => 0, 'prisonerTreatment' => 100, 'morale' => 100,
             'attacks' => 9, 'defenses' => 3, 'autoSurrender' => false,
             'defenseLossStreak' => 0, 'surrenders' => 0, 'spies' => [],
-            'cyclePhase' => $policy === 'ascenseur' ? 'build' : null, 'peakArmyGold' => 0];
+            'cyclePhase' => $policy === 'ascenseur' ? 'build' : null, 'peakArmyGold' => 0,
+            'record' => ['wins' => 0, 'draws' => 0, 'losses' => 0]];
     }
 
     public static function buyMine(array $account): array

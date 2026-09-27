@@ -53,6 +53,41 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame(\Waar\MicroCombat\Bagaar\HostRules::armyValue($village['army'], $profile->costs()), $point['armyGold']);
     }
 
+    public function testOfficePlayerActsOnlyDuringPlayHoursWhileMineKeepsProducing(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(18, 100, [
+            ['id' => 'office', 'name' => 'Alice', 'policy' => 'grenouille', 'activity' => 'office', 'aggressionPercent' => 80],
+            ['id' => 'always', 'name' => 'Bob', 'policy' => 'grenouille', 'activity' => 'all-day'],
+        ]);
+        $state = $simulator->advance($state);
+        self::assertSame(0, $state['players']['office']['mineLevel']);
+        self::assertSame(1, $state['players']['always']['mineLevel']);
+        $state = $simulator->advance($state, 9);
+        self::assertGreaterThan(0, $state['players']['office']['mineLevel']);
+        $state = $simulator->advance($state, 7);
+        $before = $state['players']['office']['gold'];
+        $production = \Waar\MicroCombat\Bagaar\HostRules::mineProduction($state['players']['office']['mineLevel']);
+        $state = $simulator->advance($state);
+        self::assertSame($before + $production, $state['players']['office']['gold']);
+        self::assertSame('Alice', $state['frames'][17]['points'][1]['name']);
+    }
+
+    public function testPlayerCombatRecordMatchesResolvedCombats(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->advance($simulator->start(22, 2, [
+            ['id' => 'a', 'policy' => 'rageux'], ['id' => 'b', 'policy' => 'rageux'],
+        ]), 2);
+        $records = array_column($state['players'], 'record');
+        self::assertNotEmpty($state['combats']);
+        self::assertSame(count($state['combats']), array_sum(array_column($records, 'wins')));
+        self::assertSame(count($state['combats']), array_sum(array_column($records, 'losses')));
+        self::assertSame($state['players']['a']['record'], $state['frames'][1]['points'][0]['record']);
+    }
+
     public function testTickChunksDoNotChangeTheEra(): void
     {
         $profile = EngineProfile::fromArray(EngineProfile::defaults());
