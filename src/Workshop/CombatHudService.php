@@ -133,6 +133,8 @@ final class CombatHudService
                 'draws' => 0,
                 'defenderWins' => 0,
                 'roundSum' => 0,
+                'attackerRaw' => ['dead' => 0, 'wounded' => 0],
+                'defenderRaw' => ['dead' => 0, 'wounded' => 0],
                 'attackerProjected' => ['dead' => 0, 'wounded' => 0, 'prisoners' => 0],
                 'defenderProjected' => ['dead' => 0, 'wounded' => 0, 'prisoners' => 0],
             ];
@@ -145,6 +147,8 @@ final class CombatHudService
             $rows[$key]['draws'] += $result['draws'];
             $rows[$key]['defenderWins'] += $result['defenderWins'];
             $rows[$key]['roundSum'] += $result['roundSum'];
+            $this->addRaw($rows[$key]['attackerRaw'], $result['attackerRawDeathsByType'], $result['attackerRawWoundedByType']);
+            $this->addRaw($rows[$key]['defenderRaw'], $result['defenderRawDeathsByType'], $result['defenderRawWoundedByType']);
             $this->addProjected($rows[$key]['attackerProjected'], $result['attackerProjectedByType']);
             $this->addProjected($rows[$key]['defenderProjected'], $result['defenderProjectedByType']);
         }
@@ -211,6 +215,21 @@ final class CombatHudService
             'attackerBudget' => $cost($attackerUnits),
             'defenderBudget' => $cost($defenderUnits),
         ];
+    }
+
+    /** @param array{dead:int,wounded:int} $target @param list<int> $deaths @param list<int> $wounded */
+    private function addRaw(array &$target, array $deaths, array $wounded): void
+    {
+        if (count($deaths) !== count(EngineProfile::UNIT_COSTS) || count($wounded) !== count(EngineProfile::UNIT_COSTS)) {
+            throw new \RuntimeException('Pertes physiques HUD incompatibles.');
+        }
+        foreach ($deaths as $index => $count) {
+            if (!is_int($count) || $count < 0 || !is_int($wounded[$index] ?? null) || $wounded[$index] < 0) {
+                throw new \RuntimeException('Pertes physiques HUD invalides.');
+            }
+            $target['dead'] += $count;
+            $target['wounded'] += $wounded[$index];
+        }
     }
 
     /** @param array{dead:int,wounded:int,prisoners:int} $target @param list<list<int>> $byType */

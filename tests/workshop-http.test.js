@@ -76,6 +76,9 @@ async function waitFor(url) {
     assert.equal(hudRows['monotype:soldier>soldier'].samples,100);
     assert.equal(hudRows['monotype:soldier>archer'].samples,50);
     assert.equal(hudRows['free:A>B'].samples,50);assert.equal(hudRows['free:B>A'].samples,50);
+    assert.deepEqual(Object.keys(hudRows['free:A>B'].attackerRaw),['dead','wounded']);
+    assert.deepEqual(Object.keys(hudRows['free:A>B'].defenderRaw),['dead','wounded']);
+    assert.ok(Number.isInteger(hudRows['free:A>B'].attackerRaw.dead));
     const nextHudResponse=await fetch(origin+'/api/combat-hud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestId:'hud-250',profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{archer:50}},weather:'neutral',modifiers:{A:[],B:[]},seed:42,startIteration:250})});
     assert.equal(nextHudResponse.status,200);
     const nextHud=(await nextHudResponse.json()).data;

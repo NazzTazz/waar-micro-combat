@@ -37,6 +37,10 @@ final class CombatHudServiceTest extends TestCase
                             'draws' => 5,
                             'defenderWins' => 15,
                             'roundSum' => 100,
+                            'attackerRawDeathsByType' => [0, 1, 2, 3],
+                            'defenderRawDeathsByType' => [1, 2, 3, 4],
+                            'attackerRawWoundedByType' => [2, 3, 4, 5],
+                            'defenderRawWoundedByType' => [3, 4, 5, 6],
                             'attackerProjectedByType' => array_fill(0, 4, [0, 1, 2, 3]),
                             'defenderProjectedByType' => array_fill(0, 4, [0, 4, 5, 6]),
                         ],
@@ -89,6 +93,9 @@ final class CombatHudServiceTest extends TestCase
         self::assertSame(60, $rows['monotype:soldier>soldier']['attackerWins']);
         self::assertSame(50, $rows['monotype:soldier>archer']['samples']);
         self::assertSame(50, $rows['free:A>B']['samples']);
+        self::assertSame(['dead' => 6, 'wounded' => 14], $rows['free:A>B']['attackerRaw']);
+        self::assertSame(['dead' => 10, 'wounded' => 18], $rows['free:A>B']['defenderRaw']);
+        self::assertSame(['dead' => 12, 'wounded' => 28], $rows['monotype:soldier>soldier']['attackerRaw']);
         self::assertSame(4, $rows['free:A>B']['attackerProjected']['wounded']);
 
         $free = array_column($runtime->request['scenarios'], null, 'id')['free:A>B'];

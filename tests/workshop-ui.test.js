@@ -20,11 +20,15 @@ class Element {
   replaceChildren(...children){this.children=children;this.html=''}
   add(option){this.children.push(option);if(this.children.length===1)this.value=option.value}
   addEventListener(name,handler){this.listeners[name]=handler}
-  querySelector(){return new Element()}
+  querySelector(selector){const child=new Element();if(selector==='#hud-monotype-visual')this.hudVisual=child;return child}
   querySelectorAll(selector){
     if(selector==='[data-hud-view]'){
-      this.hudViewButtons=['histogram','rose'].map(hudView=>Object.assign(new Element(),{dataset:{hudView}}));
+      this.hudViewButtons=['histogram','rose','numbers'].map(hudView=>Object.assign(new Element(),{dataset:{hudView}}));
       return this.hudViewButtons;
+    }
+    if(selector==='[data-hud-loss-view]'){
+      this.hudLossButtons=['raw','projected'].map(hudLossView=>Object.assign(new Element(),{dataset:{hudLossView}}));
+      return this.hudLossButtons;
     }
     return [];
   }
@@ -64,7 +68,7 @@ class Element {
     const body=options?.body?JSON.parse(options.body):null;
     let data;
     if(url.endsWith('default-profile'))data={profile:structuredClone(profile)};
-    else if(url.endsWith('/combat-hud')){hudStarts.push(body.startIteration);const row=(id,attacker,defender)=>({id,kind:'free',attacker,defender,attackerBudget:800,defenderBudget:800,samples:50,attackerWins:30,draws:5,defenderWins:15,roundSum:100,attackerProjected:{dead:10,wounded:5,prisoners:0},defenderProjected:{dead:20,wounded:7,prisoners:1}});data={requestId:body.requestId,totalCombats:1100,iterationRange:{start:body.startIteration,endExclusive:body.startIteration+50,total:10000},rows:[row('free:A>B','A','B'),row('free:B>A','B','A')]};}
+    else if(url.endsWith('/combat-hud')){hudStarts.push(body.startIteration);const row=(id,attacker,defender)=>({id,kind:'free',attacker,defender,attackerBudget:800,defenderBudget:800,samples:50,attackerWins:30,draws:5,defenderWins:15,roundSum:100,attackerRaw:{dead:100,wounded:50},defenderRaw:{dead:80,wounded:40},attackerProjected:{dead:10,wounded:5,prisoners:0},defenderProjected:{dead:20,wounded:7,prisoners:1}});data={requestId:body.requestId,totalCombats:1100,iterationRange:{start:body.startIteration,endExclusive:body.startIteration+50,total:10000},rows:[{...row('monotype:soldier>spearman','soldier','spearman'),kind:'monotype'},row('free:A>B','A','B'),row('free:B>A','B','A')]};}
     else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
     else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
     else if(url.endsWith('/measure'))data=structuredClone(measurement);
@@ -90,6 +94,15 @@ class Element {
   assert.equal(storage.get('waar-workshop-hud-view-v1'),'rose','view choice is stored separately from the combat profile');
   assert.match(hudRoot.innerHTML,/data-hud-view="rose" aria-pressed="true"/);
   assert.equal(hudStarts.length,requestsBeforeViewChange,'changing the view does not start a simulation');
+  hudRoot.hudViewButtons[2].onclick();
+  assert.equal(storage.get('waar-workshop-hud-view-v1'),'numbers');
+  assert.match(hudRoot.hudVisual.innerHTML,/Soldat → Lancier/);
+  assert.match(hudRoot.hudVisual.innerHTML,/A : M \/ B \/ P/);
+  hudRoot.hudVisual.hudLossButtons[0].onclick();
+  assert.equal(storage.get('waar-workshop-hud-loss-view-v1'),'raw');
+  assert.match(hudRoot.hudVisual.innerHTML,/A : M \/ B/);
+  assert.doesNotMatch(hudRoot.hudVisual.innerHTML,/A : M \/ B \/ P/);
+  assert.equal(hudStarts.length,requestsBeforeViewChange,'loss reading also reuses the sampled combats');
   hudRoot.hudViewButtons[0].onclick();
   assert.equal(storage.get('waar-workshop-hud-view-v1'),'histogram');
   assert.match(element('#live-duel-confidence').textContent,/IC 95 %.*n ≥ 300/);
