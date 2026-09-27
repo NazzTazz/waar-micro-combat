@@ -12,7 +12,8 @@ final class AccountRules
             'army' => HostRules::emptyArmy(), 'hospital' => HostRules::emptyArmy(),
             'prisoners' => 0, 'prisonerTreatment' => 100, 'morale' => 100,
             'attacks' => 9, 'defenses' => 3, 'autoSurrender' => false,
-            'defenseLossStreak' => 0, 'surrenders' => 0, 'spies' => []];
+            'defenseLossStreak' => 0, 'surrenders' => 0, 'spies' => [],
+            'cyclePhase' => $policy === 'ascenseur' ? 'build' : null, 'peakArmyGold' => 0];
     }
 
     public static function buyMine(array $account): array

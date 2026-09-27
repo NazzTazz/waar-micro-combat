@@ -80,12 +80,18 @@ final class HostRules
     {
         $player['defenseLossStreak'] = $lostDefense ? $player['defenseLossStreak'] + 1 : 0;
         if ($player['autoSurrender'] && $player['defenseLossStreak'] >= self::SURRENDER_LOSSES) {
-            $player['glory'] = max(0, $player['glory'] - 30);
-            $player['prisoners'] = 0;
-            $player['morale'] = 100;
-            $player['defenseLossStreak'] = 0;
-            $player['surrenders']++;
+            return self::surrender($player);
         }
+        return $player;
+    }
+
+    public static function surrender(array $player): array
+    {
+        $player['glory'] = max(0, $player['glory'] - 30);
+        $player['prisoners'] = 0;
+        $player['morale'] = 100;
+        $player['defenseLossStreak'] = 0;
+        $player['surrenders']++;
         return $player;
     }
 }

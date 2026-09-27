@@ -14,6 +14,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         }
     }
 
+    public function afterCombat(array $observation): ?array
+    {
+        return $this->name === 'scripteur' && array_sum($observation['self']['hospital']) > 0
+            ? ['type' => 'heal'] : null;
+    }
+
     public function next(array $observation): ?array
     {
         $self = $observation['self'];
@@ -21,6 +27,19 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $costs = $observation['costs'];
         if ($this->name === 'ascenseur' && !$self['autoSurrender'] && !self::attempted($attempts, 'autoSurrender')) {
             return ['type' => 'autoSurrender', 'enabled' => true];
+        }
+        if ($this->name === 'ascenseur' && !self::attempted($attempts, 'phase')) {
+            $armyGold = HostRules::armyValue($self['army'], $costs);
+            if ($self['cyclePhase'] === 'build' && $armyGold >= 2000) {
+                return ['type' => 'phase', 'value' => 'raid'];
+            }
+            if ($self['cyclePhase'] === 'raid' && $self['glory'] >= 10
+                && $armyGold < max(500, $self['peakArmyGold'] * 0.4)) {
+                return ['type' => 'phase', 'value' => 'surrender'];
+            }
+            if ($self['cyclePhase'] === 'rebuild' && $armyGold >= max(2000, $self['peakArmyGold'] * 0.6)) {
+                return ['type' => 'phase', 'value' => 'raid'];
+            }
         }
         if ($this->name === 'scripteur' && array_sum($self['hospital']) > 0 && !self::attempted($attempts, 'heal')) {
             return ['type' => 'heal'];
@@ -46,6 +65,9 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if (array_sum($self['army']) === 0 || $self['attacks'] === 0) {
             return null;
         }
+        if ($this->name === 'ascenseur' && in_array($self['cyclePhase'], ['build', 'surrender'], true)) {
+            return null;
+        }
         if (in_array($this->name, ['scripteur', 'ascenseur'], true)) {
             $spy = self::attempted($attempts, 'spy') ? null : $this->spyCandidate($observation);
             if ($spy !== null) {
@@ -65,7 +87,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $weights = match ($this->name) {
             'rageux' => ['archer' => 0.75, 'soldier' => 0.25],
             'grenouille' => ($self['soldierParadigm'] ?? false) ? ['soldier' => 1.0] : ['soldier' => 0.5, 'spearman' => 0.3, 'knight' => 0.2],
-            'ascenseur' => ($self['glory'] >= 30 && HostRules::armyValue($self['army'], $view['costs']) < 2000)
+            'ascenseur' => $self['cyclePhase'] === 'surrender'
                 ? ['spearman' => 1.0] : ['knight' => 0.55, 'spearman' => 0.45],
             'fermier' => ['soldier' => 0.65, 'spearman' => 0.35],
             'scripteur' => ['soldier' => 0.4, 'spearman' => 0.25, 'archer' => 0.2, 'knight' => 0.15],
@@ -154,6 +176,10 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             return null;
         }
         if ($this->name === 'ascenseur') {
+            if ($self['cyclePhase'] === 'rebuild') {
+                return $villages !== [] && self::attemptCount($view['attempts'], 'attack') < 3
+                    ? ['type' => 'attack', 'target' => $villages[0]['id']] : null;
+            }
             if (self::attemptCount($view['attempts'], 'attack') >= 2) {
                 return null;
             }

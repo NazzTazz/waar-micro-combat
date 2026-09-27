@@ -1,0 +1,141 @@
+<?php
+
+namespace Waar\MicroCombat\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Waar\MicroCombat\Bagaar\EraSimulator;
+use Waar\MicroCombat\Workshop\CohortRuntime;
+use Waar\MicroCombat\Workshop\CohortRequestFactory;
+use Waar\MicroCombat\Workshop\EngineProfile;
+
+require_once dirname(__DIR__).'/autoload.php';
+
+final class BagaarEraSimulatorTest extends TestCase
+{
+    public function testSameSeedAndProfileProduceIdenticalFramesAndCombatArchive(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $accounts = [
+            ['id' => 'rage', 'policy' => 'rageux'], ['id' => 'frog', 'policy' => 'grenouille', 'soldierParadigm' => true],
+            ['id' => 'lift', 'policy' => 'ascenseur'], ['id' => 'farm', 'policy' => 'fermier'],
+            ['id' => 'script', 'policy' => 'scripteur'],
+        ];
+        $first = $simulator->advance($simulator->start(42, 4, $accounts), 4);
+        $second = $simulator->advance($simulator->start(42, 4, $accounts), 4);
+        self::assertSame($first, $second);
+        self::assertCount(4, $first['frames']);
+        self::assertNotEmpty($first['combats']);
+        self::assertSame(4, $first['tick']);
+        foreach ($first['frames'] as $frame) {
+            self::assertCount(5, $frame['points']);
+            self::assertContains($frame['weather'], EngineProfile::WEATHER);
+        }
+        foreach ($first['combats'] as $combat) {
+            self::assertSame($combat['request']['attacker']['modifiers'], $combat['request']['defender']['modifiers']);
+        }
+    }
+
+    public function testTickChunksDoNotChangeTheEra(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $accounts = [['id' => 'a', 'policy' => 'rageux'], ['id' => 'b', 'policy' => 'fermier']];
+        $oneShot = $simulator->advance($simulator->start(17, 3, $accounts), 3);
+        $chunks = $simulator->start(17, 3, $accounts);
+        for ($i = 0; $i < 3; $i++) {
+            $chunks = $simulator->advance($chunks);
+        }
+        self::assertSame($oneShot, $chunks);
+    }
+
+    public function testRwaaRequiresStrictLeadForTwentyFourCompletedTicks(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $accounts = [['id' => 'frog', 'policy' => 'grenouille'], ['id' => 'script', 'policy' => 'scripteur']];
+        $tied = $simulator->start(5, 25, $accounts);
+        $tied['players']['frog']['glory'] = 50;
+        $tied['players']['script']['glory'] = 50;
+        self::assertNull($simulator->advance($tied)['candidate']);
+        $state = $simulator->start(5, 25, $accounts);
+        $state['players']['frog']['glory'] = 50;
+        $state = $simulator->advance($state, 24);
+        self::assertSame('frog', $state['candidate']);
+        self::assertSame(23, $state['candidateHours']);
+        self::assertNull($state['rwaa']);
+        $state = $simulator->advance($state);
+        self::assertSame('frog', $state['rwaa']);
+        self::assertSame(20, $state['rwaaPv']);
+    }
+
+    public function testAscenseurCanSurrenderAfterNineDefensiveLossesInTheEra(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(3, 12, [['id' => 'rage', 'policy' => 'rageux'], ['id' => 'lift', 'policy' => 'ascenseur']]);
+        $state['players']['lift']['cyclePhase'] = 'surrender';
+        $state = $simulator->advance($state, 12);
+        self::assertGreaterThanOrEqual(1, $state['players']['lift']['surrenders']);
+        self::assertContains(true, array_column(array_filter($state['events'], static fn (array $event): bool => $event['type'] === 'combat'), 'surrender'));
+    }
+
+    public function testScripteurHealsImmediatelyAfterHisCombat(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime(true));
+        $state = $simulator->start(8, 4, [['id' => 'frog', 'policy' => 'grenouille'], ['id' => 'script', 'policy' => 'scripteur']]);
+        $state['players']['script']['army']['soldier'] = 100;
+        $state['players']['script']['hospitalLevel'] = 1;
+        $state['players']['script']['gold'] = 10000;
+        $state['players']['frog']['army']['soldier'] = 1;
+        $state['players']['frog']['gold'] = 10000;
+        $state['players']['script']['spies']['frog'] = ['tick' => 0, 'gold' => 10000, 'armyTotal' => 1, 'glory' => 0, 'morale' => 'high'];
+        $state = $simulator->advance($state);
+        $combatIndex = array_search('combat', array_column($state['events'], 'type'), true);
+        self::assertNotFalse($combatIndex);
+        self::assertSame('heal', $state['events'][$combatIndex + 1]['type']);
+        self::assertSame('script', $state['events'][$combatIndex + 1]['actor']);
+        self::assertSame(0, $state['players']['script']['hospital']['soldier']);
+    }
+}
+
+final class BagaarFakeRuntime implements CohortRuntime
+{
+    public function __construct(private readonly bool $woundAttacker = false)
+    {
+    }
+
+    public function resolve(array $request): array
+    {
+        $sides = [];
+        foreach (['attacker', 'defender'] as $side) {
+            $types = [];
+            foreach (EngineProfile::UNIT_COSTS as $type => $cost) {
+                $count = $request[$side]['units'][$type] ?? 0;
+                $wounded = $this->woundAttacker && $side === 'attacker' && $type === 'soldier' && $count > 1 ? 1 : 0;
+                $types[$type] = ['initial' => $count, 'projected' => [
+                    'healthy' => $count - $wounded, 'wounded' => $wounded, 'dead' => 0, 'prisoners' => 0]];
+            }
+            $sides[$side] = ['types' => $types];
+        }
+        return ['result' => ['schemaVersion' => 'waar-combat-result/2', 'winner' => 'attacker',
+            'replayHash' => hash('sha256', (string)$request['seed']),
+            'snapshot' => ['stochasticEngineVersion' => $request['stochasticEngineVersion'], 'armyIdentities' => $request['armyIdentities']]],
+            'consequences' => ['schemaVersion' => 'waar-combat-consequences/1',
+                'policyVersion' => CohortRequestFactory::POLICY_VERSION,
+                'samplingProtocol' => CohortRequestFactory::SAMPLING_PROTOCOL,
+                'compressionPercent' => $request['consequences']['compressionPercent'],
+                'capturePercent' => $request['consequences']['capturePercent'], ...$sides]];
+    }
+
+    public function batch(array $request): array
+    {
+        throw new \LogicException('Bagaar résout des combats individuels.');
+    }
+
+    public function provenance(): array
+    {
+        return ['kind' => 'fake', 'transport' => 'in-process', 'modelVersion' => EngineProfile::MODEL_VERSION];
+    }
+}
