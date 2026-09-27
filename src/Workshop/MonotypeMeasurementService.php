@@ -27,7 +27,7 @@ final class MonotypeMeasurementService
         $request = $this->requests->monotypes($profile, $weather, $baseSeed, $iterations);
         $batch = $this->runtime->batch($request);
         CohortRequestFactory::assertProvenance($batch['consequenceProvenance'] ?? [], $request['consequences']);
-        CohortRequestFactory::assertBatchRandomProvenance($batch, $request['scenarios']);
+        CohortRequestFactory::assertBatchRandomProvenance($batch, $request['scenarios'], $this->requests->stochasticVersion());
         if (($batch['unitOrder'] ?? null) !== array_keys(EngineProfile::UNIT_COSTS) || ($batch['projectedCategoryOrder'] ?? null) !== ['healthy', 'wounded', 'dead', 'prisoners']) {
             throw new \RuntimeException('Ordre d’agrégation du batch cohortes incompatible.');
         }
@@ -60,7 +60,7 @@ final class MonotypeMeasurementService
                 $rows[] = ['id' => $id.'/'.$side, 'scenarioId' => $id, 'attackerType' => $attacking, 'defenderType' => $defending, 'side' => $side, 'winRate' => $wins / $iterations, 'drawRate' => $result['draws'] / $iterations, 'rawLossRatio' => $initial ? $raw / $initial : 0.0, 'rawWoundedRatio' => $initial ? $result[$prefix.'RawWoundedByType'][$index] / $initial : 0.0, 'rawCasualtyRatio' => $initial ? ($raw + $result[$prefix.'RawWoundedByType'][$index]) / $initial : 0.0, 'appliedLossRatio' => $initial ? $p[2] / $initial : 0.0, 'woundedRatio' => $initial ? $p[1] / $initial : 0.0, 'captureRatio' => $initial ? $p[3] / $initial : 0.0, 'freeRatio' => $initial ? ($p[0] + $p[1]) / $initial : 0.0, 'iterations' => $iterations];
             }
         }
-        $context = ['weather' => $weather, 'baseSeed' => $baseSeed, 'iterations' => $iterations, 'budget' => self::BUDGET, 'objectiveMetric' => 'rawCasualtyRatio', 'modelVersion' => EngineProfile::MODEL_VERSION, 'rulesetVersion' => $request['ruleset']['version'], 'runtime' => $this->runtime->provenance(), 'consequences' => CohortRequestFactory::consequenceContext($profile)];
+        $context = ['weather' => $weather, 'baseSeed' => $baseSeed, 'iterations' => $iterations, 'budget' => self::BUDGET, 'objectiveMetric' => 'rawCasualtyRatio', 'modelVersion' => EngineProfile::MODEL_VERSION, 'rulesetVersion' => $request['ruleset']['version'], 'runtime' => $this->runtime->provenance(), 'consequences' => CohortRequestFactory::consequenceContext($profile, $this->requests->stochasticVersion())];
         return ['schemaVersion' => 'waar-monotype-consequence-observations/0.2', 'profileFingerprint' => $profile->semanticFingerprint(), 'modelVersion' => EngineProfile::MODEL_VERSION, 'context' => $context, 'batch' => ['schemaVersion' => $batch['schemaVersion'], 'iterationRange' => $batch['iterationRange'], 'totalCombats' => $batch['totalCombats']], 'rows' => $rows];
     }
 }

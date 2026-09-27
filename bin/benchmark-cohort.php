@@ -24,7 +24,9 @@ if (isset($options['output']) && file_exists($options['output'])) {
 }
 $root = dirname(__DIR__);
 $profile = EngineProfile::fromArray(json_decode(file_get_contents($options['profile'] ?? $root.'/resources/workshop-default-profile.json'), true, 512, JSON_THROW_ON_ERROR));
-$base = (new CohortRequestFactory())->monotypes($profile, 'neutral', 42, 1);
+// This paired benchmark measures exact PHP/Rust parity on the retained
+// reference protocol. Production uses the Rust-only occupancy protocol.
+$base = (new CohortRequestFactory('sha256-binomial-tree/1'))->monotypes($profile, 'neutral', 42, 1);
 $mixed = $base;
 $mixed['scenarios'] = [];
 $shares = ['balanced' => [25, 25, 25, 25], 'screen-knights' => [30, 0, 0, 70], 'screen-archers' => [30, 0, 70, 0], 'spear-assault' => [20, 40, 0, 40]];

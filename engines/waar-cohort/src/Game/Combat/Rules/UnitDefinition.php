@@ -31,7 +31,7 @@ final readonly class UnitDefinition
         $this->defendingEfficiency = CombatFixedPoint::canonicalize($defendingEfficiency);
         if ($this->attack < 0 || $this->attack > 1000 || $this->structure <= 0 || $this->structure > 1000
             || $cost < 1 || $cost > 400400 || $this->baseAccuracy < 0 || $this->baseAccuracy > 1
-            || $this->accuracySpread < 0 || $this->accuracySpread > 1 || $strikesPerAttack < 1 || $strikesPerAttack > 32
+            || $this->accuracySpread < 0 || $this->accuracySpread > 1 || $strikesPerAttack < 1 || $strikesPerAttack > 10
             || $this->defendingEfficiency < 0 || $this->defendingEfficiency > 10) {
             throw new \InvalidArgumentException('Invalid unit definition.');
         }

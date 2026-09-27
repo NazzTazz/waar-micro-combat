@@ -39,6 +39,7 @@ class Element {
   const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0,woundDamageThreshold:'0.2'}};
   const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawCasualtyRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawCasualtyRatio:.06}]};
   let pendingSearch,searchBody,confirmResult=true,malformedResponse=false;
+  const timerDelays=[];
   const storage=new Map(),messages=[],listeners={};
   element('#t27-editor').contentWindow={postMessage:message=>messages.push(message)};
   const origin='http://localhost';
@@ -52,11 +53,12 @@ class Element {
     if(selector==='.journey button')return [Object.assign(new Element(),{dataset:{step:'units'}})];
     return [];
   }};
-  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{if(delay!==300&&delay!==10000)fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{timerDelays.push(delay);if(delay!==300&&delay!==10000)fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
     if(malformedResponse)return {ok:false,status:500,json:async()=>{throw new SyntaxError('Unexpected token <')}};
     const body=options?.body?JSON.parse(options.body):null;
     let data;
     if(url.endsWith('default-profile'))data={profile:structuredClone(profile)};
+    else if(url.endsWith('/combat-hud')){const row=(id,attacker,defender)=>({id,kind:'free',attacker,defender,attackerBudget:800,defenderBudget:800,samples:50,attackerWins:30,draws:5,defenderWins:15,roundSum:100,attackerProjected:{dead:10,wounded:5,prisoners:0},defenderProjected:{dead:20,wounded:7,prisoners:1}});data={requestId:body.requestId,totalCombats:1100,rows:[row('free:A>B','A','B'),row('free:B>A','B','A')]};}
     else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
     else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
     else if(url.endsWith('/measure'))data=structuredClone(measurement);
@@ -66,11 +68,12 @@ class Element {
   }});
   for(const file of ['model.js','app.js']){
     let source=fs.readFileSync(path.join(__dirname,'../public/workshop',file),'utf8');
-    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary,consequenceTable,liveSummary};\nfunction renderDuel(result){');
+    if(file==='app.js')source=source.replace('function renderDuel(result){','globalThis.reportViews={orderedSides,stateTable,roundAttacks,detailedCombat,consequenceSummary,consequenceTable,hudDirection};\nfunction renderDuel(result){');
     vm.runInContext(source,context);
   }
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
+  assert.ok(timerDelays.includes(250),'live combat uses a 250 ms debounce');
   assert.equal(typeof element('#measure').onclick,'function');
   assert.equal(element('#profile-modified').hidden,true,'new profile starts unmodified');
   const armyRow=element('#army-a').children[0];
@@ -177,11 +180,11 @@ class Element {
   assert.match(projectedSummary,/Valides en sortie/);
   assert.doesNotMatch(projectedSummary,/≤ seuil/,'projected survivors do not imply physical healing');
   const losses=Object.fromEntries(unitTypes.map(type=>[type,{initial:type==='soldier'?10:0,dead:type==='soldier'?2:0,wounded:type==='soldier'?1:0}]));
-  const summary=context.reportViews.liveSummary({attacker:'A',defender:'B',meanRounds:2.4,drawRate:0,camps:{A:{winRate:.6,losses,prisoners:1.2,valueLossRate:.3},B:{winRate:.4,losses,prisoners:0,valueLossRate:.1}}});
-  assert.match(summary,/2,4 rounds en moyenne/);
+  const summary=context.reportViews.hudDirection({kind:'free',attacker:'A',defender:'B',samples:250,attackerWins:150,draws:25,defenderWins:75,roundSum:600,attackerProjected:{dead:100,wounded:50,prisoners:25},defenderProjected:{dead:200,wounded:75,prisoners:0}});
+  assert.match(summary,/2,4 rounds/);
   assert.match(summary,/Prisonniers/);
-  assert.match(summary,/Budget perdu/);
-  assert.match(summary,/Effectifs et pertes par unité/);
+  assert.match(summary,/150 · 60 %/);
+  assert.match(summary,/75 · 30 %/);
   const projectedTable=context.reportViews.consequenceTable(direction,'attacker','B');
   assert.equal((projectedTable.match(/Valides \(≤ seuil\)/g)||[]).length,1,'threshold qualification applies only to raw classification');
   assert.match(projectedTable,/Valides en sortie/);

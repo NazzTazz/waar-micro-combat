@@ -42,8 +42,9 @@ final class WorkshopAddressedRandomTest extends TestCase
         }
         $profile['combat'] = [...$profile['combat'], 'maxRounds' => 2, 'surrenderEnabled' => false, 'woundDamageThreshold' => '0.5', 'tieBreakCriterion' => 'structure', 'equalityPolicy' => 'draw', 'lossCompressionPercent' => 100, 'capturePercent' => 1];
         $input = ['profile' => $profile, 'armies' => ['A' => ['archer' => 33], 'B' => ['spearman' => 50]], 'weather' => ['A' => 'neutral', 'B' => 'neutral'], 'seed' => 42];
-        $native = new DuelService(new ProcessCohortRuntime(null, 'rust'));
-        $php = new DuelService(new ProcessCohortRuntime(null, 'php'));
+        $referenceRequests = new CohortRequestFactory('sha256-binomial-tree/1');
+        $native = new DuelService(new ProcessCohortRuntime(null, 'rust'), $referenceRequests);
+        $php = new DuelService(new ProcessCohortRuntime(null, 'php'), $referenceRequests);
         $reports = [];
         foreach (['0.25', '0.3', '0.25'] as $p) {
             $input['profile']['units']['spearman']['baseAccuracy'] = $p;

@@ -63,7 +63,7 @@ final readonly class CombatPreparation
                 $effects
             );
             if ($unit->structure <= 0 || $unit->structure > 1000 || $unit->cost < 1 || $unit->cost > 400400 || $unit->baseAccuracy < 0 || $unit->baseAccuracy > 1
-                || $unit->accuracySpread < 0 || $unit->accuracySpread > 1 || $unit->strikesPerAttack < 1 || $unit->strikesPerAttack > 32 || $unit->defendingEfficiency < 0 || $unit->defendingEfficiency > 10 || $unit->attack < 0 || $unit->attack > 1000) {
+                || $unit->accuracySpread < 0 || $unit->accuracySpread > 1 || $unit->strikesPerAttack < 1 || $unit->strikesPerAttack > 10 || $unit->defendingEfficiency < 0 || $unit->defendingEfficiency > 10 || $unit->attack < 0 || $unit->attack > 1000) {
                 throw new \InvalidArgumentException("Prepared value outside supported range for {$type->value}.");
             }
             $units[] = $unit;

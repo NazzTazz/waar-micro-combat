@@ -66,6 +66,16 @@ async function waitFor(url) {
     assert.equal(summary.requestId,'live-test');assert.equal(summary.totalCombats,100);assert.equal(summary.iterations,50);
     assert.equal(summary.consequenceProvenance.policyVersion,'wounded-capture-then-compress/4');
     assert.equal(summary.consequenceProvenance.samplingProtocol,'sha256-binomial-tree/1');
+    const hudResponse=await fetch(origin+'/api/combat-hud',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requestId:'hud-0',profile:profilePayload.data.profile,armies:{A:{soldier:100},B:{archer:50}},weather:'neutral',modifiers:{A:[],B:[]},seed:42,startIteration:0})});
+    assert.equal(hudResponse.status,200);
+    const hud=(await hudResponse.json()).data;
+    assert.equal(hud.requestId,'hud-0');assert.equal(hud.totalCombats,1100);assert.equal(hud.rows.length,18);
+    assert.equal(hud.stochasticEngineVersion,'sha256-splitmix-occupancy/1');
+    assert.deepEqual(hud.iterationRange,{start:0,endExclusive:50,total:250});
+    const hudRows=Object.fromEntries(hud.rows.map(row=>[row.id,row]));
+    assert.equal(hudRows['monotype:soldier>soldier'].samples,100);
+    assert.equal(hudRows['monotype:soldier>archer'].samples,50);
+    assert.equal(hudRows['free:A>B'].samples,50);assert.equal(hudRows['free:B>A'].samples,50);
     // Scope filter for issue #12: default CI still exercises the complete historical flow.
     if(process.env.WAAR_TEST_SCOPE==='consequences'){
       const post=async(route,body)=>{const response=await fetch(origin+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(response.status,200);return (await response.json()).data};
@@ -137,6 +147,7 @@ async function waitFor(url) {
       assert.equal(busy.headers.get('retry-after'),'10');
       assert.match((await busy.json()).errors[0].message,/déjà en cours/);
       assert.equal((await fetch(origin+'/api/duel-summary',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,429);
+      assert.equal((await fetch(origin+'/api/combat-hud',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,429);
       assert.equal((await fetch(origin+'/api/default-profile')).status,200);
     } finally { const exited=once(locker,'exit');locker.kill();await exited; }
     const post=async(path,body)=>{const response=await fetch(origin+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const payload=await response.json();assert.equal(response.status,200,JSON.stringify(payload));return payload.data};

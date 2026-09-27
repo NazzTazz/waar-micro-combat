@@ -196,7 +196,7 @@ final readonly class EngineProfile
             foreach (array_diff(array_keys($combat), ['maxRounds', 'surrenderEnabled', 'surrenderDeadPercent', 'tieBreakCriterion', 'equalityPolicy', 'lossCompressionPercent', 'capturePercent', 'woundDamageThreshold']) as $field) {
                 $add('unknown_field', 'combat.'.$field, 'Réglage de combat inconnu.');
             }
-            foreach ([['maxRounds', 1, 30], ['surrenderDeadPercent', 1, 100], ['lossCompressionPercent', 0, 100], ['capturePercent', 0, 50]] as [$field,$min,$max]) {
+            foreach ([['maxRounds', 1, 20], ['surrenderDeadPercent', 1, 100], ['lossCompressionPercent', 0, 100], ['capturePercent', 0, 50]] as [$field,$min,$max]) {
                 if (!is_int($combat[$field] ?? null) || $combat[$field] < $min || $combat[$field] > $max) {
                     $add('out_of_range', 'combat.'.$field, "Entier attendu entre $min et $max.");
                 }

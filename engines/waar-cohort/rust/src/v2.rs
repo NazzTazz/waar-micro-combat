@@ -331,7 +331,7 @@ impl Ruleset {
         {
             return Err("unsupported cohort ruleset schema, model or targeting mode".into());
         }
-        if self.version.trim().is_empty() || self.max_rounds == 0 || self.max_rounds > 100 {
+        if self.version.trim().is_empty() || self.max_rounds == 0 || self.max_rounds > 20 {
             return Err("invalid ruleset metadata".into());
         }
         if self.surrender.dead_ratio.units() < 0 || self.surrender.dead_ratio.units() > FIXED_SCALE

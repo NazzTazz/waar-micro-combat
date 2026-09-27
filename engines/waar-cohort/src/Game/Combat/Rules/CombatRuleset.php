@@ -29,7 +29,7 @@ final readonly class CombatRuleset
         public string $equalityPolicy = 'defender',
         float|int|string|null $woundDamageThreshold = null,
     ) {
-        if ('' === trim($version) || $maxRounds < 1 || $maxRounds > 100) {
+        if ('' === trim($version) || $maxRounds < 1 || $maxRounds > 20) {
             throw new \InvalidArgumentException('Invalid combat ruleset metadata.');
         }
         $this->surrenderDeadRatio = CombatFixedPoint::canonicalize($surrenderDeadRatio);

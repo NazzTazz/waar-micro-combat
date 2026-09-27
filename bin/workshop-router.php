@@ -1,6 +1,7 @@
 <?php
 
 use Waar\MicroCombat\Workshop\BoundedProfileSearch;
+use Waar\MicroCombat\Workshop\CombatHudService;
 use Waar\MicroCombat\Workshop\DuelService;
 use Waar\MicroCombat\Workshop\EngineProfile;
 use Waar\MicroCombat\Workshop\EngineProfileMigrator;
@@ -20,7 +21,7 @@ if (isset($editorAssets[$path])) {
     return;
 }
 if (str_starts_with($path, '/api/')) {
-    $b1Diagnostic = getenv('WAAR_B1_DIAGNOSTIC') === '1' && in_array($path, ['/api/duel-summary', '/api/duel', '/api/measure'], true);
+    $b1Diagnostic = getenv('WAAR_B1_DIAGNOSTIC') === '1' && in_array($path, ['/api/combat-hud', '/api/duel-summary', '/api/duel', '/api/measure'], true);
     if ($b1Diagnostic) {
         $b1Received = hrtime(true);
         $b1LockNanoseconds = 0;
@@ -51,7 +52,7 @@ if (str_starts_with($path, '/api/')) {
         }
         // A private shared demo has a single compute slot; never queue costly jobs.
         // The OS releases the lock even if PHP exits unexpectedly.
-        if (getenv('WAAR_DEMO_SERIALIZE') === '1' && in_array($path, ['/api/duel', '/api/duel-summary', '/api/measure', '/api/search', '/api/optimize'], true)) {
+        if (getenv('WAAR_DEMO_SERIALIZE') === '1' && in_array($path, ['/api/combat-hud', '/api/duel', '/api/duel-summary', '/api/measure', '/api/search', '/api/optimize'], true)) {
             if ($b1Diagnostic) {
                 $b1LockStarted = hrtime(true);
             }
@@ -82,6 +83,7 @@ if (str_starts_with($path, '/api/')) {
             })],
             ['/api/validate-zones', 'POST'] => ['zones' => (new ConsequenceObjectives())->validate($request['profile'] ?? [], $request['zones'] ?? [], (string)($request['weather'] ?? 'neutral'), $request['measurementBaseSeed'] ?? 42, $request['iterations'] ?? 100)],
             ['/api/duel-summary', 'POST'] => (new DuelService())->simulate($request, true),
+            ['/api/combat-hud', 'POST'] => (new CombatHudService())->wave($request),
             ['/api/duel', 'POST'] => (new DuelService())->simulate($request),
             ['/api/measure', 'POST'] => (new MonotypeMeasurementService())->measure($request['profile'] ?? [], (string)($request['weather'] ?? 'neutral'), $request['seed'] ?? 42, $request['iterations'] ?? 100),
             ['/api/search', 'POST'] => (new BoundedProfileSearch())->search($request['profile'] ?? [], $request['zones'] ?? [], (string)($request['weather'] ?? 'neutral'), $request['seed'] ?? 314159, $request['budget'] ?? 8, $request['iterations'] ?? 100, $request['bounds'] ?? [], $request['measurementBaseSeed'] ?? 42),

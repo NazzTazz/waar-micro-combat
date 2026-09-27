@@ -137,6 +137,17 @@ final class WorkshopCoreTest extends TestCase
         self::assertStringContainsString('1 et 10', $errors[0]['message']);
     }
 
+    public function testCombatStopsAtTwentyRounds(): void
+    {
+        $profile = EngineProfile::defaults();
+        $profile['combat']['maxRounds'] = 20;
+        self::assertSame([], EngineProfile::validate($profile));
+
+        $profile['combat']['maxRounds'] = 21;
+        $errors = EngineProfile::validate($profile);
+        self::assertContains('combat.maxRounds', array_column($errors, 'path'));
+    }
+
     public function testFingerprintIsSemanticAndDeterministic(): void
     {
         $a = EngineProfile::defaults();
