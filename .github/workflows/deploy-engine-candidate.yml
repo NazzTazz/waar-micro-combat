@@ -82,7 +82,9 @@ jobs:
           ENGINE_VPS_PORT: ${{ vars.ENGINE_VPS_PORT || '22' }}
           ENGINE_SSH_KEY_FILE: ${{ runner.temp }}/engine-ssh/id
           ENGINE_SSH_KNOWN_HOSTS_FILE: ${{ runner.temp }}/engine-ssh/known_hosts
-        run: bash ops/demo/publish-release.sh 2>&1 | tee "$RUNNER_TEMP/engine-deploy.log"
+        run: |
+          set -o pipefail
+          bash ops/demo/publish-release.sh 2>&1 | tee "$RUNNER_TEMP/engine-deploy.log"
       - name: Deployment summary
         if: always()
         env:

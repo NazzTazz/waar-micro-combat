@@ -193,6 +193,22 @@ final class CohortWorkshopIntegrationTest extends TestCase
         }
     }
 
+    public function testCurrentProfileMigrationCapsFormerCombatBounds(): void
+    {
+        $old = EngineProfile::defaults();
+        $old['units']['knight']['strikesPerAttack'] = 15;
+        $old['combat']['maxRounds'] = 30;
+
+        $migration = (new EngineProfileMigrator())->migrate($old);
+
+        self::assertTrue($migration['migration']['performed']);
+        self::assertTrue($migration['migration']['measurementsObsolete']);
+        self::assertSame(10, $migration['profile']['units']['knight']['strikesPerAttack']);
+        self::assertSame(20, $migration['profile']['combat']['maxRounds']);
+        self::assertContains('units.knight.strikesPerAttack=10', $migration['migration']['newFields']);
+        self::assertContains('combat.maxRounds=20', $migration['migration']['newFields']);
+    }
+
     public function testNativeDuelUsesDistinctCampModifiersAndExposesReplayableCohortReport(): void
     {
         $profile = EngineProfile::defaults();

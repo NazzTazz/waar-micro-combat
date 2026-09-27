@@ -13,8 +13,29 @@ final readonly class EngineProfileMigrator
             if ($thresholdAdded) {
                 $source['combat']['woundDamageThreshold'] = '0';
             }
+            $boundedFields = [];
+            foreach (EngineProfile::UNIT_COSTS as $type => $unused) {
+                $strikes = $source['units'][$type]['strikesPerAttack'] ?? null;
+                if (is_int($strikes) && $strikes > 10) {
+                    $source['units'][$type]['strikesPerAttack'] = 10;
+                    $boundedFields[] = 'units.'.$type.'.strikesPerAttack=10';
+                }
+            }
+            $rounds = $source['combat']['maxRounds'] ?? null;
+            if (is_int($rounds) && $rounds > 20) {
+                $source['combat']['maxRounds'] = 20;
+                $boundedFields[] = 'combat.maxRounds=20';
+            }
+            $performed = $thresholdAdded || $boundedFields !== [];
             $profile = EngineProfile::fromArray($source, [])->toArray();
-            return ['profile' => $profile, 'migration' => ['performed' => $thresholdAdded, 'sourceSchema' => $schema, 'targetSchema' => $schema, 'modelVersion' => EngineProfile::MODEL_VERSION, 'measurementsObsolete' => $thresholdAdded, 'newFields' => $thresholdAdded ? ['combat.woundDamageThreshold=0'] : [], 'obsoleteFields' => [], 'notes' => $thresholdAdded ? ['Le seuil absent conserve le classement historique : tout survivant endommagé est blessé.'] : []]];
+            $notes = [];
+            if ($thresholdAdded) {
+                $notes[] = 'Le seuil absent conserve le classement historique : tout survivant endommagé est blessé.';
+            }
+            if ($boundedFields !== []) {
+                $notes[] = 'Les valeurs sauvegardées au-delà des plafonds actuels ont été ramenées à 10 frappes et 20 rounds.';
+            }
+            return ['profile' => $profile, 'migration' => ['performed' => $performed, 'sourceSchema' => $schema, 'targetSchema' => $schema, 'modelVersion' => EngineProfile::MODEL_VERSION, 'measurementsObsolete' => $performed, 'newFields' => array_values(array_filter([$thresholdAdded ? 'combat.woundDamageThreshold=0' : null, ...$boundedFields])), 'obsoleteFields' => [], 'notes' => $notes]];
         }
         if ($schema !== EngineProfile::LEGACY_SCHEMA_VERSION) {
             throw new \InvalidArgumentException('Version de profil inconnue : migration impossible.');
