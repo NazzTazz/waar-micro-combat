@@ -21,8 +21,8 @@ final class CombatTransition
         if (!HostRules::canAttack($attacker['glory'], $defender['glory'], $attacker['attacks'], $defender['defenses'])) {
             throw new \DomainException('Combat interdit par la portée ou les quotas.');
         }
-        if (array_sum($attacker['army']) < 1 || array_sum($defender['army']) < 1) {
-            throw new \DomainException('Une armée est vide.');
+        if (array_sum($attacker['army']) < 1) {
+            throw new \DomainException('Armée attaquante vide.');
         }
         $captured = ['attacker' => 0, 'defender' => 0];
         foreach (['attacker', 'defender'] as $side) {

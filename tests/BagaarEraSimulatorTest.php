@@ -85,6 +85,24 @@ final class BagaarEraSimulatorTest extends TestCase
             static fn (array $event): bool => ($event['type'] ?? null) === 'combat' && ($event['defender'] ?? null) === 'village-20'));
         self::assertCount(1, $villageCombats);
         self::assertGreaterThanOrEqual(8000, $state['players']['farm']['villageFailures']['village-20']);
+        self::assertTrue($state['players']['farm']['villageCautious']);
+        self::assertSame(1, $state['players']['farm']['lastVillageAttackTick']);
+    }
+
+    public function testAbandonedUnarmedAccountRemainsPillageable(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(12, 1, [['id' => 'farm', 'policy' => 'fermier'], ['id' => 'fridge', 'policy' => 'casual']]);
+        $state['players']['farm']['army']['soldier'] = 100;
+        $state['players']['fridge']['status'] = 'abandoned';
+        $state['players']['farm']['spies']['fridge'] = ['tick' => 1, 'armyTotal' => 0, 'gold' => 2000];
+        $state = $simulator->advance($state);
+        $combats = array_values(array_filter($state['events'], static fn (array $event): bool =>
+            ($event['type'] ?? null) === 'combat' && ($event['defender'] ?? null) === 'fridge'));
+        self::assertNotEmpty($combats);
+        self::assertGreaterThan(0, $combats[0]['loot']);
+        self::assertLessThan(2000, $state['players']['fridge']['gold']);
     }
 
     public function testOfficePlayerActsOnlyDuringPlayHoursWhileMineKeepsProducing(): void

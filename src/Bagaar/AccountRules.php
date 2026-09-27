@@ -13,6 +13,7 @@ final class AccountRules
             'prisoners' => 0, 'prisonerTreatment' => 100, 'morale' => 100,
             'attacks' => 9, 'defenses' => 3, 'autoSurrender' => false,
             'defenseLossStreak' => 0, 'surrenders' => 0, 'spies' => [], 'villageFailures' => [],
+            'villageCautious' => false, 'lastVillageAttackTick' => null,
             'status' => 'active', 'pauseUntil' => null, 'pauses' => 0, 'recentCombats' => [],
             'rageTarget' => null, 'rageUntil' => 0,
             'cyclePhase' => $policy === 'ascenseur' ? 'build' : null, 'peakArmyGold' => 0,

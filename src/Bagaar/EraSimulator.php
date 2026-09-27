@@ -60,7 +60,7 @@ final class EraSimulator
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => 'bagaar-builtin-policies/4', 'hostRuleVersion' => 'bagaar-host-rules/2',
+            'decisionVersion' => 'bagaar-builtin-policies/5', 'hostRuleVersion' => 'bagaar-host-rules/2',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
             'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
@@ -212,7 +212,7 @@ final class EraSimulator
         $attacker = $state['players'][$id];
         $attackerArmyGold = HostRules::armyValue($attacker['army'], $this->profile->costs());
         if (!HostRules::canAttack($attacker['glory'], $defender['glory'], $attacker['attacks'], $defender['defenses'])
-            || array_sum($attacker['army']) === 0 || array_sum($defender['army']) === 0) {
+            || array_sum($attacker['army']) === 0) {
             throw new \DomainException('Portée, quota ou armée insuffisante.');
         }
         $ordinal = $state['combatCount'] ?? count($state['combats']);
@@ -231,9 +231,15 @@ final class EraSimulator
             ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.$ordinal) % ($upper - $lower + 1) : 0;
         $result = CombatTransition::apply($attacker, $defender, $report, $loot, $village);
         if ($village) {
+            if ($result['event']['winner'] === 'defender') {
+                $result['attacker']['villageCautious'] = true;
+            }
+            if ($result['attacker']['villageCautious'] ?? false) {
+                $result['attacker']['lastVillageAttackTick'] = $state['tick'];
+            }
             if ($result['event']['winner'] === 'attacker') {
                 unset($result['attacker']['villageFailures'][$targetId]);
-            } else {
+            } elseif ($result['event']['winner'] === 'defender') {
                 $result['attacker']['villageFailures'][$targetId] = $attackerArmyGold;
             }
         }

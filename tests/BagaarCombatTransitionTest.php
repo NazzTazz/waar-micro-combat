@@ -45,6 +45,19 @@ final class BagaarCombatTransitionTest extends TestCase
         self::assertSame(['winner' => null, 'loot' => 0, 'prisoners' => 0, 'surrender' => false], $after['event']);
     }
 
+    public function testUnarmedDefenderCanBePillaged(): void
+    {
+        $attacker = self::player();
+        $defender = self::player();
+        $defender['army'] = HostRules::emptyArmy();
+        $after = CombatTransition::apply($attacker, $defender,
+            self::report('attacker', [10, 0, 0, 0], [0, 0, 0, 0]), 200);
+        self::assertSame(2200, $after['attacker']['gold']);
+        self::assertSame(1800, $after['defender']['gold']);
+        self::assertSame(11, $after['attacker']['glory']);
+        self::assertSame(200, $after['event']['loot']);
+    }
+
     private static function player(): array
     {
         return ['gold' => 2000, 'glory' => 10, 'mineLevel' => 0, 'hospitalLevel' => 1,
@@ -60,7 +73,7 @@ final class BagaarCombatTransitionTest extends TestCase
             $types = [];
             foreach (HostRules::UNIT_TYPES as $type) {
                 [$healthy, $wounded, $dead, $prisoners] = $type === 'soldier' ? $soldier : [0, 0, 0, 0];
-                $types[$type] = ['initial' => $type === 'soldier' ? 10 : 0,
+                $types[$type] = ['initial' => $type === 'soldier' ? array_sum($soldier) : 0,
                     'projected' => compact('healthy', 'wounded', 'dead', 'prisoners')];
             }
             $sides[$side] = ['types' => $types];
