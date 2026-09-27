@@ -2,9 +2,10 @@
 'use strict';
 const $=selector=>document.querySelector(selector);
 const svgNS='http://www.w3.org/2000/svg';
-const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef',village:'#f5d477'};
-const names={rageux:'Le Rageux',grenouille:'La Grenouille',ascenseur:"L'Ascenseur",fermier:'Le Fermier',scripteur:'Le Scripteur'};
-const activityNames={'all-day':'Toute la journée',office:'9 h–17 h',evening:'17 h–24 h',early:'6 h–14 h'};
+const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef',casual:'#b6d781',village:'#f5d477'};
+const names={rageux:'Le Rageux',grenouille:'La Grenouille',ascenseur:"L'Ascenseur",fermier:'Le Fermier',scripteur:'Le Scripteur',casual:'Le Casual'};
+const activityNames={'all-day':'Toute la journée',office:'9 h–17 h',evening:'17 h–24 h',early:'6 h–14 h','casual-morning':'1 tick par jour · matin','casual-noon':'2 ticks par jour · midi','casual-evening':'1 tick par jour · soir','casual-night':'2 ticks par jour · soir'};
+const statusNames={active:'Joueur actif',pause:'Le joueur fait une pause',abandoned:'Jeu abandonné'};
 const number=new Intl.NumberFormat('fr-FR');
 let runId=null,frames=[],events=[],played=0,computed=0,total=0,combatCount=0,computing=false,playing=false,selected=null,profile=null;
 let lastFlashedFrame=0;
@@ -89,7 +90,8 @@ function renderChart(){
       const point=markerById.get(id);
       if(!point)continue;
       flashes.forEach((color,index)=>{
-        const halo=svg('circle',{class:'event-flash',cx:x(point.armyGold),cy:y(point.glory),r:13,fill:'none',stroke:color,'stroke-width':4,style:`animation-delay:${index*0.32}s`});
+        const width={'#71db86':2,'#ff6868':2,'#b8c2ce':2,'#61aaff':4,'#fa80c7':4}[color]||6;
+        const halo=svg('circle',{class:'event-flash',cx:x(point.armyGold),cy:y(point.glory),r:13,fill:'none',stroke:color,'stroke-width':width,style:`animation-delay:${index*0.32}s`});
         halo.addEventListener('animationend',()=>halo.remove());overlay.append(halo);
       });
     }
@@ -104,8 +106,11 @@ function renderPlayer(){
   selected=point.id;
   $('#player-title').textContent=point.kind==='village'?`${point.id} · Village palier ${point.glory}`:`${point.name||point.id} · ${names[point.policy]||point.policy}`;
   const detail=$('#player-detail');detail.replaceChildren();
-  const rows=[['Glwaare',point.glory],[point.kind==='village'?"Or de garnison":"Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]];
-  if(point.kind!=='village')rows.push(['Mine',`Niveau ${point.mineLevel??0}`],['Production horaire',`${number.format(point.mineProduction??0)} Or`],['Activité',activityNames[point.activity]||'Toute la journée'],['Agressivité',`${point.aggressionPercent??100} %`],['Soldats',number.format(point.army?.soldier??0)],['Lanciers',number.format(point.army?.spearman??0)],['Archers',number.format(point.army?.archer??0)],['Chevaliers',number.format(point.army?.knight??0)],['Combats gagnés / nuls / perdus',`${point.record?.wins??0} / ${point.record?.draws??0} / ${point.record?.losses??0}`]);
+  const rows=[['Glwaare',point.glory],["Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]];
+  if(point.kind==='village')rows.push(['Or maximum',number.format(point.goldMax??point.gold)],['Abondement par tick',`${number.format(point.goldRefill??0)} Or`]);
+  else rows.push(['État',statusNames[point.status]||statusNames.active],['Objectif',point.goal||'—'],['Moyen choisi',point.method||'—'],['Mine',`Niveau ${point.mineLevel??0}`],['Production horaire',`${number.format(point.mineProduction??0)} Or`],['Activité',activityNames[point.activity]||'Toute la journée'],['Agressivité',`${point.aggressionPercent??100} %`]);
+  rows.push(['Soldats',number.format(point.army?.soldier??0)],['Lanciers',number.format(point.army?.spearman??0)],['Archers',number.format(point.army?.archer??0)],['Chevaliers',number.format(point.army?.knight??0)]);
+  if(point.kind!=='village')rows.push(['Combats gagnés / nuls / perdus',`${point.record?.wins??0} / ${point.record?.draws??0} / ${point.record?.losses??0}`]);
   for(const [label,value] of rows){
     const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=String(value);detail.append(dt,dd);
   }
@@ -130,6 +135,9 @@ function eventLabel(event){
   if(event.type==='candidate')return `${displayName(event.actor)} devient prétendant`;
   if(event.type==='village')return `${event.id} apparaît`;
   if(event.type==='spy')return `${displayName(event.actor)} espionne ${displayName(event.target)}`;
+  if(event.type==='pause')return `${displayName(event.actor)} fait une pause`;
+  if(event.type==='abandon')return `${displayName(event.actor)} abandonne le jeu`;
+  if(event.type==='return')return `${displayName(event.actor)} revient jouer`;
   if(event.type==='rejected')return `${displayName(event.actor)} · ${event.action} refusé`;
   return `${displayName(event.actor)||'Jeu'} · ${event.type}`;
 }

@@ -50,6 +50,9 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame('village-20', $point['id']);
         self::assertSame('village', $point['kind']);
         self::assertSame(20, $point['glory']);
+        self::assertSame($village['army'], $point['army']);
+        self::assertSame($village['goldMax'], $point['goldMax']);
+        self::assertSame($village['goldRefill'], $point['goldRefill']);
         self::assertSame(\Waar\MicroCombat\Bagaar\HostRules::armyValue($village['army'], $profile->costs()), $point['armyGold']);
     }
 
