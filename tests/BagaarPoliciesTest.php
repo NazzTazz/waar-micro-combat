@@ -5,6 +5,7 @@ namespace Waar\MicroCombat\Tests;
 use PHPUnit\Framework\TestCase;
 use Waar\MicroCombat\Bagaar\AccountRules;
 use Waar\MicroCombat\Bagaar\BuiltinPolicy;
+use Waar\MicroCombat\Bagaar\HostRules;
 use Waar\MicroCombat\Bagaar\PlayerObservation;
 
 require_once dirname(__DIR__).'/autoload.php';
@@ -19,6 +20,7 @@ final class BagaarPoliciesTest extends TestCase
         $other = AccountRules::initial('frog', 'grenouille');
         $other['army']['knight'] = 20;
         $other['gold'] = 9900;
+        $other['status'] = 'abandoned';
         $state = ['tick' => 1, 'totalTicks' => 100, 'manifest' => ['spyRange' => 30],
             'players' => ['script' => $self, 'frog' => $other], 'villages' => [],
             'events' => [['tick' => 1, 'attacker' => 'frog', 'defender' => 'script', 'winner' => 'attacker', 'secretArmy' => $other['army']]]];
@@ -27,6 +29,7 @@ final class BagaarPoliciesTest extends TestCase
         self::assertArrayNotHasKey('secretArmy', $view['events'][0]);
         self::assertSame([], $view['reports']);
         self::assertArrayNotHasKey('army', $view['targets'][0]);
+        self::assertArrayNotHasKey('status', $view['targets'][0]);
     }
 
     public function testRageuxRetaliatesThreeTimesWithoutProfitabilityCheck(): void
@@ -83,6 +86,7 @@ final class BagaarPoliciesTest extends TestCase
         self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('fermier'))->next($view));
         $view['tick'] = 7;
         $view['targets'][] = ['id' => 'village-20', 'glory' => 20, 'kind' => 'village'];
+        $view['reports']['enemy']['armyTotal'] = 100;
         $view['reports']['village-20'] = ['tick' => 7, 'armyTotal' => 1];
         self::assertSame(['type' => 'attack', 'target' => 'village-20'], (new BuiltinPolicy('fermier'))->next($view));
     }
@@ -115,7 +119,7 @@ final class BagaarPoliciesTest extends TestCase
         self::assertNull($policy->next($view));
     }
 
-    public function testMineSavingsGoalActuallyDefersRecruitment(): void
+    public function testMineSavingsStillFundsRecruitment(): void
     {
         $view = self::view('fermier');
         $view['self']['mineLevel'] = 5;
@@ -124,7 +128,7 @@ final class BagaarPoliciesTest extends TestCase
         $view['attempts'] = [['type' => 'mine'], ['type' => 'hospital']];
         $policy = new BuiltinPolicy('fermier');
         self::assertSame('Monter la mine suivante', $policy->intention($view['self'], 10, 100, [])['goal']);
-        self::assertNull($policy->next($view));
+        self::assertSame('recruit', $policy->next($view)['type']);
         $view['self']['glory'] = 0;
         $view['self']['gold'] = 1000;
         self::assertSame('recruit', $policy->next($view)['type']);
@@ -172,6 +176,52 @@ final class BagaarPoliciesTest extends TestCase
         self::assertSame(['type' => 'spy', 'target' => 'village-20'], $policy->next($view));
     }
 
+    public function testVillageFailureRequiresOneDayFreshSpyAndFullGold(): void
+    {
+        $view = self::view('fermier');
+        $view['self']['glory'] = 20;
+        $view['self']['gold'] = 100;
+        $view['self']['villageFailures']['village-20'] = 8000;
+        $view['self']['villageCautious'] = true;
+        $view['self']['lastVillageAttackTick'] = 1;
+        $view['self']['army']['soldier'] = 150;
+        $view['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village'],
+            ['id' => 'village-40', 'glory' => 40, 'kind' => 'village']];
+        $view['reports']['village-20'] = ['tick' => 1, 'armyTotal' => 20, 'gold' => 1];
+        $view['reports']['village-40'] = ['tick' => 24, 'armyTotal' => 1,
+            'gold' => 24 * HostRules::mineProduction(10)];
+        $policy = new BuiltinPolicy('fermier');
+        self::assertSame('Agrandir mon armée', $policy->intention($view['self'], 2, 100, [])['goal']);
+        $view['tick'] = 24;
+        self::assertNull($policy->next($view));
+        $view['tick'] = 25;
+        self::assertSame(['type' => 'spy', 'target' => 'village-20'], $policy->next($view));
+        $view['attempts'][] = ['type' => 'spy', 'target' => 'village-20'];
+        $view['reports']['village-20'] = ['tick' => 25, 'armyTotal' => 20, 'gold' => 100];
+        self::assertNull($policy->next($view));
+        $view['reports']['village-20']['gold'] = 24 * HostRules::mineProduction(9);
+        self::assertSame(['type' => 'attack', 'target' => 'village-20'], $policy->next($view));
+    }
+
+    public function testVillagesRemainAvailableToScripteurAndCasual(): void
+    {
+        foreach (['scripteur', 'casual'] as $name) {
+            $view = self::view($name);
+            $view['self']['glory'] = 20;
+            $view['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
+            $view['reports']['village-20'] = ['tick' => 1, 'armyTotal' => 1, 'gold' => 1000];
+            self::assertSame(['type' => 'attack', 'target' => 'village-20'], (new BuiltinPolicy($name))->next($view), $name);
+        }
+    }
+
+    public function testFarmerUsesRecentSpyReportBeyondEspionageTick(): void
+    {
+        $view = self::view('fermier');
+        $view['tick'] = 7;
+        $view['reports']['enemy'] = ['tick' => 6, 'armyTotal' => 1, 'gold' => 3000];
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('fermier'))->next($view));
+    }
+
     public function testScripteurHealsThenAttacksOnlyOnHisOwnEspionageEstimate(): void
     {
         $view = self::view('scripteur');
@@ -190,6 +240,14 @@ final class BagaarPoliciesTest extends TestCase
         $view['self']['aggressionPercent'] = 80;
         self::assertNull((new BuiltinPolicy('scripteur'))->next($view));
         $view['self']['aggressionPercent'] = 120;
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('scripteur'))->next($view));
+    }
+
+    public function testScripteurCanFarmAWeakRichAccountEvenWithALargeArmy(): void
+    {
+        $view = self::view('scripteur');
+        $view['self']['army']['soldier'] = 1000;
+        $view['reports']['enemy'] = ['tick' => 1, 'gold' => 1000, 'armyTotal' => 2, 'glory' => 0, 'morale' => 'low'];
         self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('scripteur'))->next($view));
     }
 
