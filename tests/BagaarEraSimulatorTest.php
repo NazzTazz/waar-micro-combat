@@ -31,9 +31,26 @@ final class BagaarEraSimulatorTest extends TestCase
             self::assertCount(5, $frame['points']);
             self::assertContains($frame['weather'], EngineProfile::WEATHER);
         }
-        foreach ($first['combats'] as $combat) {
+        foreach ($first['combats'] as $archive) {
+            self::assertSame(EraSimulator::COMBAT_ARCHIVE_FORMAT, $archive['format']);
+            $combat = EraSimulator::decodeCombat($archive);
             self::assertSame($combat['request']['attacker']['modifiers'], $combat['request']['defender']['modifiers']);
         }
+    }
+
+    public function testVillageAppearsAsPointAtItsGloryTierAndPresetArmyValue(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(12, 1, [['id' => 'frog', 'policy' => 'grenouille'], ['id' => 'farm', 'policy' => 'fermier']]);
+        $state['players']['frog']['glory'] = 60;
+        $state = $simulator->advance($state);
+        $village = $state['villages']['village-20'];
+        $point = $state['frames'][0]['villages'][0];
+        self::assertSame('village-20', $point['id']);
+        self::assertSame('village', $point['kind']);
+        self::assertSame(20, $point['glory']);
+        self::assertSame(\Waar\MicroCombat\Bagaar\HostRules::armyValue($village['army'], $profile->costs()), $point['armyGold']);
     }
 
     public function testTickChunksDoNotChangeTheEra(): void

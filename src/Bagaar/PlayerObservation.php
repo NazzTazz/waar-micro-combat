@@ -22,7 +22,8 @@ final class PlayerObservation
         }
         usort($targets, static fn (array $a, array $b): int => [$a['glory'], $a['id']] <=> [$b['glory'], $b['id']]);
         $events = [];
-        foreach (array_reverse($state['events']) as $event) {
+        for ($i = count($state['events']) - 1; $i >= 0; $i--) {
+            $event = $state['events'][$i];
             if (($event['attacker'] ?? null) === $id || ($event['defender'] ?? null) === $id) {
                 $events[] = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender']));
                 if (count($events) >= 20) {

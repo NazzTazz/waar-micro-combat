@@ -10,6 +10,7 @@ use Waar\MicroCombat\Workshop\ProcessCohortRuntime;
 /** Deterministic, bounded hourly era. State is data and can be persisted between steps. */
 final class EraSimulator
 {
+    public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
     private CohortRuntime $runtime;
     private CohortRequestFactory $requests;
 
@@ -106,11 +107,18 @@ final class EraSimulator
         foreach ($state['players'] as $id => $player) {
             $value = HostRules::armyValue($player['army'], $this->profile->costs());
             $state['players'][$id]['peakArmyGold'] = max($player['peakArmyGold'], $value);
-            $points[] = ['id' => $id, 'policy' => $player['policy'],
+            $points[] = ['id' => $id, 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value,
                 'glory' => $player['glory'], 'gold' => $player['gold']];
         }
+        $villages = [];
+        foreach ($state['villages'] as $id => $village) {
+            $villages[] = ['id' => $id, 'kind' => 'village', 'policy' => 'village',
+                'armyGold' => HostRules::armyValue($village['army'], $this->profile->costs()),
+                'glory' => $village['glory'], 'gold' => $village['gold']];
+        }
         $state['frames'][] = ['tick' => $tick, 'weather' => $weather, 'points' => $points,
+            'villages' => $villages,
             'candidate' => $state['candidate'], 'candidateHours' => $state['candidateHours'],
             'rwaa' => $state['rwaa'], 'rwaaPv' => $state['rwaaPv'], 'eventCount' => count($state['events'])];
         return $state;
@@ -216,7 +224,13 @@ final class EraSimulator
         $event = ['tick' => $state['tick'], 'type' => 'combat', 'attacker' => $id,
             'defender' => $targetId, ...$result['event'], 'replayHash' => $report['result']['replayHash'] ?? null];
         $state['events'][] = $event;
-        $state['combats'][] = ['request' => $request, 'report' => $report, 'event' => $event];
+        $payload = json_encode(['request' => $request, 'report' => $report], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $compressed = gzencode($payload, 6);
+        if ($compressed === false) {
+            throw new \RuntimeException('Compression de l’archive de combat impossible.');
+        }
+        $state['combats'][] = ['format' => self::COMBAT_ARCHIVE_FORMAT,
+            'payload' => base64_encode($compressed), 'event' => $event];
         foreach ([$id, $targetId] as $participant) {
             if (!isset($state['players'][$participant])) {
                 continue;
@@ -290,5 +304,19 @@ final class EraSimulator
     private static function random(int $masterSeed, int $tick, string $purpose): int
     {
         return hexdec(substr(hash('sha256', $masterSeed.':'.$tick.':'.$purpose), 0, 8)) & 0x7fffffff;
+    }
+
+    public static function decodeCombat(array $archive): array
+    {
+        if (($archive['format'] ?? null) !== self::COMBAT_ARCHIVE_FORMAT || !is_string($archive['payload'] ?? null)) {
+            throw new \InvalidArgumentException('Format d’archive de combat inconnu.');
+        }
+        $binary = base64_decode($archive['payload'], true);
+        $json = $binary === false ? false : gzdecode($binary);
+        if ($json === false) {
+            throw new \RuntimeException('Archive de combat corrompue.');
+        }
+        $document = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        return ['request' => $document['request'], 'report' => $document['report'], 'event' => $archive['event']];
     }
 }

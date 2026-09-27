@@ -73,7 +73,7 @@ final class BagaarService
         if (!isset($state['combats'][$index])) {
             throw new \RuntimeException('Combat introuvable.', 404);
         }
-        return $state['combats'][$index];
+        return EraSimulator::decodeCombat($state['combats'][$index]);
     }
 
     private function summary(string $id, array $state, int $frameOffset, int $eventOffset): array

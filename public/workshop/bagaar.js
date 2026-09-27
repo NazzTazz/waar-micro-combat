@@ -2,7 +2,7 @@
 'use strict';
 const $=selector=>document.querySelector(selector);
 const svgNS='http://www.w3.org/2000/svg';
-const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef'};
+const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef',village:'#f5d477'};
 const names={rageux:'Le Rageux',grenouille:'La Grenouille',ascenseur:"L'Ascenseur",fermier:'Le Fermier',scripteur:'Le Scripteur'};
 const number=new Intl.NumberFormat('fr-FR');
 let runId=null,frames=[],events=[],played=0,computed=0,total=0,combatCount=0,computing=false,playing=false,selected=null,profile=null;
@@ -22,7 +22,7 @@ function renderChart(){
   const chart=$('#era-chart');chart.replaceChildren();
   if(played<1||!frames[played-1])return;
   const current=frames[played-1],left=70,right=755,top=35,bottom=435;
-  const historical=frames.slice(0,played).flatMap(frame=>frame.points);
+  const historical=frames.slice(0,played).flatMap(frame=>[...frame.points,...(frame.villages||[])]);
   const maxX=Math.max(1,...historical.map(point=>point.armyGold))*1.1;
   const maxY=Math.max(1,...historical.map(point=>point.glory))*1.1;
   const x=value=>left+(right-left)*value/maxX;
@@ -47,18 +47,27 @@ function renderChart(){
     chart.append(circle);
     writeSvgText(chart,x(point.armyGold)+10,y(point.glory)-9,point.id,{fill:colors[point.policy]});
   }
+  for(const village of current.villages||[]){
+    const cx=x(village.armyGold),cy=y(village.glory),size=selected===village.id?10:8;
+    const marker=svg('path',{class:'point village-point',d:`M ${cx} ${cy-size} L ${cx+size} ${cy} L ${cx} ${cy+size} L ${cx-size} ${cy} Z`,fill:colors.village,'aria-selected':selected===village.id,tabindex:0,role:'button','aria-label':`${village.id} : ${number.format(village.armyGold)} Or de garnison, ${village.glory} Glwaare`});
+    marker.addEventListener('click',()=>{selected=village.id;render()});
+    marker.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selected=village.id;render()}});
+    chart.append(marker);
+    writeSvgText(chart,cx+12,cy-10,village.id,{fill:colors.village});
+  }
   $('#frame-weather').textContent=`Tick ${current.tick} · météo : ${current.weather}`;
 }
 function renderPlayer(){
-  const point=frames[played-1]?.points.find(candidate=>candidate.id===selected)||frames[played-1]?.points[0];
+  const frame=frames[played-1];
+  const point=[...(frame?.points||[]),...(frame?.villages||[])].find(candidate=>candidate.id===selected)||frame?.points[0];
   if(!point)return;
   selected=point.id;
-  $('#player-title').textContent=`${point.id} · ${names[point.policy]||point.policy}`;
+  $('#player-title').textContent=point.kind==='village'?`${point.id} · Village palier ${point.glory}`:`${point.id} · ${names[point.policy]||point.policy}`;
   const detail=$('#player-detail');detail.replaceChildren();
-  for(const [label,value] of [['Glwaare',point.glory],["Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]]){
+  for(const [label,value] of [['Glwaare',point.glory],[point.kind==='village'?"Or de garnison":"Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]]){
     const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=String(value);detail.append(dt,dd);
   }
-  const frame=frames[played-1],note=document.createElement('p');note.className='hint';note.textContent=frame.rwaa===point.id?`Rwaa · ${frame.rwaaPv} PV`:frame.candidate===point.id?`Prétendant · ${frame.candidateHours}/24 ticks`:'';detail.append(note);
+  const note=document.createElement('p');note.className='hint';note.textContent=frame.rwaa===point.id?`Rwaa · ${frame.rwaaPv} PV`:frame.candidate===point.id?`Prétendant · ${frame.candidateHours}/24 ticks`:'';detail.append(note);
 }
 function renderRanking(){
   const list=$('#era-ranking');list.replaceChildren();
