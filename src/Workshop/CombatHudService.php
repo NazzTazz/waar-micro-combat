@@ -6,7 +6,7 @@ final class CombatHudService
 {
     public const MONOTYPE_BUDGET = 30000;
     public const WAVE_SIZE = 50;
-    public const TOTAL_ITERATIONS = 250;
+    public const TOTAL_ITERATIONS = 10000;
 
     private CohortRuntime $runtime;
 
@@ -28,7 +28,7 @@ final class CombatHudService
         }
         $start = $request['startIteration'] ?? null;
         if (!is_int($start) || $start < 0 || $start >= self::TOTAL_ITERATIONS || $start % self::WAVE_SIZE !== 0) {
-            throw new \InvalidArgumentException('Début de vague attendu parmi 0, 50, 100, 150 ou 200.');
+            throw new \InvalidArgumentException('Début de vague attendu entre 0 et 9 950, par pas de 50.');
         }
         $seed = $request['seed'] ?? null;
         if (!is_int($seed) || $seed < 0 || $seed > 2147483647) {
