@@ -14,7 +14,7 @@ final class BagaarPlayerEngagementTest extends TestCase
     public function testFiveRecentFightsWithFourLossesTriggerPauseThenAbandonment(): void
     {
         $id = 'pause';
-        while (hexdec(substr(hash('sha256', $id), 0, 2)) % 4 === 0) {
+        while (hexdec(substr(hash('sha256', $id), 0, 2)) % 2 === 0) {
             $id .= 'x';
         }
         $player = AccountRules::initial($id, 'fermier');
@@ -36,6 +36,22 @@ final class BagaarPlayerEngagementTest extends TestCase
         }
         self::assertSame('abandon', $change);
         self::assertSame('abandoned', $player['status']);
+    }
+
+    public function testSecondCompleteLossStreakCanResetSamePlayer(): void
+    {
+        $id = 'reset';
+        while (hexdec(substr(hash('sha256', $id), 0, 2)) % 4 !== 2) {
+            $id .= 'x';
+        }
+        $player = AccountRules::initial($id, 'scripteur');
+        $player['pauses'] = 1;
+        for ($i = 0; $i < 5; $i++) {
+            [$player, $change] = PlayerEngagement::afterCombat($player, 10, true);
+        }
+        self::assertSame('reset', $change);
+        self::assertSame('active', $player['status']);
+        self::assertSame($id, $player['id']);
     }
 
     public function testLossWindowExpiresAndSomePlayersAbandonImmediately(): void

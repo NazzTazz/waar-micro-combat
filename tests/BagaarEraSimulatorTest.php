@@ -28,7 +28,7 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertNotEmpty($first['combats']);
         self::assertSame(4, $first['tick']);
         foreach ($first['frames'] as $frame) {
-            self::assertCount(5, $frame['points']);
+            self::assertGreaterThanOrEqual(5, count($frame['points']));
             self::assertContains($frame['weather'], EngineProfile::WEATHER);
         }
         foreach ($first['combats'] as $archive) {
@@ -103,6 +103,72 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertNotEmpty($combats);
         self::assertGreaterThan(0, $combats[0]['loot']);
         self::assertLessThan(2000, $state['players']['fridge']['gold']);
+    }
+
+    public function testAbandonmentAddsAnEntrantWhileResetKeepsTheSameAccount(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        foreach (['abandon' => 1, 'reset' => 2] as $expected => $remainder) {
+            $targetId = 'target';
+            while (hexdec(substr(hash('sha256', $targetId), 0, 2)) % 4 !== $remainder) {
+                $targetId .= 'x';
+            }
+            $state = $simulator->start(12, 1, [
+                ['id' => 'farm', 'policy' => 'fermier'],
+                ['id' => $targetId, 'name' => 'Alice', 'policy' => 'casual'],
+            ]);
+            $state['players']['farm']['army']['soldier'] = 100;
+            $state['players']['farm']['spies'][$targetId] = ['tick' => 1, 'armyTotal' => 0, 'gold' => 2000];
+            $state['players'][$targetId]['pauses'] = 1;
+            $state['players'][$targetId]['recentCombats'] = array_fill(0, 4, ['tick' => 1, 'lost' => true]);
+            $state = $simulator->advance($state);
+            self::assertContains($expected, array_column($state['events'], 'type'));
+            if ($expected === 'abandon') {
+                self::assertCount(3, $state['players']);
+                self::assertSame('abandoned', $state['players'][$targetId]['status']);
+                self::assertSame(0, $state['players']['entrant-1']['glory']);
+                self::assertContains('arrival', array_column($state['events'], 'type'));
+            } else {
+                self::assertCount(2, $state['players']);
+                self::assertSame('Alice', $state['players'][$targetId]['name']);
+                self::assertSame(0, $state['players'][$targetId]['glory']);
+                self::assertSame(0, array_sum($state['players'][$targetId]['army']));
+                self::assertSame(1, $state['players'][$targetId]['resetCount']);
+                self::assertNotContains('arrival', array_column($state['events'], 'type'));
+            }
+        }
+    }
+
+    public function testHackerCanDriveAChosenAccountToAbandonmentThroughCombat(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $targetId = 'drawing';
+        while (hexdec(substr(hash('sha256', $targetId), 0, 2)) % 4 !== 0) {
+            $targetId .= 'x';
+        }
+        $state = $simulator->start(12, 2, [
+            ['id' => 'hacker', 'name' => 'Hacker', 'policy' => 'scripteur', 'hacker' => true],
+            ['id' => $targetId, 'policy' => 'casual'],
+        ]);
+        $state['players']['hacker']['army']['soldier'] = 500;
+        $state['players']['hacker']['glory'] = 40;
+        $state['players'][$targetId]['army']['spearman'] = 10;
+        $state['players'][$targetId]['glory'] = 40;
+        $state['players'][$targetId]['autoSurrender'] = true;
+        $state['players']['hacker']['spies'][$targetId] = ['tick' => 1, 'armyTotal' => 10, 'gold' => 2000];
+        $state = $simulator->advance($state);
+        self::assertSame(5, $state['players']['hacker']['hackerVictims'][$targetId]);
+        self::assertSame('abandoned', $state['players'][$targetId]['status']);
+        self::assertSame(0, $state['players']['entrant-1']['glory']);
+        $hackerPoint = array_values(array_filter($state['frames'][0]['points'],
+            static fn (array $point): bool => $point['id'] === 'hacker'))[0];
+        self::assertSame('Emmerder l’admin qui regarde la simulation', $hackerPoint['goal']);
+        $state = $simulator->advance($state);
+        self::assertSame(9, $state['players']['hacker']['hackerVictims'][$targetId]);
+        self::assertSame(10, $state['players'][$targetId]['glory']);
+        self::assertSame(1, $state['players'][$targetId]['surrenders']);
     }
 
     public function testOfficePlayerActsOnlyDuringPlayHoursWhileMineKeepsProducing(): void
@@ -200,6 +266,42 @@ final class BagaarEraSimulatorTest extends TestCase
         $state = $simulator->advance($state, 12);
         self::assertGreaterThanOrEqual(1, $state['players']['lift']['surrenders']);
         self::assertContains(true, array_column(array_filter($state['events'], static fn (array $event): bool => $event['type'] === 'combat'), 'surrender'));
+    }
+
+    public function testManualSurrenderIsRecordedAsItsOwnAction(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(3, 1, [
+            ['id' => 'frog', 'policy' => 'grenouille'], ['id' => 'farm', 'policy' => 'fermier'],
+        ]);
+        $state['players']['farm']['glory'] = 40;
+        $state['players']['farm']['defenseLossStreak'] = 9;
+        $state['players']['farm']['villageCautious'] = true;
+        $state = $simulator->advance($state);
+        self::assertLessThan(40, $state['players']['farm']['glory']);
+        self::assertSame(1, $state['players']['farm']['surrenders']);
+        self::assertContains('surrender', array_column($state['events'], 'type'));
+    }
+
+    public function testProtestCasualCreatesTwoRealRecruitmentEventsWhenConnected(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(3, 100, [
+            ['id' => 'zoe', 'name' => 'Zoé', 'policy' => 'casual', 'activity' => 'casual-morning', 'protester' => true],
+            ['id' => 'frog', 'policy' => 'grenouille'],
+        ]);
+        $state = $simulator->advance($state, 8);
+        $recruits = array_values(array_filter($state['events'], static fn (array $event): bool =>
+            $event['type'] === 'recruit' && $event['actor'] === 'zoe'));
+        self::assertCount(2, $recruits);
+        self::assertSame(['soldier' => 1], $recruits[0]['units']);
+        self::assertSame(['soldier' => 1], $recruits[1]['units']);
+        self::assertSame(2, $state['players']['zoe']['army']['soldier']);
+        $point = array_values(array_filter($state['frames'][7]['points'],
+            static fn (array $candidate): bool => $candidate['id'] === 'zoe'))[0];
+        self::assertSame('COUCOU JE SUIS UNE BALISE', $point['goal']);
     }
 
     public function testScripteurHealsImmediatelyAfterHisCombat(): void

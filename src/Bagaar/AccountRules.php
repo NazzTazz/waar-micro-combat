@@ -20,6 +20,19 @@ final class AccountRules
             'record' => ['wins' => 0, 'draws' => 0, 'losses' => 0]];
     }
 
+    public static function reset(array $account, int $tick): array
+    {
+        $fresh = self::initial($account['id'], $account['policy']);
+        foreach (['name', 'originName', 'activity', 'aggressionPercent', 'soldierParadigm', 'hacker', 'protester'] as $key) {
+            if (array_key_exists($key, $account)) {
+                $fresh[$key] = $account[$key];
+            }
+        }
+        $fresh['resetCount'] = ($account['resetCount'] ?? 0) + 1;
+        $fresh['joinedTick'] = $tick;
+        return $fresh;
+    }
+
     public static function buyMine(array $account): array
     {
         $offer = HostRules::mineUpgrade($account['mineLevel']);

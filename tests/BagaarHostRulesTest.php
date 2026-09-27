@@ -44,6 +44,22 @@ final class BagaarHostRulesTest extends TestCase
         self::assertSame(1, $player['surrenders']);
     }
 
+    public function testManualSurrenderIsOptionalAfterNineLosses(): void
+    {
+        $player = ['autoSurrender' => false, 'defenseLossStreak' => 0, 'glory' => 45,
+            'prisoners' => 7, 'morale' => 65, 'surrenders' => 0];
+        for ($i = 0; $i < 9; $i++) {
+            $player = HostRules::reportDefenseResult($player, true);
+        }
+        self::assertSame(45, $player['glory']);
+        self::assertSame(9, $player['defenseLossStreak']);
+        $surrendered = HostRules::manualSurrender($player);
+        self::assertSame(15, $surrendered['glory']);
+        self::assertSame(0, $surrendered['defenseLossStreak']);
+        $this->expectException(\DomainException::class);
+        HostRules::manualSurrender($surrendered);
+    }
+
     public function testVillageAppearsOnlyAfterLeaderReachesSixtyGlory(): void
     {
         self::assertSame([], VillageRules::availableTiers(0, 59));

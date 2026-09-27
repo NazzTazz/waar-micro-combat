@@ -140,7 +140,7 @@ final class BagaarPoliciesTest extends TestCase
             $view = self::view($name);
             $view['self']['glory'] = 20;
             $view['self']['gold'] = 100;
-            $view['self']['autoSurrender'] = true;
+            $view['self']['autoSurrender'] = false;
             $view['self']['cyclePhase'] = 'rebuild';
             $view['self']['peakArmyGold'] = 20000;
             $view['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
@@ -167,7 +167,7 @@ final class BagaarPoliciesTest extends TestCase
     {
         $view = self::view('fermier');
         $view['self']['glory'] = 20;
-        $view['self']['gold'] = 100;
+        $view['self']['gold'] = 1500;
         $view['self']['villageFailures']['village-20'] = 8000;
         $view['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
         $policy = new BuiltinPolicy('fermier');
@@ -251,11 +251,78 @@ final class BagaarPoliciesTest extends TestCase
         self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('scripteur'))->next($view));
     }
 
+    public function testHackerPursuesHisDrawingUsingOnlySpyReports(): void
+    {
+        $view = self::view('scripteur');
+        $view['self']['hacker'] = true;
+        $view['self']['hackerVictims'] = [];
+        $view['self']['army']['soldier'] = 500;
+        $view['targets'][] = ['id' => 'near-p', 'glory' => 20, 'kind' => 'player'];
+        $view['reports']['enemy'] = ['tick' => 1, 'gold' => 10000, 'armyTotal' => 10];
+        $view['reports']['near-p'] = ['tick' => 1, 'gold' => 0, 'armyTotal' => 36];
+        $policy = new BuiltinPolicy('scripteur');
+        self::assertSame('Emmerder l’admin qui regarde la simulation', $policy->intention($view['self'], 1, 100, [])['goal']);
+        self::assertSame(['type' => 'attack', 'target' => 'near-p'], $policy->next($view));
+        $view['self']['hackerVictims']['near-p'] = 9;
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], $policy->next($view));
+        $view['reports'] = [];
+        self::assertNull($policy->next($view));
+    }
+
+    public function testScripteurPursuesMineGloryWithVerySafeFightsThenSavesGold(): void
+    {
+        $view = self::view('scripteur');
+        $view['self']['mineLevel'] = 8;
+        $view['self']['glory'] = 15;
+        $view['reports']['enemy'] = ['tick' => 1, 'gold' => 0, 'armyTotal' => 1];
+        $policy = new BuiltinPolicy('scripteur');
+        self::assertSame('Monter la mine suivante', $policy->intention($view['self'], 1, 100, [])['goal']);
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], $policy->next($view));
+
+        $view['self']['glory'] = 20;
+        $view['self']['gold'] = 100;
+        $view['self']['hospitalLevel'] = 0;
+        $view['attempts'] = [['type' => 'mine']];
+        self::assertNull($policy->next($view));
+        self::assertStringContainsString('Suspendre le recrutement', $policy->intention($view['self'], 1, 100, [])['method']);
+    }
+
     public function testAscenseurActivatesAutomaticSurrender(): void
     {
         $view = self::view('ascenseur');
         $view['self']['autoSurrender'] = false;
+        $view['self']['cyclePhase'] = 'surrender';
         self::assertSame(['type' => 'autoSurrender', 'enabled' => true], (new BuiltinPolicy('ascenseur'))->next($view));
+        $view['self']['cyclePhase'] = 'rebuild';
+        $view['self']['autoSurrender'] = true;
+        self::assertSame(['type' => 'autoSurrender', 'enabled' => false], (new BuiltinPolicy('ascenseur'))->next($view));
+    }
+
+    public function testFarmerCanChooseManualSurrenderToReachLowerVillages(): void
+    {
+        $view = self::view('fermier');
+        $view['self']['glory'] = 40;
+        $view['self']['defenseLossStreak'] = 9;
+        $view['self']['villageCautious'] = true;
+        self::assertSame(['type' => 'surrender'], (new BuiltinPolicy('fermier'))->next($view));
+        $view['self']['villageCautious'] = false;
+        self::assertNotSame(['type' => 'surrender'], (new BuiltinPolicy('fermier'))->next($view));
+    }
+
+    public function testProtestCasualChoosesTwoSeparateSoldierPurchases(): void
+    {
+        $view = self::view('casual');
+        $view['self']['protester'] = true;
+        $view['self']['gold'] = 1000;
+        $view['attempts'] = [['type' => 'mine']];
+        $policy = new BuiltinPolicy('casual');
+        self::assertSame('COUCOU JE SUIS UNE BALISE', $policy->intention($view['self'], 1, 100, [])['goal']);
+        $action = ['type' => 'recruit', 'units' => ['soldier' => 1]];
+        self::assertSame($action, $policy->next($view));
+        $view['attempts'][] = $action;
+        self::assertSame($action, $policy->next($view));
+        $view['attempts'][] = $action;
+        self::assertNull($policy->next($view));
     }
 
     private static function view(string $policy): array

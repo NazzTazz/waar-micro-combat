@@ -24,6 +24,37 @@ final class BagaarAccountRulesTest extends TestCase
         self::assertSame(9, $account['attacks']);
     }
 
+    public function testResetKeepsTheSameAccountIdentityButStartsItClean(): void
+    {
+        $account = AccountRules::initial('same-id', 'scripteur');
+        $account['name'] = 'Alice';
+        $account['originName'] = 'Alice';
+        $account['activity'] = 'office';
+        $account['aggressionPercent'] = 95;
+        $account['gold'] = 18000;
+        $account['glory'] = 47;
+        $account['mineLevel'] = 9;
+        $account['army']['archer'] = 20;
+        $account['record']['losses'] = 17;
+        $account['spies']['target'] = ['gold' => 20];
+        $account['resetCount'] = 1;
+        $fresh = AccountRules::reset($account, 123);
+        self::assertSame('same-id', $fresh['id']);
+        self::assertSame('Alice', $fresh['name']);
+        self::assertSame('scripteur', $fresh['policy']);
+        self::assertSame('office', $fresh['activity']);
+        self::assertSame(95, $fresh['aggressionPercent']);
+        self::assertSame(2, $fresh['resetCount']);
+        self::assertSame(123, $fresh['joinedTick']);
+        self::assertSame(2000, $fresh['gold']);
+        self::assertSame(0, $fresh['glory']);
+        self::assertSame(0, $fresh['mineLevel']);
+        self::assertSame(0, array_sum($fresh['army']));
+        self::assertSame(['wins' => 0, 'draws' => 0, 'losses' => 0], $fresh['record']);
+        self::assertSame([], $fresh['spies']);
+        self::assertSame('active', $fresh['status']);
+    }
+
     public function testRecruitmentAndHealingUsePresetPrices(): void
     {
         $account = AccountRules::initial('scripteur', 'scripteur');

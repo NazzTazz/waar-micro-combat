@@ -94,4 +94,12 @@ final class HostRules
         $player['surrenders']++;
         return $player;
     }
+
+    public static function manualSurrender(array $player): array
+    {
+        if ($player['defenseLossStreak'] < self::SURRENDER_LOSSES) {
+            throw new \DomainException('Reddition indisponible avant neuf défaites défensives consécutives.');
+        }
+        return self::surrender($player);
+    }
 }

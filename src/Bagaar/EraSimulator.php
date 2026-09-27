@@ -20,7 +20,7 @@ final class EraSimulator
         $this->requests = new CohortRequestFactory();
     }
 
-    /** @param list<array{id:string,policy:string,name?:string,activity?:string,aggressionPercent?:int,soldierParadigm?:bool}> $accounts */
+    /** @param list<array{id:string,policy:string,name?:string,activity?:string,aggressionPercent?:int,soldierParadigm?:bool,hacker?:bool,protester?:bool}> $accounts */
     public function start(int $seed, int $totalTicks, array $accounts): array
     {
         if ($seed < 0 || $seed > 2147483647 || $totalTicks < 1 || $totalTicks > 1440 || count($accounts) < 2 || count($accounts) > 24) {
@@ -43,8 +43,18 @@ final class EraSimulator
             }
             $players[$id] = AccountRules::initial($id, $policy);
             $players[$id]['name'] = $name;
+            $players[$id]['originName'] = $name;
+            $players[$id]['resetCount'] = 0;
+            $players[$id]['joinedTick'] = 0;
             $players[$id]['activity'] = $activity;
             $players[$id]['aggressionPercent'] = $aggression;
+            if ($policy === 'scripteur' && ($entry['hacker'] ?? false) === true) {
+                $players[$id]['hacker'] = true;
+                $players[$id]['hackerVictims'] = [];
+            }
+            if ($policy === 'casual' && ($entry['protester'] ?? false) === true) {
+                $players[$id]['protester'] = true;
+            }
             if ($policy === 'grenouille') {
                 $players[$id]['soldierParadigm'] = (bool)($entry['soldierParadigm'] ?? false);
             }
@@ -60,8 +70,9 @@ final class EraSimulator
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => 'bagaar-builtin-policies/5', 'hostRuleVersion' => 'bagaar-host-rules/2',
+            'decisionVersion' => 'bagaar-builtin-policies/6', 'hostRuleVersion' => 'bagaar-host-rules/3',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
+            'spawnSerial' => 0,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
             'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
     }
@@ -108,7 +119,8 @@ final class EraSimulator
             $attempts = [];
             $policy = new BuiltinPolicy($state['players'][$id]['policy']);
             for ($actionIndex = 0; $actionIndex < 16; $actionIndex++) {
-                if (($state['players'][$id]['status'] ?? 'active') !== 'active') {
+                if (($state['players'][$id]['status'] ?? 'active') !== 'active'
+                    || ($state['players'][$id]['joinedTick'] ?? 0) >= $tick) {
                     break;
                 }
                 $view = PlayerObservation::fromState($state, $id, $this->profile->costs(), $attempts);
@@ -135,6 +147,7 @@ final class EraSimulator
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
                 'mineLevel' => $player['mineLevel'], 'mineProduction' => HostRules::mineProduction($player['mineLevel']),
                 'record' => $player['record'], 'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent'],
+                'resetCount' => $player['resetCount'] ?? 0,
                 'status' => $player['status'] ?? 'active', 'pauseUntil' => $player['pauseUntil'] ?? null,
                 'goal' => $intent['goal'], 'method' => $intent['method']];
         }
@@ -172,6 +185,14 @@ final class EraSimulator
             case 'autoSurrender':
                 $state['players'][$id]['autoSurrender'] = (bool)$action['enabled'];
                 break;
+            case 'surrender':
+                $state['players'][$id] = HostRules::manualSurrender($player);
+                if ($state['rwaa'] === $id) {
+                    $state['rwaa'] = null;
+                    $state['rwaaPv'] = 0;
+                    $state['events'][] = ['tick' => $state['tick'], 'type' => 'rwaa-ended', 'actor' => $id];
+                }
+                break;
             case 'phase':
                 if ($player['policy'] !== 'ascenseur' || !in_array($action['value'] ?? null, ['raid', 'surrender'], true)) {
                     throw new \DomainException('Phase de profil invalide.');
@@ -195,6 +216,8 @@ final class EraSimulator
         $event = ['tick' => $state['tick'], 'type' => $type, 'actor' => $id];
         if ($type === 'spy') {
             $event['target'] = $action['target'];
+        } elseif ($type === 'recruit') {
+            $event['units'] = $action['units'];
         }
         $state['events'][] = $event;
     }
@@ -244,6 +267,10 @@ final class EraSimulator
             }
         }
         $state['players'][$id] = $result['attacker'];
+        if (($state['players'][$id]['hacker'] ?? false) && $result['event']['winner'] === 'attacker' && !$village) {
+            $state['players'][$id]['hackerVictims'][$targetId] =
+                ($state['players'][$id]['hackerVictims'][$targetId] ?? 0) + 1;
+        }
         $state['players'][$id]['record'][$result['event']['winner'] === 'attacker' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
         [$state['players'][$id], $attackerChange] = PlayerEngagement::afterCombat($state['players'][$id], $state['tick'], $result['event']['winner'] === 'defender');
         if ($village) {
@@ -282,6 +309,11 @@ final class EraSimulator
         foreach ([$id => $attackerChange, $targetId => $defenderChange ?? null] as $participant => $change) {
             if ($change !== null) {
                 $state['events'][] = ['tick' => $state['tick'], 'type' => $change, 'actor' => $participant];
+                if ($change === 'abandon') {
+                    $this->spawnReplacement($state, $participant);
+                } elseif ($change === 'reset') {
+                    $this->resetAccount($state, $participant);
+                }
             }
         }
         $payload = json_encode(['request' => $request, 'report' => $report], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -295,6 +327,7 @@ final class EraSimulator
         foreach ([$id, $targetId] as $participant) {
             if (!isset($state['players'][$participant])
                 || ($state['players'][$participant]['status'] ?? 'active') !== 'active'
+                || ($state['players'][$participant]['joinedTick'] ?? 0) >= $state['tick']
                 || !PlayerSchedule::isActive($state['players'][$participant]['activity'], $state['tick'])) {
                 continue;
             }
@@ -308,6 +341,42 @@ final class EraSimulator
                         'action' => $reaction['type'], 'reason' => $error->getMessage()];
                 }
             }
+        }
+    }
+
+    private function spawnReplacement(array &$state, string $formerId): void
+    {
+        $serial = ($state['spawnSerial'] ?? 0) + 1;
+        $entrant = PlayerEntrants::create($serial, $state['tick']);
+        if ($entrant['policy'] === 'fermier') {
+            $entrant['fridges'] = array_slice(array_values(array_diff(array_keys($state['players']), [$formerId])), 0, 2);
+        }
+        $state['spawnSerial'] = $serial;
+        $state['players'][$entrant['id']] = $entrant;
+        if ($state['candidate'] === $formerId) {
+            $state['candidate'] = null;
+            $state['candidateHours'] = 0;
+        }
+        if ($state['rwaa'] === $formerId) {
+            $state['rwaa'] = null;
+            $state['rwaaPv'] = 0;
+            $state['events'][] = ['tick' => $state['tick'], 'type' => 'rwaa-ended', 'actor' => $formerId];
+        }
+        $state['events'][] = ['tick' => $state['tick'], 'type' => 'arrival', 'actor' => $entrant['id'],
+            'predecessor' => $formerId];
+    }
+
+    private function resetAccount(array &$state, string $id): void
+    {
+        $state['players'][$id] = AccountRules::reset($state['players'][$id], $state['tick']);
+        if ($state['candidate'] === $id) {
+            $state['candidate'] = null;
+            $state['candidateHours'] = 0;
+        }
+        if ($state['rwaa'] === $id) {
+            $state['rwaa'] = null;
+            $state['rwaaPv'] = 0;
+            $state['events'][] = ['tick' => $state['tick'], 'type' => 'rwaa-ended', 'actor' => $id];
         }
     }
 
@@ -340,7 +409,12 @@ final class EraSimulator
         if ($state['rwaa'] !== null) {
             return;
         }
-        $ranking = $state['players'];
+        $ranking = array_filter($state['players'], static fn (array $player): bool => ($player['status'] ?? 'active') === 'active');
+        if (count($ranking) < 2) {
+            $state['candidate'] = null;
+            $state['candidateHours'] = 0;
+            return;
+        }
         uasort($ranking, static fn (array $a, array $b): int => [$b['glory'], $a['id']] <=> [$a['glory'], $b['id']]);
         $ids = array_keys($ranking);
         $first = $ranking[$ids[0]];
