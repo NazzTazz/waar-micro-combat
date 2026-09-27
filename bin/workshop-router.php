@@ -10,6 +10,7 @@ use Waar\MicroCombat\Workshop\MonotypeMeasurementService;
 use Waar\MicroCombat\Workshop\ProfileValidationException;
 use Waar\MicroCombat\Workshop\ConsequenceObjectives;
 use Waar\MicroCombat\Workshop\T27Editor;
+use Waar\MicroCombat\Bagaar\BagaarService;
 
 require dirname(__DIR__).'/autoload.php';
 $public = dirname(__DIR__).'/public/workshop';
@@ -18,6 +19,19 @@ $editorAssets = ['/editor/echarts.js' => 'vendor/echarts-5.6.0.min.js', '/editor
 if (isset($editorAssets[$path])) {
     header('Content-Type: application/javascript; charset=utf-8');
     readfile(dirname(__DIR__).'/resources/'.$editorAssets[$path]);
+    return;
+}
+if (preg_match('~^/bagaar-export/([a-f0-9]{32})\.json$~', $path, $match)) {
+    try {
+        $document = (new \Waar\MicroCombat\Bagaar\RunStore())->read($match[1]);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Content-Disposition: attachment; filename="bagaar-'.$match[1].'.json"');
+        header('Cache-Control: no-store');
+        echo json_encode($document, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    } catch (Throwable $error) {
+        http_response_code(404);
+        echo 'Simulation introuvable.';
+    }
     return;
 }
 if (str_starts_with($path, '/api/')) {
@@ -76,6 +90,10 @@ if (str_starts_with($path, '/api/')) {
             ['/api/save-profile', 'POST'] => (new \Waar\MicroCombat\Workshop\SharedProfiles())->save(is_string($request['name'] ?? null) ? $request['name'] : '', is_array($request['profile'] ?? null) ? $request['profile'] : []),
             ['/api/load-profile', 'POST'] => (new \Waar\MicroCombat\Workshop\SharedProfiles())->load(is_string($request['id'] ?? null) ? $request['id'] : ''),
             ['/api/default-profile', 'GET'] => ['profile' => json_decode(file_get_contents(dirname(__DIR__).'/resources/workshop-default-profile.json'), true, 128, JSON_THROW_ON_ERROR)],
+            ['/api/bagaar-start', 'POST'] => (new BagaarService())->start($request),
+            ['/api/bagaar-step', 'POST'] => (new BagaarService())->advance($request),
+            ['/api/bagaar-resume', 'POST'] => (new BagaarService())->resume($request),
+            ['/api/bagaar-combat', 'POST'] => (new BagaarService())->combat($request),
             ['/api/migrate-profile', 'POST'] => (new EngineProfileMigrator())->migrate(is_array($request['profile'] ?? null) ? $request['profile'] : []),
             ['/api/editor', 'POST'] => (new T27Editor())->render($request['profile'] ?? [], $request['measurement'] ?? [], $request['zones'] ?? []),
             ['/api/validate', 'POST'] => ['errors' => EngineProfile::validate($request['profile'] ?? [], match($request['mode'] ?? 'complete') {
