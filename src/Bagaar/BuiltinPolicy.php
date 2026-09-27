@@ -68,7 +68,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 ? ['goal' => 'Préparer la percée', 'method' => 'Accumuler une armée sans monter trop vite en Glwaare.']
                 : ['goal' => 'Prendre la tête', 'method' => 'Engager l’armée accumulée contre les rivaux.'],
             'ascenseur' => ['goal' => 'Remonter en puissance', 'method' => 'Alterner raids, reddition et reconstruction.'],
-            'fermier' => ['goal' => 'Agrandir mon armée', 'method' => 'Développer la mine, espionner et saisir les occasions.'],
+            'fermier' => ['goal' => 'Exploiter les villages', 'method' => 'Attaquer les villages à portée ; au-dessus du dernier village, gagner de la Glwaare contre les joueurs pour faire apparaître le suivant.'],
             'scripteur' => ['goal' => 'Gagner la couronne', 'method' => 'Optimiser mine, renseignement, combats et soins.'],
             'casual' => ['goal' => 'Agrandir mon armée', 'method' => 'Jouer un ou deux ticks par jour, recruter et saisir une occasion.'],
         };
@@ -264,7 +264,10 @@ final readonly class BuiltinPolicy implements PlayerPolicy
     /** Estimate from the reported headcount, never from the hidden village army. */
     private static function estimatedVillageArmyValue(array $costs, array $report): float
     {
-        $estimatedUnitCost = $costs['soldier'] * 0.5 + $costs['spearman'] * 0.35 + $costs['knight'] * 0.15;
+        $progress = min(1.0, max(0, $report['glory'] ?? 0) / 300);
+        $estimatedUnitCost = $costs['soldier'] * (0.9 - 0.55 * $progress)
+            + $costs['spearman'] * (0.1 + 0.4 * $progress)
+            + $costs['knight'] * (0.15 * $progress);
         return $report['armyTotal'] * $estimatedUnitCost;
     }
 
@@ -324,12 +327,15 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             }
             $endgame = $view['tick'] >= 0.75 * $view['totalTicks'];
             $opportunity = self::playerOpportunity($view, $players, $endgame);
-            if ($opportunity !== null) {
+            if ($endgame && $opportunity !== null && $opportunity === ($view['rwaa'] ?? null)) {
                 return ['type' => 'attack', 'target' => $opportunity];
             }
             $target = self::villageTarget($view, $villages);
             if ($target !== null) {
                 return ['type' => 'attack', 'target' => $target];
+            }
+            if ($opportunity !== null) {
+                return ['type' => 'attack', 'target' => $opportunity];
             }
             foreach ($players as $player) {
                 if ($villages === [] && in_array($player['id'], $self['fridges'] ?? [], true)
