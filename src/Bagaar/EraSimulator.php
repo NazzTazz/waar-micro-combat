@@ -11,6 +11,7 @@ use Waar\MicroCombat\Workshop\ProcessCohortRuntime;
 final class EraSimulator
 {
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
+    public const DECISION_VERSION = 'bagaar-builtin-policies/8';
     private CohortRuntime $runtime;
     private CohortRequestFactory $requests;
 
@@ -70,9 +71,9 @@ final class EraSimulator
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => 'bagaar-builtin-policies/7', 'hostRuleVersion' => 'bagaar-host-rules/3',
+            'decisionVersion' => self::DECISION_VERSION, 'hostRuleVersion' => 'bagaar-host-rules/3',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
-            'spawnSerial' => 0,
+            'spawnSerial' => 0, 'spontaneousArrivals' => 0,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
             'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
     }
@@ -81,6 +82,7 @@ final class EraSimulator
     {
         if (($state['schemaVersion'] ?? null) !== 'waar-bagaar-era/1'
             || ($state['manifest']['profileFingerprint'] ?? null) !== $this->profile->semanticFingerprint()
+            || ($state['manifest']['decisionVersion'] ?? null) !== self::DECISION_VERSION
             || $steps < 1 || $steps > 24) {
             throw new \InvalidArgumentException('État, preset ou nombre de ticks invalide.');
         }
@@ -137,12 +139,18 @@ final class EraSimulator
                 }
             }
         }
+        if ($tick % 24 === 0
+            && ($state['spontaneousArrivals'] ?? 0) < max(1, intdiv($state['totalTicks'], 240))
+            && self::random($master, $tick, 'spontaneous-arrival') % 10 === 0) {
+            $this->spawnEntrant($state, null);
+            $state['spontaneousArrivals'] = ($state['spontaneousArrivals'] ?? 0) + 1;
+        }
         $points = [];
         $playerNames = array_map(static fn (array $player): string => $player['name'], $state['players']);
         foreach ($state['players'] as $id => $player) {
             $value = HostRules::armyValue($player['army'], $this->profile->costs());
             $state['players'][$id]['peakArmyGold'] = max($player['peakArmyGold'], $value);
-            $intent = (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames);
+            $intent = (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames, $state['rwaa']);
             $points[] = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
                 'mineLevel' => $player['mineLevel'], 'mineProduction' => HostRules::mineProduction($player['mineLevel']),
@@ -310,7 +318,7 @@ final class EraSimulator
             if ($change !== null) {
                 $state['events'][] = ['tick' => $state['tick'], 'type' => $change, 'actor' => $participant];
                 if ($change === 'abandon') {
-                    $this->spawnReplacement($state, $participant);
+                    $this->spawnEntrant($state, $participant);
                 } elseif ($change === 'reset') {
                     $this->resetAccount($state, $participant);
                 }
@@ -344,7 +352,7 @@ final class EraSimulator
         }
     }
 
-    private function spawnReplacement(array &$state, string $formerId): void
+    private function spawnEntrant(array &$state, ?string $formerId): void
     {
         $serial = ($state['spawnSerial'] ?? 0) + 1;
         $entrant = PlayerEntrants::create($serial, $state['tick']);
@@ -353,16 +361,17 @@ final class EraSimulator
         }
         $state['spawnSerial'] = $serial;
         $state['players'][$entrant['id']] = $entrant;
-        if ($state['candidate'] === $formerId) {
+        if ($formerId !== null && $state['candidate'] === $formerId) {
             $state['candidate'] = null;
             $state['candidateHours'] = 0;
         }
-        if ($state['rwaa'] === $formerId) {
+        if ($formerId !== null && $state['rwaa'] === $formerId) {
             $state['rwaa'] = null;
             $state['rwaaPv'] = 0;
             $state['events'][] = ['tick' => $state['tick'], 'type' => 'rwaa-ended', 'actor' => $formerId];
         }
         $state['events'][] = ['tick' => $state['tick'], 'type' => 'arrival', 'actor' => $entrant['id'],
+            'source' => $formerId === null ? 'spontaneous' : 'replacement',
             'predecessor' => $formerId];
     }
 

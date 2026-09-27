@@ -121,7 +121,7 @@ final class BagaarPoliciesTest extends TestCase
         $view['reports']['leader'] = ['tick' => 80, 'armyTotal' => 2, 'gold' => 1000];
         $policy = new BuiltinPolicy('fermier');
         self::assertSame(['type' => 'attack', 'target' => 'leader'], $policy->next($view));
-        self::assertSame('Gagner la couronne', $policy->intention($view['self'], 80, 100, [] )['goal']);
+        self::assertSame('Prendre la couronne', $policy->intention($view['self'], 80, 100, [])['goal']);
     }
 
     public function testRageuxKeepsHisTargetForThreeTicks(): void

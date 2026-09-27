@@ -20,7 +20,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             ? ['type' => 'heal'] : null;
     }
 
-    public function intention(array $self, int $tick, int $totalTicks, array $names): array
+    public function intention(array $self, int $tick, int $totalTicks, array $names, ?string $rwaaId = null): array
     {
         if (($self['status'] ?? 'active') === 'abandoned') {
             return ['goal' => 'Jeu abandonné', 'method' => 'Aucune action prévue ; le compte reste attaquable.'];
@@ -35,6 +35,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if ($this->name === 'casual' && ($self['protester'] ?? false)) {
             return ['goal' => 'COUCOU JE SUIS UNE BALISE',
                 'method' => 'Acheter deux soldats séparément à chaque connexion pour faire clignoter deux fois le point en bleu.'];
+        }
+        if ($tick >= 0.75 * $totalTicks) {
+            return $self['id'] === $rwaaId
+                ? ['goal' => 'Conserver la couronne', 'method' => 'Défendre le trône jusqu’à la fin de l’ère.']
+                : ['goal' => 'Prendre la couronne',
+                    'method' => 'Monter en Glwaare jusqu’à portée du Rwaa, puis participer aux assauts contre lui.'];
         }
         if ($this->name === 'rageux' && ($self['rageTarget'] ?? null) !== null && $tick <= ($self['rageUntil'] ?? 0)) {
             return ['goal' => 'Détruire '.($names[$self['rageTarget']] ?? $self['rageTarget']),
@@ -133,6 +139,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         if ($this->name === 'ascenseur' && in_array($self['cyclePhase'], ['build', 'surrender'], true)) {
             return null;
         }
+        if (!self::attempted($attempts, 'spy')) {
+            $royalSpy = $this->royalSpyCandidate($observation);
+            if ($royalSpy !== null) {
+                return ['type' => 'spy', 'target' => $royalSpy];
+            }
+        }
         if ($this->name === 'fermier' && ($observation['tick'] % 6 === 0 || $observation['tick'] >= 0.75 * $observation['totalTicks'])
             && !self::attempted($attempts, 'spy')) {
             $spy = $this->spyCandidate($observation);
@@ -140,7 +152,9 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 return ['type' => 'spy', 'target' => $spy];
             }
         }
-        if ($this->name === 'scripteur' || $this->name === 'casual' || ($this->name === 'ascenseur' && $self['cyclePhase'] !== 'rebuild')) {
+        if ($this->name === 'scripteur' || $this->name === 'casual'
+            || $observation['tick'] >= 0.75 * $observation['totalTicks']
+            || ($this->name === 'ascenseur' && $self['cyclePhase'] !== 'rebuild')) {
             $spy = self::attempted($attempts, 'spy') ? null : $this->spyCandidate($observation);
             if ($spy !== null) {
                 return ['type' => 'spy', 'target' => $spy];
@@ -198,7 +212,7 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         $targets = $view['targets'];
         $mineGap = self::mineGloryGap($self);
         $minePlan = $this->name === 'scripteur' && !($self['hacker'] ?? false) && $mineGap >= 1 && $mineGap <= 5;
-        if ($this->name === 'fermier' && $view['tick'] >= 0.75 * $view['totalTicks']) {
+        if ($view['tick'] >= 0.75 * $view['totalTicks'] && !($self['hacker'] ?? false)) {
             usort($targets, static fn (array $a, array $b): int =>
                 [($b['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $b['glory'], $a['id']]
                 <=> [($a['id'] === ($view['rwaa'] ?? null) ? 1 : 0), $a['glory'], $b['id']]);
@@ -289,6 +303,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             abs($target['glory'] - $self['glory']) <= HostRules::ATTACK_RANGE));
         $villages = array_values(array_filter($eligible, static fn (array $target): bool => $target['kind'] === 'village'));
         $players = array_values(array_filter($eligible, static fn (array $target): bool => $target['kind'] === 'player'));
+        if ($this->name !== 'fermier' && !($self['hacker'] ?? false) && !($self['protester'] ?? false)) {
+            $royalTarget = $this->royalAttackTarget($view, $players);
+            if ($royalTarget !== null) {
+                return ['type' => 'attack', 'target' => $royalTarget];
+            }
+        }
         if ($this->name === 'rageux') {
             $rageTarget = $self['rageTarget'] ?? null;
             if ($rageTarget !== null && $view['tick'] <= ($self['rageUntil'] ?? 0)) {
@@ -326,6 +346,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
                 return null;
             }
             $endgame = $view['tick'] >= 0.75 * $view['totalTicks'];
+            if ($endgame) {
+                $royalTarget = $this->royalAttackTarget($view, $players, false);
+                if ($royalTarget !== null) {
+                    return ['type' => 'attack', 'target' => $royalTarget];
+                }
+            }
             $opportunity = self::playerOpportunity($view, $players, $endgame);
             if ($endgame && $opportunity !== null && $opportunity === ($view['rwaa'] ?? null)) {
                 return ['type' => 'attack', 'target' => $opportunity];
@@ -333,6 +359,12 @@ final readonly class BuiltinPolicy implements PlayerPolicy
             $target = self::villageTarget($view, $villages);
             if ($target !== null) {
                 return ['type' => 'attack', 'target' => $target];
+            }
+            if ($endgame) {
+                $climb = $this->royalAttackTarget($view, $players);
+                if ($climb !== null) {
+                    return ['type' => 'attack', 'target' => $climb];
+                }
             }
             if ($opportunity !== null) {
                 return ['type' => 'attack', 'target' => $opportunity];
@@ -432,6 +464,72 @@ final readonly class BuiltinPolicy implements PlayerPolicy
         }
         $villageTarget = self::villageTarget($view, $villages);
         return $villageTarget === null ? null : ['type' => 'attack', 'target' => $villageTarget];
+    }
+
+    private function royalSpyCandidate(array $view): ?string
+    {
+        $rwaa = $view['rwaa'] ?? null;
+        if ($rwaa === null || $rwaa === $view['self']['id'] || ($view['self']['hacker'] ?? false)
+            || ($view['self']['protester'] ?? false)
+            || $view['self']['gold'] < HostRules::espionageCost($view['self']['glory'])) {
+            return null;
+        }
+        foreach ($view['targets'] as $target) {
+            if ($target['id'] !== $rwaa || abs($target['glory'] - $view['self']['glory']) > ($view['spyRange'] ?? 30)
+                || self::attempted($view['attempts'], 'spy', $rwaa)) {
+                continue;
+            }
+            $report = $view['reports'][$rwaa] ?? null;
+            return $report === null || $view['tick'] - $report['tick'] >= 6 ? $rwaa : null;
+        }
+        return null;
+    }
+
+    private function royalAttackTarget(array $view, array $players, bool $allowClimb = true): ?string
+    {
+        $rwaa = $view['rwaa'] ?? null;
+        if ($rwaa === null || $rwaa === $view['self']['id'] || self::attempted($view['attempts'], 'attack')) {
+            return null;
+        }
+        $rwaaTarget = null;
+        foreach ($view['targets'] as $target) {
+            if ($target['id'] === $rwaa) {
+                $rwaaTarget = $target;
+                break;
+            }
+        }
+        if ($rwaaTarget === null) {
+            return null;
+        }
+        $ownValue = HostRules::armyValue($view['self']['army'], $view['costs']);
+        $range = abs($rwaaTarget['glory'] - $view['self']['glory']);
+        if ($range <= HostRules::ATTACK_RANGE
+            && !($this->name === 'grenouille' && $view['tick'] < 0.75 * $view['totalTicks'])) {
+            $remaining = $view['totalTicks'] - $view['tick'];
+            $interval = $remaining <= 24 ? 1 : ($remaining <= 72 ? 3
+                : ($view['tick'] >= 0.75 * $view['totalTicks'] ? 12 : 24));
+            $phase = hexdec(substr(hash('sha256', $view['self']['id']), 0, 4)) % $interval;
+            $report = $view['reports'][$rwaa] ?? null;
+            if (($view['tick'] + $phase) % $interval === 0 && $report !== null
+                && $view['tick'] - $report['tick'] <= 6
+                && $ownValue >= 1.25 * $report['armyTotal'] * min($view['costs'])) {
+                return $rwaa;
+            }
+        }
+        if (!$allowClimb || $view['tick'] < 0.75 * $view['totalTicks'] || $range <= HostRules::ATTACK_RANGE) {
+            return null;
+        }
+        $climb = [];
+        foreach ($players as $player) {
+            $report = $view['reports'][$player['id']] ?? null;
+            if ($report !== null && $view['tick'] - $report['tick'] <= 6
+                && $ownValue >= 2 * $report['armyTotal'] * min($view['costs'])) {
+                $climb[] = ['id' => $player['id'], 'armyTotal' => $report['armyTotal']];
+            }
+        }
+        usort($climb, static fn (array $a, array $b): int =>
+            [$a['armyTotal'], $a['id']] <=> [$b['armyTotal'], $b['id']]);
+        return $climb[0]['id'] ?? null;
     }
 
     private static function mineGloryGap(array $self): int
