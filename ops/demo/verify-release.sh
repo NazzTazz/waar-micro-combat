@@ -19,6 +19,8 @@ wait_healthy "$container" || fail 'Container did not become healthy'
 # the container. All HTTP checks are bounded; the duel performs two tiny fights.
 docker exec -i "$container" php <<'PHP'
 <?php
+if (ini_get('memory_limit') !== '256M') throw new RuntimeException('PHP memory_limit must be 256M');
+if (!is_dir('/var/lib/waar-bagaar')) throw new RuntimeException('Bagaar run volume unavailable');
 function request(string $path, ?array $body = null): array {
     for ($attempt = 0; $attempt < 5; ++$attempt) {
         $options = ['method' => $body === null ? 'GET' : 'POST', 'timeout' => 5,

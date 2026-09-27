@@ -101,6 +101,24 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame($oneShot, $chunks);
     }
 
+    public function testDetachingTheCombatArchivePreservesFutureSeedsAndFrames(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $accounts = [['id' => 'a', 'policy' => 'rageux'], ['id' => 'b', 'policy' => 'fermier']];
+        $full = $simulator->advance($simulator->start(23, 3, $accounts));
+        $earlyCombats = count($full['combats']);
+        $detached = $full;
+        $detached['archiveDetached'] = true;
+        $detached['combats'] = [];
+        $full = $simulator->advance($full, 2);
+        $detached = $simulator->advance($detached, 2);
+        self::assertSame($full['frames'], $detached['frames']);
+        self::assertSame($full['events'], $detached['events']);
+        self::assertSame($full['combatCount'], $detached['combatCount']);
+        self::assertSame(array_slice($full['combats'], $earlyCombats), $detached['combats']);
+    }
+
     public function testRwaaRequiresStrictLeadForTwentyFourCompletedTicks(): void
     {
         $profile = EngineProfile::fromArray(EngineProfile::defaults());

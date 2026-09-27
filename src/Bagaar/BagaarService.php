@@ -30,6 +30,7 @@ final class BagaarService
             throw new \InvalidArgumentException('Paramètres de simulation invalides.');
         }
         $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime()))->start($seed, $totalTicks, $accounts);
+        $state['archiveDetached'] = true;
         $id = $this->runs->create(['profile' => $profileInput, 'state' => $state]);
         return ['runId' => $id, 'manifest' => $state['manifest'], 'tick' => 0,
             'totalTicks' => $totalTicks, 'accounts' => array_map(static fn (array $player): array =>
@@ -60,11 +61,26 @@ final class BagaarService
     public function resume(array $request): array
     {
         $id = $request['runId'] ?? null;
-        if (!is_string($id)) {
-            throw new \InvalidArgumentException('Simulation requise.');
+        $frameOffset = $request['frameOffset'] ?? 0;
+        $limit = $request['limit'] ?? 50;
+        if (!is_string($id) || !is_int($frameOffset) || $frameOffset < 0
+            || !is_int($limit) || $limit < 1 || $limit > 50) {
+            throw new \InvalidArgumentException('Simulation ou pagination invalide.');
         }
         $state = $this->runs->read($id)['state'];
-        return $this->summary($id, $state, 0, 0);
+        $frameCount = count($state['frames']);
+        if ($frameOffset > $frameCount) {
+            throw new \InvalidArgumentException('Offset de trame invalide.');
+        }
+        $end = min($frameCount, $frameOffset + $limit);
+        $eventOffset = $frameOffset === 0 ? 0 : $state['frames'][$frameOffset - 1]['eventCount'];
+        $eventEnd = $end === 0 ? 0 : $state['frames'][$end - 1]['eventCount'];
+        return ['runId' => $id, 'tick' => $state['tick'], 'totalTicks' => $state['totalTicks'],
+            'done' => $state['tick'] >= $state['totalTicks'], 'manifest' => $state['manifest'],
+            'frames' => array_slice($state['frames'], $frameOffset, $end - $frameOffset),
+            'events' => array_slice($state['events'], $eventOffset, $eventEnd - $eventOffset),
+            'eventCount' => count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats']),
+            'nextFrameOffset' => $end, 'hasMoreFrames' => $end < $frameCount];
     }
 
     public function combat(array $request): array
@@ -74,11 +90,7 @@ final class BagaarService
         if (!is_string($id) || !is_int($index) || $index < 0) {
             throw new \InvalidArgumentException('Combat requis.');
         }
-        $state = $this->runs->read($id)['state'];
-        if (!isset($state['combats'][$index])) {
-            throw new \RuntimeException('Combat introuvable.', 404);
-        }
-        return EraSimulator::decodeCombat($state['combats'][$index]);
+        return EraSimulator::decodeCombat($this->runs->readCombat($id, $index));
     }
 
     private function summary(string $id, array $state, int $frameOffset, int $eventOffset): array
@@ -87,7 +99,7 @@ final class BagaarService
             'done' => $state['tick'] >= $state['totalTicks'], 'manifest' => $state['manifest'],
             'frames' => array_slice($state['frames'], $frameOffset),
             'events' => array_slice($state['events'], $eventOffset),
-            'eventCount' => count($state['events']), 'combatCount' => count($state['combats'])];
+            'eventCount' => count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats'])];
     }
 
     private static function defaultAccounts(bool $soldierFrog): array

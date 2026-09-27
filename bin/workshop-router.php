@@ -15,6 +15,9 @@ use Waar\MicroCombat\Bagaar\BagaarService;
 require dirname(__DIR__).'/autoload.php';
 $public = dirname(__DIR__).'/public/workshop';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+if (str_starts_with($path, '/api/bagaar-') || str_starts_with($path, '/bagaar-export/')) {
+    ini_set('memory_limit', '256M');
+}
 $editorAssets = ['/editor/echarts.js' => 'vendor/echarts-5.6.0.min.js', '/editor/model.js' => 'acceptance-zones-model.js', '/editor/app.js' => 'acceptance-overlay-app.js'];
 if (isset($editorAssets[$path])) {
     header('Content-Type: application/javascript; charset=utf-8');
@@ -23,11 +26,13 @@ if (isset($editorAssets[$path])) {
 }
 if (preg_match('~^/bagaar-export/([a-f0-9]{32})\.json$~', $path, $match)) {
     try {
-        $document = (new \Waar\MicroCombat\Bagaar\RunStore())->read($match[1]);
+        set_time_limit(0);
+        $store = new \Waar\MicroCombat\Bagaar\RunStore();
+        $store->read($match[1]);
         header('Content-Type: application/json; charset=utf-8');
         header('Content-Disposition: attachment; filename="bagaar-'.$match[1].'.json"');
         header('Cache-Control: no-store');
-        echo json_encode($document, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $store->outputExport($match[1]);
     } catch (Throwable $error) {
         http_response_code(404);
         echo 'Simulation introuvable.';

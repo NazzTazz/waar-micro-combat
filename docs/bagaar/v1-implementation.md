@@ -19,7 +19,7 @@ Les chiffres ci-dessous appartiennent aux **politiques v1**, pas aux règles de 
 
 ## Limites visibles de cette tranche
 
-La portée d'espionnage est figée à **±10** (défaut du code hôte ; valeur effective de production non vérifiée). Le cron quotidien, les lois du Rwaa, les modes, les alliances, la protection achetable, les trophées et les modificateurs saisonniers ne sont pas encore simulés. Les effets détaillés de moral sur le combat ne sont pas reliés au preset Rust. Les taxes Rwaayales et les lois économiques restent à intégrer. Les runs sont conservés dans le répertoire temporaire du serveur ; l'export JSON est nécessaire pour les garder. Cette tranche ne doit donc pas servir à conclure sur l'équilibre d'une ère Waar complète.
+La portée d'espionnage est figée à **±10** (défaut du code hôte ; valeur effective de production non vérifiée). Le cron quotidien, les lois du Rwaa, les modes, les alliances, la protection achetable, les trophées et les modificateurs saisonniers ne sont pas encore simulés. Les effets détaillés de moral sur le combat ne sont pas reliés au preset Rust. Les taxes Rwaayales et les lois économiques restent à intégrer. En production, les runs sont conservés dans le volume Docker `waar-engine-demo_bagaar-runs` ; en local, ils restent dans le répertoire temporaire par défaut. L'export JSON permet de les conserver hors du serveur. Cette tranche ne doit donc pas servir à conclure sur l'équilibre d'une ère Waar complète.
 
 ## Vérification numérique locale
 
@@ -27,4 +27,10 @@ Avec le preset par défaut, cinq comptes, seed 42 et 24 ticks, la boucle produit
 
 Avec le roster par défaut de vingt comptes, le même preset et la même seed, la première semaine produit 1 165 combats en 37,6 s dans une boucle PHP locale réutilisant le processus Rust. Le premier village (`village-20`) apparaît au jour 7, après qu'un joueur a atteint 61 Glwaare. Mesure exploratoire locale, sans transport HTTP ni lecture graphique.
 
-La page propose sept jours par défaut ; les durées de 30 et 60 jours restent disponibles, mais leur coût avec vingt comptes n'a pas encore été mesuré de bout en bout.
+La page propose sept jours par défaut. Le plan garde une grille de 20 000 Or par colonne et 10 Glwaare par ligne, dont l'étendue croît avec les valeurs observées.
+
+Les combats d'un run sont stockés dans une archive annexe plutôt que recopiés avec chaque état. L'export JSON restitue leur liste complète dans le même champ `state.combats`. Un ancien run encore en ligne est migré lors de son prochain pas de calcul ; les seeds et l'ordre des combats restent inchangés.
+
+L'API de calcul transmet les nouvelles trames par paquets de huit ticks. Lors d'un rechargement, l'API de reprise fournit au plus 50 trames par réponse, avec `frameOffset` et `nextFrameOffset` ; les événements sont découpés aux mêmes bornes. L'export complet est un téléchargement séparé et diffusé progressivement. Les requêtes Bagaar disposent d'une limite PHP de 256 Mo et l'export n'a pas la limite d'exécution de 30 secondes du serveur local.
+
+Le run local de 60 jours qui s'était interrompu au tick 489 a repris avec la nouvelle archive et s'est achevé à 1 440 ticks et 13 288 combats. Le pic de mémoire d'un paquet CLI sous la limite initiale de 128 Mo était de 126 Mo ; la marge de 256 Mo évite de dépendre de cette proximité. La reprise HTTP a renvoyé les 1 440 trames et 32 785 événements ; l'export JSON intégral contient les 13 288 combats.

@@ -42,16 +42,23 @@ function renderChart(){
   if(played<1||!frames[played-1])return;
   const current=frames[played-1],left=70,right=755,top=35,bottom=435;
   const historical=frames.slice(0,played).flatMap(frame=>[...frame.points,...(frame.villages||[])]);
-  const maxX=Math.max(1,...historical.map(point=>point.armyGold))*1.1;
-  const maxY=Math.max(1,...historical.map(point=>point.glory))*1.1;
+  const observedX=Math.max(0,...historical.map(point=>point.armyGold));
+  const observedY=Math.max(0,...historical.map(point=>point.glory));
+  const maxX=(Math.floor(observedX/20000)+1)*20000;
+  const maxY=(Math.floor(observedY/10)+1)*10;
+  const xLabelEvery=maxX<=200000?1:maxX<=800000?5:10;
+  const yLabelEvery=maxY<=100?1:2;
   const x=value=>left+(right-left)*value/maxX;
   const y=value=>bottom-(bottom-top)*value/maxY;
-  for(let i=0;i<=4;i++){
-    const gy=bottom-(bottom-top)*i/4,gx=left+(right-left)*i/4;
-    chart.append(svg('line',{class:'grid',x1:left,y1:gy,x2:right,y2:gy}));
-    chart.append(svg('line',{class:'grid',x1:gx,y1:top,x2:gx,y2:bottom}));
-    writeSvgText(chart,left-12,gy+4,number.format(Math.round(maxY*i/4)),{'text-anchor':'end'});
-    writeSvgText(chart,gx,bottom+22,number.format(Math.round(maxX*i/4)),{'text-anchor':'middle'});
+  for(let i=0;i<=maxY/10;i++){
+    const gy=y(i*10);
+    chart.append(svg('line',{class:i%yLabelEvery===0?'grid major-grid':'grid',x1:left,y1:gy,x2:right,y2:gy}));
+    if(i%yLabelEvery===0)writeSvgText(chart,left-12,gy+4,number.format(i*10),{'text-anchor':'end'});
+  }
+  for(let i=0;i<=maxX/20000;i++){
+    const gx=x(i*20000);
+    chart.append(svg('line',{class:i%xLabelEvery===0?'grid major-grid':'grid',x1:gx,y1:top,x2:gx,y2:bottom}));
+    if(i%xLabelEvery===0)writeSvgText(chart,gx,bottom+22,number.format(i*20000),{'text-anchor':'middle'});
   }
   chart.append(svg('line',{class:'axis',x1:left,y1:bottom,x2:right,y2:bottom}));
   chart.append(svg('line',{class:'axis',x1:left,y1:bottom,x2:left,y2:top}));
@@ -178,11 +185,21 @@ async function resume(){
   let previous=null;try{previous=localStorage.getItem('waar-bagaar-run-v2')}catch{}
   if(!previous)return;
   try{
-    const result=await api('bagaar-resume',{runId:previous});
-    runId=previous;frames=result.frames;events=result.events;computed=result.tick;total=result.totalTicks;combatCount=result.combatCount;played=frames.length?1:0;playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
-    $('#toggle-play').disabled=false;$('#export-era').hidden=false;$('#export-era').href=`/bagaar-export/${runId}.json`;
-    render();setStatus(result.done?'Ère calculée':'Calcul repris');if(!result.done)compute();
-  }catch{try{localStorage.removeItem('waar-bagaar-run-v2')}catch{}}
+    runId=previous;frames=[];events=[];played=0;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
+    let frameOffset=0,result;
+    do{
+      result=await api('bagaar-resume',{runId:previous,frameOffset,limit:50});
+      if(runId!==previous)return;
+      frames.push(...result.frames);events.push(...result.events);
+      computed=result.tick;total=result.totalTicks;combatCount=result.combatCount;
+      const duration=String(total/24);
+      if([...$('#era-days').options].some(option=>option.value===duration))$('#era-days').value=duration;
+      frameOffset=result.nextFrameOffset;
+      if(played===0&&frames.length){played=1;playing=true;$('#toggle-play').disabled=false;$('#export-era').hidden=false;$('#export-era').href=`/bagaar-export/${runId}.json`;render()}
+      refreshProgress();setStatus(result.hasMoreFrames?`Chargement : ${number.format(frameOffset)} / ${number.format(result.tick)} trames`:result.done?'Ère calculée':'Calcul repris');
+    }while(result.hasMoreFrames);
+    if(!result.done)compute();
+  }catch(error){$('#bagaar-error').textContent=error.message;setStatus('Reprise interrompue')}
 }
 $('#start-era').addEventListener('click',()=>start().catch(error=>{$('#bagaar-error').textContent=error.message;setStatus('Erreur')}));
 $('#toggle-play').addEventListener('click',()=>{if(played>=frames.length&&computed>=total)played=0;playing=!playing;$('#toggle-play').textContent=playing?'Pause':'Lecture';render()});

@@ -63,7 +63,7 @@ final class EraSimulator
             'decisionVersion' => 'bagaar-builtin-policies/2', 'hostRuleVersion' => 'bagaar-host-rules/1',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
-            'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'frames' => []];
+            'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
     }
 
     public function advance(array $state, int $steps = 1): array
@@ -197,7 +197,8 @@ final class EraSimulator
             || array_sum($attacker['army']) === 0 || array_sum($defender['army']) === 0) {
             throw new \DomainException('Portée, quota ou armée insuffisante.');
         }
-        $combatSeed = self::random($state['manifest']['seed'], $state['tick'], 'combat:'.count($state['combats']).':'.$index);
+        $ordinal = $state['combatCount'] ?? count($state['combats']);
+        $combatSeed = self::random($state['manifest']['seed'], $state['tick'], 'combat:'.$ordinal.':'.$index);
         $request = $this->requests->combat($this->profile, $attacker['army'], $defender['army'], $combatSeed,
             $weather, $weather, [], [], 'none', 'A', 'B');
         $report = $this->runtime->resolve($request);
@@ -209,7 +210,7 @@ final class EraSimulator
         $lower = (int) ($unprotected * 0.1);
         $upper = (int) ($unprotected * 0.15);
         $loot = ($report['result']['winner'] ?? null) === 'attacker'
-            ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.count($state['combats'])) % ($upper - $lower + 1) : 0;
+            ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.$ordinal) % ($upper - $lower + 1) : 0;
         $result = CombatTransition::apply($attacker, $defender, $report, $loot, $village);
         $state['players'][$id] = $result['attacker'];
         $state['players'][$id]['record'][$result['event']['winner'] === 'attacker' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
@@ -248,6 +249,7 @@ final class EraSimulator
         }
         $state['combats'][] = ['format' => self::COMBAT_ARCHIVE_FORMAT,
             'payload' => base64_encode($compressed), 'event' => $event];
+        $state['combatCount'] = $ordinal + 1;
         foreach ([$id, $targetId] as $participant) {
             if (!isset($state['players'][$participant])
                 || !PlayerSchedule::isActive($state['players'][$participant]['activity'], $state['tick'])) {

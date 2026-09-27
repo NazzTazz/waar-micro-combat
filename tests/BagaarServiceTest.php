@@ -26,7 +26,42 @@ final class BagaarServiceTest extends TestCase
             self::assertContains('Chloé', array_column($started['accounts'], 'name'));
             self::assertGreaterThan(1, count(array_unique(array_column($started['accounts'], 'aggressionPercent'))));
         } finally {
-            foreach (glob($directory.DIRECTORY_SEPARATOR.'*.json') ?: [] as $path) {
+            foreach (glob($directory.DIRECTORY_SEPARATOR.'*') ?: [] as $path) {
+                unlink($path);
+            }
+            if (is_dir($directory)) {
+                rmdir($directory);
+            }
+        }
+    }
+
+    public function testResumePagesFramesAndEventsByFrameOffset(): void
+    {
+        $directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'waar-bagaar-pages-'.bin2hex(random_bytes(6));
+        $store = new RunStore($directory);
+        $service = new BagaarService($store);
+        try {
+            $frames = [];
+            $events = [];
+            for ($tick = 1; $tick <= 121; $tick++) {
+                $events[] = ['tick' => $tick, 'type' => 'first'];
+                $events[] = ['tick' => $tick, 'type' => 'second'];
+                $frames[] = ['tick' => $tick, 'eventCount' => count($events), 'points' => []];
+            }
+            $id = $store->create(['profile' => [], 'state' => [
+                'tick' => 121, 'totalTicks' => 121, 'manifest' => [], 'frames' => $frames,
+                'events' => $events, 'combats' => [], 'combatCount' => 0, 'archiveDetached' => true]]);
+            $first = $service->resume(['runId' => $id, 'frameOffset' => 0]);
+            $second = $service->resume(['runId' => $id, 'frameOffset' => $first['nextFrameOffset']]);
+            $last = $service->resume(['runId' => $id, 'frameOffset' => $second['nextFrameOffset']]);
+            self::assertSame([50, 50, 21], [count($first['frames']), count($second['frames']), count($last['frames'])]);
+            self::assertSame([100, 100, 42], [count($first['events']), count($second['events']), count($last['events'])]);
+            self::assertSame(121, $last['nextFrameOffset']);
+            self::assertFalse($last['hasMoreFrames']);
+            self::assertSame($frames, [...$first['frames'], ...$second['frames'], ...$last['frames']]);
+            self::assertSame($events, [...$first['events'], ...$second['events'], ...$last['events']]);
+        } finally {
+            foreach (glob($directory.DIRECTORY_SEPARATOR.'*') ?: [] as $path) {
                 unlink($path);
             }
             if (is_dir($directory)) {
@@ -58,7 +93,7 @@ final class BagaarServiceTest extends TestCase
             self::assertCount(1, $final['frames']);
             self::assertCount(2, $service->resume(['runId' => $started['runId']])['frames']);
         } finally {
-            foreach (glob($directory.DIRECTORY_SEPARATOR.'*.json') ?: [] as $path) {
+            foreach (glob($directory.DIRECTORY_SEPARATOR.'*') ?: [] as $path) {
                 unlink($path);
             }
             if (is_dir($directory)) {
