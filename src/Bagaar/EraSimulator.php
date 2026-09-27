@@ -70,7 +70,7 @@ final class EraSimulator
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => 'bagaar-builtin-policies/6', 'hostRuleVersion' => 'bagaar-host-rules/3',
+            'decisionVersion' => 'bagaar-builtin-policies/7', 'hostRuleVersion' => 'bagaar-host-rules/3',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'spawnSerial' => 0,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,

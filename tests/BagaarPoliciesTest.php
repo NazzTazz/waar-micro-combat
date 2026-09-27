@@ -91,6 +91,26 @@ final class BagaarPoliciesTest extends TestCase
         self::assertSame(['type' => 'attack', 'target' => 'village-20'], (new BuiltinPolicy('fermier'))->next($view));
     }
 
+    public function testFarmerPrioritizesAffordableVillageAndClimbsAfterOutgrowingIt(): void
+    {
+        $view = self::view('fermier');
+        $view['tick'] = 20;
+        $view['costs'] = ['soldier' => 10, 'spearman' => 100, 'archer' => 50, 'knight' => 250];
+        $view['self']['glory'] = 72;
+        $view['self']['army']['soldier'] = 90000;
+        $view['targets'] = [
+            ['id' => 'village-60', 'glory' => 60, 'kind' => 'village'],
+            ['id' => 'enemy', 'glory' => 72, 'kind' => 'player'],
+        ];
+        $view['reports']['village-60'] = ['tick' => 20, 'glory' => 60, 'armyTotal' => 11906, 'gold' => 25800];
+        $view['reports']['enemy'] = ['tick' => 20, 'armyTotal' => 1, 'gold' => 1000];
+        $policy = new BuiltinPolicy('fermier');
+
+        self::assertSame(['type' => 'attack', 'target' => 'village-60'], $policy->next($view));
+        $view['self']['glory'] = 88;
+        self::assertSame(['type' => 'attack', 'target' => 'enemy'], $policy->next($view));
+    }
+
     public function testFarmerSeeksCrownAndUsesEspionageToChooseAnEndgameRival(): void
     {
         $view = self::view('fermier');
