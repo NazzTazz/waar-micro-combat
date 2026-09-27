@@ -53,6 +53,37 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame(\Waar\MicroCombat\Bagaar\HostRules::armyValue($village['army'], $profile->costs()), $point['armyGold']);
     }
 
+    public function testFarmerCanSpyVillageBeforeChoosingAnAttack(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->start(12, 1, [['id' => 'frog', 'policy' => 'grenouille'], ['id' => 'farm', 'policy' => 'fermier']]);
+        $state['players']['frog']['glory'] = 60;
+        $state['players']['farm']['glory'] = 20;
+        $state['players']['farm']['gold'] = 20000;
+        $state['players']['farm']['army']['soldier'] = 200;
+        $state = $simulator->advance($state);
+        self::assertSame(30, $state['manifest']['spyRange']);
+        self::assertSame(1, $state['players']['farm']['spies']['village-20']['tick']);
+        self::assertGreaterThan(0, $state['players']['farm']['spies']['village-20']['armyTotal']);
+    }
+
+    public function testVillageDefeatStopsFurtherAttacksUntilArmyRecovers(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime(false, 'defender'));
+        $state = $simulator->start(12, 1, [['id' => 'frog', 'policy' => 'grenouille'], ['id' => 'farm', 'policy' => 'fermier']]);
+        $state['players']['frog']['glory'] = 60;
+        $state['players']['farm']['glory'] = 20;
+        $state['players']['farm']['army']['soldier'] = 100;
+        $state['players']['farm']['spies']['village-20'] = ['tick' => 1, 'armyTotal' => 1, 'gold' => 1000, 'glory' => 20, 'morale' => 'high'];
+        $state = $simulator->advance($state);
+        $villageCombats = array_values(array_filter($state['events'],
+            static fn (array $event): bool => ($event['type'] ?? null) === 'combat' && ($event['defender'] ?? null) === 'village-20'));
+        self::assertCount(1, $villageCombats);
+        self::assertGreaterThanOrEqual(8000, $state['players']['farm']['villageFailures']['village-20']);
+    }
+
     public function testOfficePlayerActsOnlyDuringPlayHoursWhileMineKeepsProducing(): void
     {
         $profile = EngineProfile::fromArray(EngineProfile::defaults());
@@ -172,7 +203,7 @@ final class BagaarEraSimulatorTest extends TestCase
 
 final class BagaarFakeRuntime implements CohortRuntime
 {
-    public function __construct(private readonly bool $woundAttacker = false)
+    public function __construct(private readonly bool $woundAttacker = false, private readonly string $winner = 'attacker')
     {
     }
 
@@ -189,7 +220,7 @@ final class BagaarFakeRuntime implements CohortRuntime
             }
             $sides[$side] = ['types' => $types];
         }
-        return ['result' => ['schemaVersion' => 'waar-combat-result/2', 'winner' => 'attacker',
+        return ['result' => ['schemaVersion' => 'waar-combat-result/2', 'winner' => $this->winner,
             'replayHash' => hash('sha256', (string)$request['seed']),
             'snapshot' => ['stochasticEngineVersion' => $request['stochasticEngineVersion'], 'armyIdentities' => $request['armyIdentities']]],
             'consequences' => ['schemaVersion' => 'waar-combat-consequences/1',

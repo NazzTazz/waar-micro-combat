@@ -19,7 +19,7 @@ final class BagaarPoliciesTest extends TestCase
         $other = AccountRules::initial('frog', 'grenouille');
         $other['army']['knight'] = 20;
         $other['gold'] = 9900;
-        $state = ['tick' => 1, 'totalTicks' => 100, 'manifest' => ['spyRange' => 10],
+        $state = ['tick' => 1, 'totalTicks' => 100, 'manifest' => ['spyRange' => 30],
             'players' => ['script' => $self, 'frog' => $other], 'villages' => [],
             'events' => [['tick' => 1, 'attacker' => 'frog', 'defender' => 'script', 'winner' => 'attacker', 'secretArmy' => $other['army']]]];
         $view = PlayerObservation::fromState($state, 'script', self::COSTS);
@@ -58,6 +58,7 @@ final class BagaarPoliciesTest extends TestCase
         $farmer = self::view('fermier');
         $farmer['self']['aggressionPercent'] = 120;
         $farmer['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
+        $farmer['reports']['village-20'] = ['tick' => 1, 'armyTotal' => 1];
         for ($i = 0; $i < 3; $i++) {
             self::assertSame(['type' => 'attack', 'target' => 'village-20'], (new BuiltinPolicy('fermier'))->next($farmer));
             $farmer['attempts'][] = ['type' => 'attack', 'target' => 'village-20'];
@@ -79,7 +80,50 @@ final class BagaarPoliciesTest extends TestCase
         $view['self']['fridges'] = ['enemy'];
         self::assertSame(['type' => 'attack', 'target' => 'enemy'], (new BuiltinPolicy('fermier'))->next($view));
         $view['targets'][] = ['id' => 'village-20', 'glory' => 20, 'kind' => 'village'];
+        $view['reports']['village-20'] = ['tick' => 1, 'armyTotal' => 1];
         self::assertSame(['type' => 'attack', 'target' => 'village-20'], (new BuiltinPolicy('fermier'))->next($view));
+    }
+
+    public function testVillageFarmersSpyThenRejectAnOversizedGarrison(): void
+    {
+        foreach (['fermier', 'grenouille', 'ascenseur'] as $name) {
+            $view = self::view($name);
+            $view['self']['glory'] = 20;
+            $view['self']['gold'] = 100;
+            $view['self']['autoSurrender'] = true;
+            $view['self']['cyclePhase'] = 'rebuild';
+            $view['self']['peakArmyGold'] = 20000;
+            $view['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
+            $policy = new BuiltinPolicy($name);
+
+            self::assertSame(['type' => 'spy', 'target' => 'village-20'], $policy->next($view), $name);
+            $view['attempts'][] = ['type' => 'spy', 'target' => 'village-20'];
+            $view['reports']['village-20'] = ['tick' => 1, 'armyTotal' => 100];
+            self::assertNull($policy->next($view), $name);
+            $view['tick'] = 2;
+            self::assertNull($policy->next($view), $name);
+            $view['tick'] = 7;
+            $view['attempts'] = array_values(array_filter($view['attempts'],
+                static fn (array $attempt): bool => ($attempt['target'] ?? null) !== 'village-20'));
+            self::assertSame(['type' => 'spy', 'target' => 'village-20'], $policy->next($view), $name);
+            $view['tick'] = 1;
+            $view['attempts'][] = ['type' => 'spy', 'target' => 'village-20'];
+            $view['reports']['village-20']['armyTotal'] = 20;
+            self::assertSame(['type' => 'attack', 'target' => 'village-20'], $policy->next($view), $name);
+        }
+    }
+
+    public function testFarmerWaitsForRecoveryAfterLosingToVillage(): void
+    {
+        $view = self::view('fermier');
+        $view['self']['glory'] = 20;
+        $view['self']['gold'] = 100;
+        $view['self']['villageFailures']['village-20'] = 8000;
+        $view['targets'] = [['id' => 'village-20', 'glory' => 20, 'kind' => 'village']];
+        $policy = new BuiltinPolicy('fermier');
+        self::assertNull($policy->next($view));
+        $view['self']['army']['soldier'] = 125;
+        self::assertSame(['type' => 'spy', 'target' => 'village-20'], $policy->next($view));
     }
 
     public function testScripteurHealsThenAttacksOnlyOnHisOwnEspionageEstimate(): void
@@ -116,7 +160,7 @@ final class BagaarPoliciesTest extends TestCase
         $self['gold'] = 0;
         $self['army']['soldier'] = 100;
         $self['attacks'] = 9;
-        return ['tick' => 1, 'totalTicks' => 100, 'spyRange' => 10, 'self' => $self,
+        return ['tick' => 1, 'totalTicks' => 100, 'spyRange' => 30, 'self' => $self,
             'targets' => [['id' => 'enemy', 'glory' => 0, 'kind' => 'player']],
             'reports' => [], 'events' => [], 'costs' => self::COSTS,
             'attempts' => [['type' => 'mine'], ['type' => 'hospital'], ['type' => 'recruit'], ['type' => 'spy', 'target' => 'enemy']]];
