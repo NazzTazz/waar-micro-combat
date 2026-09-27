@@ -25,13 +25,21 @@ final class BagaarService
         if (!is_bool($soldierFrog)) {
             throw new \InvalidArgumentException('Option des Grenouilles invalide.');
         }
-        $accounts = $request['accounts'] ?? self::defaultAccounts($soldierFrog);
+        $script = $request['luaScript'] ?? null;
+        if ($script !== null && !is_string($script)) {
+            throw new \InvalidArgumentException('Script Lua invalide.');
+        }
+        $accounts = $request['accounts'] ?? self::defaultAccounts($soldierFrog, $script !== null);
         if (!is_int($seed) || !is_int($totalTicks) || !is_array($accounts) || !array_is_list($accounts)) {
             throw new \InvalidArgumentException('Paramètres de simulation invalides.');
         }
-        $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime()))->start($seed, $totalTicks, $accounts);
+        $luaPolicy = $script === null ? null : new LuaPolicy($script);
+        $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(), $luaPolicy))->start($seed, $totalTicks, $accounts);
+        if ($script !== null) {
+            $state['manifest']['luaScriptSha256'] = hash('sha256', $script);
+        }
         $state['archiveDetached'] = true;
-        $id = $this->runs->create(['profile' => $profileInput, 'state' => $state]);
+        $id = $this->runs->create(['profile' => $profileInput, 'state' => $state, ...($script === null ? [] : ['luaScript' => $script])]);
         return ['runId' => $id, 'manifest' => $state['manifest'], 'tick' => 0,
             'totalTicks' => $totalTicks, 'accounts' => array_map(static fn (array $player): array =>
                 ['id' => $player['id'], 'name' => $player['name'], 'policy' => $player['policy'],
@@ -49,7 +57,12 @@ final class BagaarService
         $previousEvents = 0;
         $document = $this->runs->update($id, function (array $document) use ($steps, &$previousFrames, &$previousEvents): array {
             $profile = EngineProfile::fromArray($document['profile']);
-            $simulator = new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime());
+            $script = $document['luaScript'] ?? null;
+            if ($script !== null && (!is_string($script) || hash('sha256', $script) !== ($document['state']['manifest']['luaScriptSha256'] ?? null))) {
+                throw new \RuntimeException('Script Lua de l’ère altéré.');
+            }
+            $simulator = new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(),
+                $script === null ? null : new LuaPolicy($script));
             $previousFrames = count($document['state']['frames']);
             $previousEvents = count($document['state']['events']);
             $document['state'] = $simulator->advance($document['state'], $steps);
@@ -102,7 +115,7 @@ final class BagaarService
             'eventCount' => count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats'])];
     }
 
-    private static function defaultAccounts(bool $soldierFrog): array
+    private static function defaultAccounts(bool $soldierFrog, bool $withLua = false): array
     {
         $groups = [
             'rageux' => [['axel', 'Axel'], ['bruno', 'Bruno'], ['chloe', 'Chloé'], ['dorian', 'Dorian']],
@@ -117,6 +130,11 @@ final class BagaarService
         $accounts = [];
         foreach ($groups as $policy => $members) {
             foreach ($members as $index => [$id, $name]) {
+                if ($withLua && $id === 'quentin') {
+                    $accounts[] = ['id' => 'comptable', 'name' => 'Le comptable', 'policy' => 'lua',
+                        'activity' => 'all-day', 'aggressionPercent' => 100];
+                    continue;
+                }
                 $accounts[] = ['id' => $id, 'name' => $name, 'policy' => $policy,
                     'activity' => $policy === 'casual' ? ['casual-morning', 'casual-noon', 'casual-evening', 'casual-night'][$index] : $activities[$index],
                     'aggressionPercent' => $aggressions[$index],

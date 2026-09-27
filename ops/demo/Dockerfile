@@ -6,11 +6,14 @@ RUN cargo build --locked --release --bin waar-cohort-cli
 
 FROM php:8.3-apache-bookworm@sha256:d9be5f5c49e07c71b1e906cf01a0bb7216dce466d1880d170467b9ca107071dd
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends lua5.4 lua-cjson util-linux \
+    && rm -rf /var/lib/apt/lists/*
 COPY autoload.php ./
 COPY src ./src
 COPY resources ./resources
 COPY public/workshop ./public/workshop
 COPY bin/workshop-router.php ./bin/workshop-router.php
+COPY bin/bagaar-lua-worker.lua ./bin/bagaar-lua-worker.lua
 COPY --from=native /build/target/release/waar-cohort-cli ./engines/waar-cohort/rust/target/release/waar-cohort-cli
 COPY ops/demo/index.php ./public/workshop/index.php
 COPY ops/demo/apache.conf /etc/apache2/sites-available/000-default.conf

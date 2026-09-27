@@ -37,13 +37,24 @@ $profile=json_decode(file_get_contents($base.'/api/default-profile'),true,128,JS
 $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'header'=>'Content-Type: application/json','content'=>json_encode(['name'=>'Deployment preservation fixture','profile'=>$profile],JSON_THROW_ON_ERROR)]]);
 $saved=json_decode(file_get_contents($base.'/api/save-profile',false,$context),true,128,JSON_THROW_ON_ERROR);
 if(($saved['ok']??false)!==true)throw new RuntimeException('Fixture save failed');
+$post=static function(string $path, array $body) use($base): array {
+    $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'header'=>'Content-Type: application/json',
+        'content'=>json_encode($body,JSON_THROW_ON_ERROR)]]);
+    $response=json_decode(file_get_contents($base.$path,false,$context),true,128,JSON_THROW_ON_ERROR);
+    if(($response['ok']??false)!==true)throw new RuntimeException('Bagaar Lua request failed: '.json_encode($response));
+    return $response['data'];
+};
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>1,'luaScript'=>'function next(observation) return nil end',
+    'accounts'=>[['id'=>'comptable','name'=>'Le comptable','policy'=>'lua'],['id'=>'casual','policy'=>'casual']]]);
+$frame=$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+if(($frame['tick']??null)!==1)throw new RuntimeException('Bagaar Lua did not advance');
 PHP
 volume=$(docker volume inspect --format '{{.Mountpoint}}' waar-engine-demo_profile-saves)
 original=$(fingerprint "$volume/profiles.json")
 mkdir "$work/source"
 # Exact application source needed by Docker, including the uncommitted scripts
 # when run locally. Test SHAs are synthetic and never published as releases.
-tar -cf "$work/source.tar" -C "$repo" autoload.php src resources public/workshop bin/workshop-router.php ops/demo .dockerignore engines/waar-cohort/rust/Cargo.toml engines/waar-cohort/rust/Cargo.lock engines/waar-cohort/rust/src
+tar -cf "$work/source.tar" -C "$repo" autoload.php src resources public/workshop bin/workshop-router.php bin/bagaar-lua-worker.lua ops/demo .dockerignore engines/waar-cohort/rust/Cargo.toml engines/waar-cohort/rust/Cargo.lock engines/waar-cohort/rust/src
 tar -xf "$work/source.tar" -C "$work/source"
 sha=$(printf '%040d' 41)
 tar -cf "$upload/release.tar" -C "$work/source" .
