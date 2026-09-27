@@ -183,21 +183,67 @@ final class RunStore
 
     private function write($handle, array $document): void
     {
-        $json = json_encode($document, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        rewind($handle);
-        if (!ftruncate($handle, 0)) {
-            throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
+        $staged = fopen('php://temp/maxmemory:65536', 'w+b');
+        if ($staged === false) {
+            throw new \RuntimeException('Impossible de préparer la simulation Bagaar.');
         }
-        $offset = 0;
-        while ($offset < strlen($json)) {
-            $written = fwrite($handle, substr($json, $offset));
+        try {
+            $this->writeObject($staged, $document, false);
+            rewind($staged);
+            rewind($handle);
+            if (!ftruncate($handle, 0) || stream_copy_to_stream($staged, $handle) === false || !fflush($handle)) {
+                throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
+            }
+        } finally {
+            fclose($staged);
+        }
+    }
+
+    private function writeObject($handle, array $values, bool $state): void
+    {
+        $this->writeBytes($handle, '{');
+        $first = true;
+        foreach ($values as $key => $value) {
+            if (!$first) {
+                $this->writeBytes($handle, ',');
+            }
+            $first = false;
+            $this->writeBytes($handle, json_encode((string)$key, JSON_THROW_ON_ERROR).':');
+            if (!$state && $key === 'state' && is_array($value)) {
+                $this->writeObject($handle, $value, true);
+            } elseif ($state && in_array($key, ['frames', 'events'], true) && is_array($value)) {
+                $this->writeList($handle, $value, $key === 'frames' ? 16 : 256);
+            } else {
+                $this->writeBytes($handle, json_encode($value, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            }
+        }
+        $this->writeBytes($handle, '}');
+    }
+
+    private function writeList($handle, array $items, int $chunkSize): void
+    {
+        if (!array_is_list($items)) {
+            throw new \LogicException('Liste de trames ou d’événements invalide.');
+        }
+        $this->writeBytes($handle, '[');
+        for ($offset = 0, $count = count($items); $offset < $count; $offset += $chunkSize) {
+            if ($offset > 0) {
+                $this->writeBytes($handle, ',');
+            }
+            $chunk = json_encode(array_slice($items, $offset, $chunkSize),
+                JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $this->writeBytes($handle, substr($chunk, 1, -1));
+        }
+        $this->writeBytes($handle, ']');
+    }
+
+    private function writeBytes($handle, string $bytes): void
+    {
+        for ($offset = 0, $length = strlen($bytes); $offset < $length; $offset += $written) {
+            $written = fwrite($handle, substr($bytes, $offset));
             if ($written === false || $written === 0) {
                 throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
             }
-            $offset += $written;
-        }
-        if (!fflush($handle)) {
-            throw new \RuntimeException('Impossible d’enregistrer la simulation Bagaar.');
         }
     }
 
