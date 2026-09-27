@@ -142,7 +142,7 @@ function eventLabel(event){
   if(event.type==='pause')return `${displayName(event.actor)} fait une pause`;
   if(event.type==='abandon')return `${displayName(event.actor)} abandonne le jeu`;
   if(event.type==='reset')return `${displayName(event.actor)} repart de zéro`;
-  if(event.type==='arrival')return `${displayName(event.actor)} rejoint l'ère`;
+  if(event.type==='arrival')return `${displayName(event.actor)} rejoint ${event.source==='spontaneous'?'spontanément ':''}l'ère`;
   if(event.type==='surrender')return `${displayName(event.actor)} se rend`;
   if(event.type==='return')return `${displayName(event.actor)} revient jouer`;
   if(event.type==='rejected')return `${displayName(event.actor)} · ${event.action} refusé`;
