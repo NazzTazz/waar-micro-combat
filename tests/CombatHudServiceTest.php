@@ -82,7 +82,7 @@ final class CombatHudServiceTest extends TestCase
         self::assertSame(22, count($runtime->request['scenarios']));
         self::assertSame(1100, $result['totalCombats']);
         self::assertCount(18, $result['rows']);
-        self::assertSame(['start' => 0, 'endExclusive' => 50, 'total' => 250], $result['iterationRange']);
+        self::assertSame(['start' => 0, 'endExclusive' => 50, 'total' => 10000], $result['iterationRange']);
 
         $rows = array_column($result['rows'], null, 'id');
         self::assertSame(100, $rows['monotype:soldier>soldier']['samples']);
@@ -96,6 +96,18 @@ final class CombatHudServiceTest extends TestCase
         self::assertSame('0.9', $free['defender']['modifiers'][0]['value']);
         self::assertStringContainsString('rain', $free['attacker']['modifiers'][0]['id']);
         self::assertStringContainsString('rain', $free['defender']['modifiers'][0]['id']);
+
+        $lastWave = (new CombatHudService($runtime))->wave([
+            'requestId' => 'wave-last',
+            'profile' => $profile,
+            'armies' => ['A' => ['soldier' => 10], 'B' => ['archer' => 7]],
+            'weather' => 'rain',
+            'seed' => 42,
+            'startIteration' => 9950,
+        ]);
+        self::assertSame(9950, $runtime->request['startIteration']);
+        self::assertSame(10000, $runtime->request['totalIterations']);
+        self::assertSame(['start' => 9950, 'endExclusive' => 10000, 'total' => 10000], $lastWave['iterationRange']);
     }
 
     public function testRejectsInputsThatWouldMakeTheHudAmbiguous(): void

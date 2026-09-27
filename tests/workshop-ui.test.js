@@ -21,7 +21,13 @@ class Element {
   add(option){this.children.push(option);if(this.children.length===1)this.value=option.value}
   addEventListener(name,handler){this.listeners[name]=handler}
   querySelector(){return new Element()}
-  querySelectorAll(){return []}
+  querySelectorAll(selector){
+    if(selector==='[data-hud-view]'){
+      this.hudViewButtons=['histogram','rose'].map(hudView=>Object.assign(new Element(),{dataset:{hudView}}));
+      return this.hudViewButtons;
+    }
+    return [];
+  }
   scrollIntoView(){}
   focus(){}
   showModal(){}
@@ -39,7 +45,7 @@ class Element {
   const profile={schemaVersion:'waar-engine-profile/0.2',id:'test',label:'Keep me',units,relations:[],weather:Object.fromEntries(weatherIds.map(w=>[w,Object.fromEntries(Object.keys(units).map(t=>[t,{attack:'1',baseAccuracy:'1'}]))])),combat:{maxRounds:3,surrenderEnabled:false,surrenderDeadPercent:20,tieBreakCriterion:'economic',equalityPolicy:'defender',lossCompressionPercent:8,capturePercent:0,woundDamageThreshold:'0.2'}};
   const measurement={profileFingerprint:'fp',modelVersion:'waar-cohort-v2',context:{weather:'neutral',baseSeed:42,iterations:100,budget:400400,objectiveMetric:'rawCasualtyRatio',modelVersion:'waar-cohort-v2',rulesetVersion:'test',runtime:{kind:'rust',transport:'process-jsonl',modelVersion:'waar-cohort-v2'},consequences:{lossCompressionPercent:8,capturePercent:0}},rows:[{id:'soldier-vs-soldier/attacker',scenarioId:'soldier-vs-soldier',side:'attacker',winRate:.51,rawCasualtyRatio:.06}]};
   let pendingSearch,searchBody,confirmResult=true,malformedResponse=false;
-  const timerDelays=[];
+  const timerDelays=[],hudStarts=[];let backgroundWave;
   const storage=new Map(),messages=[],listeners={};
   element('#t27-editor').contentWindow={postMessage:message=>messages.push(message)};
   const origin='http://localhost';
@@ -53,12 +59,12 @@ class Element {
     if(selector==='.journey button')return [Object.assign(new Element(),{dataset:{step:'units'}})];
     return [];
   }};
-  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{timerDelays.push(delay);if(delay!==300&&delay!==10000)fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{timerDelays.push(delay);if(delay===3000)backgroundWave=fn;else if(![300,10000].includes(delay))fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
     if(malformedResponse)return {ok:false,status:500,json:async()=>{throw new SyntaxError('Unexpected token <')}};
     const body=options?.body?JSON.parse(options.body):null;
     let data;
     if(url.endsWith('default-profile'))data={profile:structuredClone(profile)};
-    else if(url.endsWith('/combat-hud')){const row=(id,attacker,defender)=>({id,kind:'free',attacker,defender,attackerBudget:800,defenderBudget:800,samples:50,attackerWins:30,draws:5,defenderWins:15,roundSum:100,attackerProjected:{dead:10,wounded:5,prisoners:0},defenderProjected:{dead:20,wounded:7,prisoners:1}});data={requestId:body.requestId,totalCombats:1100,rows:[row('free:A>B','A','B'),row('free:B>A','B','A')]};}
+    else if(url.endsWith('/combat-hud')){hudStarts.push(body.startIteration);const row=(id,attacker,defender)=>({id,kind:'free',attacker,defender,attackerBudget:800,defenderBudget:800,samples:50,attackerWins:30,draws:5,defenderWins:15,roundSum:100,attackerProjected:{dead:10,wounded:5,prisoners:0},defenderProjected:{dead:20,wounded:7,prisoners:1}});data={requestId:body.requestId,totalCombats:1100,iterationRange:{start:body.startIteration,endExclusive:body.startIteration+50,total:10000},rows:[row('free:A>B','A','B'),row('free:B>A','B','A')]};}
     else if(url.endsWith('migrate-profile'))data={profile:structuredClone(body.profile),migration:{performed:false}};
     else if(url.endsWith('/editor'))data={html:'T27 fixture',fingerprint:'editor-fp'};
     else if(url.endsWith('/measure'))data=structuredClone(measurement);
@@ -74,6 +80,19 @@ class Element {
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(element('#notice').textContent,'','application initializes without errors');
   assert.ok(timerDelays.includes(250),'live combat uses a 250 ms debounce');
+  assert.deepEqual(hudStarts.slice(0,5),[0,50,100,150,200],'the first result uses five distinct waves');
+  assert.equal(typeof backgroundWave,'function','sampling continues after the first result');
+  assert.match(element('#live-duel-confidence').textContent,/n ≥ 250/);
+  backgroundWave();await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(hudStarts[5],250,'background sampling advances to fresh seeds');
+  const hudRoot=element('#live-duel-results'),requestsBeforeViewChange=hudStarts.length;
+  hudRoot.hudViewButtons[1].onclick();
+  assert.equal(storage.get('waar-workshop-hud-view-v1'),'rose','view choice is stored separately from the combat profile');
+  assert.match(hudRoot.innerHTML,/data-hud-view="rose" aria-pressed="true"/);
+  assert.equal(hudStarts.length,requestsBeforeViewChange,'changing the view does not start a simulation');
+  hudRoot.hudViewButtons[0].onclick();
+  assert.equal(storage.get('waar-workshop-hud-view-v1'),'histogram');
+  assert.match(element('#live-duel-confidence').textContent,/IC 95 %.*n ≥ 300/);
   assert.equal(typeof element('#measure').onclick,'function');
   assert.equal(element('#profile-modified').hidden,true,'new profile starts unmodified');
   const armyRow=element('#army-a').children[0];
