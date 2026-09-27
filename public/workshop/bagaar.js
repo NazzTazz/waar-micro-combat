@@ -35,7 +35,8 @@ function next(observation)
   for _, target in ipairs(observation.targets) do
     if math.abs(target.glory - me.glory) <= 20 then
       local report = observation.reports[target.id]
-      if not report and not tried(observation, "spy", target.id) and
+      if (not report or report.tick < observation.tick - 6) and
+          not tried(observation, "spy") and
           me.gold >= math.floor(me.glory / 2.5 + 0.5) then
         return {type = "spy", target = target.id}
       end
