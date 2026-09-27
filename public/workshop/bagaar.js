@@ -2,8 +2,51 @@
 'use strict';
 const $=selector=>document.querySelector(selector);
 const svgNS='http://www.w3.org/2000/svg';
-const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef',casual:'#b6d781',village:'#f5d477'};
-const names={rageux:'Le Rageux',grenouille:'La Grenouille',ascenseur:"L'Ascenseur",fermier:'Le Fermier',scripteur:'Le Scripteur',casual:'Le Casual'};
+const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef',casual:'#b6d781',lua:'#72d6c0',village:'#f5d477'};
+const names={rageux:'Le Rageux',grenouille:'La Grenouille',ascenseur:"L'Ascenseur",fermier:'Le Fermier',scripteur:'Le Scripteur',casual:'Le Casual',lua:'Joueur Lua'};
+const sampleLua=`goal = "Monter ma mine suivante"
+method = "Épargner pour la mine, puis investir dans une armée rentable."
+
+local function tried(observation, kind, target)
+  for _, action in ipairs(observation.attempts) do
+    if action.type == kind and (target == nil or action.target == target) then return true end
+  end
+  return false
+end
+
+function next(observation)
+  local me = observation.self
+  local level = me.mineLevel + 1
+  local price = math.floor(level ^ 2.5 * 8)
+  local glory = 20 * math.max(level - 8, 0)
+  if me.gold >= price and me.glory >= glory and not tried(observation, "mine") then
+    return {type = "mine"}
+  end
+  if me.hospitalLevel > 0 and not tried(observation, "heal") then
+    local wounded = 0
+    for _, amount in pairs(me.hospital) do wounded = wounded + amount end
+    if wounded > 0 then return {type = "heal"} end
+  end
+  if not tried(observation, "recruit") and me.gold > price + observation.costs.soldier * 5 then
+    local count = math.floor((me.gold - price) / observation.costs.soldier / 2)
+    if count > 0 then return {type = "recruit", units = {soldier = count}} end
+  end
+  if me.attacks < 1 then return nil end
+  for _, target in ipairs(observation.targets) do
+    if math.abs(target.glory - me.glory) <= 20 then
+      local report = observation.reports[target.id]
+      if not report and not tried(observation, "spy", target.id) and
+          me.gold >= math.floor(me.glory / 2.5 + 0.5) then
+        return {type = "spy", target = target.id}
+      end
+      if report and report.tick >= observation.tick - 6 and
+          report.armyTotal < me.army.soldier and not tried(observation, "attack", target.id) then
+        return {type = "attack", target = target.id}
+      end
+    end
+  end
+  return nil
+end`;
 const activityNames={'all-day':'Toute la journée',office:'9 h–17 h',evening:'17 h–24 h',early:'6 h–14 h','casual-morning':'1 tick par jour · matin','casual-noon':'2 ticks par jour · midi','casual-evening':'1 tick par jour · soir','casual-night':'2 ticks par jour · soir'};
 const statusNames={active:'Joueur actif',pause:'Le joueur fait une pause',abandoned:'Jeu abandonné'};
 const number=new Intl.NumberFormat('fr-FR');
@@ -191,7 +234,8 @@ async function loadProfile(){
 async function start(){
   $('#bagaar-error').textContent='';
   const seed=Number($('#era-seed').value),days=Number($('#era-days').value);
-  const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,soldierFrog:$('#soldier-frog').checked});
+  const luaScript=$('#lua-enable').checked?$('#lua-source').value:undefined;
+  const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,soldierFrog:$('#soldier-frog').checked,luaScript});
   runId=result.runId;frames=[];events=[];played=0;computed=0;total=result.totalTicks;combatCount=0;selected=null;playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
   try{localStorage.setItem('waar-bagaar-run-v2',runId)}catch{}
   $('#toggle-play').disabled=false;$('#toggle-play').textContent='Pause';
@@ -221,5 +265,8 @@ $('#start-era').addEventListener('click',()=>start().catch(error=>{$('#bagaar-er
 $('#toggle-play').addEventListener('click',()=>{if(played>=frames.length&&computed>=total)played=0;playing=!playing;$('#toggle-play').textContent=playing?'Pause':'Lecture';render()});
 $('#play-speed').addEventListener('change',schedulePlayback);
 $('#frame-seek').addEventListener('input',event=>{played=Number(event.target.value);playing=false;$('#toggle-play').textContent='Lecture';render()});
+try{$('#lua-source').value=localStorage.getItem('waar-bagaar-lua-source-v1')||sampleLua;$('#lua-enable').checked=localStorage.getItem('waar-bagaar-lua-enabled-v1')==='1'}catch{$('#lua-source').value=sampleLua}
+$('#lua-source').addEventListener('input',()=>{try{localStorage.setItem('waar-bagaar-lua-source-v1',$('#lua-source').value)}catch{}});
+$('#lua-enable').addEventListener('change',()=>{try{localStorage.setItem('waar-bagaar-lua-enabled-v1',$('#lua-enable').checked?'1':'0')}catch{}});
 schedulePlayback();loadProfile().then(resume).catch(error=>{$('#bagaar-error').textContent=error.message});
 })();

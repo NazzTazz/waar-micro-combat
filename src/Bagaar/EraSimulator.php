@@ -12,10 +12,12 @@ final class EraSimulator
 {
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
     public const DECISION_VERSION = 'bagaar-builtin-policies/8';
+    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
     private CohortRuntime $runtime;
     private CohortRequestFactory $requests;
 
-    public function __construct(private readonly EngineProfile $profile, ?CohortRuntime $runtime = null)
+    public function __construct(private readonly EngineProfile $profile, ?CohortRuntime $runtime = null,
+        private readonly ?LuaPolicy $luaPolicy = null)
     {
         $this->runtime = $runtime ?? new ProcessCohortRuntime();
         $this->requests = new CohortRequestFactory();
@@ -34,7 +36,9 @@ final class EraSimulator
             $name = $entry['name'] ?? $id;
             $activity = $entry['activity'] ?? ($policy === 'casual' ? 'casual-morning' : 'all-day');
             $aggression = $entry['aggressionPercent'] ?? 100;
-            if (!is_string($id) || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $id) || isset($players[$id]) || !in_array($policy, BuiltinPolicy::NAMES, true)) {
+            if (!is_string($id) || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $id) || isset($players[$id])
+                || !in_array($policy, [...BuiltinPolicy::NAMES, 'lua'], true)
+                || ($policy === 'lua' && $this->luaPolicy === null)) {
                 throw new \InvalidArgumentException('Identifiant ou profil joueur invalide.');
             }
             if (!is_string($name) || trim($name) === '' || strlen($name) > 64
@@ -60,6 +64,9 @@ final class EraSimulator
                 $players[$id]['soldierParadigm'] = (bool)($entry['soldierParadigm'] ?? false);
             }
         }
+        if ($this->luaPolicy !== null && count(array_filter($players, static fn (array $player): bool => $player['policy'] === 'lua')) !== 1) {
+            throw new \InvalidArgumentException('Le script Lua doit contrôler exactement un compte.');
+        }
         ksort($players);
         foreach ($players as $id => &$player) {
             if ($player['policy'] === 'fermier') {
@@ -71,7 +78,7 @@ final class EraSimulator
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
-            'decisionVersion' => self::DECISION_VERSION, 'hostRuleVersion' => 'bagaar-host-rules/3',
+            'decisionVersion' => $this->decisionVersion(), 'hostRuleVersion' => 'bagaar-host-rules/3',
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'spawnSerial' => 0, 'spontaneousArrivals' => 0,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
@@ -82,7 +89,7 @@ final class EraSimulator
     {
         if (($state['schemaVersion'] ?? null) !== 'waar-bagaar-era/1'
             || ($state['manifest']['profileFingerprint'] ?? null) !== $this->profile->semanticFingerprint()
-            || ($state['manifest']['decisionVersion'] ?? null) !== self::DECISION_VERSION
+            || ($state['manifest']['decisionVersion'] ?? null) !== $this->decisionVersion()
             || $steps < 1 || $steps > 24) {
             throw new \InvalidArgumentException('État, preset ou nombre de ticks invalide.');
         }
@@ -119,7 +126,7 @@ final class EraSimulator
                 continue;
             }
             $attempts = [];
-            $policy = new BuiltinPolicy($state['players'][$id]['policy']);
+            $policy = $this->policyFor($state['players'][$id]['policy']);
             for ($actionIndex = 0; $actionIndex < 16; $actionIndex++) {
                 if (($state['players'][$id]['status'] ?? 'active') !== 'active'
                     || ($state['players'][$id]['joinedTick'] ?? 0) >= $tick) {
@@ -150,7 +157,8 @@ final class EraSimulator
         foreach ($state['players'] as $id => $player) {
             $value = HostRules::armyValue($player['army'], $this->profile->costs());
             $state['players'][$id]['peakArmyGold'] = max($player['peakArmyGold'], $value);
-            $intent = (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames, $state['rwaa']);
+            $intent = $player['policy'] === 'lua' ? $this->luaPolicy->intention()
+                : (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames, $state['rwaa']);
             $points[] = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
                 'mineLevel' => $player['mineLevel'], 'mineProduction' => HostRules::mineProduction($player['mineLevel']),
@@ -339,7 +347,7 @@ final class EraSimulator
                 || !PlayerSchedule::isActive($state['players'][$participant]['activity'], $state['tick'])) {
                 continue;
             }
-            $policy = new BuiltinPolicy($state['players'][$participant]['policy']);
+            $policy = $this->policyFor($state['players'][$participant]['policy']);
             $reaction = $policy->afterCombat(PlayerObservation::fromState($state, $participant, $this->profile->costs()));
             if ($reaction !== null) {
                 try {
@@ -452,6 +460,19 @@ final class EraSimulator
     private static function random(int $masterSeed, int $tick, string $purpose): int
     {
         return hexdec(substr(hash('sha256', $masterSeed.':'.$tick.':'.$purpose), 0, 8)) & 0x7fffffff;
+    }
+
+    private function decisionVersion(): string
+    {
+        return $this->luaPolicy === null ? self::DECISION_VERSION : self::LUA_DECISION_VERSION;
+    }
+
+    private function policyFor(string $name): PlayerPolicy
+    {
+        if ($name === 'lua') {
+            return $this->luaPolicy ?? throw new \RuntimeException('Script Lua absent de cette ère.');
+        }
+        return new BuiltinPolicy($name);
     }
 
     public static function decodeCombat(array $archive): array
