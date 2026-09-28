@@ -125,12 +125,12 @@ function next(observation)
     return nil
 end
 LUA;
-$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScripts'=>['rageux'=>$entrantScript]]);
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>10,'luaScripts'=>['rageux'=>$entrantScript]]);
 $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
 $entrant=$store->read($era['runId'])['state']['players']['entrant-1']??null;
 if(($entrant['policy']??null)!=='lua' || ($entrant['scriptKey']??null)!=='rageux')
     throw new RuntimeException('Scripted profile was not applied to replacement account');
-$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>9]);
 $entrant=$store->read($era['runId'])['state']['players']['entrant-1'];
 if(($entrant['luaMemory']['owner']??null)!=='entrant-1')
     throw new RuntimeException('Replacement Lua account did not receive its own memory');
