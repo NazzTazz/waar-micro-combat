@@ -32,6 +32,7 @@ baseline=$(container_for)
 wait_healthy "$baseline"
 docker exec -i "$baseline" php <<'PHP'
 <?php
+require '/app/autoload.php';
 $base='http://127.0.0.1:8080';
 $profile=json_decode(file_get_contents($base.'/api/default-profile'),true,128,JSON_THROW_ON_ERROR)['data']['profile'];
 $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'header'=>'Content-Type: application/json','content'=>json_encode(['name'=>'Deployment preservation fixture','profile'=>$profile],JSON_THROW_ON_ERROR)]]);
