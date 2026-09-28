@@ -63,7 +63,7 @@ function next(observation)
     if observation.self.resetCount > 0 then
         assert(memo.first.tick == 1 and memo.first.unit == "soldier")
         goal = "Comparer un second essai"
-        method = "Réutiliser l'observation du tick " .. memo.first.tick
+        method = "Réutiliser l'observation du tick " .. string.format("%.0f", memo.first.tick)
     end
     return nil
 end
