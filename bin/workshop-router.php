@@ -99,6 +99,13 @@ if (str_starts_with($path, '/api/')) {
             ['/api/bagaar-step', 'POST'] => (new BagaarService())->advance($request),
             ['/api/bagaar-resume', 'POST'] => (new BagaarService())->resume($request),
             ['/api/bagaar-combat', 'POST'] => (new BagaarService())->combat($request),
+            ['/api/bagaar-library', 'GET'] => (new \Waar\MicroCombat\Bagaar\SharedBagaarLibrary())->listing(),
+            ['/api/bagaar-script-check', 'POST'] => (new \Waar\MicroCombat\Bagaar\SharedBagaarLibrary())->checkScript((string)($request['source'] ?? '')),
+            ['/api/bagaar-script-publish', 'POST'] => (new \Waar\MicroCombat\Bagaar\SharedBagaarLibrary())->publishScript((string)($request['source'] ?? '')),
+            ['/api/bagaar-script-load', 'POST'] => (new \Waar\MicroCombat\Bagaar\SharedBagaarLibrary())->loadScript((string)($request['id'] ?? '')),
+            ['/api/bagaar-population-save', 'POST'] => (new \Waar\MicroCombat\Bagaar\SharedBagaarLibrary())->savePopulation(
+                (string)($request['name'] ?? ''), $request['accounts'] ?? [], $request['spares'] ?? []),
+            ['/api/bagaar-population-load', 'POST'] => (new \Waar\MicroCombat\Bagaar\SharedBagaarLibrary())->loadPopulation((string)($request['id'] ?? '')),
             ['/api/migrate-profile', 'POST'] => (new EngineProfileMigrator())->migrate(is_array($request['profile'] ?? null) ? $request['profile'] : []),
             ['/api/editor', 'POST'] => (new T27Editor())->render($request['profile'] ?? [], $request['measurement'] ?? [], $request['zones'] ?? []),
             ['/api/validate', 'POST'] => ['errors' => EngineProfile::validate($request['profile'] ?? [], match($request['mode'] ?? 'complete') {

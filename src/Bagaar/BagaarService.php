@@ -52,9 +52,34 @@ final class BagaarService
         }
         $accounts = $request['accounts'] ?? self::defaultAccounts($soldierFrog,
             $script !== null || isset($scripts['comptable']), $scripts === null ? [] : array_keys($scripts));
+        $spares = $request['spares'] ?? [];
         if (!is_int($seed) || !is_int($totalTicks) || !is_array($accounts) || !array_is_list($accounts)) {
             throw new \InvalidArgumentException('Paramètres de simulation invalides.');
         }
+        if (!is_array($spares) || !array_is_list($spares) || count($spares) > 64) {
+            throw new \InvalidArgumentException('Vivier d’arrivants invalide.');
+        }
+        $schemas = [];
+        foreach ($spares as &$entry) {
+            if (!is_array($entry) || !in_array($entry['policy'] ?? null, [...BuiltinPolicy::NAMES, 'lua'], true)
+                || !is_numeric($entry['weight'] ?? 1) || !is_finite((float)($entry['weight'] ?? 1))
+                || (float)($entry['weight'] ?? 1) <= 0 || (float)($entry['weight'] ?? 1) > 100
+                || (isset($entry['activity']) && !in_array($entry['activity'], PlayerSchedule::WINDOWS, true))
+                || (isset($entry['aggressionPercent']) && (!is_int($entry['aggressionPercent'])
+                    || $entry['aggressionPercent'] < 60 || $entry['aggressionPercent'] > 140))) {
+                throw new \InvalidArgumentException('Modèle d’arrivant invalide.');
+            }
+            $entry['weight'] = (float)($entry['weight'] ?? 1);
+            if ($entry['policy'] === 'lua') {
+                $key = $entry['scriptKey'] ?? null;
+                if (!is_string($key) || !isset($scripts[$key])) {
+                    throw new \InvalidArgumentException('Script Lua du vivier introuvable.');
+                }
+                $schemas[$key] ??= LuaPolicy::describe($scripts[$key]);
+                $entry['parameters'] = LuaParameters::values($schemas[$key], $entry['parameters'] ?? []);
+            }
+        }
+        unset($entry);
         $expanded = [];
         if ($scripts !== null) {
             foreach ($accounts as &$account) {
@@ -70,13 +95,16 @@ final class BagaarService
                 $expanded[$id] = $scripts[$key];
             }
             unset($account);
-            if ($expanded === []) {
-                throw new \InvalidArgumentException('Aucun compte contrôlé par les scripts Lua.');
-            }
             ksort($expanded);
         }
-        $luaPolicy = $scripts !== null ? new LuaPolicy($expanded) : ($script === null ? null : new LuaPolicy($script));
-        $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(), $luaPolicy, $scripts ?? []))
+        $luaPolicy = $scripts !== null ? new LuaPolicy($expanded, true) : ($script === null ? null : new LuaPolicy($script));
+        foreach ($accounts as &$account) {
+            if (($account['policy'] ?? null) === 'lua') {
+                $account['parameters'] = LuaParameters::values($luaPolicy->parameters($account['id']), $account['parameters'] ?? []);
+            }
+        }
+        unset($account);
+        $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(), $luaPolicy, $scripts ?? [], $spares))
             ->start($seed, $totalTicks, $accounts);
         if ($script !== null) {
             $state['manifest']['luaScriptSha256'] = hash('sha256', $script);
@@ -120,6 +148,7 @@ final class BagaarService
                 throw new \RuntimeException('Catalogue Lua de l’ère altéré.');
             }
             $expanded = [];
+            $savedStates = [];
             if ($scripts !== null) {
                 foreach ($document['state']['players'] as $account) {
                     if (($account['policy'] ?? null) === 'lua' && ($account['status'] ?? 'active') !== 'abandoned') {
@@ -128,12 +157,16 @@ final class BagaarService
                             throw new \RuntimeException('Script Lua du compte introuvable.');
                         }
                         $expanded[$account['id']] = $scripts[$key];
+                        $savedStates[$account['id']] = ['memory' => $account['luaMemory'] ?? [],
+                            'goal' => $account['luaGoal'] ?? null, 'method' => $account['luaMethod'] ?? null];
                     }
                 }
                 ksort($expanded);
             }
+            $compact = ($document['state']['manifest']['decisionVersion'] ?? null) === EraSimulator::MULTI_LUA_DECISION_VERSION;
             $simulator = new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(),
-                $scripts !== null ? new LuaPolicy($expanded) : ($script === null ? null : new LuaPolicy($script)), $scripts ?? []);
+                $scripts !== null ? new LuaPolicy($expanded, $compact, $savedStates)
+                    : ($script === null ? null : new LuaPolicy($script)), $scripts ?? []);
             $previousFrames = $document['state']['frameCount'] ?? count($document['state']['frames']);
             $previousEvents = $document['state']['eventCount'] ?? count($document['state']['events']);
             $document['state'] = $simulator->advance($document['state'], $steps);

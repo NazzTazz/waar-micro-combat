@@ -125,7 +125,9 @@ function next(observation)
     return nil
 end
 LUA;
-$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>10,'luaScripts'=>['rageux'=>$entrantScript]]);
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>10,'luaScripts'=>['rageux'=>$entrantScript],
+    'accounts'=>[['id'=>'axel','policy'=>'lua','scriptKey'=>'rageux','activity'=>'all-day'],
+        ['id'=>'bruno','policy'=>'lua','scriptKey'=>'rageux','activity'=>'all-day']]]);
 $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
 $entrant=$store->read($era['runId'])['state']['players']['entrant-1']??null;
 if(($entrant['policy']??null)!=='lua' || ($entrant['scriptKey']??null)!=='rageux')
@@ -134,6 +136,56 @@ $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>9]);
 $entrant=$store->read($era['runId'])['state']['players']['entrant-1'];
 if(($entrant['luaMemory']['owner']??null)!=='entrant-1')
     throw new RuntimeException('Replacement Lua account did not receive its own memory');
+$monkeyScript=<<<'LUA'
+-- @profile Sonde
+-- @author CI
+-- @version 1.0.0
+function parameters()
+    return {{name="VIGILANCE",type=ParamType.slider,min=0,max=100,step=5,default=50,
+        description="Seuil de la sonde"}}
+end
+function next(observation)
+    assert(observation.parameters.VIGILANCE == 70)
+    if observation.tick == 1 and #observation.attempts == 0 then
+        observation.memory.blob = string.format("%05000d", 1)
+        assert(math.log(math.exp(2)) > 1.99)
+        local values=table.pack(1,2,3)
+        assert(table.unpack(values) == 1)
+        return {type="spy",targets={"target","missing","target"}}
+    end
+    if observation.tick == 1 then
+        assert(#observation.spyResults[1] == 2)
+        assert(observation.spyResults[1][1].ok == true)
+        assert(observation.spyResults[1][2].ok == false)
+        assert(observation.reports.target ~= nil)
+    end
+    assert(#observation.memory.blob == 5000)
+    return nil
+end
+LUA;
+$checked=$post('/api/bagaar-script-check',['source'=>$monkeyScript]);
+if(($checked['parameters'][0]['name']??null)!=='VIGILANCE')
+    throw new RuntimeException('Lua parameter schema was not exposed');
+$published=$post('/api/bagaar-script-publish',['source'=>$monkeyScript]);
+$loaded=$post('/api/bagaar-script-load',['id'=>$published['id']]);
+if($loaded['source']!==$monkeyScript)throw new RuntimeException('Published Lua version changed');
+$population=$post('/api/bagaar-population-save',['name'=>'Population Lua CI',
+    'accounts'=>[['id'=>'probe','policy'=>'lua','scriptKey'=>$published['id'],'parameters'=>['VIGILANCE'=>70]],
+        ['id'=>'target','policy'=>'casual']], 'spares'=>[]]);
+$reloaded=$post('/api/bagaar-population-load',['id'=>$population['id']]);
+if(($reloaded['accounts'][0]['scriptKey']??null)!==$published['id'])
+    throw new RuntimeException('Shared population did not preserve the Lua version');
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScripts'=>['probe'=>$monkeyScript],
+    'accounts'=>[['id'=>'probe','policy'=>'lua','scriptKey'=>'probe','activity'=>'all-day',
+        'parameters'=>['VIGILANCE'=>70]],['id'=>'target','policy'=>'casual','activity'=>'casual-night']]]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$saved=$store->read($era['runId'])['state'];
+if(strlen($saved['players']['probe']['luaMemory']['blob']??'')!==5000
+    || ($saved['spyResults']['probe'][0][1]['ok']??null)!==false)
+    throw new RuntimeException('Lua memory or partial batch espionage failed');
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+if(strlen($store->read($era['runId'])['state']['players']['probe']['luaMemory']['blob']??'')!==5000)
+    throw new RuntimeException('Large Lua memory did not survive restart');
 PHP
 volume=$(docker volume inspect --format '{{.Mountpoint}}' waar-engine-demo_profile-saves)
 original=$(fingerprint "$volume/profiles.json")
