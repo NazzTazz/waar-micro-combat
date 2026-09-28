@@ -44,8 +44,10 @@ final class BagaarMonkeyContractsTest extends TestCase
         $directory = sys_get_temp_dir().'/waar-bagaar-library-test-'.bin2hex(random_bytes(8));
         try {
             $store = new SharedBagaarLibrary($directory);
-            $accounts = [['id' => 'one', 'policy' => 'rageux'], ['id' => 'two', 'policy' => 'casual']];
-            $saved = $store->savePopulation('Essai 1', $accounts, [['policy' => 'fermier', 'weight' => .25]]);
+            $accounts = [['id' => 'one', 'policy' => 'rageux', 'aggressionPercent' => 2],
+                ['id' => 'two', 'policy' => 'casual', 'aggressionPercent' => 200]];
+            $saved = $store->savePopulation('Essai 1', $accounts,
+                [['policy' => 'fermier', 'weight' => .25, 'aggressionPercent' => 200]]);
             self::assertSame($accounts, $store->loadPopulation($saved['id'])['accounts']);
             self::assertArrayNotHasKey('accounts', $store->listing()['populations'][0]);
             try {

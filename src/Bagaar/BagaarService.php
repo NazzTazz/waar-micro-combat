@@ -66,7 +66,7 @@ final class BagaarService
                 || (float)($entry['weight'] ?? 1) <= 0 || (float)($entry['weight'] ?? 1) > 100
                 || (isset($entry['activity']) && !in_array($entry['activity'], PlayerSchedule::WINDOWS, true))
                 || (isset($entry['aggressionPercent']) && (!is_int($entry['aggressionPercent'])
-                    || $entry['aggressionPercent'] < 60 || $entry['aggressionPercent'] > 140))) {
+                    || $entry['aggressionPercent'] < 1 || $entry['aggressionPercent'] > 200))) {
                 throw new \InvalidArgumentException('Modèle d’arrivant invalide.');
             }
             $entry['weight'] = (float)($entry['weight'] ?? 1);

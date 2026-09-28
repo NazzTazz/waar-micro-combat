@@ -46,7 +46,7 @@
     const select=document.createElement('select');choices(select,choice(row));select.setAttribute('aria-label','Profil du joueur');select.onchange=()=>applyChoice(row,select.value);root.append(field('Profil',select));
     if(!spare){const name=document.createElement('input');name.value=row.name;name.maxLength=64;name.oninput=()=>{row.name=name.value};root.append(field('Nom',name))}
     const activity=document.createElement('select');for(const value of schedules)activity.add(new Option(value,value));activity.value=row.activity;activity.onchange=()=>{row.activity=activity.value};root.append(field('Activité',activity));
-    const aggression=document.createElement('input');aggression.type='number';aggression.min=60;aggression.max=140;aggression.value=row.aggressionPercent;aggression.onchange=()=>{row.aggressionPercent=Number(aggression.value)};root.append(field('Agressivité',aggression));
+    const aggression=document.createElement('input');aggression.type='number';aggression.min=1;aggression.max=200;aggression.step=1;aggression.value=row.aggressionPercent;aggression.onchange=()=>{row.aggressionPercent=Number(aggression.value)};root.append(field('Agressivité',aggression));
     if(spare){const weight=document.createElement('input');weight.type='number';weight.min=.01;weight.max=100;weight.step=.01;weight.value=row.weight;weight.onchange=()=>{row.weight=Number(weight.value)};root.append(field('Poids',weight))}
     parameterFields(root,row);
     if(row.policy==='lua'){const edit=document.createElement('button');edit.type='button';edit.textContent='Éditer le script';edit.onclick=()=>openEditor(row);root.append(edit)}
@@ -100,6 +100,8 @@
   }
   async function prepare(){
     if(players.length<2||players.length>32)throw new Error('Choisissez entre 2 et 32 joueurs.');
+    const invalid=[...players,...spares].find(row=>!Number.isInteger(row.aggressionPercent)||row.aggressionPercent<1||row.aggressionPercent>200);
+    if(invalid)throw new Error(`Agressivité invalide pour ${invalid.name||invalid.policy} : choisissez de 1 à 200 %.`);
     const luaScripts={};
     for(const row of [...players,...spares])if(row.policy==='lua'&&!luaScripts[row.scriptKey]){
       luaScripts[row.scriptKey]=row.scriptKey==='draft'?draftSource:(await api('bagaar-script-load',{id:row.scriptKey})).source;
