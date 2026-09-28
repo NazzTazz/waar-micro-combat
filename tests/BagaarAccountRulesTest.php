@@ -95,4 +95,14 @@ final class BagaarAccountRulesTest extends TestCase
         self::assertSame(19, $after['prisoners']);
         self::assertGreaterThan(2000, $after['gold']);
     }
+
+    public function testPrisonerProductionShownToPlayerMatchesHourlyGoldCredit(): void
+    {
+        $account = AccountRules::initial('one', 'scripteur');
+        $account['prisoners'] = 100;
+        self::assertSame(4, AccountRules::prisonerProduction($account));
+        $after = AccountRules::hourly($account, 40);
+        self::assertSame(2004, $after['gold']); // Level-zero mine yields nothing; prisoners yield 4.
+        self::assertSame(95, $after['prisoners']);
+    }
 }

@@ -25,6 +25,7 @@ final class CombatTransition
             throw new \DomainException('Armée attaquante vide.');
         }
         $captured = ['attacker' => 0, 'defender' => 0];
+        $losses = ['attacker' => [], 'defender' => []];
         foreach (['attacker', 'defender'] as $side) {
             $player = $side === 'attacker' ? $attacker : $defender;
             $units = $report['consequences'][$side]['types'] ?? null;
@@ -45,6 +46,8 @@ final class CombatTransition
                 if (array_sum(array_intersect_key($projected, array_flip(['healthy', 'wounded', 'dead', 'prisoners']))) !== $player['army'][$type]) {
                     throw new \InvalidArgumentException('Conservation des effectifs rompue.');
                 }
+                $losses[$side][$type] = ['dead' => $projected['dead'], 'wounded' => $projected['wounded'],
+                    'prisoners' => $projected['prisoners']];
                 $player['army'][$type] = $projected['healthy'];
                 $admitted = min($hospitalRoom, $projected['wounded']);
                 $player['hospital'][$type] += $admitted;
@@ -88,6 +91,10 @@ final class CombatTransition
         return ['attacker' => $attacker, 'defender' => $defender, 'event' => [
             'winner' => $winner, 'loot' => $loot, 'prisoners' => $winner === 'attacker' ? $captured['defender'] : ($winner === 'defender' ? $captured['attacker'] : 0),
             'surrender' => $defender['surrenders'] > $surrendersBefore,
+            'report' => [
+                'attacker' => ['types' => $losses['attacker'], 'prisonersCaptured' => $winner === 'attacker' ? $captured['defender'] : 0],
+                'defender' => ['types' => $losses['defender'], 'prisonersCaptured' => $winner === 'defender' ? $captured['attacker'] : 0],
+            ],
         ]];
     }
 }

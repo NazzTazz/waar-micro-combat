@@ -11,11 +11,13 @@ use Waar\MicroCombat\Workshop\ProcessCohortRuntime;
 final class EraSimulator
 {
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
-    public const DECISION_VERSION = 'bagaar-builtin-policies/9';
-    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/3';
+    public const DECISION_VERSION = 'bagaar-builtin-policies/10';
+    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/4';
     private const LEGACY_DECISION_VERSION = 'bagaar-builtin-policies/8';
     private const LEGACY_LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
-    private const PREVIOUS_LUA_DECISION_VERSION = 'bagaar-lua-policy/2';
+    private const PREVIOUS_DECISION_VERSION = 'bagaar-builtin-policies/9';
+    private const PREVIOUS_LUA_DECISION_VERSION = 'bagaar-lua-policy/3';
+    private const OLDER_LUA_DECISION_VERSION = 'bagaar-lua-policy/2';
     private CohortRuntime $runtime;
     private CohortRequestFactory $requests;
 
@@ -172,13 +174,18 @@ final class EraSimulator
             $intent = $player['policy'] === 'lua' ? ['goal' => $player['luaGoal'] ?? $this->luaPolicy->intention()['goal'],
                 'method' => $player['luaMethod'] ?? $this->luaPolicy->intention()['method']]
                 : (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames, $state['rwaa']);
-            $points[] = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
+            $point = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
                 'mineLevel' => $player['mineLevel'], 'mineProduction' => HostRules::mineProduction($player['mineLevel']),
                 'record' => $player['record'], 'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent'],
                 'resetCount' => $player['resetCount'] ?? 0,
                 'status' => $player['status'] ?? 'active', 'pauseUntil' => $player['pauseUntil'] ?? null,
                 'goal' => $intent['goal'], 'method' => $intent['method']];
+            if ($this->combatReports($state)) {
+                $point['prisoners'] = $player['prisoners'];
+                $point['prisonerProduction'] = AccountRules::prisonerProduction($player);
+            }
+            $points[] = $point;
         }
         $villages = [];
         foreach ($state['villages'] as $id => $village) {
@@ -299,6 +306,9 @@ final class EraSimulator
         $loot = ($report['result']['winner'] ?? null) === 'attacker'
             ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.$ordinal) % ($upper - $lower + 1) : 0;
         $result = CombatTransition::apply($attacker, $defender, $report, $loot, $village);
+        if (!$this->combatReports($state)) {
+            unset($result['event']['report']);
+        }
         if ($village) {
             if ($result['event']['winner'] === 'defender') {
                 $result['attacker']['villageCautious'] = true;
@@ -355,7 +365,7 @@ final class EraSimulator
             'defender' => $targetId, ...$result['event'], 'replayHash' => $report['result']['replayHash'] ?? null];
         $state['events'][] = $event;
         if (($state['traceDetached'] ?? false) === true) {
-            $observation = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender']));
+            $observation = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender', 'report']));
             foreach ([$id, $targetId] as $participant) {
                 if (isset($state['players'][$participant])) {
                     $state['observationEvents'][$participant][] = $observation;
@@ -514,19 +524,27 @@ final class EraSimulator
     private function acceptedDecisionVersions(): array
     {
         return $this->luaPolicy === null
-            ? [self::DECISION_VERSION, self::LEGACY_DECISION_VERSION]
-            : [self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
+            ? [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::LEGACY_DECISION_VERSION]
+            : [self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION,
+                self::OLDER_LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
     }
 
     private function resilientRageux(array $state): bool
     {
         return in_array($state['manifest']['decisionVersion'],
-            [self::DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
+            [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::LUA_DECISION_VERSION,
+                self::PREVIOUS_LUA_DECISION_VERSION, self::OLDER_LUA_DECISION_VERSION], true);
     }
 
     private function luaControlsEngagement(array $state): bool
     {
-        return $state['manifest']['decisionVersion'] === self::LUA_DECISION_VERSION;
+        return in_array($state['manifest']['decisionVersion'],
+            [self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
+    }
+
+    private function combatReports(array $state): bool
+    {
+        return in_array($state['manifest']['decisionVersion'], [self::DECISION_VERSION, self::LUA_DECISION_VERSION], true);
     }
 
     private function policyFor(string $name): PlayerPolicy

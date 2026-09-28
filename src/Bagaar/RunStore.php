@@ -116,7 +116,7 @@ final class RunStore
                 if (($event['type'] ?? null) !== 'combat') {
                     continue;
                 }
-                $observation = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender']));
+                $observation = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender', 'report']));
                 foreach ([$event['attacker'], $event['defender']] as $playerId) {
                     if (isset($document['state']['players'][$playerId])) {
                         $recent[$playerId][] = $observation;

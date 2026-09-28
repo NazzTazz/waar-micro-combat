@@ -23,10 +23,12 @@ final class BagaarPoliciesTest extends TestCase
         $other['status'] = 'abandoned';
         $state = ['tick' => 1, 'totalTicks' => 100, 'manifest' => ['spyRange' => 30],
             'players' => ['script' => $self, 'frog' => $other], 'villages' => [],
-            'events' => [['tick' => 1, 'attacker' => 'frog', 'defender' => 'script', 'winner' => 'attacker', 'secretArmy' => $other['army']]]];
+            'events' => [['tick' => 1, 'attacker' => 'frog', 'defender' => 'script', 'winner' => 'attacker',
+                'report' => ['attacker' => ['prisonersCaptured' => 2]], 'secretArmy' => $other['army']]]];
         $view = PlayerObservation::fromState($state, 'script', self::COSTS);
         self::assertSame([['id' => 'frog', 'name' => 'frog', 'glory' => 0, 'kind' => 'player']], $view['targets']);
         self::assertArrayNotHasKey('secretArmy', $view['events'][0]);
+        self::assertSame(2, $view['events'][0]['report']['attacker']['prisonersCaptured']);
         self::assertSame([], $view['reports']);
         self::assertArrayNotHasKey('army', $view['targets'][0]);
         self::assertArrayNotHasKey('status', $view['targets'][0]);
