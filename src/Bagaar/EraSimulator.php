@@ -177,7 +177,8 @@ final class EraSimulator
         $state['frames'][] = ['tick' => $tick, 'weather' => $weather, 'points' => $points,
             'villages' => $villages,
             'candidate' => $state['candidate'], 'candidateHours' => $state['candidateHours'],
-            'rwaa' => $state['rwaa'], 'rwaaPv' => $state['rwaaPv'], 'eventCount' => count($state['events'])];
+            'rwaa' => $state['rwaa'], 'rwaaPv' => $state['rwaaPv'],
+            'eventCount' => ($state['eventCount'] ?? 0) + count($state['events'])];
         return $state;
     }
 
@@ -322,6 +323,15 @@ final class EraSimulator
         $event = ['tick' => $state['tick'], 'type' => 'combat', 'attacker' => $id,
             'defender' => $targetId, ...$result['event'], 'replayHash' => $report['result']['replayHash'] ?? null];
         $state['events'][] = $event;
+        if (($state['traceDetached'] ?? false) === true) {
+            $observation = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender']));
+            foreach ([$id, $targetId] as $participant) {
+                if (isset($state['players'][$participant])) {
+                    $state['observationEvents'][$participant][] = $observation;
+                    $state['observationEvents'][$participant] = array_slice($state['observationEvents'][$participant], -20);
+                }
+            }
+        }
         foreach ([$id => $attackerChange, $targetId => $defenderChange ?? null] as $participant => $change) {
             if ($change !== null) {
                 $state['events'][] = ['tick' => $state['tick'], 'type' => $change, 'actor' => $participant];

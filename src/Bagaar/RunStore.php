@@ -38,6 +38,18 @@ final class RunStore
             if (!is_array($updated)) {
                 throw new \LogicException('État de simulation invalide.');
             }
+            if (($updated['state']['traceDetached'] ?? false) === true) {
+                $batches = ['frames' => $updated['state']['frames'], 'events' => $updated['state']['events'],
+                    'combats' => $updated['state']['combats']];
+                $stored = $updated;
+                $stored['state']['frameCount'] = ($stored['state']['frameCount'] ?? 0) + count($batches['frames']);
+                $stored['state']['eventCount'] = ($stored['state']['eventCount'] ?? 0) + count($batches['events']);
+                $stored['state']['frames'] = $stored['state']['events'] = $stored['state']['combats'] = [];
+                $this->appendDetachedAndWrite($id, $handle, $stored, $batches);
+                $updated['state']['frameCount'] = $stored['state']['frameCount'];
+                $updated['state']['eventCount'] = $stored['state']['eventCount'];
+                return $updated;
+            }
             if (($updated['state']['archiveDetached'] ?? false) === true) {
                 $batch = $updated['state']['combats'];
                 $updated['state']['combats'] = [];
@@ -46,6 +58,80 @@ final class RunStore
                 $this->write($handle, $updated);
             }
             return $updated;
+        });
+    }
+
+    public function readTrace(string $id, string $kind, int $offset, int $limit): array
+    {
+        if (!in_array($kind, ['frames', 'events'], true) || $offset < 0 || $limit < 0) {
+            throw new \InvalidArgumentException('Page de trace invalide.');
+        }
+        return $this->withLocked($id, LOCK_SH, function (array $document) use ($id, $kind, $offset, $limit): array {
+            if (($document['state']['traceDetached'] ?? false) !== true) {
+                return array_slice($document['state'][$kind], $offset, $limit);
+            }
+            $count = $document['state'][$kind === 'frames' ? 'frameCount' : 'eventCount'];
+            if ($offset + $limit > $count) {
+                throw new \InvalidArgumentException('Page de trace hors limites.');
+            }
+            if ($limit === 0) {
+                return [];
+            }
+            $stream = @fopen($this->tracePath($id, $kind), 'rb');
+            if ($stream === false) {
+                throw new \RuntimeException('Archive de trace introuvable.');
+            }
+            try {
+                for ($i = 0; $i < $offset; $i++) {
+                    if (fgets($stream) === false) {
+                        throw new \RuntimeException('Archive de trace incomplète.');
+                    }
+                }
+                $page = [];
+                for ($i = 0; $i < $limit; $i++) {
+                    $line = fgets($stream);
+                    if ($line === false) {
+                        throw new \RuntimeException('Archive de trace incomplète.');
+                    }
+                    $page[] = json_decode($line, true, 512, JSON_THROW_ON_ERROR);
+                }
+                return $page;
+            } finally {
+                fclose($stream);
+            }
+        });
+    }
+
+    /** One-time migration, run from the CLI with a raised memory limit for large legacy JSON. */
+    public function migrateTrace(string $id): array
+    {
+        return $this->withLocked($id, LOCK_EX, function (array $document, $handle) use ($id): array {
+            if (($document['state']['traceDetached'] ?? false) === true) {
+                return ['frames' => $document['state']['frameCount'], 'events' => $document['state']['eventCount']];
+            }
+            $frames = $document['state']['frames'];
+            $events = $document['state']['events'];
+            $recent = [];
+            foreach ($events as $event) {
+                if (($event['type'] ?? null) !== 'combat') {
+                    continue;
+                }
+                $observation = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender']));
+                foreach ([$event['attacker'], $event['defender']] as $playerId) {
+                    if (isset($document['state']['players'][$playerId])) {
+                        $recent[$playerId][] = $observation;
+                        $recent[$playerId] = array_slice($recent[$playerId], -20);
+                    }
+                }
+            }
+            $document['state']['traceDetached'] = true;
+            $document['state']['frameCount'] = count($frames);
+            $document['state']['eventCount'] = count($events);
+            $document['state']['observationEvents'] = $recent;
+            $document['state']['frames'] = $document['state']['events'] = [];
+            $this->appendDetachedAndWrite($id, $handle, $document,
+                ['frames' => $frames, 'events' => $events, 'combats' => []]);
+            return ['frames' => count($frames), 'events' => count($events)];
         });
     }
 
@@ -100,6 +186,11 @@ final class RunStore
                     }
                     $firstState = false;
                     echo json_encode((string) $stateKey, JSON_THROW_ON_ERROR), ':';
+                    if (($value['traceDetached'] ?? false) === true && in_array($stateKey, ['frames', 'events'], true)) {
+                        $this->outputJsonl($this->tracePath($id, $stateKey),
+                            $value[$stateKey === 'frames' ? 'frameCount' : 'eventCount']);
+                        continue;
+                    }
                     if ($stateKey !== 'combats') {
                         echo json_encode($stateValue, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                         continue;
@@ -250,6 +341,69 @@ final class RunStore
     private function archivePath(string $id): string
     {
         return $this->directory().DIRECTORY_SEPARATOR.$id.'.combats';
+    }
+
+    private function tracePath(string $id, string $kind): string
+    {
+        return $this->directory().DIRECTORY_SEPARATOR.$id.'.'.$kind;
+    }
+
+    private function outputJsonl(string $path, int $count): void
+    {
+        echo '[';
+        if ($count > 0) {
+            $stream = @fopen($path, 'rb');
+            if ($stream === false) {
+                throw new \RuntimeException('Archive de trace introuvable.');
+            }
+            try {
+                for ($i = 0; $i < $count; $i++) {
+                    $line = fgets($stream);
+                    if ($line === false) {
+                        throw new \RuntimeException('Archive de trace incomplète.');
+                    }
+                    if ($i > 0) {
+                        echo ',';
+                    }
+                    echo rtrim($line, "\r\n");
+                }
+            } finally {
+                fclose($stream);
+            }
+        }
+        echo ']';
+    }
+
+    private function appendDetachedAndWrite(string $id, $stateHandle, array $document, array $batches): void
+    {
+        $opened = [];
+        try {
+            foreach ($batches as $kind => $items) {
+                if ($items === []) {
+                    continue;
+                }
+                $path = $kind === 'combats' ? $this->archivePath($id) : $this->tracePath($id, $kind);
+                $stream = @fopen($path, 'c+b');
+                if ($stream === false || fseek($stream, 0, SEEK_END) !== 0) {
+                    throw new \RuntimeException('Archive de simulation inaccessible.');
+                }
+                $opened[] = [$stream, ftell($stream)];
+                foreach ($items as $item) {
+                    $this->writeArchiveLine($stream, $item);
+                }
+                fflush($stream);
+            }
+            $this->write($stateHandle, $document);
+        } catch (\Throwable $error) {
+            foreach ($opened as [$stream, $offset]) {
+                ftruncate($stream, $offset);
+            }
+            throw $error;
+        } finally {
+            foreach ($opened as [$stream]) {
+                fclose($stream);
+            }
+        }
     }
 
     private function detachLegacyArchive(string $id, array &$document, $handle): void

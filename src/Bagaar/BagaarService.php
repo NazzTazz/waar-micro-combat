@@ -39,6 +39,10 @@ final class BagaarService
             $state['manifest']['luaScriptSha256'] = hash('sha256', $script);
         }
         $state['archiveDetached'] = true;
+        $state['traceDetached'] = true;
+        $state['frameCount'] = 0;
+        $state['eventCount'] = 0;
+        $state['observationEvents'] = [];
         $id = $this->runs->create(['profile' => $profileInput, 'state' => $state, ...($script === null ? [] : ['luaScript' => $script])]);
         return ['runId' => $id, 'manifest' => $state['manifest'], 'tick' => 0,
             'totalTicks' => $totalTicks, 'accounts' => array_map(static fn (array $player): array =>
@@ -63,8 +67,8 @@ final class BagaarService
             }
             $simulator = new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(),
                 $script === null ? null : new LuaPolicy($script));
-            $previousFrames = count($document['state']['frames']);
-            $previousEvents = count($document['state']['events']);
+            $previousFrames = $document['state']['frameCount'] ?? count($document['state']['frames']);
+            $previousEvents = $document['state']['eventCount'] ?? count($document['state']['events']);
             $document['state'] = $simulator->advance($document['state'], $steps);
             return $document;
         });
@@ -81,18 +85,24 @@ final class BagaarService
             throw new \InvalidArgumentException('Simulation ou pagination invalide.');
         }
         $state = $this->runs->read($id)['state'];
-        $frameCount = count($state['frames']);
+        $detached = ($state['traceDetached'] ?? false) === true;
+        $frameCount = $detached ? $state['frameCount'] : count($state['frames']);
         if ($frameOffset > $frameCount) {
             throw new \InvalidArgumentException('Offset de trame invalide.');
         }
         $end = min($frameCount, $frameOffset + $limit);
-        $eventOffset = $frameOffset === 0 ? 0 : $state['frames'][$frameOffset - 1]['eventCount'];
-        $eventEnd = $end === 0 ? 0 : $state['frames'][$end - 1]['eventCount'];
+        $page = $detached ? $this->runs->readTrace($id, 'frames', $frameOffset, $end - $frameOffset)
+            : array_slice($state['frames'], $frameOffset, $end - $frameOffset);
+        $previous = $frameOffset === 0 ? null : ($detached
+            ? $this->runs->readTrace($id, 'frames', $frameOffset - 1, 1)[0] : $state['frames'][$frameOffset - 1]);
+        $eventOffset = $previous['eventCount'] ?? 0;
+        $eventEnd = $page === [] ? $eventOffset : $page[count($page) - 1]['eventCount'];
         return ['runId' => $id, 'tick' => $state['tick'], 'totalTicks' => $state['totalTicks'],
             'done' => $state['tick'] >= $state['totalTicks'], 'manifest' => $state['manifest'],
-            'frames' => array_slice($state['frames'], $frameOffset, $end - $frameOffset),
-            'events' => array_slice($state['events'], $eventOffset, $eventEnd - $eventOffset),
-            'eventCount' => count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats']),
+            'frames' => $page,
+            'events' => $detached ? $this->runs->readTrace($id, 'events', $eventOffset, $eventEnd - $eventOffset)
+                : array_slice($state['events'], $eventOffset, $eventEnd - $eventOffset),
+            'eventCount' => $state['eventCount'] ?? count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats']),
             'nextFrameOffset' => $end, 'hasMoreFrames' => $end < $frameCount];
     }
 
@@ -110,9 +120,9 @@ final class BagaarService
     {
         return ['runId' => $id, 'tick' => $state['tick'], 'totalTicks' => $state['totalTicks'],
             'done' => $state['tick'] >= $state['totalTicks'], 'manifest' => $state['manifest'],
-            'frames' => array_slice($state['frames'], $frameOffset),
-            'events' => array_slice($state['events'], $eventOffset),
-            'eventCount' => count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats'])];
+            'frames' => ($state['traceDetached'] ?? false) ? $state['frames'] : array_slice($state['frames'], $frameOffset),
+            'events' => ($state['traceDetached'] ?? false) ? $state['events'] : array_slice($state['events'], $eventOffset),
+            'eventCount' => $state['eventCount'] ?? count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats'])];
     }
 
     private static function defaultAccounts(bool $soldierFrog, bool $withLua = false): array
