@@ -99,7 +99,13 @@ function next(observation)
 end
 LUA;
 $scripts=array_fill_keys(['rageux','grenouille','ascenseur','fermier','scripteur','casual'],$multiScript);
-$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScripts'=>$scripts]);
+$accounts=[];
+foreach(array_keys($scripts) as $key){
+    for($index=1;$index<=4;$index++){
+        $accounts[]=['id'=>$key.$index,'policy'=>'lua','scriptKey'=>$key,'activity'=>'all-day'];
+    }
+}
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScripts'=>$scripts,'accounts'=>$accounts]);
 $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
 $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
 $players=$store->read($era['runId'])['state']['players'];
