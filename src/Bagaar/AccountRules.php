@@ -15,6 +15,7 @@ final class AccountRules
             'defenseLossStreak' => 0, 'surrenders' => 0, 'spies' => [], 'villageFailures' => [],
             'villageCautious' => false, 'lastVillageAttackTick' => null,
             'status' => 'active', 'pauseUntil' => null, 'pauses' => 0, 'recentCombats' => [],
+            'lastResetTick' => 0,
             'rageTarget' => null, 'rageUntil' => 0,
             'cyclePhase' => $policy === 'ascenseur' ? 'build' : null, 'peakArmyGold' => 0,
             'record' => ['wins' => 0, 'draws' => 0, 'losses' => 0]];
@@ -23,12 +24,14 @@ final class AccountRules
     public static function reset(array $account, int $tick): array
     {
         $fresh = self::initial($account['id'], $account['policy']);
-        foreach (['name', 'originName', 'activity', 'aggressionPercent', 'soldierParadigm', 'hacker', 'protester'] as $key) {
+        foreach (['name', 'originName', 'activity', 'aggressionPercent', 'soldierParadigm', 'hacker', 'protester',
+            'luaMemory', 'luaGoal', 'luaMethod'] as $key) {
             if (array_key_exists($key, $account)) {
                 $fresh[$key] = $account[$key];
             }
         }
         $fresh['resetCount'] = ($account['resetCount'] ?? 0) + 1;
+        $fresh['lastResetTick'] = $tick;
         $fresh['joinedTick'] = $tick;
         return $fresh;
     }

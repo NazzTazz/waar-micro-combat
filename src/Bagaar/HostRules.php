@@ -69,6 +69,12 @@ final class HostRules
         return (int) round($glory / 2.5);
     }
 
+    /** Waar allows a manual profile reset strictly more than one day after the last one. */
+    public static function canReset(array $account, int $tick): bool
+    {
+        return $tick > ($account['lastResetTick'] ?? 0) + 24;
+    }
+
     /** The report deliberately excludes opponent composition and policy. */
     public static function espionageReport(array $target): array
     {

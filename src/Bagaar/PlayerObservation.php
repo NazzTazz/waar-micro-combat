@@ -35,9 +35,13 @@ final class PlayerObservation
                 }
             }
         }
-        return ['tick' => $state['tick'], 'totalTicks' => $state['totalTicks'], 'spyRange' => $state['manifest']['spyRange'],
+        $observation = ['tick' => $state['tick'], 'totalTicks' => $state['totalTicks'], 'spyRange' => $state['manifest']['spyRange'],
             'rwaa' => $state['rwaa'] ?? null, 'candidate' => $state['candidate'] ?? null,
             'self' => $self, 'targets' => $targets, 'reports' => $self['spies'],
             'events' => $events, 'costs' => $costs, 'attempts' => $attempts];
+        if (($self['policy'] ?? null) === 'lua') {
+            $observation['memory'] = $self['luaMemory'] ?? [];
+        }
+        return $observation;
     }
 }

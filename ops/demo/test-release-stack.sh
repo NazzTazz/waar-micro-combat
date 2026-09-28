@@ -32,6 +32,7 @@ baseline=$(container_for)
 wait_healthy "$baseline"
 docker exec -i "$baseline" php <<'PHP'
 <?php
+require '/app/autoload.php';
 $base='http://127.0.0.1:8080';
 $profile=json_decode(file_get_contents($base.'/api/default-profile'),true,128,JSON_THROW_ON_ERROR)['data']['profile'];
 $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'header'=>'Content-Type: application/json','content'=>json_encode(['name'=>'Deployment preservation fixture','profile'=>$profile],JSON_THROW_ON_ERROR)]]);
@@ -50,6 +51,40 @@ $era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScript'=
     'accounts'=>[['id'=>'comptable','name'=>'Le comptable','policy'=>'lua'],['id'=>'casual','policy'=>'casual']]]);
 $frame=$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>2]);
 if(($frame['tick']??null)!==2)throw new RuntimeException('Bagaar Lua did not advance');
+$memoryScript=<<<'LUA'
+goal = "Préparer un essai"
+method = "Garder la première observation."
+function next(observation)
+    local memo = observation.memory
+    if memo.first == nil then memo.first = {tick = observation.tick, unit = "soldier"} end
+    if observation.self.resetCount == 0 and observation.tick > observation.self.lastResetTick + 24 then
+        return {type = "reset"}
+    end
+    if observation.self.resetCount > 0 then
+        assert(memo.first.tick == 1 and memo.first.unit == "soldier")
+        goal = "Comparer un second essai"
+        method = "Réutiliser l'observation du tick " .. string.format("%.0f", memo.first.tick)
+    end
+    return nil
+end
+LUA;
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>26,'luaScript'=>$memoryScript,
+    'accounts'=>[['id'=>'comptable','name'=>'Le comptable','policy'=>'lua'],
+        ['id'=>'casual','policy'=>'casual','activity'=>'casual-night']]]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>24]);
+$reset=$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$store=new \Waar\MicroCombat\Bagaar\RunStore();
+$afterReset=$store->read($era['runId'])['state']['players']['comptable'];
+if($afterReset['resetCount']!==1 || $afterReset['luaMemory']['first']['tick']!==1)
+    throw new RuntimeException('Lua memory did not survive reset');
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$afterResume=$store->read($era['runId'])['state']['players']['comptable'];
+if($afterResume['luaMemory']['first']['unit']!=='soldier' || $afterResume['luaGoal']!=='Comparer un second essai'
+    || $afterResume['luaMethod']!=="Réutiliser l'observation du tick 1")
+    throw new RuntimeException('Lua memory or intention did not survive process restart: '.json_encode([
+        'tick'=>$afterResume['lastResetTick'], 'status'=>$afterResume['status'],
+        'memory'=>$afterResume['luaMemory'], 'goal'=>$afterResume['luaGoal'], 'method'=>$afterResume['luaMethod'],
+    ], JSON_UNESCAPED_UNICODE));
 PHP
 volume=$(docker volume inspect --format '{{.Mountpoint}}' waar-engine-demo_profile-saves)
 original=$(fingerprint "$volume/profiles.json")
