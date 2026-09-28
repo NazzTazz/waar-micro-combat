@@ -15,7 +15,8 @@ final class PlayerObservation
         $seenAt = static fn (?int $tick): ?string => $tick === null ? null
             : gmdate('Y-m-d\TH:i:s\Z', 1767225600 + $tick * 3600);
         foreach ($state['players'] as $otherId => $player) {
-            if ($otherId !== $id && ($player['joinedTick'] ?? 0) < $state['tick']) {
+            if ($otherId !== $id && ($player['joinedTick'] ?? 0) < $state['tick']
+                + (($state['manifest']['hostRuleVersion'] ?? null) === 'bagaar-host-rules/4' ? 1 : 0)) {
                 $targets[] = ['id' => $otherId, 'name' => $player['name'] ?? $otherId, 'glory' => $player['glory'],
                     'kind' => 'player', 'lastSeenTick' => $player['lastSeenTick'] ?? null,
                     'lastSeenAt' => $seenAt($player['lastSeenTick'] ?? null)];

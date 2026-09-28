@@ -129,10 +129,14 @@ $era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>10,'luaScripts
     'accounts'=>[['id'=>'axel','policy'=>'lua','scriptKey'=>'rageux','activity'=>'all-day'],
         ['id'=>'bruno','policy'=>'lua','scriptKey'=>'rageux','activity'=>'all-day']]]);
 $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$pending=$store->read($era['runId'])['state']['pendingPlayers']['entrant-1']??null;
+if(($pending['policy']??null)!=='lua' || isset($store->read($era['runId'])['state']['players']['entrant-1']))
+    throw new RuntimeException('Replacement account appeared before its first play tick');
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
 $entrant=$store->read($era['runId'])['state']['players']['entrant-1']??null;
 if(($entrant['policy']??null)!=='lua' || ($entrant['scriptKey']??null)!=='rageux')
     throw new RuntimeException('Scripted profile was not applied to replacement account');
-$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>9]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>8]);
 $entrant=$store->read($era['runId'])['state']['players']['entrant-1'];
 if(($entrant['luaMemory']['owner']??null)!=='entrant-1')
     throw new RuntimeException('Replacement Lua account did not receive its own memory');
