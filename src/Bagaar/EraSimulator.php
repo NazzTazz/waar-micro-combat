@@ -123,7 +123,8 @@ final class EraSimulator
             'arrivalPool' => $arrivalPool,
             'spawnSerial' => 0, 'spontaneousArrivals' => 0,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
-            'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
+            'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0,
+            'inspectionMetrics' => [], 'goldFlowScale' => [], 'frames' => []];
     }
 
     public function advance(array $state, int $steps = 1): array
@@ -146,8 +147,10 @@ final class EraSimulator
         $tick = $state['tick'];
         $master = $state['manifest']['seed'];
         $weather = EngineProfile::WEATHER[self::random($master, $tick, 'weather') % count(EngineProfile::WEATHER)];
+        $state['goldFlow'] = [];
         foreach ($state['players'] as $id => $player) {
             $state['players'][$id] = AccountRules::hourly($player, 40 + self::random($master, $tick, 'hospital:'.$id) % 41);
+            $state['goldFlow'][$id]['income'] = $state['players'][$id]['gold'] - $player['gold'];
             [$state['players'][$id], $change] = PlayerEngagement::resume($state['players'][$id], $tick);
             if ($change !== null) {
                 $state['events'][] = ['tick' => $tick, 'type' => $change, 'actor' => $id];
@@ -156,6 +159,7 @@ final class EraSimulator
         foreach ($state['villages'] as $id => $village) {
             $caps = VillageRules::caps($village['glory'], $state['players'], $this->profile->costs());
             $state['villages'][$id] = VillageRules::refill($village, $caps);
+            $state['goldFlow'][$id]['income'] = $state['villages'][$id]['gold'] - $village['gold'];
             $state['villages'][$id]['defenses'] = 9999;
         }
         $state['villageAttacks'] = [];
@@ -213,6 +217,10 @@ final class EraSimulator
                 }
             }
         }
+        foreach ($state['goldFlow'] as $id => $flow) {
+            $state['goldFlowScale'][$id] = max($state['goldFlowScale'][$id] ?? 1,
+                $flow['income'] ?? 0, ($flow['invested'] ?? 0) + ($flow['pillaged'] ?? 0));
+        }
         $points = [];
         $playerNames = array_map(static fn (array $player): string => $player['name'], $state['players']);
         foreach ($state['players'] as $id => $player) {
@@ -224,7 +232,12 @@ final class EraSimulator
             $point = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
                 'mineLevel' => $player['mineLevel'], 'mineProduction' => HostRules::mineProduction($player['mineLevel']),
+                'hospitalLevel' => $player['hospitalLevel'], 'hospitalOccupied' => array_sum($player['hospital']),
                 'record' => $player['record'], 'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent'],
+                'powerDestroyed' => $state['inspectionMetrics'][$id]['powerDestroyed'] ?? 0,
+                'powerLost' => $state['inspectionMetrics'][$id]['powerLost'] ?? 0,
+                'goldLooted' => $state['inspectionMetrics'][$id]['goldLooted'] ?? 0,
+                'goldFlow' => $state['goldFlow'][$id] ?? [], 'goldFlowScale' => $state['goldFlowScale'][$id] ?? 1,
                 'resetCount' => $player['resetCount'] ?? 0,
                 'status' => $player['status'] ?? 'active', 'pauseUntil' => $player['pauseUntil'] ?? null,
                 'goal' => $intent['goal'], 'method' => $intent['method']];
@@ -242,6 +255,9 @@ final class EraSimulator
             $villages[] = ['id' => $id, 'kind' => 'village', 'policy' => 'village',
                 'armyGold' => HostRules::armyValue($village['army'], $this->profile->costs()),
                 'glory' => $village['glory'], 'gold' => $village['gold'], 'army' => $village['army'],
+                'record' => $state['inspectionMetrics'][$id]['record'] ?? ['wins' => 0, 'draws' => 0, 'losses' => 0],
+                'goldDistributed' => $state['inspectionMetrics'][$id]['goldDistributed'] ?? 0,
+                'goldFlow' => $state['goldFlow'][$id] ?? [], 'goldFlowScale' => $state['goldFlowScale'][$id] ?? 1,
                 'goldMax' => $village['goldMax'] ?? $village['gold'], 'goldRefill' => $village['goldRefill'] ?? 0];
         }
         $state['frames'][] = ['tick' => $tick, 'weather' => $weather, 'points' => $points,
@@ -325,6 +341,8 @@ final class EraSimulator
                         }
                     }
                     $state['spyResults'][$id][] = $results;
+                    $state['goldFlow'][$id]['invested'] = ($state['goldFlow'][$id]['invested'] ?? 0)
+                        + $player['gold'] - $state['players'][$id]['gold'];
                     return $results;
                 }
                 $target = $state['players'][$action['target']] ?? $state['villages'][$action['target']] ?? null;
@@ -339,6 +357,14 @@ final class EraSimulator
                 return null;
             default:
                 throw new \DomainException('Action inconnue.');
+        }
+        if ($type === 'reset') {
+            $state['goldFlow'][$id]['reset'] = true;
+        } else {
+            $spent = $player['gold'] - $state['players'][$id]['gold'];
+            if ($spent > 0) {
+                $state['goldFlow'][$id]['invested'] = ($state['goldFlow'][$id]['invested'] ?? 0) + $spent;
+            }
         }
         $event = ['tick' => $state['tick'], 'type' => $type, 'actor' => $id];
         if ($type === 'spy') {
@@ -384,6 +410,28 @@ final class EraSimulator
         $loot = ($report['result']['winner'] ?? null) === 'attacker'
             ? $lower + self::random($state['manifest']['seed'], $state['tick'], 'loot:'.$ordinal) % ($upper - $lower + 1) : 0;
         $result = CombatTransition::apply($attacker, $defender, $report, $loot, $village);
+        if ($result['event']['loot'] > 0) {
+            $state['goldFlow'][$id]['income'] = ($state['goldFlow'][$id]['income'] ?? 0) + $result['event']['loot'];
+            $state['goldFlow'][$targetId]['pillaged'] = ($state['goldFlow'][$targetId]['pillaged'] ?? 0) + $result['event']['loot'];
+        }
+        $lossValue = ['attacker' => 0, 'defender' => 0];
+        foreach ($lossValue as $side => $_) {
+            foreach ($this->profile->costs() as $type => $cost) {
+                $losses = $result['event']['report'][$side]['types'][$type];
+                $lossValue[$side] += ($losses['dead'] + $losses['wounded'] + $losses['prisoners']) * $cost;
+            }
+        }
+        $state['inspectionMetrics'][$id]['powerDestroyed'] = ($state['inspectionMetrics'][$id]['powerDestroyed'] ?? 0) + $lossValue['defender'];
+        $state['inspectionMetrics'][$id]['powerLost'] = ($state['inspectionMetrics'][$id]['powerLost'] ?? 0) + $lossValue['attacker'];
+        $state['inspectionMetrics'][$id]['goldLooted'] = ($state['inspectionMetrics'][$id]['goldLooted'] ?? 0) + $result['event']['loot'];
+        if ($village) {
+            $key = $result['event']['winner'] === 'defender' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses');
+            $state['inspectionMetrics'][$targetId]['record'][$key] = ($state['inspectionMetrics'][$targetId]['record'][$key] ?? 0) + 1;
+            $state['inspectionMetrics'][$targetId]['goldDistributed'] = ($state['inspectionMetrics'][$targetId]['goldDistributed'] ?? 0) + $result['event']['loot'];
+        } else {
+            $state['inspectionMetrics'][$targetId]['powerDestroyed'] = ($state['inspectionMetrics'][$targetId]['powerDestroyed'] ?? 0) + $lossValue['attacker'];
+            $state['inspectionMetrics'][$targetId]['powerLost'] = ($state['inspectionMetrics'][$targetId]['powerLost'] ?? 0) + $lossValue['defender'];
+        }
         if (!$this->combatReports($state)) {
             unset($result['event']['report']);
         }
@@ -537,6 +585,7 @@ final class EraSimulator
     private function resetAccount(array &$state, string $id): void
     {
         $state['players'][$id] = AccountRules::reset($state['players'][$id], $state['tick']);
+        $state['goldFlow'][$id]['reset'] = true;
         if ($state['candidate'] === $id) {
             $state['candidate'] = null;
             $state['candidateHours'] = 0;
