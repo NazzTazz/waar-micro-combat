@@ -12,9 +12,10 @@ final class EraSimulator
 {
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
     public const DECISION_VERSION = 'bagaar-builtin-policies/9';
-    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/2';
+    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/3';
     private const LEGACY_DECISION_VERSION = 'bagaar-builtin-policies/8';
     private const LEGACY_LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
+    private const PREVIOUS_LUA_DECISION_VERSION = 'bagaar-lua-policy/2';
     private CohortRuntime $runtime;
     private CohortRequestFactory $requests;
 
@@ -228,6 +229,13 @@ final class EraSimulator
                 }
                 $this->resetAccount($state, $id);
                 break;
+            case 'abandon':
+                if ($player['policy'] !== 'lua') {
+                    throw new \DomainException('Abandon réservé au joueur Lua.');
+                }
+                $state['players'][$id]['status'] = 'abandoned';
+                $state['players'][$id]['pauseUntil'] = null;
+                break;
             case 'phase':
                 if ($player['policy'] !== 'ascenseur' || !in_array($action['value'] ?? null, ['raid', 'surrender'], true)) {
                     throw new \DomainException('Phase de profil invalide.');
@@ -255,6 +263,9 @@ final class EraSimulator
             $event['units'] = $action['units'];
         }
         $state['events'][] = $event;
+        if ($type === 'abandon') {
+            $this->spawnEntrant($state, $id);
+        }
     }
 
     private function attack(array &$state, string $id, string $targetId, string $weather, int $index): void
@@ -308,7 +319,7 @@ final class EraSimulator
         }
         $state['players'][$id]['record'][$result['event']['winner'] === 'attacker' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
         [$state['players'][$id], $attackerChange] = PlayerEngagement::afterCombat($state['players'][$id], $state['tick'],
-            $result['event']['winner'] === 'defender', $this->resilientRageux($state));
+            $result['event']['winner'] === 'defender', $this->resilientRageux($state), $this->luaControlsEngagement($state));
         if ($village) {
             $state['villages'][$targetId] = $result['defender'];
             $state['villageAttacks'][$id][$targetId] = ($state['villageAttacks'][$id][$targetId] ?? 0) + 1;
@@ -316,7 +327,7 @@ final class EraSimulator
             $state['players'][$targetId] = $result['defender'];
             $state['players'][$targetId]['record'][$result['event']['winner'] === 'defender' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
             [$state['players'][$targetId], $defenderChange] = PlayerEngagement::afterCombat($state['players'][$targetId], $state['tick'],
-                $result['event']['winner'] === 'attacker', $this->resilientRageux($state));
+                $result['event']['winner'] === 'attacker', $this->resilientRageux($state), $this->luaControlsEngagement($state));
             if ($state['players'][$targetId]['policy'] === 'rageux') {
                 $state['players'][$targetId]['rageTarget'] = $id;
                 $state['players'][$targetId]['rageUntil'] = $state['tick'] + 2;
@@ -504,12 +515,18 @@ final class EraSimulator
     {
         return $this->luaPolicy === null
             ? [self::DECISION_VERSION, self::LEGACY_DECISION_VERSION]
-            : [self::LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
+            : [self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
     }
 
     private function resilientRageux(array $state): bool
     {
-        return in_array($state['manifest']['decisionVersion'], [self::DECISION_VERSION, self::LUA_DECISION_VERSION], true);
+        return in_array($state['manifest']['decisionVersion'],
+            [self::DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
+    }
+
+    private function luaControlsEngagement(array $state): bool
+    {
+        return $state['manifest']['decisionVersion'] === self::LUA_DECISION_VERSION;
     }
 
     private function policyFor(string $name): PlayerPolicy

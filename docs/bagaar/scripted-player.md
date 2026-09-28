@@ -29,8 +29,12 @@ espionnage. `events` contient les vingt derniers combats du compte.
 
 Actions possibles : `mine`, `hospital`, `recruit` avec `units`, `heal`, `spy`
 ou `attack` avec `target`, `surrender`, `autoSurrender` avec `enabled`, et
-`reset`. Le reset manuel suit la règle de Waar : plus de 24 ticks depuis le
-dernier reset, y compris depuis la création du compte. Il remet l'Or, la
+`reset` et `abandon`. Le joueur Lua ne fait jamais de pause et n'abandonne jamais
+à cause de la règle automatique des défaites ; son script peut choisir
+`{type = "abandon"}`. Le compte devient alors un frigo et un nouveau joueur
+arrive, comme pour les autres abandons. Le reset manuel suit la règle de Waar :
+plus de 24 ticks depuis le dernier reset, y compris depuis la création du
+compte. Il remet l'Or, la
 Glwaare, les bâtiments, l'armée, les rapports et le bilan à zéro, mais conserve
 la mémoire, l'objectif et le moyen du script. Les
 actions passent par les mêmes règles PHP que celles des profils intégrés.
