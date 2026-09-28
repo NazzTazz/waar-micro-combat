@@ -147,7 +147,7 @@ end
 function next(observation)
     assert(observation.parameters.VIGILANCE == 70)
     if observation.tick == 1 and #observation.attempts == 0 then
-        observation.memory.blob = string.format("%05000d", 1)
+        observation.memory.blob = string.rep("x", 5000)
         assert(math.log(math.exp(2)) > 1.99)
         local values=table.pack(1,2,3)
         assert(table.unpack(values) == 1)
