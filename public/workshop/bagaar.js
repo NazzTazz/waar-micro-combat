@@ -285,7 +285,7 @@ async function start(){
   $('#bagaar-error').textContent='';
   const seed=Number($('#era-seed').value),days=Number($('#era-days').value);
   const population=await BagaarPopulation.prepare();
-  const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,soldierFrog:$('#soldier-frog').checked,
+  const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,
     ...population});
   runId=result.runId;frames=[];events=[];played=0;computed=0;total=result.totalTicks;combatCount=0;selected=null;playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
   try{localStorage.setItem('waar-bagaar-run-v2',runId)}catch{}

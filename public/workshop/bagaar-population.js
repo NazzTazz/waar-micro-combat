@@ -72,12 +72,25 @@
     return result+escaped(source.slice(position))+'\n';
   }
   function updateHighlight(){const source=$('#lua-editor-source');$('#lua-highlight').innerHTML=highlight(source.value)}
+  function placeEditor(){
+    const editor=$('#lua-editor');if(!editor.open)return;
+    let top=12,height=window.innerHeight-24;
+    if(window.frameElement){
+      const frame=window.frameElement.getBoundingClientRect();
+      const header=window.parent.document.querySelector('.app-header')?.getBoundingClientRect().bottom||0;
+      const visibleTop=Math.max(frame.top+12,header+12);
+      const visibleBottom=Math.min(frame.bottom-12,window.parent.innerHeight-12);
+      top=visibleTop-frame.top;height=Math.max(280,visibleBottom-visibleTop);
+    }
+    editor.style.setProperty('--lua-editor-top',`${Math.round(top)}px`);
+    editor.style.setProperty('--lua-editor-height',`${Math.round(height)}px`);
+  }
   async function openEditor(row=null){
     editing=row;editorNotice('');
     if(row?.policy==='lua'&&row.scriptKey!=='draft'){
       const loaded=await api('bagaar-script-load',{id:row.scriptKey});$('#lua-editor-source').value=loaded.source;
     }else $('#lua-editor-source').value=draftSource;
-    updateHighlight();$('#lua-editor').showModal();
+    updateHighlight();$('#lua-editor').showModal();placeEditor();
   }
   async function check(){
     const source=$('#lua-editor-source').value,checked=await api('bagaar-script-check',{source});
@@ -109,6 +122,8 @@
     $('#upload-lua').onclick=()=>$('#lua-file').click();
     $('#lua-file').onchange=async event=>{const file=event.target.files[0];if(!file)return;draftSource=await file.text();openEditor();event.target.value=''};
     $('#lua-close').onclick=()=>$('#lua-editor').close();
+    window.addEventListener('resize',placeEditor);
+    if(window.frameElement){window.parent.addEventListener('scroll',placeEditor,{passive:true});window.parent.addEventListener('resize',placeEditor)}
     $('#lua-editor-source').oninput=updateHighlight;
     $('#lua-editor-source').onscroll=()=>{$('#lua-highlight').scrollTop=$('#lua-editor-source').scrollTop;$('#lua-highlight').scrollLeft=$('#lua-editor-source').scrollLeft};
     $('#lua-tutorial').onclick=async()=>{try{$('#lua-editor-source').value=await (await fetch('/bagaar-tutoriel.lua')).text();updateHighlight();editorNotice('Tutoriel chargé comme brouillon.')}catch(error){editorNotice(error.message)}};
