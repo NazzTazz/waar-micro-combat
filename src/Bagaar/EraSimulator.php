@@ -11,8 +11,10 @@ use Waar\MicroCombat\Workshop\ProcessCohortRuntime;
 final class EraSimulator
 {
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
-    public const DECISION_VERSION = 'bagaar-builtin-policies/8';
-    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
+    public const DECISION_VERSION = 'bagaar-builtin-policies/9';
+    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/2';
+    private const LEGACY_DECISION_VERSION = 'bagaar-builtin-policies/8';
+    private const LEGACY_LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
     private CohortRuntime $runtime;
     private CohortRequestFactory $requests;
 
@@ -89,7 +91,7 @@ final class EraSimulator
     {
         if (($state['schemaVersion'] ?? null) !== 'waar-bagaar-era/1'
             || ($state['manifest']['profileFingerprint'] ?? null) !== $this->profile->semanticFingerprint()
-            || ($state['manifest']['decisionVersion'] ?? null) !== $this->decisionVersion()
+            || !in_array($state['manifest']['decisionVersion'] ?? null, $this->acceptedDecisionVersions(), true)
             || $steps < 1 || $steps > 24) {
             throw new \InvalidArgumentException('État, preset ou nombre de ticks invalide.');
         }
@@ -289,14 +291,16 @@ final class EraSimulator
                 ($state['players'][$id]['hackerVictims'][$targetId] ?? 0) + 1;
         }
         $state['players'][$id]['record'][$result['event']['winner'] === 'attacker' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
-        [$state['players'][$id], $attackerChange] = PlayerEngagement::afterCombat($state['players'][$id], $state['tick'], $result['event']['winner'] === 'defender');
+        [$state['players'][$id], $attackerChange] = PlayerEngagement::afterCombat($state['players'][$id], $state['tick'],
+            $result['event']['winner'] === 'defender', $this->resilientRageux($state));
         if ($village) {
             $state['villages'][$targetId] = $result['defender'];
             $state['villageAttacks'][$id][$targetId] = ($state['villageAttacks'][$id][$targetId] ?? 0) + 1;
         } else {
             $state['players'][$targetId] = $result['defender'];
             $state['players'][$targetId]['record'][$result['event']['winner'] === 'defender' ? 'wins' : ($result['event']['winner'] === null ? 'draws' : 'losses')]++;
-            [$state['players'][$targetId], $defenderChange] = PlayerEngagement::afterCombat($state['players'][$targetId], $state['tick'], $result['event']['winner'] === 'attacker');
+            [$state['players'][$targetId], $defenderChange] = PlayerEngagement::afterCombat($state['players'][$targetId], $state['tick'],
+                $result['event']['winner'] === 'attacker', $this->resilientRageux($state));
             if ($state['players'][$targetId]['policy'] === 'rageux') {
                 $state['players'][$targetId]['rageTarget'] = $id;
                 $state['players'][$targetId]['rageUntil'] = $state['tick'] + 2;
@@ -475,6 +479,18 @@ final class EraSimulator
     private function decisionVersion(): string
     {
         return $this->luaPolicy === null ? self::DECISION_VERSION : self::LUA_DECISION_VERSION;
+    }
+
+    private function acceptedDecisionVersions(): array
+    {
+        return $this->luaPolicy === null
+            ? [self::DECISION_VERSION, self::LEGACY_DECISION_VERSION]
+            : [self::LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
+    }
+
+    private function resilientRageux(array $state): bool
+    {
+        return in_array($state['manifest']['decisionVersion'], [self::DECISION_VERSION, self::LUA_DECISION_VERSION], true);
     }
 
     private function policyFor(string $name): PlayerPolicy
