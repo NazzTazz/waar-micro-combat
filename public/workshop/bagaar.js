@@ -93,28 +93,43 @@ function renderChart(){
   const chart=$('#era-chart');chart.replaceChildren();
   if(played<1||!frames[played-1])return;
   const current=frames[played-1],left=70,right=755,top=35,bottom=435;
-  const historical=frames.slice(0,played).flatMap(frame=>[...frame.points,...(frame.villages||[])]);
-  const observedX=Math.max(0,...historical.map(point=>point.armyGold));
-  const observedY=Math.max(0,...historical.map(point=>point.glory));
-  const maxX=(Math.floor(observedX/20000)+1)*20000;
+  let observedX=0,observedY=0;
+  for(let frameIndex=0;frameIndex<played;frameIndex++){
+    for(const point of [...frames[frameIndex].points,...(frames[frameIndex].villages||[])]){
+      observedX=Math.max(observedX,point.armyGold);observedY=Math.max(observedY,point.glory);
+    }
+  }
+  const compressed=observedX>200000,split=100000;
+  const niceStep=value=>{const power=10**Math.floor(Math.log10(value));return [1,2,5,10].map(multiplier=>multiplier*power).find(step=>step>=value)};
+  const highStep=compressed?niceStep((observedX-split)/4):20000;
+  const maxX=compressed?Math.ceil(observedX/highStep)*highStep:(Math.floor(observedX/20000)+1)*20000;
   const maxY=(Math.floor(observedY/10)+1)*10;
-  const xLabelEvery=maxX<=200000?1:maxX<=800000?5:10;
-  const yLabelEvery=maxY<=100?1:2;
-  const x=value=>left+(right-left)*value/maxX;
+  const breakX=left+(right-left)*0.53;
+  const x=value=>compressed?(value<=split?left+(breakX-left)*value/split:breakX+(right-breakX)*(value-split)/(maxX-split)):left+(right-left)*value/maxX;
   const y=value=>bottom-(bottom-top)*value/maxY;
+  const yGridEvery=Math.max(1,Math.ceil(8/((bottom-top)*10/maxY)));
+  const yLabelEvery=Math.ceil(Math.max(yGridEvery,30/((bottom-top)*10/maxY))/yGridEvery)*yGridEvery;
+  const axisLabel=value=>value>=1000000?`${number.format(value/1000000)} M`:value>=1000?`${number.format(value/1000)} k`:String(value);
   for(let i=0;i<=maxY/10;i++){
+    if(i%yGridEvery!==0)continue;
     const gy=y(i*10);
     chart.append(svg('line',{class:i%yLabelEvery===0?'grid major-grid':'grid',x1:left,y1:gy,x2:right,y2:gy}));
     if(i%yLabelEvery===0)writeSvgText(chart,left-12,gy+4,number.format(i*10),{'text-anchor':'end'});
   }
-  for(let i=0;i<=maxX/20000;i++){
-    const gx=x(i*20000);
-    chart.append(svg('line',{class:i%xLabelEvery===0?'grid major-grid':'grid',x1:gx,y1:top,x2:gx,y2:bottom}));
-    if(i%xLabelEvery===0)writeSvgText(chart,gx,bottom+22,number.format(i*20000),{'text-anchor':'middle'});
+  const xTicks=[];
+  for(let value=0;value<=(compressed?split:maxX);value+=20000)xTicks.push(value);
+  if(compressed)for(let value=Math.ceil((split+1)/highStep)*highStep;value<=maxX;value+=highStep)xTicks.push(value);
+  for(const value of xTicks){
+    const gx=x(value);
+    chart.append(svg('line',{class:'grid major-grid',x1:gx,y1:top,x2:gx,y2:bottom}));
+    writeSvgText(chart,gx,bottom+22,axisLabel(value),{'text-anchor':'middle'});
   }
+  $('#chart-grid-hint').textContent=compressed
+    ? "Abscisse : Or investi dans l'armée au prix du preset. Pas de 20 000 Or jusqu'à 100 000 Or ; au-delà, l'échelle est comprimée pour garder visibles les armées extrêmes. Ordonnée : Glwaare."
+    : "Abscisse : Or investi dans l'armée au prix du preset. Ordonnée : Glwaare. Une case vaut 20 000 Or × 10 Glwaare. Les traînées montrent les 12 derniers ticks des joueurs.";
   chart.append(svg('line',{class:'axis',x1:left,y1:bottom,x2:right,y2:bottom}));
   chart.append(svg('line',{class:'axis',x1:left,y1:bottom,x2:left,y2:top}));
-  writeSvgText(chart,(left+right)/2,487,"Or investi dans l'armée actuelle",{'text-anchor':'middle'});
+  writeSvgText(chart,(left+right)/2,487,compressed?"Or investi dans l'armée · échelle comprimée après 100 k":"Or investi dans l'armée actuelle",{'text-anchor':'middle'});
   writeSvgText(chart,22,18,'Glwaare');
   for(const point of current.points){
     const trail=frames.slice(Math.max(0,played-12),played).map(frame=>frame.points.find(candidate=>candidate.id===point.id)).filter(Boolean);
