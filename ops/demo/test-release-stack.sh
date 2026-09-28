@@ -39,7 +39,7 @@ $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'header'
 $saved=json_decode(file_get_contents($base.'/api/save-profile',false,$context),true,128,JSON_THROW_ON_ERROR);
 if(($saved['ok']??false)!==true)throw new RuntimeException('Fixture save failed');
 $post=static function(string $path, array $body) use($base): array {
-    $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'header'=>'Content-Type: application/json',
+    $context=stream_context_create(['http'=>['method'=>'POST','timeout'=>10,'ignore_errors'=>true,'header'=>'Content-Type: application/json',
         'content'=>json_encode($body,JSON_THROW_ON_ERROR)]]);
     $response=json_decode(file_get_contents($base.$path,false,$context),true,128,JSON_THROW_ON_ERROR);
     if(($response['ok']??false)!==true)throw new RuntimeException('Bagaar Lua request failed: '.json_encode($response));
