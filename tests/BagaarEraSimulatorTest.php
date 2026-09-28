@@ -12,6 +12,17 @@ require_once dirname(__DIR__).'/autoload.php';
 
 final class BagaarEraSimulatorTest extends TestCase
 {
+    public function testPopulationAcceptsVeryCalmAndVeryAggressivePlayers(): void
+    {
+        $simulator = new EraSimulator(EngineProfile::fromArray(EngineProfile::defaults()), new BagaarFakeRuntime());
+        $state = $simulator->start(42, 1, [
+            ['id' => 'calm', 'policy' => 'fermier', 'aggressionPercent' => 2],
+            ['id' => 'furious', 'policy' => 'rageux', 'aggressionPercent' => 200],
+        ]);
+        self::assertSame(2, $state['players']['calm']['aggressionPercent']);
+        self::assertSame(200, $state['players']['furious']['aggressionPercent']);
+    }
+
     public function testSameSeedAndProfileProduceIdenticalFramesAndCombatArchive(): void
     {
         $profile = EngineProfile::fromArray(EngineProfile::defaults());

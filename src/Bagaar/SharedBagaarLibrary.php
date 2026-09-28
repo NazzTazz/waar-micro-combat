@@ -65,7 +65,9 @@ final class SharedBagaarLibrary
         }
         foreach ([$accounts, $spares] as $entries) {
             foreach ($entries as $entry) {
-                if (!is_array($entry) || !in_array($entry['policy'] ?? null, [...BuiltinPolicy::NAMES, 'lua'], true)) {
+                if (!is_array($entry) || !in_array($entry['policy'] ?? null, [...BuiltinPolicy::NAMES, 'lua'], true)
+                    || (isset($entry['aggressionPercent']) && (!is_int($entry['aggressionPercent'])
+                        || $entry['aggressionPercent'] < 1 || $entry['aggressionPercent'] > 200))) {
                     throw new \InvalidArgumentException('Modèle de joueur invalide.');
                 }
                 if ($entry['policy'] === 'lua') {

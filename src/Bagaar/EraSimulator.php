@@ -54,7 +54,7 @@ final class EraSimulator
             }
             if (!is_string($name) || trim($name) === '' || strlen($name) > 64
                 || !is_string($activity) || !in_array($activity, PlayerSchedule::WINDOWS, true)
-                || !is_int($aggression) || $aggression < 60 || $aggression > 140
+                || !is_int($aggression) || $aggression < 1 || $aggression > 200
                 || (isset($entry['scriptKey']) && (!is_string($entry['scriptKey'])
                     || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $entry['scriptKey'])))) {
                 throw new \InvalidArgumentException('Identité ou rythme joueur invalide.');
