@@ -57,12 +57,31 @@ end`;
 const activityNames={'all-day':'Toute la journée',office:'9 h–17 h',evening:'17 h–24 h',early:'6 h–14 h','casual-morning':'1 tick par jour · matin','casual-noon':'2 ticks par jour · midi','casual-evening':'1 tick par jour · soir','casual-night':'2 ticks par jour · soir'};
 const statusNames={active:'Joueur actif',pause:'Le joueur fait une pause',abandoned:'Jeu abandonné'};
 const number=new Intl.NumberFormat('fr-FR');
+const mobileWebKit=/iP(hone|ad|od)/.test(navigator.userAgent);
+const stepBatch=mobileWebKit?4:8,replayPage=mobileWebKit?10:50;
 let runId=null,frames=[],events=[],played=0,computed=0,total=0,combatCount=0,computing=false,playing=false,selected=null,profile=null,seekTarget=null,playbackSpeed=4;
 const pinnedIds=new Set();
 let lastFlashedFrame=0;
 let lastGoldFlowTick=null,lastGoldFlowPlaying=false;
 const goldFlowWidths=new Map();
-async function api(path,body){const response=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',headers:body===undefined?{}:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});const json=await response.json();if(!response.ok||!json.ok)throw new Error(json.errors?.[0]?.message||`HTTP ${response.status}`);return json.data}
+async function api(path,body){
+  let response;
+  try{response=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',headers:body===undefined?{}:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)})}
+  catch(error){throw new Error(`Réseau (${path}) : ${error.message}`)}
+  let json;
+  if(mobileWebKit){
+    let payload;
+    try{payload=await response.text()}
+    catch(error){throw new Error(`Lecture de ${path} (HTTP ${response.status}) : ${error.message}`)}
+    try{json=JSON.parse(payload)}
+    catch{throw new Error(`Réponse illisible de ${path} (HTTP ${response.status}).`)}
+  }else{
+    try{json=await response.json()}
+    catch{throw new Error(`Réponse illisible de ${path} (HTTP ${response.status}).`)}
+  }
+  if(!response.ok||!json.ok)throw new Error(json.errors?.[0]?.message||`${path} : HTTP ${response.status}`);
+  return json.data;
+}
 const svg=(tag,attributes={})=>{const node=document.createElementNS(svgNS,tag);for(const [key,value] of Object.entries(attributes))node.setAttribute(key,String(value));return node};
 const setStatus=message=>{$('#run-status').textContent=message};
 function refreshProgress(){
@@ -367,11 +386,14 @@ async function compute(){
   computing=true;
   if(window.parent!==window)window.parent.postMessage({type:'waar-bagaar-computing',value:true},location.origin);
   const activeRun=runId;
+  let phase='calcul';
   try{
     while(computed<total&&runId===activeRun){
-      const steps=computed===0?1:Math.min(8,total-computed);
+      const steps=computed===0?1:Math.min(stepBatch,total-computed);
+      phase='requête bagaar-step';
       const result=await api('bagaar-step',{runId:activeRun,steps});
       if(runId!==activeRun)return;
+      phase='rendu du tick';
       frames.push(...result.frames);events.push(...result.events);computed=result.tick;combatCount=result.combatCount;
       if(played===0&&frames.length){played=1;render()}
       resolveSeekTarget();
@@ -379,7 +401,7 @@ async function compute(){
       if(result.done){setStatus('Ère calculée');break}
       await new Promise(resolve=>setTimeout(resolve,0));
     }
-  }catch(error){$('#bagaar-error').textContent=error.message;setStatus('Calcul interrompu')}
+  }catch(error){console.error('Bagaar : '+phase,error);$('#bagaar-error').textContent=`${phase} : ${error.message}`;setStatus('Calcul interrompu')}
   finally{computing=false;if(runId!==activeRun&&runId)compute();else if(window.parent!==window)window.parent.postMessage({type:'waar-bagaar-computing',value:false},location.origin)}
 }
 function play(){
@@ -429,13 +451,16 @@ async function start(){
 async function resume(){
   let previous=null;try{previous=localStorage.getItem('waar-bagaar-run-v2')}catch{}
   if(!previous)return;
+  let phase='reprise';
   try{
     runId=previous;frames=[];events=[];played=0;seekTarget=null;goldFlowWidths.clear();lastFlashedFrame=0;$('#era-flashes').replaceChildren();
     pinnedIds.clear();try{for(const id of JSON.parse(localStorage.getItem(`waar-bagaar-pins-${runId}`)||'[]'))if(typeof id==='string')pinnedIds.add(id)}catch{}
     let frameOffset=0,result;
     do{
-      result=await api('bagaar-resume',{runId:previous,frameOffset,limit:50});
+      phase='requête bagaar-resume';
+      result=await api('bagaar-resume',{runId:previous,frameOffset,limit:replayPage});
       if(runId!==previous)return;
+      phase='rendu de la reprise';
       frames.push(...result.frames);events.push(...result.events);
       computed=result.tick;total=result.totalTicks;combatCount=result.combatCount;
       const duration=String(total/24);
@@ -446,9 +471,9 @@ async function resume(){
       refreshProgress();setStatus(result.hasMoreFrames?`Chargement : ${number.format(frameOffset)} / ${number.format(result.tick)} trames`:result.done?'Ère calculée':'Calcul repris');
     }while(result.hasMoreFrames);
     if(!result.done)compute();
-  }catch(error){$('#bagaar-error').textContent=error.message;setStatus('Reprise interrompue')}
+  }catch(error){console.error('Bagaar : '+phase,error);$('#bagaar-error').textContent=`${phase} : ${error.message}`;setStatus('Reprise interrompue')}
 }
-$('#start-era').addEventListener('click',()=>start().catch(error=>{$('#bagaar-error').textContent=error.message;setStatus('Erreur')}));
+$('#start-era').addEventListener('click',()=>start().catch(error=>{console.error('Bagaar : démarrage',error);$('#bagaar-error').textContent=`démarrage : ${error.message}`;setStatus('Erreur')}));
 $('#pin-current').addEventListener('click',()=>{if(!selected||!runId)return;if(pinnedIds.has(selected))pinnedIds.delete(selected);else pinnedIds.add(selected);savePinned();renderPlayer();renderPinned()});
 $('#play-era').addEventListener('click',()=>{if(played>=total&&computed>=total){played=0;seekTarget=null}playing=true;syncPlaybackControls();render()});
 $('#pause-era').addEventListener('click',()=>{playing=false;syncPlaybackControls();render()});
