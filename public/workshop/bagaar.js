@@ -57,8 +57,11 @@ end`;
 const activityNames={'all-day':'Toute la journée',office:'9 h–17 h',evening:'17 h–24 h',early:'6 h–14 h','casual-morning':'1 tick par jour · matin','casual-noon':'2 ticks par jour · midi','casual-evening':'1 tick par jour · soir','casual-night':'2 ticks par jour · soir'};
 const statusNames={active:'Joueur actif',pause:'Le joueur fait une pause',abandoned:'Jeu abandonné'};
 const number=new Intl.NumberFormat('fr-FR');
-let runId=null,frames=[],events=[],played=0,computed=0,total=0,combatCount=0,computing=false,playing=false,selected=null,profile=null;
+let runId=null,frames=[],events=[],played=0,computed=0,total=0,combatCount=0,computing=false,playing=false,selected=null,profile=null,seekTarget=null,playbackSpeed=4;
+const pinnedIds=new Set();
 let lastFlashedFrame=0;
+let lastGoldFlowTick=null,lastGoldFlowPlaying=false;
+const goldFlowWidths=new Map();
 async function api(path,body){const response=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',headers:body===undefined?{}:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});const json=await response.json();if(!response.ok||!json.ok)throw new Error(json.errors?.[0]?.message||`HTTP ${response.status}`);return json.data}
 const svg=(tag,attributes={})=>{const node=document.createElementNS(svgNS,tag);for(const [key,value] of Object.entries(attributes))node.setAttribute(key,String(value));return node};
 const setStatus=message=>{$('#run-status').textContent=message};
@@ -66,9 +69,16 @@ function refreshProgress(){
   $('#compute-progress').textContent=`Calcul : ${number.format(computed)} / ${number.format(total)} ticks`;
   $('#play-progress').textContent=`Lecture : ${number.format(played)} / ${number.format(computed)} ticks`;
   $('#combat-count').textContent=`${number.format(combatCount)} combats`;
-  $('#frame-seek').disabled=frames.length===0;
-  $('#frame-seek').max=String(Math.max(1,frames.length));
-  $('#frame-seek').value=String(Math.max(1,played));
+  const seek=$('#frame-seek');
+  seek.disabled=frames.length===0;
+  const max=String(Math.max(1,total)),value=String(Math.max(1,seekTarget??played));
+  if(seek.max!==max)seek.max=max;
+  if(seek.value!==value)seek.value=value;
+  $('#seek-buffered').style.width=`${total?100*Math.min(frames.length,total)/total:0}%`;
+  $('#seek-played').style.width=`${total?100*Math.min(played,total)/total:0}%`;
+  $('#frame-buffer-status').textContent=seekTarget===null
+    ?`Tampon : ${number.format(frames.length)} / ${number.format(total)} ticks`
+    :`Mise en tampon vers ${number.format(seekTarget)} · ${number.format(frames.length)} disponibles`;
 }
 function writeSvgText(root,x,y,value,attributes={}){const node=svg('text',{x,y,...attributes});node.textContent=value;root.append(node)}
 function frameFlashes(tick){
@@ -83,7 +93,8 @@ function frameFlashes(tick){
       if(event.surrender)add(event.defender,'#ffffff');
     }else if(event.type==='rwaa')add(event.actor,'#ffe45f');
     else if(event.type==='rwaa-ended')add(event.actor,'#ff9c4a');
-    else if(event.type==='recruit')add(event.actor,'#61aaff',true);
+    else if(event.type==='reset')add(event.actor,'#caa7ff');
+    else if(event.type==='recruit')add(event.actor,'#61aaff');
     else if(event.type==='heal')add(event.actor,'#fa80c7');
     else if(event.type==='surrender')add(event.actor,'#ffffff');
   }
@@ -131,6 +142,8 @@ function renderChart(){
   chart.append(svg('line',{class:'axis',x1:left,y1:bottom,x2:left,y2:top}));
   writeSvgText(chart,(left+right)/2,487,compressed?"Or investi dans l'armée · échelle comprimée après 100 k":"Or investi dans l'armée actuelle",{'text-anchor':'middle'});
   writeSvgText(chart,22,18,'Glwaare');
+  const rwaa=current.points.find(point=>point.id===current.rwaa);
+  if(rwaa)chart.append(svg('circle',{class:'rwaa-halo',cx:x(rwaa.armyGold),cy:y(rwaa.glory),r:14}));
   for(const point of current.points){
     const trail=frames.slice(Math.max(0,played-12),played).map(frame=>frame.points.find(candidate=>candidate.id===point.id)).filter(Boolean);
     if(trail.length>1)chart.append(svg('polyline',{points:trail.map(item=>`${x(item.armyGold)},${y(item.glory)}`).join(' '),fill:'none',stroke:colors[profileKind(point)],opacity:'.55','stroke-width':2}));
@@ -153,37 +166,129 @@ function renderChart(){
     const overlay=$('#era-flashes');
     if(played<lastFlashedFrame)overlay.replaceChildren();
     const markerById=new Map([...current.points,...(current.villages||[])].map(point=>[point.id,point]));
+    const speed=playbackSpeed;
     for(const [id,flashes] of frameFlashes(current.tick)){
       const point=markerById.get(id);
       if(!point)continue;
       flashes.forEach((color,index)=>{
-        const width={'#71db86':2,'#ff6868':2,'#b8c2ce':2,'#61aaff':4,'#fa80c7':4}[color]||6;
-        const halo=svg('circle',{class:'event-flash',cx:x(point.armyGold),cy:y(point.glory),r:13,fill:'none',stroke:color,'stroke-width':width,style:`animation-delay:${index*0.32}s`});
+        if(color==='#61aaff'){
+          const plus=svg('text',{class:'recruit-flash',x:x(point.armyGold)+11,y:y(point.glory)+5,style:`animation-duration:${1.15/speed}s;animation-delay:${index*0.32/speed}s`});
+          plus.textContent='+';
+          plus.addEventListener('animationend',()=>plus.remove());overlay.append(plus);
+          return;
+        }
+        const major=['#ffffff','#ffe45f','#ff9c4a','#caa7ff'].includes(color);
+        const width={'#71db86':3,'#ff6868':3,'#b8c2ce':3,'#fa80c7':1}[color]||(major?8:6);
+        const duration=(major?2.4:1.15)/speed,delay=index*0.32/speed;
+        const halo=svg('circle',{class:major?'event-flash major-event-flash':'event-flash',cx:x(point.armyGold),cy:y(point.glory),r:major?16:13,fill:'none',stroke:color,'stroke-width':width,style:`animation-duration:${duration}s;animation-delay:${delay}s`});
         halo.addEventListener('animationend',()=>halo.remove());overlay.append(halo);
+        if(color==='#ffe45f'){
+          const label=svg('text',{class:'rwaa-flash-label',x:x(point.armyGold),y:y(point.glory)-23,'text-anchor':'middle',style:`animation-duration:${duration}s;animation-delay:${delay}s`});
+          label.textContent='RWAA';
+          label.addEventListener('animationend',()=>label.remove());overlay.append(label);
+        }
       });
     }
     lastFlashedFrame=played;
   }
   $('#frame-weather').textContent=`Tick ${current.tick} · météo : ${current.weather}`;
 }
-function renderPlayer(){
+function inspectionTitle(point){
+  if(point.kind==='village')return `${point.id} · Village`;
+  const kind=point.policy==='lua'?(names[profileKind(point)]||point.scriptKey||'Joueur')+' [Lua]':names[profileKind(point)]||point.policy;
+  return `${point.name||point.id} · ${kind}`;
+}
+function renderGoldFlow(point,detail,motion){
+  if(!point.goldFlow)return;
+  const flow=point.goldFlow,income=flow.income||0,invested=flow.invested||0,pillaged=flow.pillaged||0;
+  const net=income-invested-pillaged,scale=Math.max(1,point.goldFlowScale||1);
+  const row=document.createElement('div'),caption=document.createElement('div'),label=document.createElement('span'),value=document.createElement('strong');
+  row.className='bagaar-gold-flow';caption.className='bagaar-gold-flow-caption';label.textContent='Δ Or / tick';
+  value.textContent=flow.reset?'Remise à zéro':`${net>=0?'+':'−'}${number.format(Math.abs(net))} Or`;
+  caption.append(label,value);row.append(caption);
+  const track=document.createElement('div'),left=document.createElement('div'),right=document.createElement('div');
+  track.className='bagaar-gold-flow-track';left.className='bagaar-gold-flow-left';right.className='bagaar-gold-flow-right';
+  const widths={income:income?Math.max(1,100*income/scale):0,invested:invested?Math.max(1,100*invested/scale):0,pillaged:pillaged?Math.max(1,100*pillaged/scale):0};
+  const previous=goldFlowWidths.get(point.id),animations=[];
+  const bar=kind=>{
+    const element=document.createElement('span'),target=widths[kind],from=previous?.[kind]??target;
+    element.className=`bagaar-gold-flow-${kind}`;
+    element.style.width=`${motion==='paused'||motion==='fold'?0:target}%`;
+    if(motion==='tick'&&previous&&from!==target)animations.push([element,from,target,600/playbackSpeed,'ease-out']);
+    if(motion==='fold'&&from>0)animations.push([element,from,0,220,'ease-in']);
+    return element;
+  };
+  if(!flow.reset){left.append(bar('invested'),bar('pillaged'));right.append(bar('income'))}
+  goldFlowWidths.set(point.id,flow.reset?{income:0,invested:0,pillaged:0}:widths);
+  track.append(left,right);row.append(track);
+  row.title=flow.reset?'Compte remis à zéro pendant ce tick.':`Rentrées : ${number.format(income)} Or · investissements et dépenses : ${number.format(invested)} Or · pillage subi : ${number.format(pillaged)} Or · solde : ${net>=0?'+':''}${number.format(net)} Or`;
+  row.setAttribute('role','img');row.setAttribute('aria-label',row.title);detail.append(row);
+  for(const [element,from,to,duration,easing] of animations)element.animate([{width:`${from}%`},{width:`${to}%`}],{duration,easing});
+}
+function renderInspection(point,frame,title,detail,motion){
+  title.textContent=inspectionTitle(point);
+  detail.replaceChildren();detail.classList.add('bagaar-player-detail');
+  const meta=document.createElement('div');meta.className='bagaar-player-meta';
+  const rank=frame.rwaa===point.id?` · Rwaa (${frame.rwaaPv} PV)`:frame.candidate===point.id?` · Prétendant ${frame.candidateHours}/24`:'';
+  meta.textContent=point.kind==='village'?`${number.format(point.glory)} Glwaare`:`${number.format(point.glory)} Glwaare · ${statusNames[point.status]||statusNames.active}${rank}`;
+  detail.append(meta);
+  const army=document.createElement('div');army.className='bagaar-player-army';
+  for(const [short,name,key] of [['S','Soldats','soldier'],['L','Lanciers','spearman'],['A','Archers','archer'],['C','Chevaliers','knight']]){
+    const unit=document.createElement('span'),label=document.createElement('abbr'),count=document.createElement('strong');
+    label.title=name;label.textContent=`${short} : `;count.textContent=number.format(point.army?.[key]??0);
+    unit.append(label,count);army.append(unit);
+  }
+  detail.append(army);
+  const line=(label,value,hint='')=>{const row=document.createElement('div'),name=document.createElement('span'),text=document.createElement('strong');row.className='bagaar-player-line';if(hint)row.title=hint;name.textContent=label;text.textContent=String(value);row.append(name,text);detail.append(row)};
+  line('Or investi',`${number.format(point.armyGold)} Or`);
+  renderGoldFlow(point,detail,motion);
+  if(point.kind==='village'){
+    line('Or disponible',`${number.format(point.gold)} / ${number.format(point.goldMax??point.gold)} Or`);
+    line('Abondement',`+${number.format(point.goldRefill??0)} Or/tick`);
+    line('Combats V / N / D',point.record?`${point.record.wins} / ${point.record.draws} / ${point.record.losses}`:'—');
+    line('Or distribué',point.goldDistributed==null?'—':`${number.format(point.goldDistributed)} Or`);
+    return;
+  }
+  line('Mine',`${point.mineLevel??0} (${number.format(point.mineProduction??0)} Or/heure)`);
+  line('Infirmerie',point.hospitalLevel==null?'—':`${point.hospitalLevel} (${number.format(point.hospitalOccupied??0)} lits occupés)`);
+  line('Combats V / N / D',`${point.record?.wins??0} / ${point.record?.draws??0} / ${point.record?.losses??0}`);
+  const powerHint='Morts, blessés et prisonniers sortis de l’armée active, valorisés aux prix d’achat du preset.';
+  line('Puissance détruite',point.powerDestroyed==null?'—':`${number.format(point.powerDestroyed)} Or`,powerHint);
+  line('Puissance perdue',point.powerLost==null?'—':`${number.format(point.powerLost)} Or`,powerHint);
+  line('Or pillé',point.goldLooted==null?'—':`${number.format(point.goldLooted)} Or`);
+  const intent=document.createElement('div');intent.className='bagaar-player-intent';detail.append(intent);
+  for(const [label,value] of [['Objectif',point.goal||'—'],['Moyen',point.method||'—']]){
+    const row=document.createElement('p'),name=document.createElement('span');name.textContent=`${label} : `;row.append(name,document.createTextNode(value));intent.append(row);
+  }
+}
+function savePinned(){if(!runId)return;try{localStorage.setItem(`waar-bagaar-pins-${runId}`,JSON.stringify([...pinnedIds]))}catch{}}
+function renderPlayer(motion=playing?'static':'paused'){
   const frame=frames[played-1];
   const point=[...(frame?.points||[]),...(frame?.villages||[])].find(candidate=>candidate.id===selected)||frame?.points[0];
-  if(!point)return;
+  const button=$('#pin-current');button.disabled=!point;
+  if(!point){$('#current-inspection').hidden=false;$('#player-title').textContent='Compte observé';$('#player-detail').textContent='Lancez une ère pour afficher les comptes.';return}
   selected=point.id;
-  $('#player-title').textContent=point.kind==='village'?`${point.id} · Village palier ${point.glory}`:`${point.name||point.id} · ${names[profileKind(point)]||point.policy}${point.policy==='lua'&&point.scriptKey?' · Lua':''}`;
-  const detail=$('#player-detail');detail.replaceChildren();
-  const rows=[['Glwaare',point.glory],["Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]];
-  if(point.kind==='village')rows.push(['Or maximum',number.format(point.goldMax??point.gold)],['Abondement par tick',`${number.format(point.goldRefill??0)} Or`]);
-  else rows.push(['État',statusNames[point.status]||statusNames.active],['Objectif',point.goal||'—'],['Moyen choisi',point.method||'—'],['Mine',`Niveau ${point.mineLevel??0}`],['Production horaire',`${number.format(point.mineProduction??0)} Or`],['Activité',activityNames[point.activity]||'Toute la journée'],['Agressivité',`${point.aggressionPercent??100} %`]);
-  if(point.kind!=='village'&&point.prisoners!==undefined)rows.push(['Prisonniers',number.format(point.prisoners)],['Revenu prisonniers au prochain tick',`${number.format(point.prisonerProduction??0)} Or`]);
-  if(point.kind!=='village'&&point.resetCount>0)rows.push(['Remises à zéro',point.resetCount]);
-  rows.push(['Soldats',number.format(point.army?.soldier??0)],['Lanciers',number.format(point.army?.spearman??0)],['Archers',number.format(point.army?.archer??0)],['Chevaliers',number.format(point.army?.knight??0)]);
-  if(point.kind!=='village')rows.push(['Combats gagnés / nuls / perdus',`${point.record?.wins??0} / ${point.record?.draws??0} / ${point.record?.losses??0}`]);
-  for(const [label,value] of rows){
-    const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=String(value);detail.append(dt,dd);
+  $('#current-inspection').hidden=pinnedIds.has(point.id);
+  button.textContent=pinnedIds.has(point.id)?'★ Épinglé':'☆ Épingler';
+  button.setAttribute('aria-label',pinnedIds.has(point.id)?`Désépingler ${point.name||point.id}`:`Épingler ${point.name||point.id}`);
+  if(pinnedIds.has(point.id))return;
+  renderInspection(point,frame,$('#player-title'),$('#player-detail'),motion);
+}
+function renderPinned(motion=playing?'static':'paused'){
+  const root=$('#pinned-inspections');root.replaceChildren();root.hidden=pinnedIds.size===0;
+  if(root.hidden)return;
+  const frame=frames[played-1];
+  const points=new Map([...(frame?.points||[]),...(frame?.villages||[])].map(point=>[point.id,point]));
+  for(const id of [...pinnedIds].reverse()){
+    const card=document.createElement('section'),head=document.createElement('div'),title=document.createElement('h2'),remove=document.createElement('button'),detail=document.createElement('div');
+    card.className='panel bagaar-pin';head.className='bagaar-pin-head';detail.className='bagaar-detail';
+    remove.type='button';remove.textContent='×';remove.setAttribute('aria-label',`Désépingler ${id}`);
+    remove.addEventListener('click',()=>{pinnedIds.delete(id);savePinned();renderPlayer();renderPinned()});
+    head.append(title,remove);card.append(head,detail);root.append(card);
+    const point=points.get(id);
+    if(point)renderInspection(point,frame,title,detail,motion);
+    else{title.textContent=id;detail.className='bagaar-pin-absent';detail.textContent='Pas encore apparu à ce tick.'}
   }
-  const note=document.createElement('p');note.className='hint';note.textContent=frame.rwaa===point.id?`Rwaa · ${frame.rwaaPv} PV`:frame.candidate===point.id?`Prétendant · ${frame.candidateHours}/24 ticks`:'';detail.append(note);
 }
 function renderRanking(){
   const list=$('#era-ranking');list.replaceChildren();
@@ -248,7 +353,15 @@ function renderEvents(){
     list.append(item);
   }
 }
-function render(){refreshProgress();renderPlayer();renderChart();renderRanking();renderEvents()}
+function render(){
+  const motion=playing?(played!==lastGoldFlowTick?'tick':'static'):(lastGoldFlowPlaying?'fold':'paused');
+  refreshProgress();renderPlayer(motion);renderPinned(motion);renderChart();renderRanking();renderEvents();
+  lastGoldFlowTick=played;lastGoldFlowPlaying=playing;
+}
+function resolveSeekTarget(){
+  if(seekTarget===null||frames.length<seekTarget)return false;
+  played=seekTarget;seekTarget=null;render();setStatus(computed>=total?'Ère calculée':'Calcul en cours');return true;
+}
 async function compute(){
   if(computing||!runId)return;
   computing=true;
@@ -261,6 +374,7 @@ async function compute(){
       if(runId!==activeRun)return;
       frames.push(...result.frames);events.push(...result.events);computed=result.tick;combatCount=result.combatCount;
       if(played===0&&frames.length){played=1;render()}
+      resolveSeekTarget();
       refreshProgress();
       if(result.done){setStatus('Ère calculée');break}
       await new Promise(resolve=>setTimeout(resolve,0));
@@ -269,12 +383,17 @@ async function compute(){
   finally{computing=false;if(runId!==activeRun&&runId)compute();else if(window.parent!==window)window.parent.postMessage({type:'waar-bagaar-computing',value:false},location.origin)}
 }
 function play(){
-  if(!playing||frames.length===0)return;
+  if(!playing||frames.length===0||seekTarget!==null)return;
   if(played<frames.length){played++;render()}
-  if(played>=total&&computed>=total){playing=false;$('#toggle-play').textContent='Revoir'}
+  if(played>=total&&computed>=total){playing=false;syncPlaybackControls();render()}
 }
 let playbackTimer=null;
-function schedulePlayback(){clearInterval(playbackTimer);const speed=Number($('#play-speed').value);playbackTimer=setInterval(play,600/speed)}
+function syncPlaybackControls(){
+  $('#play-era').disabled=!runId||playing;
+  $('#pause-era').disabled=!runId||!playing;
+  for(const button of document.querySelectorAll('[data-play-speed]'))button.setAttribute('aria-pressed',String(Number(button.dataset.playSpeed)===playbackSpeed));
+}
+function schedulePlayback(){clearInterval(playbackTimer);playbackTimer=setInterval(play,600/playbackSpeed);syncPlaybackControls()}
 const profileEditors=new Map();
 function initProfileEditors(){
   const root=$('#lua-profiles');
@@ -302,16 +421,17 @@ async function start(){
   const population=await BagaarPopulation.prepare();
   const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,
     ...population});
-  runId=result.runId;frames=[];events=[];played=0;computed=0;total=result.totalTicks;combatCount=0;selected=null;playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
+  runId=result.runId;frames=[];events=[];played=0;computed=0;total=result.totalTicks;combatCount=0;selected=null;seekTarget=null;pinnedIds.clear();goldFlowWidths.clear();playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
   try{localStorage.setItem('waar-bagaar-run-v2',runId)}catch{}
-  $('#toggle-play').disabled=false;$('#toggle-play').textContent='Pause';
+  syncPlaybackControls();
   $('#export-era').hidden=false;$('#export-era').href=`/bagaar-export/${runId}.json`;render();setStatus('Calcul en cours');compute();
 }
 async function resume(){
   let previous=null;try{previous=localStorage.getItem('waar-bagaar-run-v2')}catch{}
   if(!previous)return;
   try{
-    runId=previous;frames=[];events=[];played=0;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
+    runId=previous;frames=[];events=[];played=0;seekTarget=null;goldFlowWidths.clear();lastFlashedFrame=0;$('#era-flashes').replaceChildren();
+    pinnedIds.clear();try{for(const id of JSON.parse(localStorage.getItem(`waar-bagaar-pins-${runId}`)||'[]'))if(typeof id==='string')pinnedIds.add(id)}catch{}
     let frameOffset=0,result;
     do{
       result=await api('bagaar-resume',{runId:previous,frameOffset,limit:50});
@@ -321,16 +441,26 @@ async function resume(){
       const duration=String(total/24);
       if([...$('#era-days').options].some(option=>option.value===duration))$('#era-days').value=duration;
       frameOffset=result.nextFrameOffset;
-      if(played===0&&frames.length){played=1;playing=true;$('#toggle-play').disabled=false;$('#export-era').hidden=false;$('#export-era').href=`/bagaar-export/${runId}.json`;render()}
+      if(played===0&&frames.length){played=1;playing=true;syncPlaybackControls();$('#export-era').hidden=false;$('#export-era').href=`/bagaar-export/${runId}.json`;render()}
+      resolveSeekTarget();
       refreshProgress();setStatus(result.hasMoreFrames?`Chargement : ${number.format(frameOffset)} / ${number.format(result.tick)} trames`:result.done?'Ère calculée':'Calcul repris');
     }while(result.hasMoreFrames);
     if(!result.done)compute();
   }catch(error){$('#bagaar-error').textContent=error.message;setStatus('Reprise interrompue')}
 }
 $('#start-era').addEventListener('click',()=>start().catch(error=>{$('#bagaar-error').textContent=error.message;setStatus('Erreur')}));
-$('#toggle-play').addEventListener('click',()=>{if(played>=frames.length&&computed>=total)played=0;playing=!playing;$('#toggle-play').textContent=playing?'Pause':'Lecture';render()});
-$('#play-speed').addEventListener('change',schedulePlayback);
-$('#frame-seek').addEventListener('input',event=>{played=Number(event.target.value);playing=false;$('#toggle-play').textContent='Lecture';render()});
+$('#pin-current').addEventListener('click',()=>{if(!selected||!runId)return;if(pinnedIds.has(selected))pinnedIds.delete(selected);else pinnedIds.add(selected);savePinned();renderPlayer();renderPinned()});
+$('#play-era').addEventListener('click',()=>{if(played>=total&&computed>=total){played=0;seekTarget=null}playing=true;syncPlaybackControls();render()});
+$('#pause-era').addEventListener('click',()=>{playing=false;syncPlaybackControls();render()});
+for(const button of document.querySelectorAll('[data-play-speed]'))button.addEventListener('click',()=>{playbackSpeed=Number(button.dataset.playSpeed);schedulePlayback()});
+$('#frame-seek').addEventListener('input',event=>{
+  const target=Number(event.target.value),wasPlaying=playing;
+  playing=false;syncPlaybackControls();
+  if(target<=frames.length){seekTarget=null;played=target;render();setStatus(computed>=total?'Ère calculée':'Calcul en cours');return}
+  seekTarget=target;
+  if(wasPlaying)render();else refreshProgress();
+  setStatus(`En attente du tick ${number.format(target)}`);
+});
 if(new URLSearchParams(location.search).has('embedded'))document.body.classList.add('bagaar-embedded');
 window.addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='waar-bagaar-profile')return;
   profile=event.data.profile;$('#preset-name').textContent=profile.label||profile.id;

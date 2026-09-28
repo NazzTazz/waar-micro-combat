@@ -54,6 +54,8 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame($village['goldMax'], $point['goldMax']);
         self::assertSame($village['goldRefill'], $point['goldRefill']);
         self::assertSame(\Waar\MicroCombat\Bagaar\HostRules::armyValue($village['army'], $profile->costs()), $point['armyGold']);
+        self::assertSame(['wins' => 0, 'draws' => 0, 'losses' => 0], $point['record']);
+        self::assertSame(0, $point['goldDistributed']);
     }
 
     public function testFarmerCanSpyVillageBeforeChoosingAnAttack(): void
@@ -103,6 +105,11 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertNotEmpty($combats);
         self::assertGreaterThan(0, $combats[0]['loot']);
         self::assertLessThan(2000, $state['players']['fridge']['gold']);
+        $points = array_column($state['frames'][0]['points'], null, 'id');
+        $totalLoot = array_sum(array_column($combats, 'loot'));
+        self::assertSame($totalLoot, $points['farm']['goldLooted']);
+        self::assertSame($totalLoot, $points['fridge']['goldFlow']['pillaged']);
+        self::assertGreaterThanOrEqual($totalLoot, $points['farm']['goldFlow']['income']);
     }
 
     public function testAbandonmentAddsAnEntrantWhileResetKeepsTheSameAccount(): void
