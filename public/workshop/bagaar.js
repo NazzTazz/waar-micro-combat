@@ -16,6 +16,10 @@ end
 
 function next(observation)
   local me = observation.self
+  local memory = observation.memory
+  if memory.first_tick == nil then memory.first_tick = observation.tick end
+  goal = "Monter la mine niveau " .. (me.mineLevel + 1)
+  method = "Épargner, espionner et choisir des attaques rentables depuis le tick " .. memory.first_tick .. "."
   local level = me.mineLevel + 1
   local price = math.floor(level ^ 2.5 * 8)
   local glory = 20 * math.max(level - 8, 0)

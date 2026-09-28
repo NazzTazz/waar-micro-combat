@@ -1,6 +1,8 @@
 local json = require('cjson.safe')
 local function reply(value)
-    io.write(json.encode(value), '\n')
+    local encoded, err = json.encode(value)
+    if not encoded then encoded = json.encode({ok = false, error = 'Donnée Lua non sérialisable : ' .. tostring(err)}) end
+    io.write(encoded, '\n')
     io.flush()
 end
 local function clean(value)
@@ -42,22 +44,27 @@ if not ok then reply({ok = false, error = tostring(script_error)}); os.exit(1) e
 if type(rawget(env, 'next')) ~= 'function' then
     reply({ok = false, error = 'Le script doit définir function next(observation).'}); os.exit(1)
 end
-local goal = type(env.goal) == 'string' and env.goal:sub(1, 120) or 'Tenir les comptes'
-local method = type(env.method) == 'string' and env.method:sub(1, 240) or 'Décider à partir des informations obtenues en jeu.'
+local goal = type(env.goal) == 'string' and env.goal or 'Tenir les comptes'
+local method = type(env.method) == 'string' and env.method or 'Décider à partir des informations obtenues en jeu.'
 reply({ok = true, goal = goal, method = method})
 for line in io.lines() do
     local request, request_error = json.decode(line)
     if not request then reply({ok = false, error = request_error})
     else
         local fn = env[request.method]
+        local observation = clean(request.observation)
+        env.goal = request.goal or goal
+        env.method = request.methodText or method
         if request.method ~= 'next' and request.method ~= 'after_combat' then
             reply({ok = false, error = 'Méthode inconnue.'})
-        elseif type(fn) ~= 'function' then reply({ok = true})
+        elseif type(fn) ~= 'function' then
+            reply({ok = true, memory = observation.memory, goal = env.goal, method = env.method})
         else
-            local call_ok, action = bounded(fn, clean(request.observation))
+            local call_ok, action = bounded(fn, observation)
             if not call_ok then reply({ok = false, error = tostring(action)})
             elseif action ~= nil and type(action) ~= 'table' then reply({ok = false, error = 'Action invalide.'})
-            else reply({ok = true, action = action}) end
+            else reply({ok = true, action = action, memory = observation.memory,
+                goal = env.goal, method = env.method}) end
         end
     end
 end

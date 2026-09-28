@@ -55,6 +55,12 @@ final class EraSimulator
             $players[$id]['joinedTick'] = 0;
             $players[$id]['activity'] = $activity;
             $players[$id]['aggressionPercent'] = $aggression;
+            if ($policy === 'lua') {
+                $intent = $this->luaPolicy->intention();
+                $players[$id]['luaMemory'] = [];
+                $players[$id]['luaGoal'] = $intent['goal'];
+                $players[$id]['luaMethod'] = $intent['method'];
+            }
             if ($policy === 'scripteur' && ($entry['hacker'] ?? false) === true) {
                 $players[$id]['hacker'] = true;
                 $players[$id]['hackerVictims'] = [];
@@ -136,6 +142,9 @@ final class EraSimulator
                 }
                 $view = PlayerObservation::fromState($state, $id, $this->profile->costs(), $attempts);
                 $action = $policy->next($view);
+                if ($policy instanceof LuaPolicy) {
+                    $this->saveLuaState($state, $id, $policy);
+                }
                 if ($action === null) {
                     break;
                 }
@@ -159,7 +168,8 @@ final class EraSimulator
         foreach ($state['players'] as $id => $player) {
             $value = HostRules::armyValue($player['army'], $this->profile->costs());
             $state['players'][$id]['peakArmyGold'] = max($player['peakArmyGold'], $value);
-            $intent = $player['policy'] === 'lua' ? $this->luaPolicy->intention()
+            $intent = $player['policy'] === 'lua' ? ['goal' => $player['luaGoal'] ?? $this->luaPolicy->intention()['goal'],
+                'method' => $player['luaMethod'] ?? $this->luaPolicy->intention()['method']]
                 : (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames, $state['rwaa']);
             $points[] = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
@@ -211,6 +221,12 @@ final class EraSimulator
                     $state['rwaaPv'] = 0;
                     $state['events'][] = ['tick' => $state['tick'], 'type' => 'rwaa-ended', 'actor' => $id];
                 }
+                break;
+            case 'reset':
+                if ($player['policy'] !== 'lua' || !HostRules::canReset($player, $state['tick'])) {
+                    throw new \DomainException('Reset indisponible avant plus de 24 ticks depuis le précédent.');
+                }
+                $this->resetAccount($state, $id);
                 break;
             case 'phase':
                 if ($player['policy'] !== 'ascenseur' || !in_array($action['value'] ?? null, ['raid', 'surrender'], true)) {
@@ -363,6 +379,9 @@ final class EraSimulator
             }
             $policy = $this->policyFor($state['players'][$participant]['policy']);
             $reaction = $policy->afterCombat(PlayerObservation::fromState($state, $participant, $this->profile->costs()));
+            if ($policy instanceof LuaPolicy) {
+                $this->saveLuaState($state, $participant, $policy);
+            }
             if ($reaction !== null) {
                 try {
                     $this->act($state, $participant, $reaction, $weather, $index);
@@ -499,6 +518,14 @@ final class EraSimulator
             return $this->luaPolicy ?? throw new \RuntimeException('Script Lua absent de cette ère.');
         }
         return new BuiltinPolicy($name);
+    }
+
+    private function saveLuaState(array &$state, string $id, LuaPolicy $policy): void
+    {
+        $script = $policy->state();
+        $state['players'][$id]['luaMemory'] = $script['memory'];
+        $state['players'][$id]['luaGoal'] = $script['goal'];
+        $state['players'][$id]['luaMethod'] = $script['method'];
     }
 
     public static function decodeCombat(array $archive): array
