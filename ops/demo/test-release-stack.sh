@@ -44,10 +44,12 @@ $post=static function(string $path, array $body) use($base): array {
     if(($response['ok']??false)!==true)throw new RuntimeException('Bagaar Lua request failed: '.json_encode($response));
     return $response['data'];
 };
-$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>1,'luaScript'=>'function next(observation) return nil end',
+$bagaarJs=file_get_contents('/app/public/workshop/bagaar.js');
+if(!preg_match('/const sampleLua=`(.*?)`;/s',$bagaarJs,$matches))throw new RuntimeException('Bagaar Lua example not found');
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScript'=>$matches[1],
     'accounts'=>[['id'=>'comptable','name'=>'Le comptable','policy'=>'lua'],['id'=>'casual','policy'=>'casual']]]);
-$frame=$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
-if(($frame['tick']??null)!==1)throw new RuntimeException('Bagaar Lua did not advance');
+$frame=$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>2]);
+if(($frame['tick']??null)!==2)throw new RuntimeException('Bagaar Lua did not advance');
 PHP
 volume=$(docker volume inspect --format '{{.Mountpoint}}' waar-engine-demo_profile-saves)
 original=$(fingerprint "$volume/profiles.json")
