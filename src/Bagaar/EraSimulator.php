@@ -13,6 +13,7 @@ final class EraSimulator
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
     public const DECISION_VERSION = 'bagaar-builtin-policies/10';
     public const LUA_DECISION_VERSION = 'bagaar-lua-policy/4';
+    public const MULTI_LUA_DECISION_VERSION = 'bagaar-lua-policy/5';
     private const LEGACY_DECISION_VERSION = 'bagaar-builtin-policies/8';
     private const LEGACY_LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
     private const PREVIOUS_DECISION_VERSION = 'bagaar-builtin-policies/9';
@@ -22,13 +23,13 @@ final class EraSimulator
     private CohortRequestFactory $requests;
 
     public function __construct(private readonly EngineProfile $profile, ?CohortRuntime $runtime = null,
-        private readonly ?LuaPolicy $luaPolicy = null)
+        private readonly ?LuaPolicy $luaPolicy = null, private readonly array $luaScripts = [])
     {
         $this->runtime = $runtime ?? new ProcessCohortRuntime();
         $this->requests = new CohortRequestFactory();
     }
 
-    /** @param list<array{id:string,policy:string,name?:string,activity?:string,aggressionPercent?:int,soldierParadigm?:bool,hacker?:bool,protester?:bool}> $accounts */
+    /** @param list<array{id:string,policy:string,name?:string,activity?:string,aggressionPercent?:int,soldierParadigm?:bool,hacker?:bool,protester?:bool,scriptKey?:string}> $accounts */
     public function start(int $seed, int $totalTicks, array $accounts): array
     {
         if ($seed < 0 || $seed > 2147483647 || $totalTicks < 1 || $totalTicks > 1440 || count($accounts) < 2 || count($accounts) > 24) {
@@ -48,7 +49,9 @@ final class EraSimulator
             }
             if (!is_string($name) || trim($name) === '' || strlen($name) > 64
                 || !is_string($activity) || !in_array($activity, PlayerSchedule::WINDOWS, true)
-                || !is_int($aggression) || $aggression < 60 || $aggression > 140) {
+                || !is_int($aggression) || $aggression < 60 || $aggression > 140
+                || (isset($entry['scriptKey']) && (!is_string($entry['scriptKey'])
+                    || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $entry['scriptKey'])))) {
                 throw new \InvalidArgumentException('Identité ou rythme joueur invalide.');
             }
             $players[$id] = AccountRules::initial($id, $policy);
@@ -58,29 +61,41 @@ final class EraSimulator
             $players[$id]['joinedTick'] = 0;
             $players[$id]['activity'] = $activity;
             $players[$id]['aggressionPercent'] = $aggression;
+            $profileType = $policy === 'lua' ? ($entry['scriptKey'] ?? 'lua') : $policy;
             if ($policy === 'lua') {
-                $intent = $this->luaPolicy->intention();
+                $intent = $this->luaPolicy->intention($id);
                 $players[$id]['luaMemory'] = [];
                 $players[$id]['luaGoal'] = $intent['goal'];
                 $players[$id]['luaMethod'] = $intent['method'];
+                if (isset($entry['scriptKey'])) {
+                    $players[$id]['scriptKey'] = $entry['scriptKey'];
+                }
             }
-            if ($policy === 'scripteur' && ($entry['hacker'] ?? false) === true) {
+            if ($profileType === 'scripteur' && ($entry['hacker'] ?? false) === true) {
                 $players[$id]['hacker'] = true;
                 $players[$id]['hackerVictims'] = [];
             }
-            if ($policy === 'casual' && ($entry['protester'] ?? false) === true) {
+            if ($profileType === 'casual' && ($entry['protester'] ?? false) === true) {
                 $players[$id]['protester'] = true;
             }
-            if ($policy === 'grenouille') {
+            if ($profileType === 'grenouille') {
                 $players[$id]['soldierParadigm'] = (bool)($entry['soldierParadigm'] ?? false);
             }
         }
-        if ($this->luaPolicy !== null && count(array_filter($players, static fn (array $player): bool => $player['policy'] === 'lua')) !== 1) {
-            throw new \InvalidArgumentException('Le script Lua doit contrôler exactement un compte.');
+        if ($this->luaPolicy !== null) {
+            $luaIds = array_keys(array_filter($players, static fn (array $player): bool => $player['policy'] === 'lua'));
+            $scriptIds = $this->luaPolicy->accountIds();
+            sort($luaIds);
+            if ($scriptIds !== null) {
+                sort($scriptIds);
+            }
+            if ($scriptIds === null ? count($luaIds) !== 1 : $luaIds !== $scriptIds) {
+                throw new \InvalidArgumentException('Les scripts Lua doivent correspondre aux comptes contrôlés.');
+            }
         }
         ksort($players);
         foreach ($players as $id => &$player) {
-            if ($player['policy'] === 'fermier') {
+            if (($player['scriptKey'] ?? $player['policy']) === 'fermier') {
                 $player['fridges'] = array_slice(array_values(array_diff(array_keys($players), [$id])), 0, 2);
             }
         }
@@ -171,8 +186,8 @@ final class EraSimulator
         foreach ($state['players'] as $id => $player) {
             $value = HostRules::armyValue($player['army'], $this->profile->costs());
             $state['players'][$id]['peakArmyGold'] = max($player['peakArmyGold'], $value);
-            $intent = $player['policy'] === 'lua' ? ['goal' => $player['luaGoal'] ?? $this->luaPolicy->intention()['goal'],
-                'method' => $player['luaMethod'] ?? $this->luaPolicy->intention()['method']]
+            $intent = $player['policy'] === 'lua' ? ['goal' => $player['luaGoal'] ?? $this->luaPolicy->intention($id)['goal'],
+                'method' => $player['luaMethod'] ?? $this->luaPolicy->intention($id)['method']]
                 : (new BuiltinPolicy($player['policy']))->intention($player, $tick, $state['totalTicks'], $playerNames, $state['rwaa']);
             $point = ['id' => $id, 'name' => $player['name'], 'kind' => 'player', 'policy' => $player['policy'],
                 'armyGold' => $value, 'army' => $player['army'], 'glory' => $player['glory'], 'gold' => $player['gold'],
@@ -184,6 +199,9 @@ final class EraSimulator
             if ($this->combatReports($state)) {
                 $point['prisoners'] = $player['prisoners'];
                 $point['prisonerProduction'] = AccountRules::prisonerProduction($player);
+            }
+            if (isset($player['scriptKey'])) {
+                $point['scriptKey'] = $player['scriptKey'];
             }
             $points[] = $point;
         }
@@ -416,9 +434,21 @@ final class EraSimulator
 
     private function spawnEntrant(array &$state, ?string $formerId): void
     {
+        if ($formerId !== null && ($state['players'][$formerId]['policy'] ?? null) === 'lua') {
+            $this->luaPolicy?->unregister($formerId);
+        }
         $serial = ($state['spawnSerial'] ?? 0) + 1;
         $entrant = PlayerEntrants::create($serial, $state['tick']);
-        if ($entrant['policy'] === 'fermier') {
+        $scriptKey = $entrant['policy'];
+        if ($this->luaPolicy?->accountIds() !== null && isset($this->luaScripts[$scriptKey])) {
+            $intent = $this->luaPolicy->register($entrant['id'], $this->luaScripts[$scriptKey]);
+            $entrant['policy'] = 'lua';
+            $entrant['scriptKey'] = $scriptKey;
+            $entrant['luaMemory'] = [];
+            $entrant['luaGoal'] = $intent['goal'];
+            $entrant['luaMethod'] = $intent['method'];
+        }
+        if (($entrant['scriptKey'] ?? $entrant['policy']) === 'fermier') {
             $entrant['fridges'] = array_slice(array_values(array_diff(array_keys($state['players']), [$formerId])), 0, 2);
         }
         $state['spawnSerial'] = $serial;
@@ -518,33 +548,35 @@ final class EraSimulator
 
     private function decisionVersion(): string
     {
-        return $this->luaPolicy === null ? self::DECISION_VERSION : self::LUA_DECISION_VERSION;
+        return $this->luaPolicy === null ? self::DECISION_VERSION
+            : ($this->luaPolicy->accountIds() === null ? self::LUA_DECISION_VERSION : self::MULTI_LUA_DECISION_VERSION);
     }
 
     private function acceptedDecisionVersions(): array
     {
         return $this->luaPolicy === null
             ? [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::LEGACY_DECISION_VERSION]
-            : [self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION,
+            : [self::MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION,
                 self::OLDER_LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
     }
 
     private function resilientRageux(array $state): bool
     {
         return in_array($state['manifest']['decisionVersion'],
-            [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::LUA_DECISION_VERSION,
+            [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION,
                 self::PREVIOUS_LUA_DECISION_VERSION, self::OLDER_LUA_DECISION_VERSION], true);
     }
 
     private function luaControlsEngagement(array $state): bool
     {
         return in_array($state['manifest']['decisionVersion'],
-            [self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
+            [self::MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
     }
 
     private function combatReports(array $state): bool
     {
-        return in_array($state['manifest']['decisionVersion'], [self::DECISION_VERSION, self::LUA_DECISION_VERSION], true);
+        return in_array($state['manifest']['decisionVersion'],
+            [self::DECISION_VERSION, self::LUA_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION], true);
     }
 
     private function policyFor(string $name): PlayerPolicy
@@ -557,7 +589,7 @@ final class EraSimulator
 
     private function saveLuaState(array &$state, string $id, LuaPolicy $policy): void
     {
-        $script = $policy->state();
+        $script = $policy->state($id);
         $state['players'][$id]['luaMemory'] = $script['memory'];
         $state['players'][$id]['luaGoal'] = $script['goal'];
         $state['players'][$id]['luaMethod'] = $script['method'];

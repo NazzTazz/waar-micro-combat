@@ -7,6 +7,16 @@ navigateur pour l'édition, puis figé dans chaque nouvelle ère. Le manifeste
 contient son SHA-256 et l'export de l'ère contient le texte exact. Modifier
 l'éditeur ne change pas une ère en cours.
 
+La section « Scripts Lua des profils » permet aussi de remplacer les quatre
+comptes d'un profil par quatre instances du même source : Rageux, Grenouille,
+Ascenseur, Fermier, Scripteur ou Casual. Chaque instance a son environnement
+Lua, sa mémoire, son objectif et son moyen. Les scripts activés sont figés
+dans l'ère et vérifiés par un SHA-256 du catalogue. Un profil sans script
+garde sa politique PHP. Les nouveaux arrivants d'un profil scripté utilisent
+le même source avec une mémoire neuve ; les comptes abandonnés ne consomment
+plus de place dans le worker lors des reprises. Le Comptable peut cohabiter
+avec ces profils scriptés.
+
 Le script définit `function next(observation)` et renvoie une action ou `nil`.
 Il peut définir `function after_combat(observation)` pour une réaction immédiate
 et les chaînes `goal` et `method` pour la fiche du joueur. Ces deux chaînes
@@ -20,6 +30,8 @@ directement ; Bagaar la sauvegarde après chaque appel, même si la fonction
 renvoie `nil`. Elle est limitée à 4 Kio encodés en JSON et accompagne le même
 compte après un reset. Une nouvelle ère commence avec une mémoire vide. Les
 autres variables globales Lua ne sont pas un stockage durable.
+Un seul processus Lua héberge les environnements isolés des comptes scriptés
+actifs pendant la requête ; il ne lance pas un processus par joueur.
 
 L'observation donne `tick`, `totalTicks`, `spyRange`, `rwaa`, `candidate`,
 `self`, `targets`, `reports`, `events`, `costs` et `attempts`. `targets` ne
@@ -50,7 +62,8 @@ reste disponible, mais il faut créer une nouvelle ère pour changer le script.
 L'exécution se fait dans un processus Lua séparé sans accès aux bibliothèques
 de fichiers, réseau, modules ni commandes système. Le source est limité à
 16 Kio ; chaque appel est limité en instructions et en temps, et le processus
-à 128 Mio de mémoire et 3 secondes CPU par requête. La suite de déploiement
+à 128 Mio de mémoire et 3 secondes CPU par requête pour un seul compte,
+12 secondes CPU pour plusieurs comptes. La suite de déploiement
 exerce un démarrage, un reset et une reprise réels dans l'image Docker finale.
 
 Exemple de mémoire qui reste présente après un reset :

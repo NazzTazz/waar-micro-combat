@@ -4,6 +4,8 @@ const $=selector=>document.querySelector(selector);
 const svgNS='http://www.w3.org/2000/svg';
 const colors={rageux:'#f56767',grenouille:'#83cd79',ascenseur:'#e7b56b',fermier:'#78bbec',scripteur:'#c4a1ef',casual:'#b6d781',lua:'#72d6c0',village:'#f5d477'};
 const names={rageux:'Le Rageux',grenouille:'La Grenouille',ascenseur:"L'Ascenseur",fermier:'Le Fermier',scripteur:'Le Scripteur',casual:'Le Casual',lua:'Joueur Lua'};
+const scriptProfiles=['rageux','grenouille','ascenseur','fermier','scripteur','casual'];
+const profileKind=point=>point.policy==='lua'&&colors[point.scriptKey]?point.scriptKey:point.policy;
 const sampleLua=`goal = "Monter ma mine suivante"
 method = "Épargner pour la mine, puis investir dans une armée rentable."
 
@@ -116,13 +118,13 @@ function renderChart(){
   writeSvgText(chart,22,18,'Glwaare');
   for(const point of current.points){
     const trail=frames.slice(Math.max(0,played-12),played).map(frame=>frame.points.find(candidate=>candidate.id===point.id)).filter(Boolean);
-    if(trail.length>1)chart.append(svg('polyline',{points:trail.map(item=>`${x(item.armyGold)},${y(item.glory)}`).join(' '),fill:'none',stroke:colors[point.policy],opacity:'.55','stroke-width':2}));
+    if(trail.length>1)chart.append(svg('polyline',{points:trail.map(item=>`${x(item.armyGold)},${y(item.glory)}`).join(' '),fill:'none',stroke:colors[profileKind(point)],opacity:'.55','stroke-width':2}));
     const abandoned=point.status==='abandoned';
-    const circle=svg('circle',{class:'point',cx:x(point.armyGold),cy:y(point.glory),r:selected===point.id?8:6,fill:abandoned?'#eef3fa':colors[point.policy],stroke:abandoned?'#4d596d':'none','stroke-width':abandoned?2:0,'aria-selected':selected===point.id,tabindex:0,role:'button','aria-label':`${point.name||point.id} : ${number.format(point.armyGold)} Or investis, ${point.glory} Glwaare${abandoned?' ; jeu abandonné':''}`});
+    const circle=svg('circle',{class:'point',cx:x(point.armyGold),cy:y(point.glory),r:selected===point.id?8:6,fill:abandoned?'#eef3fa':colors[profileKind(point)],stroke:abandoned?'#4d596d':'none','stroke-width':abandoned?2:0,'aria-selected':selected===point.id,tabindex:0,role:'button','aria-label':`${point.name||point.id} : ${number.format(point.armyGold)} Or investis, ${point.glory} Glwaare${abandoned?' ; jeu abandonné':''}`});
     circle.addEventListener('click',()=>{selected=point.id;render()});
     circle.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selected=point.id;render()}});
     chart.append(circle);
-    if(selected===point.id)writeSvgText(chart,x(point.armyGold)+10,y(point.glory)-9,point.name||point.id,{fill:colors[point.policy]});
+    if(selected===point.id)writeSvgText(chart,x(point.armyGold)+10,y(point.glory)-9,point.name||point.id,{fill:colors[profileKind(point)]});
   }
   for(const village of current.villages||[]){
     const cx=x(village.armyGold),cy=y(village.glory),size=selected===village.id?10:8;
@@ -154,7 +156,7 @@ function renderPlayer(){
   const point=[...(frame?.points||[]),...(frame?.villages||[])].find(candidate=>candidate.id===selected)||frame?.points[0];
   if(!point)return;
   selected=point.id;
-  $('#player-title').textContent=point.kind==='village'?`${point.id} · Village palier ${point.glory}`:`${point.name||point.id} · ${names[point.policy]||point.policy}`;
+  $('#player-title').textContent=point.kind==='village'?`${point.id} · Village palier ${point.glory}`:`${point.name||point.id} · ${names[profileKind(point)]||point.policy}${point.policy==='lua'&&point.scriptKey?' · Lua':''}`;
   const detail=$('#player-detail');detail.replaceChildren();
   const rows=[['Glwaare',point.glory],["Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]];
   if(point.kind==='village')rows.push(['Or maximum',number.format(point.goldMax??point.gold)],['Abondement par tick',`${number.format(point.goldRefill??0)} Or`]);
@@ -174,7 +176,7 @@ function renderRanking(){
   points.forEach((point,index)=>{
     const row=document.createElement('li'),button=document.createElement('button'),swatch=document.createElement('span'),score=document.createElement('strong');
     button.type='button';button.setAttribute('aria-current',String(point.id===selected));
-    swatch.className='swatch';swatch.style.background=colors[point.policy];score.textContent=String(point.glory);
+    swatch.className='swatch';swatch.style.background=colors[profileKind(point)];score.textContent=String(point.glory);
     button.append(`${index+1}. `,swatch,document.createTextNode(point.name||point.id),score);
     button.addEventListener('click',()=>{selected=point.id;render()});row.append(button);list.append(row);
   });
@@ -257,6 +259,22 @@ function play(){
 }
 let playbackTimer=null;
 function schedulePlayback(){clearInterval(playbackTimer);const speed=Number($('#play-speed').value);playbackTimer=setInterval(play,600/speed)}
+const profileEditors=new Map();
+function initProfileEditors(){
+  const root=$('#lua-profiles');
+  for(const key of scriptProfiles){
+    const section=document.createElement('div'),toggle=document.createElement('label'),enabled=document.createElement('input');
+    const label=document.createElement('label'),source=document.createElement('textarea');
+    section.className='bagaar-script-profile';enabled.type='checkbox';
+    toggle.className='bagaar-script-toggle';toggle.append(enabled,` Remplacer les quatre comptes « ${names[key]} » par ce script`);
+    source.id=`lua-profile-${key}`;source.spellcheck=false;source.setAttribute('aria-label',`Script Lua : ${names[key]}`);
+    label.htmlFor=source.id;label.textContent=`Script ${names[key]}`;
+    try{source.value=localStorage.getItem(`waar-bagaar-script-${key}`)||'';enabled.checked=localStorage.getItem(`waar-bagaar-script-enabled-${key}`)==='1'}catch{}
+    source.addEventListener('input',()=>{try{localStorage.setItem(`waar-bagaar-script-${key}`,source.value)}catch{}});
+    enabled.addEventListener('change',()=>{try{localStorage.setItem(`waar-bagaar-script-enabled-${key}`,enabled.checked?'1':'0')}catch{}});
+    section.append(toggle,label,source);root.append(section);profileEditors.set(key,{enabled,source});
+  }
+}
 async function loadProfile(){
   let stored=null;try{stored=sessionStorage.getItem('waar-bagaar-profile-v1')}catch{}
   profile=stored?JSON.parse(stored):(await fetch('/api/default-profile').then(response=>response.json())).data.profile;
@@ -266,7 +284,14 @@ async function start(){
   $('#bagaar-error').textContent='';
   const seed=Number($('#era-seed').value),days=Number($('#era-days').value);
   const luaScript=$('#lua-enable').checked?$('#lua-source').value:undefined;
-  const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,soldierFrog:$('#soldier-frog').checked,luaScript});
+  const luaScripts={};
+  for(const [key,{enabled,source}] of profileEditors){
+    if(!enabled.checked)continue;
+    if(!source.value.trim())throw new Error(`Script ${names[key]} vide.`);
+    luaScripts[key]=source.value;
+  }
+  const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,soldierFrog:$('#soldier-frog').checked,
+    luaScript,luaScripts:Object.keys(luaScripts).length?luaScripts:undefined});
   runId=result.runId;frames=[];events=[];played=0;computed=0;total=result.totalTicks;combatCount=0;selected=null;playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
   try{localStorage.setItem('waar-bagaar-run-v2',runId)}catch{}
   $('#toggle-play').disabled=false;$('#toggle-play').textContent='Pause';
@@ -296,6 +321,7 @@ $('#start-era').addEventListener('click',()=>start().catch(error=>{$('#bagaar-er
 $('#toggle-play').addEventListener('click',()=>{if(played>=frames.length&&computed>=total)played=0;playing=!playing;$('#toggle-play').textContent=playing?'Pause':'Lecture';render()});
 $('#play-speed').addEventListener('change',schedulePlayback);
 $('#frame-seek').addEventListener('input',event=>{played=Number(event.target.value);playing=false;$('#toggle-play').textContent='Lecture';render()});
+initProfileEditors();
 try{$('#lua-source').value=localStorage.getItem('waar-bagaar-lua-source-v1')||sampleLua;$('#lua-enable').checked=localStorage.getItem('waar-bagaar-lua-enabled-v1')==='1'}catch{$('#lua-source').value=sampleLua}
 $('#lua-source').addEventListener('input',()=>{try{localStorage.setItem('waar-bagaar-lua-source-v1',$('#lua-source').value)}catch{}});
 $('#lua-enable').addEventListener('change',()=>{try{localStorage.setItem('waar-bagaar-lua-enabled-v1',$('#lua-enable').checked?'1':'0')}catch{}});
