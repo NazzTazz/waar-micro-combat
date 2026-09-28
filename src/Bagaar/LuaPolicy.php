@@ -6,16 +6,17 @@ namespace Waar\MicroCombat\Bagaar;
 final class LuaPolicy implements PlayerPolicy
 {
     private const MAX_SOURCE_BYTES = 16_384;
-    private const MAX_REPLY_BYTES = 65_536;
+    private const MAX_REPLY_BYTES = 262_144;
     private const MAX_ACTIVE_ACCOUNTS = 64;
     private $process;
     private array $pipes = [];
     private array $memory = [];
     private array $intentions = [];
+    private array $parameters = [];
     private bool $multi;
 
     /** @param string|array<string,string> $source */
-    public function __construct(string|array $source)
+    public function __construct(string|array $source, private readonly bool $compact = false, private readonly array $savedStates = [])
     {
         $this->multi = is_array($source);
         $sources = is_string($source) ? ['single' => $source] : $source;
@@ -30,14 +31,15 @@ final class LuaPolicy implements PlayerPolicy
             }
         }
         $worker = dirname(__DIR__, 2).'/bin/bagaar-lua-worker.lua';
-        $command = ['/usr/bin/prlimit', '--as=134217728', $this->multi ? '--cpu=12' : '--cpu=3',
+        $command = ['/usr/bin/prlimit', '--as=268435456', $this->multi ? '--cpu=12' : '--cpu=3',
             '--', '/usr/bin/lua5.4', $worker];
         $this->process = @proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $this->pipes, null, []);
         if (!is_resource($this->process)) {
             throw new \RuntimeException('Interpréteur Lua indisponible.');
         }
         try {
-            $response = $this->exchange($this->multi ? ['sources' => $sources] : ['source' => $source]);
+            $response = $this->exchange($this->multi ? ['sources' => $sources, 'compact' => $this->compact,
+                'states' => $this->savedStates] : ['source' => $source]);
             $intentions = $this->multi ? ($response['intentions'] ?? null) : ['single' => $response];
             if (!is_array($intentions) || count($intentions) !== count($sources)
                 || array_diff_key($intentions, $sources) !== []) {
@@ -49,6 +51,7 @@ final class LuaPolicy implements PlayerPolicy
                 }
                 $this->validateIntention($intention);
                 $this->intentions[$id] = ['goal' => $intention['goal'], 'method' => $intention['method']];
+                $this->parameters[$id] = LuaParameters::schema($intention['parameters'] ?? []);
             }
         } catch (\Throwable $error) {
             $this->close();
@@ -71,6 +74,22 @@ final class LuaPolicy implements PlayerPolicy
         return $this->multi ? array_keys($this->intentions) : null;
     }
 
+    public function compact(): bool
+    {
+        return $this->compact;
+    }
+
+    public function parameters(string $id = ''): array
+    {
+        return $this->parameters[$this->key($id)] ?? [];
+    }
+
+    public static function describe(string $source): array
+    {
+        $policy = new self($source);
+        return $policy->parameters();
+    }
+
     public function register(string $id, string $source): array
     {
         if (!$this->multi || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $id)
@@ -80,6 +99,7 @@ final class LuaPolicy implements PlayerPolicy
         }
         $reply = $this->exchange(['method' => 'register', 'accountId' => $id, 'source' => $source]);
         $this->validateIntention($reply);
+        $this->parameters[$id] = LuaParameters::schema($reply['parameters'] ?? []);
         return $this->intentions[$id] = ['goal' => $reply['goal'], 'method' => $reply['method']];
     }
 
@@ -89,7 +109,7 @@ final class LuaPolicy implements PlayerPolicy
             return;
         }
         $this->exchange(['method' => 'unregister', 'accountId' => $id]);
-        unset($this->intentions[$id], $this->memory[$id]);
+        unset($this->intentions[$id], $this->memory[$id], $this->parameters[$id]);
     }
 
     public function intention(string $id = ''): array
@@ -100,6 +120,16 @@ final class LuaPolicy implements PlayerPolicy
     public function state(string $id = ''): array
     {
         $key = $this->key($id);
+        if ($this->compact) {
+            $reply = $this->exchange(['method' => 'state', 'accountId' => $id]);
+            if (!is_array($reply['memory'] ?? null)
+                || strlen(json_encode($reply['memory'], JSON_THROW_ON_ERROR)) > 131_072) {
+                throw new \InvalidArgumentException('Mémoire Lua invalide ou supérieure à 128 Kio.');
+            }
+            $this->validateIntention($reply);
+            $this->memory[$key] = $reply['memory'];
+            $this->intentions[$key] = ['goal' => $reply['goal'], 'method' => $reply['method']];
+        }
         return ['memory' => $this->memory[$key] ?? [], ...$this->intention($id)];
     }
 
@@ -108,20 +138,24 @@ final class LuaPolicy implements PlayerPolicy
         $id = $observation['self']['id'] ?? '';
         $key = $this->key($id);
         $intention = $this->intention($id);
+        if ($this->compact) unset($observation['memory'], $observation['self']['luaMemory']);
         $reply = $this->exchange(['method' => $method, 'observation' => $observation,
-            'goal' => $observation['self']['luaGoal'] ?? $intention['goal'],
-            'methodText' => $observation['self']['luaMethod'] ?? $intention['method'],
+            ...($this->compact ? [] : ['goal' => $observation['self']['luaGoal'] ?? $intention['goal'],
+                'methodText' => $observation['self']['luaMethod'] ?? $intention['method']]),
+            'parameters' => $observation['self']['parameters'] ?? [],
             ...($this->multi ? ['accountId' => $id] : [])]);
         $action = $reply['action'] ?? null;
         if ($action !== null && (!is_array($action) || array_is_list($action) || !is_string($action['type'] ?? null))) {
             throw new \RuntimeException('Le script Lua doit renvoyer une action ou nil.');
         }
-        $memory = $reply['memory'] ?? null;
-        if (!is_array($memory) || strlen(json_encode($memory, JSON_THROW_ON_ERROR)) > 4096) {
-            throw new \InvalidArgumentException('Mémoire Lua invalide ou supérieure à 4 Kio.');
+        if (!$this->compact) {
+            $memory = $reply['memory'] ?? null;
+            if (!is_array($memory) || strlen(json_encode($memory, JSON_THROW_ON_ERROR)) > 131_072) {
+                throw new \InvalidArgumentException('Mémoire Lua invalide ou supérieure à 128 Kio.');
+            }
+            $this->memory[$key] = $memory;
         }
         $this->validateIntention($reply);
-        $this->memory[$key] = $memory;
         $this->intentions[$key] = ['goal' => $reply['goal'], 'method' => $reply['method']];
         return $action;
     }

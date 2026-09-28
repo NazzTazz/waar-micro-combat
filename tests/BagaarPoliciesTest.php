@@ -26,7 +26,8 @@ final class BagaarPoliciesTest extends TestCase
             'events' => [['tick' => 1, 'attacker' => 'frog', 'defender' => 'script', 'winner' => 'attacker',
                 'report' => ['attacker' => ['prisonersCaptured' => 2]], 'secretArmy' => $other['army']]]];
         $view = PlayerObservation::fromState($state, 'script', self::COSTS);
-        self::assertSame([['id' => 'frog', 'name' => 'frog', 'glory' => 0, 'kind' => 'player']], $view['targets']);
+        self::assertSame([['id' => 'frog', 'name' => 'frog', 'glory' => 0, 'kind' => 'player',
+            'lastSeenTick' => null, 'lastSeenAt' => null]], $view['targets']);
         self::assertArrayNotHasKey('secretArmy', $view['events'][0]);
         self::assertSame(2, $view['events'][0]['report']['attacker']['prisonersCaptured']);
         self::assertSame([], $view['reports']);

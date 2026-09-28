@@ -59,7 +59,7 @@ const statusNames={active:'Joueur actif',pause:'Le joueur fait une pause',abando
 const number=new Intl.NumberFormat('fr-FR');
 let runId=null,frames=[],events=[],played=0,computed=0,total=0,combatCount=0,computing=false,playing=false,selected=null,profile=null;
 let lastFlashedFrame=0;
-async function api(path,body){const response=await fetch('/api/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const json=await response.json();if(!response.ok||!json.ok)throw new Error(json.errors?.[0]?.message||`HTTP ${response.status}`);return json.data}
+async function api(path,body){const response=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',headers:body===undefined?{}:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});const json=await response.json();if(!response.ok||!json.ok)throw new Error(json.errors?.[0]?.message||`HTTP ${response.status}`);return json.data}
 const svg=(tag,attributes={})=>{const node=document.createElementNS(svgNS,tag);for(const [key,value] of Object.entries(attributes))node.setAttribute(key,String(value));return node};
 const setStatus=message=>{$('#run-status').textContent=message};
 function refreshProgress(){
@@ -237,6 +237,7 @@ function render(){refreshProgress();renderPlayer();renderChart();renderRanking()
 async function compute(){
   if(computing||!runId)return;
   computing=true;
+  if(window.parent!==window)window.parent.postMessage({type:'waar-bagaar-computing',value:true},location.origin);
   const activeRun=runId;
   try{
     while(computed<total&&runId===activeRun){
@@ -250,7 +251,7 @@ async function compute(){
       await new Promise(resolve=>setTimeout(resolve,0));
     }
   }catch(error){$('#bagaar-error').textContent=error.message;setStatus('Calcul interrompu')}
-  finally{computing=false;if(runId!==activeRun&&runId)compute()}
+  finally{computing=false;if(runId!==activeRun&&runId)compute();else if(window.parent!==window)window.parent.postMessage({type:'waar-bagaar-computing',value:false},location.origin)}
 }
 function play(){
   if(!playing||frames.length===0)return;
@@ -283,15 +284,9 @@ async function loadProfile(){
 async function start(){
   $('#bagaar-error').textContent='';
   const seed=Number($('#era-seed').value),days=Number($('#era-days').value);
-  const luaScript=$('#lua-enable').checked?$('#lua-source').value:undefined;
-  const luaScripts={};
-  for(const [key,{enabled,source}] of profileEditors){
-    if(!enabled.checked)continue;
-    if(!source.value.trim())throw new Error(`Script ${names[key]} vide.`);
-    luaScripts[key]=source.value;
-  }
+  const population=await BagaarPopulation.prepare();
   const result=await api('bagaar-start',{profile,seed,totalTicks:days*24,soldierFrog:$('#soldier-frog').checked,
-    luaScript,luaScripts:Object.keys(luaScripts).length?luaScripts:undefined});
+    ...population});
   runId=result.runId;frames=[];events=[];played=0;computed=0;total=result.totalTicks;combatCount=0;selected=null;playing=true;lastFlashedFrame=0;$('#era-flashes').replaceChildren();
   try{localStorage.setItem('waar-bagaar-run-v2',runId)}catch{}
   $('#toggle-play').disabled=false;$('#toggle-play').textContent='Pause';
@@ -321,9 +316,11 @@ $('#start-era').addEventListener('click',()=>start().catch(error=>{$('#bagaar-er
 $('#toggle-play').addEventListener('click',()=>{if(played>=frames.length&&computed>=total)played=0;playing=!playing;$('#toggle-play').textContent=playing?'Pause':'Lecture';render()});
 $('#play-speed').addEventListener('change',schedulePlayback);
 $('#frame-seek').addEventListener('input',event=>{played=Number(event.target.value);playing=false;$('#toggle-play').textContent='Lecture';render()});
-initProfileEditors();
-try{$('#lua-source').value=localStorage.getItem('waar-bagaar-lua-source-v1')||sampleLua;$('#lua-enable').checked=localStorage.getItem('waar-bagaar-lua-enabled-v1')==='1'}catch{$('#lua-source').value=sampleLua}
-$('#lua-source').addEventListener('input',()=>{try{localStorage.setItem('waar-bagaar-lua-source-v1',$('#lua-source').value)}catch{}});
-$('#lua-enable').addEventListener('change',()=>{try{localStorage.setItem('waar-bagaar-lua-enabled-v1',$('#lua-enable').checked?'1':'0')}catch{}});
-schedulePlayback();loadProfile().then(resume).catch(error=>{$('#bagaar-error').textContent=error.message});
+if(new URLSearchParams(location.search).has('embedded'))document.body.classList.add('bagaar-embedded');
+window.addEventListener('message',event=>{if(event.origin!==location.origin||event.data?.type!=='waar-bagaar-profile')return;
+  profile=event.data.profile;$('#preset-name').textContent=profile.label||profile.id;
+  try{sessionStorage.setItem('waar-bagaar-profile-v1',JSON.stringify(profile))}catch{}
+});
+if(window.parent!==window)new ResizeObserver(()=>window.parent.postMessage({type:'waar-bagaar-height',height:document.documentElement.scrollHeight},location.origin)).observe(document.body);
+schedulePlayback();Promise.all([BagaarPopulation.init(api,start),loadProfile()]).then(resume).catch(error=>{$('#bagaar-error').textContent=error.message});
 })();

@@ -11,9 +11,12 @@ use Waar\MicroCombat\Workshop\ProcessCohortRuntime;
 final class EraSimulator
 {
     public const COMBAT_ARCHIVE_FORMAT = 'gzip-base64-json/1';
-    public const DECISION_VERSION = 'bagaar-builtin-policies/10';
-    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/4';
-    public const MULTI_LUA_DECISION_VERSION = 'bagaar-lua-policy/5';
+    public const DECISION_VERSION = 'bagaar-builtin-policies/11';
+    public const LUA_DECISION_VERSION = 'bagaar-lua-policy/7';
+    public const MULTI_LUA_DECISION_VERSION = 'bagaar-lua-policy/6';
+    private const PREVIOUS_BUILTIN_DECISION_VERSION = 'bagaar-builtin-policies/10';
+    private const PREVIOUS_MULTI_LUA_DECISION_VERSION = 'bagaar-lua-policy/5';
+    private const PREVIOUS_SINGLE_LUA_DECISION_VERSION = 'bagaar-lua-policy/4';
     private const LEGACY_DECISION_VERSION = 'bagaar-builtin-policies/8';
     private const LEGACY_LUA_DECISION_VERSION = 'bagaar-lua-policy/1';
     private const PREVIOUS_DECISION_VERSION = 'bagaar-builtin-policies/9';
@@ -23,7 +26,8 @@ final class EraSimulator
     private CohortRequestFactory $requests;
 
     public function __construct(private readonly EngineProfile $profile, ?CohortRuntime $runtime = null,
-        private readonly ?LuaPolicy $luaPolicy = null, private readonly array $luaScripts = [])
+        private readonly ?LuaPolicy $luaPolicy = null, private readonly array $luaScripts = [],
+        private readonly array $spares = [])
     {
         $this->runtime = $runtime ?? new ProcessCohortRuntime();
         $this->requests = new CohortRequestFactory();
@@ -32,7 +36,8 @@ final class EraSimulator
     /** @param list<array{id:string,policy:string,name?:string,activity?:string,aggressionPercent?:int,soldierParadigm?:bool,hacker?:bool,protester?:bool,scriptKey?:string}> $accounts */
     public function start(int $seed, int $totalTicks, array $accounts): array
     {
-        if ($seed < 0 || $seed > 2147483647 || $totalTicks < 1 || $totalTicks > 1440 || count($accounts) < 2 || count($accounts) > 24) {
+        if ($seed < 0 || $seed > 2147483647 || $totalTicks < 1 || $totalTicks > 1440 || count($accounts) < 2 || count($accounts) > 32
+            || count($this->spares) > 64) {
             throw new \InvalidArgumentException('Seed, durée ou nombre de comptes invalide.');
         }
         $players = [];
@@ -70,6 +75,7 @@ final class EraSimulator
                 if (isset($entry['scriptKey'])) {
                     $players[$id]['scriptKey'] = $entry['scriptKey'];
                 }
+                $players[$id]['parameters'] = LuaParameters::values($this->luaPolicy->parameters($id), $entry['parameters'] ?? []);
             }
             if ($profileType === 'scripteur' && ($entry['hacker'] ?? false) === true) {
                 $players[$id]['hacker'] = true;
@@ -100,12 +106,21 @@ final class EraSimulator
             }
         }
         unset($player);
+        $arrivalPool = [];
+        foreach ($accounts as $entry) {
+            $arrivalPool[] = array_intersect_key($entry, array_flip(['policy', 'scriptKey', 'parameters', 'activity',
+                'aggressionPercent', 'soldierParadigm'])) + ['weight' => 1];
+        }
+        foreach ($this->spares as $entry) $arrivalPool[] = $entry;
         return ['schemaVersion' => 'waar-bagaar-era/1', 'manifest' => [
             'seed' => $seed, 'profileFingerprint' => $this->profile->semanticFingerprint(),
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
+            'simulatedStartAt' => '2026-01-01T00:00:00Z',
             'decisionVersion' => $this->decisionVersion(), 'hostRuleVersion' => 'bagaar-host-rules/3',
+            'initialPopulation' => $accounts, 'arrivalPool' => $arrivalPool,
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
+            'arrivalPool' => $arrivalPool,
             'spawnSerial' => 0, 'spontaneousArrivals' => 0,
             'villages' => [], 'villageAttacks' => [], 'candidate' => null, 'candidateHours' => 0,
             'rwaa' => null, 'rwaaPv' => 0, 'events' => [], 'combats' => [], 'combatCount' => 0, 'frames' => []];
@@ -144,6 +159,9 @@ final class EraSimulator
             $state['villages'][$id]['defenses'] = 9999;
         }
         $state['villageAttacks'] = [];
+        $state['spyAttempts'] = [];
+        $state['spyResults'] = [];
+        $state['decisionCalls'] = [];
         $this->checkRwaa($state);
         $this->ensureVillages($state);
         foreach (array_keys($state['players']) as $id) {
@@ -151,25 +169,32 @@ final class EraSimulator
                 || !PlayerSchedule::isActive($state['players'][$id]['activity'], $tick)) {
                 continue;
             }
+            if ($this->monkeyRules($state)) $state['players'][$id]['lastSeenTick'] = $tick;
             $attempts = [];
             $policy = $this->policyFor($state['players'][$id]['policy']);
-            for ($actionIndex = 0; $actionIndex < 16; $actionIndex++) {
+            $newRules = $this->monkeyRules($state);
+            for ($actionIndex = 0; $actionIndex < ($newRules ? 128 : 16); $actionIndex++) {
                 if (($state['players'][$id]['status'] ?? 'active') !== 'active'
                     || ($state['players'][$id]['joinedTick'] ?? 0) >= $tick) {
                     break;
                 }
+                if ($newRules && !$this->consumeDecision($state, $id)) break;
                 $view = PlayerObservation::fromState($state, $id, $this->profile->costs(), $attempts);
                 $action = $policy->next($view);
-                if ($policy instanceof LuaPolicy) {
+                if ($policy instanceof LuaPolicy && (!$policy->compact() || ($action ?? null) === null)) {
                     $this->saveLuaState($state, $id, $policy);
                 }
                 if ($action === null) {
                     break;
                 }
-                $attempts[] = $action;
+                if ($policy instanceof LuaPolicy && $policy->compact() && ($action['type'] ?? null) === 'abandon') {
+                    $this->saveLuaState($state, $id, $policy);
+                }
                 try {
-                    $this->act($state, $id, $action, $weather, $actionIndex);
+                    $results = $this->act($state, $id, $action, $weather, $actionIndex);
+                    $attempts[] = $results === null ? $action : [...$action, 'results' => $results];
                 } catch (\DomainException $error) {
+                    $attempts[] = $action;
                     $state['events'][] = ['tick' => $tick, 'type' => 'rejected', 'actor' => $id,
                         'action' => $action['type'], 'reason' => $error->getMessage()];
                 }
@@ -180,6 +205,13 @@ final class EraSimulator
             && self::random($master, $tick, 'spontaneous-arrival') % 10 === 0) {
             $this->spawnEntrant($state, null);
             $state['spontaneousArrivals'] = ($state['spontaneousArrivals'] ?? 0) + 1;
+        }
+        if ($this->luaPolicy?->compact()) {
+            foreach ($state['players'] as $id => $player) {
+                if ($player['policy'] === 'lua' && ($player['status'] ?? 'active') !== 'abandoned') {
+                    $this->saveLuaState($state, $id, $this->luaPolicy);
+                }
+            }
         }
         $points = [];
         $playerNames = array_map(static fn (array $player): string => $player['name'], $state['players']);
@@ -220,7 +252,7 @@ final class EraSimulator
         return $state;
     }
 
-    private function act(array &$state, string $id, array $action, string $weather, int $index): void
+    private function act(array &$state, string $id, array $action, string $weather, int $index): ?array
     {
         $type = $action['type'] ?? null;
         $player = $state['players'][$id];
@@ -268,6 +300,33 @@ final class EraSimulator
                 $state['players'][$id]['cyclePhase'] = $action['value'];
                 break;
             case 'spy':
+                if ($this->monkeyRules($state)) {
+                    $targets = $action['targets'] ?? (isset($action['target']) ? [$action['target']] : null);
+                    if (!is_array($targets) || !array_is_list($targets) || $targets === [] || count($targets) > 64) {
+                        throw new \DomainException('Groupe d’espionnage invalide.');
+                    }
+                    $results = [];
+                    foreach ($targets as $targetId) {
+                        if (!is_string($targetId) || $targetId === '') throw new \DomainException('Cible d’espionnage invalide.');
+                    }
+                    foreach (array_unique($targets) as $targetId) {
+                        $used = $state['spyAttempts'][$id] ?? 0;
+                        $state['spyAttempts'][$id] = $used + 1;
+                        try {
+                            if ($used >= 64) throw new \DomainException('Limite de 64 espionnages atteinte.');
+                            $target = $state['players'][$targetId] ?? $state['villages'][$targetId] ?? null;
+                            if ($target === null) throw new \DomainException('Cible d’espionnage inconnue.');
+                            $state['players'][$id] = AccountRules::spy($state['players'][$id], $target, $state['manifest']['spyRange']);
+                            $state['players'][$id]['spies'][$targetId]['tick'] = $state['tick'];
+                            $state['events'][] = ['tick' => $state['tick'], 'type' => 'spy', 'actor' => $id, 'target' => $targetId];
+                            $results[] = ['target' => $targetId, 'ok' => true];
+                        } catch (\DomainException $error) {
+                            $results[] = ['target' => $targetId, 'ok' => false, 'reason' => $error->getMessage()];
+                        }
+                    }
+                    $state['spyResults'][$id][] = $results;
+                    return $results;
+                }
                 $target = $state['players'][$action['target']] ?? $state['villages'][$action['target']] ?? null;
                 if ($target === null) {
                     throw new \DomainException('Cible d’espionnage inconnue.');
@@ -277,7 +336,7 @@ final class EraSimulator
                 break;
             case 'attack':
                 $this->attack($state, $id, (string)$action['target'], $weather, $index);
-                return;
+                return null;
             default:
                 throw new \DomainException('Action inconnue.');
         }
@@ -291,6 +350,7 @@ final class EraSimulator
         if ($type === 'abandon') {
             $this->spawnEntrant($state, $id);
         }
+        return null;
     }
 
     private function attack(array &$state, string $id, string $targetId, string $weather, int $index): void
@@ -417,11 +477,15 @@ final class EraSimulator
                 continue;
             }
             $policy = $this->policyFor($state['players'][$participant]['policy']);
+            if ($this->monkeyRules($state) && !$this->consumeDecision($state, $participant)) continue;
             $reaction = $policy->afterCombat(PlayerObservation::fromState($state, $participant, $this->profile->costs()));
-            if ($policy instanceof LuaPolicy) {
+            if ($policy instanceof LuaPolicy && !$policy->compact()) {
                 $this->saveLuaState($state, $participant, $policy);
             }
             if ($reaction !== null) {
+                if ($policy instanceof LuaPolicy && $policy->compact() && ($reaction['type'] ?? null) === 'abandon') {
+                    $this->saveLuaState($state, $participant, $policy);
+                }
                 try {
                     $this->act($state, $participant, $reaction, $weather, $index);
                 } catch (\DomainException $error) {
@@ -438,15 +502,18 @@ final class EraSimulator
             $this->luaPolicy?->unregister($formerId);
         }
         $serial = ($state['spawnSerial'] ?? 0) + 1;
-        $entrant = PlayerEntrants::create($serial, $state['tick']);
-        $scriptKey = $entrant['policy'];
-        if ($this->luaPolicy?->accountIds() !== null && isset($this->luaScripts[$scriptKey])) {
+        $template = $this->monkeyRules($state) ? $this->pickArrival($state, $serial) : null;
+        $entrant = PlayerEntrants::create($serial, $state['tick'], $template);
+        $scriptKey = $entrant['scriptKey'] ?? $entrant['policy'];
+        if ($this->luaPolicy?->accountIds() !== null && isset($this->luaScripts[$scriptKey])
+            && ($entrant['policy'] === 'lua' || $template === null)) {
             $intent = $this->luaPolicy->register($entrant['id'], $this->luaScripts[$scriptKey]);
             $entrant['policy'] = 'lua';
             $entrant['scriptKey'] = $scriptKey;
             $entrant['luaMemory'] = [];
             $entrant['luaGoal'] = $intent['goal'];
             $entrant['luaMethod'] = $intent['method'];
+            $entrant['parameters'] = LuaParameters::values($this->luaPolicy->parameters($entrant['id']), $template['parameters'] ?? []);
         }
         if (($entrant['scriptKey'] ?? $entrant['policy']) === 'fermier') {
             $entrant['fridges'] = array_slice(array_values(array_diff(array_keys($state['players']), [$formerId])), 0, 2);
@@ -546,6 +613,38 @@ final class EraSimulator
         return hexdec(substr(hash('sha256', $masterSeed.':'.$tick.':'.$purpose), 0, 8)) & 0x7fffffff;
     }
 
+    private function monkeyRules(array $state): bool
+    {
+        return in_array($state['manifest']['decisionVersion'] ?? null,
+            [self::DECISION_VERSION, self::LUA_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION], true);
+    }
+
+    private function consumeDecision(array &$state, string $id): bool
+    {
+        $used = $state['decisionCalls'][$id] ?? 0;
+        if ($used >= 256) return false;
+        $state['decisionCalls'][$id] = $used + 1;
+        return true;
+    }
+
+    private function pickArrival(array $state, int $serial): array
+    {
+        $pool = $state['arrivalPool'] ?? [];
+        if ($pool === []) return ['policy' => BuiltinPolicy::NAMES[($serial - 1) % count(BuiltinPolicy::NAMES)]];
+        if ($this->luaPolicy !== null && $this->luaPolicy->accountIds() !== null
+            && count($this->luaPolicy->accountIds()) >= 64) {
+            $pool = array_values(array_filter($pool, static fn (array $entry): bool => $entry['policy'] !== 'lua'));
+            if ($pool === []) return ['policy' => BuiltinPolicy::NAMES[($serial - 1) % count(BuiltinPolicy::NAMES)]];
+        }
+        $total = array_sum(array_column($pool, 'weight'));
+        $point = self::random($state['manifest']['seed'], $state['tick'], 'entrant:'.$serial) / 2147483648 * $total;
+        foreach ($pool as $entry) {
+            $point -= $entry['weight'];
+            if ($point < 0) return $entry;
+        }
+        return $pool[count($pool) - 1];
+    }
+
     private function decisionVersion(): string
     {
         return $this->luaPolicy === null ? self::DECISION_VERSION
@@ -555,28 +654,28 @@ final class EraSimulator
     private function acceptedDecisionVersions(): array
     {
         return $this->luaPolicy === null
-            ? [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::LEGACY_DECISION_VERSION]
-            : [self::MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION,
+            ? [self::DECISION_VERSION, self::PREVIOUS_BUILTIN_DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::LEGACY_DECISION_VERSION]
+            : [self::MULTI_LUA_DECISION_VERSION, self::PREVIOUS_MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_SINGLE_LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION,
                 self::OLDER_LUA_DECISION_VERSION, self::LEGACY_LUA_DECISION_VERSION];
     }
 
     private function resilientRageux(array $state): bool
     {
         return in_array($state['manifest']['decisionVersion'],
-            [self::DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION,
+            [self::DECISION_VERSION, self::PREVIOUS_BUILTIN_DECISION_VERSION, self::PREVIOUS_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION, self::PREVIOUS_MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_SINGLE_LUA_DECISION_VERSION,
                 self::PREVIOUS_LUA_DECISION_VERSION, self::OLDER_LUA_DECISION_VERSION], true);
     }
 
     private function luaControlsEngagement(array $state): bool
     {
         return in_array($state['manifest']['decisionVersion'],
-            [self::MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
+            [self::MULTI_LUA_DECISION_VERSION, self::PREVIOUS_MULTI_LUA_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_SINGLE_LUA_DECISION_VERSION, self::PREVIOUS_LUA_DECISION_VERSION], true);
     }
 
     private function combatReports(array $state): bool
     {
         return in_array($state['manifest']['decisionVersion'],
-            [self::DECISION_VERSION, self::LUA_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION], true);
+            [self::DECISION_VERSION, self::PREVIOUS_BUILTIN_DECISION_VERSION, self::LUA_DECISION_VERSION, self::PREVIOUS_SINGLE_LUA_DECISION_VERSION, self::MULTI_LUA_DECISION_VERSION, self::PREVIOUS_MULTI_LUA_DECISION_VERSION], true);
     }
 
     private function policyFor(string $name): PlayerPolicy

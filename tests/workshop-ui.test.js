@@ -63,7 +63,7 @@ class Element {
     if(selector==='.journey button')return [Object.assign(new Element(),{dataset:{step:'units'}})];
     return [];
   }};
-  const context=vm.createContext({window:{addEventListener:(type,handler)=>listeners[type]=handler},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{timerDelays.push(delay);if(delay===3000)backgroundWave=fn;else if(![300,10000].includes(delay))fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
+  const context=vm.createContext({window:{addEventListener:(type,handler)=>{const previous=listeners[type];listeners[type]=event=>{previous?.(event);handler(event)}}},location:{origin},document,structuredClone,console,confirm:()=>confirmResult,clearTimeout(){},setTimeout:(fn,delay)=>{timerDelays.push(delay);if(delay===3000)backgroundWave=fn;else if(![300,10000].includes(delay))fn()},Option:class{constructor(text,value){this.text=text;this.value=value}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},fetch:async(url,options)=>{
     if(malformedResponse)return {ok:false,status:500,json:async()=>{throw new SyntaxError('Unexpected token <')}};
     const body=options?.body?JSON.parse(options.body):null;
     let data;

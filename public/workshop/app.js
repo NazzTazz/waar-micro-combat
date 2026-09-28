@@ -254,12 +254,18 @@ function renderSearch(result){
   drawZones();
 }
 function selectView(id){
-  if(!['units','relations','combat','weather','trial','expert'].includes(id))id='units';
+  if(!['units','relations','combat','weather','trial','expert','bagaar'].includes(id))id='units';
   $('#live-duel').hidden=!['units','relations','weather','combat','trial'].includes(id);
   window.scrollTo?.({top:0,behavior:'instant'});
   $$('[data-view]').forEach(section=>section.hidden=section.id!==id);
   $$('.journey button').forEach(button=>{if(button.dataset.step===id)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current')});
   if(id==='expert')$('#measure-context').textContent=`16 paires · 100 répétitions · météo ${weather[activeWeather]} · seed 42`;
+  if(id==='bagaar'){
+    const frame=$('#bagaar-frame');
+    try{sessionStorage.setItem('waar-bagaar-profile-v1',JSON.stringify(profile))}catch{}
+    if(!frame.getAttribute('src'))frame.src='/bagaar.html?embedded=1';
+    else frame.contentWindow?.postMessage({type:'waar-bagaar-profile',profile},location.origin);
+  }
 }
 function setupExpertTools(){
   const positionTooltip=event=>{
@@ -302,7 +308,11 @@ function renderModifierSummary(){const total=armyModifiers.A.length+armyModifier
 function renderAll(){renderUnits();renderRelations();renderWeather();renderCombat();renderArmies();renderProfileMeta();renderModifierSummary()}
 async function init(){let stored=null,d=null;try{stored=localStorage.getItem('waar-workshop-draft-v1');d=stored?JSON.parse(stored):null}catch{$('#notice').textContent='Stockage indisponible : utilisez la sauvegarde JSON.'}try{if(d?.profile){const migrated=await api('migrate-profile',{profile:d.profile});profile=migrated.profile;armies=d.armies||armies;activeWeather=weather[d.activeWeather]?d.activeWeather:'neutral';duelWeather=weather[d.duelWeather]?d.duelWeather:(d.duelWeather?.A===d.duelWeather?.B&&weather[d.duelWeather?.A]?d.duelWeather.A:'neutral');armyModifiers=d.armyModifiers||armyModifiers;staleZones=d.staleZones||[];if(migrated.migration.performed)$('#notice').textContent='Profil local migré vers le moteur cohortes. Les anciens résultats sont obsolètes ; les nouveaux réglages restent à confirmer.'}else profile=(await api('default-profile')).profile}catch{profile=(await api('default-profile')).profile}duelWeather=activeWeather;await restoreProfileBaseline(d);renderAll();setupExpertTools();setupArmyShortcuts();setupSavedProfiles();liveReady=true;scheduleLiveDuel();
   $$('.journey button').forEach(b=>b.onclick=()=>selectView(b.dataset.step));$$('[data-open-duel]').forEach(b=>b.onclick=openDuel);
-  $('#bagaar-link').addEventListener('click',()=>{try{sessionStorage.setItem('waar-bagaar-profile-v1',JSON.stringify(profile))}catch{}});
+  $('#bagaar-frame').addEventListener('load',()=>$('#bagaar-frame').contentWindow?.postMessage({type:'waar-bagaar-profile',profile},location.origin));
+  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('#bagaar-frame').contentWindow)return;
+    if(event.data?.type==='waar-bagaar-computing')$('#bagaar-working').hidden=!event.data.value;
+    if(event.data?.type==='waar-bagaar-height'&&Number.isFinite(event.data.height))$('#bagaar-frame').style.height=Math.max(800,Math.min(4000,event.data.height))+'px';
+  });
   $('#prefill').onclick=async()=>{if(!confirm('Remplacer les quatre fiches par les valeurs proposées ? Les autres réglages seront conservés.'))return;const defaults=(await api('default-profile')).profile;profile=WaarWorkshopModel.prefillUnits(profile,defaults);renderAll();dirty()};$('#add-relation').onclick=()=>{const acting=selectedRelationUnit,target=$('#relation-target').value,factor=$('#relation-factor').value;if(acting===target){$('#notice').textContent='Une unité reste neutre contre elle-même dans cette V1.';return}profile.relations=profile.relations.filter(r=>!(r.acting===acting&&r.target===target));if(factor!=='1')profile.relations.push({acting,target,factor});renderRelations();dirty()};
   $('#simulate').onclick=async()=>{const id=String(++currentRequest),configurationSignature=duelSignature();errors([]);$('#simulate').disabled=true;try{const response=await api('duel',{requestId:id,profile,armies,weather:duelWeather,modifiers:armyModifiers,seed:Number($('#duel-seed').value)});if(WaarWorkshopModel.responseIsCurrent(response,id,configurationSignature,duelSignature()))renderDuel(response);else $('#duel-stale').classList.remove('hidden')}catch(e){if(id===String(currentRequest))errors(e.errors)}finally{if(id===String(currentRequest))$('#simulate').disabled=false}};
   $('#download-profile').onclick=async()=>{try{const validation=await api('validate',{profile,mode:'draft'});if(validation.errors.length)throw Object.assign(new Error(),{errors:validation.errors});download((profile.label||'profil-waar-cohortes').replace(/[^a-zA-Z0-9_-]/g,'-')+'.json',profile)}catch(err){$('#notice').textContent='Sauvegarde refusée : '+(err.errors?.map(error=>error.message).join(' ')||err.message)}};

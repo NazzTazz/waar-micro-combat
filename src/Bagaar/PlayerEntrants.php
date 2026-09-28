@@ -9,12 +9,12 @@ final class PlayerEntrants
         'Gaspard', 'Héloïse', 'Inès', 'Jonas', 'Lina', 'Maël', 'Noémie', 'Orion',
         'Rita', 'Sacha', 'Théo', 'Yasmine'];
 
-    public static function create(int $serial, int $tick): array
+    public static function create(int $serial, int $tick, ?array $template = null): array
     {
         if ($serial < 1 || $tick < 1) {
             throw new \InvalidArgumentException('Entrée de joueur invalide.');
         }
-        $policy = BuiltinPolicy::NAMES[($serial - 1) % count(BuiltinPolicy::NAMES)];
+        $policy = $template['policy'] ?? BuiltinPolicy::NAMES[($serial - 1) % count(BuiltinPolicy::NAMES)];
         $id = 'entrant-'.$serial;
         $player = AccountRules::initial($id, $policy);
         $name = self::NAMES[($serial - 1) % count(self::NAMES)]
@@ -29,6 +29,11 @@ final class PlayerEntrants
         }
         $player['activity'] = $activity;
         $player['aggressionPercent'] = [80, 95, 105, 120][$serial % 4];
+        if ($template !== null) {
+            foreach (['activity', 'aggressionPercent', 'scriptKey', 'parameters', 'soldierParadigm'] as $key) {
+                if (array_key_exists($key, $template)) $player[$key] = $template[$key];
+            }
+        }
         if ($policy === 'grenouille') {
             $player['soldierParadigm'] = $serial % 2 === 0;
         }
