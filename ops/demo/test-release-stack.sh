@@ -56,7 +56,7 @@ original=$(fingerprint "$volume/profiles.json")
 mkdir "$work/source"
 # Exact application source needed by Docker, including the uncommitted scripts
 # when run locally. Test SHAs are synthetic and never published as releases.
-tar -cf "$work/source.tar" -C "$repo" autoload.php src resources public/workshop bin/workshop-router.php bin/bagaar-lua-worker.lua ops/demo .dockerignore engines/waar-cohort/rust/Cargo.toml engines/waar-cohort/rust/Cargo.lock engines/waar-cohort/rust/src
+tar -cf "$work/source.tar" -C "$repo" autoload.php src resources public/workshop bin/workshop-router.php bin/bagaar-lua-worker.lua bin/migrate-bagaar-trace.php ops/demo .dockerignore engines/waar-cohort/rust/Cargo.toml engines/waar-cohort/rust/Cargo.lock engines/waar-cohort/rust/src
 tar -xf "$work/source.tar" -C "$work/source"
 sha=$(printf '%040d' 41)
 tar -cf "$upload/release.tar" -C "$work/source" .

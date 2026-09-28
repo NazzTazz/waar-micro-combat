@@ -14,6 +14,7 @@ COPY resources ./resources
 COPY public/workshop ./public/workshop
 COPY bin/workshop-router.php ./bin/workshop-router.php
 COPY bin/bagaar-lua-worker.lua ./bin/bagaar-lua-worker.lua
+COPY bin/migrate-bagaar-trace.php ./bin/migrate-bagaar-trace.php
 COPY --from=native /build/target/release/waar-cohort-cli ./engines/waar-cohort/rust/target/release/waar-cohort-cli
 COPY ops/demo/index.php ./public/workshop/index.php
 COPY ops/demo/apache.conf /etc/apache2/sites-available/000-default.conf
