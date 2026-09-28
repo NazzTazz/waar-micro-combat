@@ -117,7 +117,7 @@ final class EraSimulator
             'runtime' => $this->runtime->provenance(), 'attackRange' => HostRules::ATTACK_RANGE,
             'spyRange' => 30, 'weatherConvention' => 'one-weather-both-sides/1',
             'simulatedStartAt' => '2026-01-01T00:00:00Z',
-            'decisionVersion' => $this->decisionVersion(), 'hostRuleVersion' => 'bagaar-host-rules/3',
+            'decisionVersion' => $this->decisionVersion(), 'hostRuleVersion' => 'bagaar-host-rules/4',
             'initialPopulation' => $accounts, 'arrivalPool' => $arrivalPool,
         ], 'tick' => 0, 'totalTicks' => $totalTicks, 'players' => $players,
             'arrivalPool' => $arrivalPool,
@@ -156,6 +156,7 @@ final class EraSimulator
                 $state['events'][] = ['tick' => $tick, 'type' => $change, 'actor' => $id];
             }
         }
+        $this->spawnReadyPlayers($state);
         foreach ($state['villages'] as $id => $village) {
             $caps = VillageRules::caps($village['glory'], $state['players'], $this->profile->costs());
             $state['villages'][$id] = VillageRules::refill($village, $caps);
@@ -179,7 +180,7 @@ final class EraSimulator
             $newRules = $this->monkeyRules($state);
             for ($actionIndex = 0; $actionIndex < ($newRules ? 128 : 16); $actionIndex++) {
                 if (($state['players'][$id]['status'] ?? 'active') !== 'active'
-                    || ($state['players'][$id]['joinedTick'] ?? 0) >= $tick) {
+                    || $this->waitingForFirstAction($state, $state['players'][$id], $tick)) {
                     break;
                 }
                 if ($newRules && !$this->consumeDecision($state, $id)) break;
@@ -520,7 +521,7 @@ final class EraSimulator
         foreach ([$id, $targetId] as $participant) {
             if (!isset($state['players'][$participant])
                 || ($state['players'][$participant]['status'] ?? 'active') !== 'active'
-                || ($state['players'][$participant]['joinedTick'] ?? 0) >= $state['tick']
+                || $this->waitingForFirstAction($state, $state['players'][$participant], $state['tick'])
                 || !PlayerSchedule::isActive($state['players'][$participant]['activity'], $state['tick'])) {
                 continue;
             }
@@ -567,7 +568,13 @@ final class EraSimulator
             $entrant['fridges'] = array_slice(array_values(array_diff(array_keys($state['players']), [$formerId])), 0, 2);
         }
         $state['spawnSerial'] = $serial;
-        $state['players'][$entrant['id']] = $entrant;
+        if ($this->firstActiveSpawn($state)) {
+            $state['pendingPlayers'][$entrant['id']] = $entrant;
+            $state['pendingArrivals'][$entrant['id']] = ['source' => $formerId === null ? 'spontaneous' : 'replacement',
+                'predecessor' => $formerId];
+        } else {
+            $state['players'][$entrant['id']] = $entrant;
+        }
         if ($formerId !== null && $state['candidate'] === $formerId) {
             $state['candidate'] = null;
             $state['candidateHours'] = 0;
@@ -577,9 +584,48 @@ final class EraSimulator
             $state['rwaaPv'] = 0;
             $state['events'][] = ['tick' => $state['tick'], 'type' => 'rwaa-ended', 'actor' => $formerId];
         }
-        $state['events'][] = ['tick' => $state['tick'], 'type' => 'arrival', 'actor' => $entrant['id'],
-            'source' => $formerId === null ? 'spontaneous' : 'replacement',
-            'predecessor' => $formerId];
+        if (!$this->firstActiveSpawn($state)) {
+            $state['events'][] = ['tick' => $state['tick'], 'type' => 'arrival', 'actor' => $entrant['id'],
+                'source' => $formerId === null ? 'spontaneous' : 'replacement',
+                'predecessor' => $formerId];
+        }
+    }
+
+    private function firstActiveSpawn(array $state): bool
+    {
+        return ($state['manifest']['hostRuleVersion'] ?? null) === 'bagaar-host-rules/4';
+    }
+
+    private function waitingForFirstAction(array $state, array $player, int $tick): bool
+    {
+        return ($player['joinedTick'] ?? 0) >= $tick + ($this->firstActiveSpawn($state) ? 1 : 0);
+    }
+
+    private function spawnReadyPlayers(array &$state): void
+    {
+        foreach ($state['pendingPlayers'] ?? [] as $id => $player) {
+            if (!PlayerSchedule::isActive($player['activity'], $state['tick'])) continue;
+            if ($player['policy'] === 'lua' && $this->luaPolicy?->accountIds() !== null
+                && !in_array($id, $this->luaPolicy->accountIds(), true)) {
+                $key = $player['scriptKey'] ?? $id;
+                $source = $this->luaScripts[$key] ?? throw new \RuntimeException('Script Lua du compte introuvable.');
+                $intent = $this->luaPolicy->register($id, $source);
+                $player['luaGoal'] = $intent['goal'];
+                $player['luaMethod'] = $intent['method'];
+            }
+            $player['joinedTick'] = $state['tick'];
+            if (($player['scriptKey'] ?? $player['policy']) === 'fermier') {
+                $player['fridges'] = array_slice(array_keys($state['players']), 0, 2);
+            }
+            $state['players'][$id] = $player;
+            $state['goldFlow'][$id]['income'] = 0;
+            unset($state['pendingPlayers'][$id]);
+            if (isset($state['pendingArrivals'][$id])) {
+                $state['events'][] = ['tick' => $state['tick'], 'type' => 'arrival', 'actor' => $id,
+                    ...$state['pendingArrivals'][$id]];
+                unset($state['pendingArrivals'][$id]);
+            }
+        }
     }
 
     private function resetAccount(array &$state, string $id): void

@@ -4,6 +4,7 @@ namespace Waar\MicroCombat\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Waar\MicroCombat\Bagaar\EraSimulator;
+use Waar\MicroCombat\Bagaar\PlayerObservation;
 use Waar\MicroCombat\Workshop\CohortRuntime;
 use Waar\MicroCombat\Workshop\CohortRequestFactory;
 use Waar\MicroCombat\Workshop\EngineProfile;
@@ -132,7 +133,7 @@ final class BagaarEraSimulatorTest extends TestCase
             while (hexdec(substr(hash('sha256', $targetId), 0, 2)) % 4 !== $remainder) {
                 $targetId .= 'x';
             }
-            $state = $simulator->start(12, 1, [
+            $state = $simulator->start(12, 24, [
                 ['id' => 'farm', 'policy' => 'fermier'],
                 ['id' => $targetId, 'name' => 'Alice', 'policy' => 'casual'],
             ]);
@@ -143,9 +144,12 @@ final class BagaarEraSimulatorTest extends TestCase
             $state = $simulator->advance($state);
             self::assertContains($expected, array_column($state['events'], 'type'));
             if ($expected === 'abandon') {
-                self::assertCount(3, $state['players']);
+                self::assertCount(2, $state['players']);
                 self::assertSame('abandoned', $state['players'][$targetId]['status']);
-                self::assertSame(0, $state['players']['entrant-1']['glory']);
+                self::assertSame(0, $state['pendingPlayers']['entrant-1']['glory']);
+                self::assertNotContains('arrival', array_column($state['events'], 'type'));
+                $state = $simulator->advance($state, 23);
+                self::assertGreaterThan(1, $state['players']['entrant-1']['joinedTick']);
                 self::assertContains('arrival', array_column($state['events'], 'type'));
             } else {
                 self::assertCount(2, $state['players']);
@@ -179,7 +183,7 @@ final class BagaarEraSimulatorTest extends TestCase
         $state = $simulator->advance($state);
         self::assertSame(5, $state['players']['hacker']['hackerVictims'][$targetId]);
         self::assertSame('abandoned', $state['players'][$targetId]['status']);
-        self::assertSame(0, $state['players']['entrant-1']['glory']);
+        self::assertSame(0, $state['pendingPlayers']['entrant-1']['glory']);
         $hackerPoint = array_values(array_filter($state['frames'][0]['points'],
             static fn (array $point): bool => $point['id'] === 'hacker'))[0];
         self::assertSame('Emmerder l’admin qui regarde la simulation', $hackerPoint['goal']);
@@ -187,6 +191,25 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame(9, $state['players']['hacker']['hackerVictims'][$targetId]);
         self::assertSame(10, $state['players'][$targetId]['glory']);
         self::assertSame(1, $state['players'][$targetId]['surrenders']);
+    }
+
+    public function testSpontaneousEntrantWaitsUntilItsFirstPlayWindow(): void
+    {
+        $simulator = new EraSimulator(EngineProfile::fromArray(EngineProfile::defaults()), new BagaarFakeRuntime());
+        $state = $simulator->start(7, 34, [
+            ['id' => 'alice', 'policy' => 'grenouille', 'activity' => 'office'],
+            ['id' => 'bob', 'policy' => 'grenouille', 'activity' => 'office'],
+        ]);
+        $state = $simulator->advance($state, 24);
+        self::assertSame(1, $state['spontaneousArrivals']);
+        self::assertArrayHasKey('entrant-1', $state['pendingPlayers']);
+        self::assertArrayNotHasKey('entrant-1', $state['players']);
+        self::assertNotContains('arrival', array_column($state['events'], 'type'));
+        $state = $simulator->advance($state, 10);
+        self::assertSame(34, $state['players']['entrant-1']['joinedTick']);
+        self::assertSame(34, $state['players']['entrant-1']['lastSeenTick']);
+        self::assertSame('arrival', array_values(array_filter($state['events'],
+            static fn (array $event): bool => $event['actor'] === 'entrant-1'))[0]['type']);
     }
 
     public function testOfficePlayerActsOnlyDuringPlayHoursWhileMineKeepsProducing(): void
@@ -200,6 +223,8 @@ final class BagaarEraSimulatorTest extends TestCase
         $state = $simulator->advance($state);
         self::assertSame(0, $state['players']['office']['mineLevel']);
         self::assertSame(1, $state['players']['always']['mineLevel']);
+        self::assertCount(2, $state['frames'][0]['points']);
+        self::assertContains('office', array_column(PlayerObservation::fromState($state, 'always', $profile->costs())['targets'], 'id'));
         $state = $simulator->advance($state, 9);
         self::assertGreaterThan(0, $state['players']['office']['mineLevel']);
         $state = $simulator->advance($state, 7);

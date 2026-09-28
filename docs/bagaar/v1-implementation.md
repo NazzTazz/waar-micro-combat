@@ -2,9 +2,9 @@
 
 ## Rotation des comptes et plan de mine du Scripteur
 
-Un abandon laisse le compte dans l'ère : il conserve sa Glwaare, son Or, sa mine et son armée, mais ne décide plus. Bagaar fait alors entrer un nouveau joueur au même tick, avec une identité distincte, 0 Glwaare et un compte neuf. Le nouvel arrivant commence à agir au tick suivant. Le nombre de points peut donc croître au fil d'une ère.
+Un abandon laisse le compte dans l'ère : il conserve sa Glwaare, son Or, sa mine et son armée, mais ne décide plus. Bagaar prépare alors un compte neuf, avec une identité distincte et 0 Glwaare. Depuis `bagaar-host-rules/4`, ce nouveau joueur apparaît et agit à son premier créneau d'activité. Le nombre de points peut donc croître au fil d'une ère.
 
-Une arrivée peut aussi se produire sans abandon. Une fois par jour, un tirage déterministe donne une chance sur dix d'accueillir un compte neuf, avec au plus un entrant spontané par dix jours d'ère. L'événement `arrival` distingue `spontaneous` et `replacement` ; les deux empruntent la même création de compte et l'arrivant agit à partir du tick suivant.
+Une arrivée peut aussi se produire sans abandon. Une fois par jour, un tirage déterministe donne une chance sur dix de préparer un compte neuf, avec au plus un entrant spontané par dix jours d'ère. L'événement `arrival` distingue `spontaneous` et `replacement` ; il est émis quand l'arrivant apparaît. La population initiale, elle, existe dès le début de l'ère : ses comptes sans armée restent vulnérables avant leur premier créneau d'activité.
 
 Après une pause, une seconde série extrême de cinq défaites sur cinq peut déclencher un reset à la place d'un abandon. Le **même compte** garde son identifiant, son nom, son profil et ses habitudes de connexion ; son Or, sa Glwaare, sa mine, son infirmerie, son armée, ses rapports d'espionnage, ses quotas et son bilan repartent des valeurs initiales. Un reset ne crée pas de joueur supplémentaire et le compte reprend ses décisions au tick suivant.
 
