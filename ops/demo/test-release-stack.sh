@@ -85,6 +85,55 @@ if($afterResume['luaMemory']['first']['unit']!=='soldier' || $afterResume['luaGo
         'tick'=>$afterResume['lastResetTick'], 'status'=>$afterResume['status'],
         'memory'=>$afterResume['luaMemory'], 'goal'=>$afterResume['luaGoal'], 'method'=>$afterResume['luaMethod'],
     ], JSON_UNESCAPED_UNICODE));
+$multiScript=<<<'LUA'
+goal = "Observer mon compte"
+method = "Mémoriser mes appels."
+function next(observation)
+    local memo = observation.memory
+    if memo.owner == nil then memo.owner = observation.self.id end
+    assert(memo.owner == observation.self.id)
+    memo.calls = (memo.calls or 0) + 1
+    goal = "Compte " .. observation.self.id
+    method = "Appels " .. string.format("%.0f", memo.calls)
+    return nil
+end
+LUA;
+$scripts=array_fill_keys(['rageux','grenouille','ascenseur','fermier','scripteur','casual'],$multiScript);
+$accounts=[];
+foreach(array_keys($scripts) as $key){
+    for($index=1;$index<=4;$index++){
+        $accounts[]=['id'=>$key.$index,'policy'=>'lua','scriptKey'=>$key,'activity'=>'all-day'];
+    }
+}
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>2,'luaScripts'=>$scripts,'accounts'=>$accounts]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$players=$store->read($era['runId'])['state']['players'];
+if(count($players)!==24)throw new RuntimeException('Multi Lua did not create 24 players');
+foreach($players as $id=>$player){
+    if($player['policy']!=='lua' || ($player['luaMemory']['owner']??null)!==$id
+        || (int)($player['luaMemory']['calls']??0)!==2 || $player['luaGoal']!=="Compte $id"
+        || $player['luaMethod']!=='Appels 2')
+        throw new RuntimeException('Multi Lua state leaked or failed to resume for '.$id);
+}
+$entrantScript=<<<'LUA'
+goal = "Essai de relève"
+method = "Observer mon identité."
+function next(observation)
+    if observation.self.id == "axel" then return {type = "abandon"} end
+    observation.memory.owner = observation.self.id
+    return nil
+end
+LUA;
+$era=$post('/api/bagaar-start',['profile'=>$profile,'totalTicks'=>10,'luaScripts'=>['rageux'=>$entrantScript]]);
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
+$entrant=$store->read($era['runId'])['state']['players']['entrant-1']??null;
+if(($entrant['policy']??null)!=='lua' || ($entrant['scriptKey']??null)!=='rageux')
+    throw new RuntimeException('Scripted profile was not applied to replacement account');
+$post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>9]);
+$entrant=$store->read($era['runId'])['state']['players']['entrant-1'];
+if(($entrant['luaMemory']['owner']??null)!=='entrant-1')
+    throw new RuntimeException('Replacement Lua account did not receive its own memory');
 PHP
 volume=$(docker volume inspect --format '{{.Mountpoint}}' waar-engine-demo_profile-saves)
 original=$(fingerprint "$volume/profiles.json")

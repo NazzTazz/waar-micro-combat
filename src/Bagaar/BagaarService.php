@@ -29,25 +29,74 @@ final class BagaarService
         if ($script !== null && !is_string($script)) {
             throw new \InvalidArgumentException('Script Lua invalide.');
         }
-        $accounts = $request['accounts'] ?? self::defaultAccounts($soldierFrog, $script !== null);
+        $scripts = $request['luaScripts'] ?? null;
+        if ($scripts !== null && (!is_array($scripts) || $scripts === [] || array_is_list($scripts)
+            || count($scripts) > 24)) {
+            throw new \InvalidArgumentException('Catalogue de scripts Lua invalide.');
+        }
+        if ($scripts !== null) {
+            foreach ($scripts as $key => $source) {
+                if (!is_string($key) || !preg_match('/^[a-z][a-z0-9_-]{0,31}$/', $key)
+                    || !is_string($source) || $source === '' || strlen($source) > 16_384
+                    || preg_match('//u', $source) !== 1) {
+                    throw new \InvalidArgumentException('Catalogue de scripts Lua invalide.');
+                }
+            }
+            if ($script !== null) {
+                if (isset($scripts['comptable'])) {
+                    throw new \InvalidArgumentException('Deux scripts pour Le comptable.');
+                }
+                $scripts['comptable'] = $script;
+            }
+            ksort($scripts);
+        }
+        $accounts = $request['accounts'] ?? self::defaultAccounts($soldierFrog,
+            $script !== null || isset($scripts['comptable']), $scripts === null ? [] : array_keys($scripts));
         if (!is_int($seed) || !is_int($totalTicks) || !is_array($accounts) || !array_is_list($accounts)) {
             throw new \InvalidArgumentException('Paramètres de simulation invalides.');
         }
-        $luaPolicy = $script === null ? null : new LuaPolicy($script);
-        $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(), $luaPolicy))->start($seed, $totalTicks, $accounts);
+        $expanded = [];
+        if ($scripts !== null) {
+            foreach ($accounts as &$account) {
+                if (($account['policy'] ?? null) !== 'lua') {
+                    continue;
+                }
+                $id = $account['id'] ?? null;
+                $key = $account['scriptKey'] ?? $id;
+                if (!is_string($id) || !is_string($key) || !isset($scripts[$key])) {
+                    throw new \InvalidArgumentException('Script Lua manquant pour un compte.');
+                }
+                $account['scriptKey'] = $key;
+                $expanded[$id] = $scripts[$key];
+            }
+            unset($account);
+            if ($expanded === []) {
+                throw new \InvalidArgumentException('Aucun compte contrôlé par les scripts Lua.');
+            }
+            ksort($expanded);
+        }
+        $luaPolicy = $scripts !== null ? new LuaPolicy($expanded) : ($script === null ? null : new LuaPolicy($script));
+        $state = (new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(), $luaPolicy, $scripts ?? []))
+            ->start($seed, $totalTicks, $accounts);
         if ($script !== null) {
             $state['manifest']['luaScriptSha256'] = hash('sha256', $script);
+        }
+        if ($scripts !== null) {
+            $state['manifest']['luaScriptsSha256'] = hash('sha256', json_encode($scripts, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE));
         }
         $state['archiveDetached'] = true;
         $state['traceDetached'] = true;
         $state['frameCount'] = 0;
         $state['eventCount'] = 0;
         $state['observationEvents'] = [];
-        $id = $this->runs->create(['profile' => $profileInput, 'state' => $state, ...($script === null ? [] : ['luaScript' => $script])]);
+        $id = $this->runs->create(['profile' => $profileInput, 'state' => $state,
+            ...($script === null ? [] : ['luaScript' => $script]),
+            ...($scripts === null ? [] : ['luaScripts' => $scripts])]);
         return ['runId' => $id, 'manifest' => $state['manifest'], 'tick' => 0,
             'totalTicks' => $totalTicks, 'accounts' => array_map(static fn (array $player): array =>
                 ['id' => $player['id'], 'name' => $player['name'], 'policy' => $player['policy'],
-                    'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent']], array_values($state['players']))];
+                    'activity' => $player['activity'], 'aggressionPercent' => $player['aggressionPercent'],
+                    'scriptKey' => $player['scriptKey'] ?? null], array_values($state['players']))];
     }
 
     public function advance(array $request): array
@@ -65,8 +114,26 @@ final class BagaarService
             if ($script !== null && (!is_string($script) || hash('sha256', $script) !== ($document['state']['manifest']['luaScriptSha256'] ?? null))) {
                 throw new \RuntimeException('Script Lua de l’ère altéré.');
             }
+            $scripts = $document['luaScripts'] ?? null;
+            if ($scripts !== null && (!is_array($scripts) || hash('sha256', json_encode($scripts, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE))
+                !== ($document['state']['manifest']['luaScriptsSha256'] ?? null))) {
+                throw new \RuntimeException('Catalogue Lua de l’ère altéré.');
+            }
+            $expanded = [];
+            if ($scripts !== null) {
+                foreach ($document['state']['players'] as $account) {
+                    if (($account['policy'] ?? null) === 'lua' && ($account['status'] ?? 'active') !== 'abandoned') {
+                        $key = $account['scriptKey'] ?? $account['id'];
+                        if (!isset($scripts[$key])) {
+                            throw new \RuntimeException('Script Lua du compte introuvable.');
+                        }
+                        $expanded[$account['id']] = $scripts[$key];
+                    }
+                }
+                ksort($expanded);
+            }
             $simulator = new EraSimulator($profile, $this->runtime ?? new StreamingCohortRuntime(),
-                $script === null ? null : new LuaPolicy($script));
+                $scripts !== null ? new LuaPolicy($expanded) : ($script === null ? null : new LuaPolicy($script)), $scripts ?? []);
             $previousFrames = $document['state']['frameCount'] ?? count($document['state']['frames']);
             $previousEvents = $document['state']['eventCount'] ?? count($document['state']['events']);
             $document['state'] = $simulator->advance($document['state'], $steps);
@@ -125,7 +192,7 @@ final class BagaarService
             'eventCount' => $state['eventCount'] ?? count($state['events']), 'combatCount' => $state['combatCount'] ?? count($state['combats'])];
     }
 
-    private static function defaultAccounts(bool $soldierFrog, bool $withLua = false): array
+    private static function defaultAccounts(bool $soldierFrog, bool $withLua = false, array $scriptKeys = []): array
     {
         $groups = [
             'rageux' => [['axel', 'Axel'], ['bruno', 'Bruno'], ['chloe', 'Chloé'], ['dorian', 'Dorian']],
@@ -142,12 +209,15 @@ final class BagaarService
             foreach ($members as $index => [$id, $name]) {
                 if ($withLua && $id === 'quentin') {
                     $accounts[] = ['id' => 'comptable', 'name' => 'Le comptable', 'policy' => 'lua',
-                        'activity' => 'all-day', 'aggressionPercent' => 100];
+                        'activity' => 'all-day', 'aggressionPercent' => 100,
+                        ...($scriptKeys === [] ? [] : ['scriptKey' => 'comptable'])];
                     continue;
                 }
-                $accounts[] = ['id' => $id, 'name' => $name, 'policy' => $policy,
+                $scripted = in_array($policy, $scriptKeys, true);
+                $accounts[] = ['id' => $id, 'name' => $name, 'policy' => $scripted ? 'lua' : $policy,
                     'activity' => $policy === 'casual' ? ['casual-morning', 'casual-noon', 'casual-evening', 'casual-night'][$index] : $activities[$index],
                     'aggressionPercent' => $aggressions[$index],
+                    ...($scripted ? ['scriptKey' => $policy] : []),
                     ...($id === 'hacker' ? ['hacker' => true] : []),
                     ...($id === 'zoe' ? ['protester' => true] : []),
                     ...($policy === 'grenouille' ? ['soldierParadigm' => $soldierFrog] : [])];

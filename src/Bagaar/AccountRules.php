@@ -25,7 +25,7 @@ final class AccountRules
     {
         $fresh = self::initial($account['id'], $account['policy']);
         foreach (['name', 'originName', 'activity', 'aggressionPercent', 'soldierParadigm', 'hacker', 'protester',
-            'luaMemory', 'luaGoal', 'luaMethod'] as $key) {
+            'luaMemory', 'luaGoal', 'luaMethod', 'scriptKey'] as $key) {
             if (array_key_exists($key, $account)) {
                 $fresh[$key] = $account[$key];
             }
