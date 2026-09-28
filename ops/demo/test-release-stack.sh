@@ -81,7 +81,10 @@ $post('/api/bagaar-step',['runId'=>$era['runId'],'steps'=>1]);
 $afterResume=$store->read($era['runId'])['state']['players']['comptable'];
 if($afterResume['luaMemory']['first']['unit']!=='soldier' || $afterResume['luaGoal']!=='Comparer un second essai'
     || $afterResume['luaMethod']!=="Réutiliser l'observation du tick 1")
-    throw new RuntimeException('Lua memory or intention did not survive process restart');
+    throw new RuntimeException('Lua memory or intention did not survive process restart: '.json_encode([
+        'tick'=>$afterResume['lastResetTick'], 'status'=>$afterResume['status'],
+        'memory'=>$afterResume['luaMemory'], 'goal'=>$afterResume['luaGoal'], 'method'=>$afterResume['luaMethod'],
+    ], JSON_UNESCAPED_UNICODE));
 PHP
 volume=$(docker volume inspect --format '{{.Mountpoint}}' waar-engine-demo_profile-saves)
 original=$(fingerprint "$volume/profiles.json")
