@@ -5,9 +5,13 @@ namespace Waar\MicroCombat\Bagaar;
 /** Bounded memory of recent fights and deterministic player disengagement. */
 final class PlayerEngagement
 {
-    public static function afterCombat(array $player, int $tick, bool $lost, bool $resilientRageux = false): array
+    public static function afterCombat(array $player, int $tick, bool $lost, bool $resilientRageux = false,
+        bool $scriptControlsEngagement = false): array
     {
         if (($player['status'] ?? 'active') !== 'active') {
+            return [$player, null];
+        }
+        if ($scriptControlsEngagement && ($player['policy'] ?? null) === 'lua') {
             return [$player, null];
         }
         $recent = array_values(array_filter($player['recentCombats'] ?? [],
