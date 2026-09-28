@@ -5,7 +5,7 @@ namespace Waar\MicroCombat\Bagaar;
 /** Bounded memory of recent fights and deterministic player disengagement. */
 final class PlayerEngagement
 {
-    public static function afterCombat(array $player, int $tick, bool $lost): array
+    public static function afterCombat(array $player, int $tick, bool $lost, bool $resilientRageux = false): array
     {
         if (($player['status'] ?? 'active') !== 'active') {
             return [$player, null];
@@ -15,16 +15,19 @@ final class PlayerEngagement
         $recent[] = ['tick' => $tick, 'lost' => $lost];
         $player['recentCombats'] = $recent;
         $losses = count(array_filter($recent, static fn (array $combat): bool => $combat['lost']));
-        if (count($recent) < 5 || $losses * 5 < count($recent) * 4) {
+        $rageux = $resilientRageux && ($player['policy'] ?? null) === 'rageux';
+        if ($rageux ? ($tick <= 24 || count($recent) < 12 || $losses * 10 < count($recent) * 9)
+            : (count($recent) < 5 || $losses * 5 < count($recent) * 4)) {
             return [$player, null];
         }
         $variant = hexdec(substr(hash('sha256', $player['id']), 0, 2));
         $player['recentCombats'] = [];
-        if (($player['pauses'] ?? 0) >= 1 && $losses === count($recent) && $variant % 2 === 0) {
+        $pauses = $player['pauses'] ?? 0;
+        if ($pauses >= ($rageux ? 2 : 1) && $losses === count($recent) && $variant % 2 === 0) {
             $player['pauseUntil'] = null;
             return [$player, 'reset'];
         }
-        if (($player['pauses'] ?? 0) >= 1 || $variant % 4 === 0) {
+        if ($pauses >= ($rageux ? 2 : 1) || (!$rageux && $variant % 4 === 0)) {
             $player['status'] = 'abandoned';
             $player['pauseUntil'] = null;
             return [$player, 'abandon'];
