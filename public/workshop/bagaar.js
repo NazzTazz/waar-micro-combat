@@ -159,6 +159,7 @@ function renderPlayer(){
   const rows=[['Glwaare',point.glory],["Or investi dans l'armée",number.format(point.armyGold)],["Or disponible",number.format(point.gold)]];
   if(point.kind==='village')rows.push(['Or maximum',number.format(point.goldMax??point.gold)],['Abondement par tick',`${number.format(point.goldRefill??0)} Or`]);
   else rows.push(['État',statusNames[point.status]||statusNames.active],['Objectif',point.goal||'—'],['Moyen choisi',point.method||'—'],['Mine',`Niveau ${point.mineLevel??0}`],['Production horaire',`${number.format(point.mineProduction??0)} Or`],['Activité',activityNames[point.activity]||'Toute la journée'],['Agressivité',`${point.aggressionPercent??100} %`]);
+  if(point.kind!=='village'&&point.prisoners!==undefined)rows.push(['Prisonniers',number.format(point.prisoners)],['Revenu prisonniers au prochain tick',`${number.format(point.prisonerProduction??0)} Or`]);
   if(point.kind!=='village'&&point.resetCount>0)rows.push(['Remises à zéro',point.resetCount]);
   rows.push(['Soldats',number.format(point.army?.soldier??0)],['Lanciers',number.format(point.army?.spearman??0)],['Archers',number.format(point.army?.archer??0)],['Chevaliers',number.format(point.army?.knight??0)]);
   if(point.kind!=='village')rows.push(['Combats gagnés / nuls / perdus',`${point.record?.wins??0} / ${point.record?.draws??0} / ${point.record?.losses??0}`]);
@@ -196,12 +197,37 @@ function eventLabel(event){
   if(event.type==='rejected')return `${displayName(event.actor)} · ${event.action} refusé`;
   return `${displayName(event.actor)||'Jeu'} · ${event.type}`;
 }
+function appendCombatReport(item,event){
+  if(!event.report)return;
+  const details=document.createElement('details'),summary=document.createElement('summary');
+  details.className='bagaar-combat-report';summary.textContent='Rapport du combat';details.append(summary);
+  const units={soldier:'Soldats',spearman:'Lanciers',archer:'Archers',knight:'Chevaliers'};
+  for(const [side,label] of [['attacker','Attaquant'],['defender','Défenseur']]){
+    const heading=document.createElement('strong');heading.textContent=label;details.append(heading);
+    const table=document.createElement('table'),header=document.createElement('tr');
+    for(const name of ['Unité','Morts','Blessés','Capturés']){
+      const cell=document.createElement('th');cell.textContent=name;header.append(cell);
+    }
+    table.append(header);
+    for(const [type,name] of Object.entries(units)){
+      const row=document.createElement('tr'),loss=event.report[side]?.types?.[type]||{};
+      for(const value of [name,loss.dead??0,loss.wounded??0,loss.prisoners??0]){
+        const cell=document.createElement('td');cell.textContent=String(value);row.append(cell);
+      }
+      table.append(row);
+    }
+    details.append(table);
+    const captured=document.createElement('p');captured.textContent=`Prisonniers gagnés : ${event.report[side]?.prisonersCaptured??0}`;details.append(captured);
+  }
+  item.append(details);
+}
 function renderEvents(){
   const list=$('#era-events');list.replaceChildren();
   const visible=events.filter(event=>event.tick<=played).slice(-18).reverse();
   for(const event of visible){
     const item=document.createElement('li');item.textContent=eventLabel(event);
     const small=document.createElement('small');small.textContent=`Tick ${event.tick}`;item.append(small);
+    if(event.type==='combat')appendCombatReport(item,event);
     list.append(item);
   }
 }

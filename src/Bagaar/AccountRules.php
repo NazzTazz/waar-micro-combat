@@ -119,8 +119,7 @@ final class AccountRules
         $account = self::hospitalAttrition($account, $outsideLossPercent);
         $prisoners = $account['prisoners'];
         $treatment = $account['prisonerTreatment'];
-        $prisonerProduction = $prisoners === 0 ? 0 : (int) ceil(($prisoners / ($treatment / 100 * 16 + 4))
-            / log(log($prisoners + 2)) * (1 + $account['mineLevel'] / 100) * $prisonerProductionRatio);
+        $prisonerProduction = self::prisonerProduction($account, $prisonerProductionRatio);
         $prisonerLoss = (int) ceil($prisoners * ((1 - $treatment / 100) * 0.25 + 0.05) / $prisonerLossDivisor);
         $account['gold'] += HostRules::mineProduction($account['mineLevel'], $mineRatio) + $prisonerProduction;
         $account['prisoners'] = max(0, $prisoners - $prisonerLoss);
@@ -128,6 +127,19 @@ final class AccountRules
         $account['attacks'] = $quotas['attacks'];
         $account['defenses'] = $quotas['defenses'];
         return $account;
+    }
+
+    public static function prisonerProduction(array $account, float $ratio = 1.0): int
+    {
+        if ($ratio <= 0) {
+            throw new \InvalidArgumentException('Ratio de production des prisonniers invalide.');
+        }
+        $prisoners = $account['prisoners'];
+        if ($prisoners === 0) {
+            return 0;
+        }
+        return (int) ceil(($prisoners / ($account['prisonerTreatment'] / 100 * 16 + 4))
+            / log(log($prisoners + 2)) * (1 + $account['mineLevel'] / 100) * $ratio);
     }
 
     private static function hospitalAttrition(array $account, int $outsideLossPercent): array

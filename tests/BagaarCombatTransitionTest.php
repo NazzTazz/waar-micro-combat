@@ -42,7 +42,22 @@ final class BagaarCombatTransitionTest extends TestCase
         self::assertSame(0, $after['defender']['defenseLossStreak']);
         self::assertSame(9, $after['attacker']['army']['soldier']);
         self::assertSame(1, $after['defender']['hospital']['soldier']);
-        self::assertSame(['winner' => null, 'loot' => 0, 'prisoners' => 0, 'surrender' => false], $after['event']);
+        self::assertSame(['winner' => null, 'loot' => 0, 'prisoners' => 0, 'surrender' => false],
+            array_diff_key($after['event'], ['report' => true]));
+    }
+
+    public function testCombatReportListsLossesPerUnitAndPrisonersCapturedByWinner(): void
+    {
+        $after = CombatTransition::apply(self::player(), self::player(),
+            self::report('attacker', [8, 1, 1, 0], [7, 1, 1, 1]), 200);
+        self::assertSame(['dead' => 1, 'wounded' => 1, 'prisoners' => 0],
+            $after['event']['report']['attacker']['types']['soldier']);
+        self::assertSame(['dead' => 1, 'wounded' => 1, 'prisoners' => 1],
+            $after['event']['report']['defender']['types']['soldier']);
+        self::assertSame(1, $after['event']['report']['attacker']['prisonersCaptured']);
+        self::assertSame(1, $after['attacker']['prisoners']);
+        self::assertSame(0, $after['event']['report']['defender']['prisonersCaptured']);
+        self::assertCount(4, $after['event']['report']['attacker']['types']);
     }
 
     public function testUnarmedDefenderCanBePillaged(): void

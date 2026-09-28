@@ -25,7 +25,12 @@ L'observation donne `tick`, `totalTicks`, `spyRange`, `rwaa`, `candidate`,
 `self`, `targets`, `reports`, `events`, `costs` et `attempts`. `targets` ne
 contient que l'identité, le nom public, le type et la Glwaare. Les armées,
 l'Or et le moral des adversaires n'apparaissent que dans `reports` après
-espionnage. `events` contient les vingt derniers combats du compte.
+espionnage. `events` contient les vingt derniers combats du compte. Chaque
+combat récent expose `report.attacker` et `report.defender` : pour chaque type
+d'unité, `dead`, `wounded` et `prisoners` décrivent les pertes subies ;
+`prisonersCaptured` donne le total gagné par ce camp. Les rapports des deux
+participants décrivent le même combat. Les anciens combats sans ce champ
+restent lisibles.
 
 Actions possibles : `mine`, `hospital`, `recruit` avec `units`, `heal`, `spy`
 ou `attack` avec `target`, `surrender`, `autoSurrender` avec `enabled`, et

@@ -28,7 +28,7 @@ final class PlayerObservation
             for ($i = count($state['events']) - 1; $i >= 0; $i--) {
                 $event = $state['events'][$i];
                 if (($event['attacker'] ?? null) === $id || ($event['defender'] ?? null) === $id) {
-                    $events[] = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender']));
+                    $events[] = array_intersect_key($event, array_flip(['tick', 'attacker', 'defender', 'winner', 'surrender', 'report']));
                     if (count($events) >= 20) {
                         break;
                     }
