@@ -251,6 +251,7 @@ final class EraSimulator
             }
             $points[] = $point;
         }
+        $points = $this->withSignals($points);
         $villages = [];
         foreach ($state['villages'] as $id => $village) {
             $villages[] = ['id' => $id, 'kind' => 'village', 'policy' => 'village',
@@ -267,6 +268,44 @@ final class EraSimulator
             'rwaa' => $state['rwaa'], 'rwaaPv' => $state['rwaaPv'],
             'eventCount' => ($state['eventCount'] ?? 0) + count($state['events'])];
         return $state;
+    }
+
+    /** @param list<array<string,mixed>> $points
+     * @return list<array<string,mixed>>
+     */
+    private function withSignals(array $points): array
+    {
+        $ranks = self::gloryRanks($points, false);
+        $activeRanks = self::gloryRanks($points, true);
+        foreach ($points as &$point) {
+            $record = $point['record'];
+            $point['signals'] = DimensionlessSignals::from(
+                $point['powerDestroyed'], $point['powerLost'], $point['armyGold'], $point['goldLooted'],
+                $record['wins'], $record['draws'], $record['losses'],
+                $point['mineLevel'], $point['mineProduction'], $point['glory'],
+                $ranks[$point['id']], $activeRanks[$point['id']] ?? null,
+            );
+        }
+        unset($point);
+
+        return $points;
+    }
+
+    /** @param list<array<string,mixed>> $points
+     * @return array<string,int>
+     */
+    private static function gloryRanks(array $points, bool $activeOnly): array
+    {
+        $order = $activeOnly
+            ? array_values(array_filter($points, static fn (array $point): bool => ($point['status'] ?? 'active') === 'active'))
+            : $points;
+        usort($order, static fn (array $left, array $right): int => [$right['glory'], $left['id']] <=> [$left['glory'], $right['id']]);
+        $ranks = [];
+        foreach ($order as $index => $point) {
+            $ranks[$point['id']] = $index + 1;
+        }
+
+        return $ranks;
     }
 
     private function act(array &$state, string $id, array $action, string $weather, int $index): ?array

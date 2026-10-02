@@ -36,6 +36,36 @@ final class PlayerObservation
             $row['rwaa'] = ($state['rwaa'] ?? null) === $row['id'];
         }
         unset($row);
+        $gloryRank = 1;
+        foreach ($ranking as $row) {
+            if ($row['id'] === $id) {
+                $gloryRank = $row['rank'];
+                break;
+            }
+        }
+        $active = [];
+        foreach ($state['players'] as $otherId => $player) {
+            if (($player['status'] ?? 'active') === 'active') {
+                $active[] = ['id' => $otherId, 'glory' => $player['glory']];
+            }
+        }
+        usort($active, static fn (array $a, array $b): int => [$b['glory'], $a['id']] <=> [$a['glory'], $b['id']]);
+        $activeGloryRank = null;
+        foreach ($active as $index => $row) {
+            if ($row['id'] === $id) {
+                $activeGloryRank = $index + 1;
+                break;
+            }
+        }
+        $metrics = $state['inspectionMetrics'][$id] ?? [];
+        $record = $self['record'] ?? ['wins' => 0, 'draws' => 0, 'losses' => 0];
+        $self['signals'] = DimensionlessSignals::from(
+            $metrics['powerDestroyed'] ?? 0, $metrics['powerLost'] ?? 0,
+            HostRules::armyValue($self['army'], $costs), $metrics['goldLooted'] ?? 0,
+            $record['wins'] ?? 0, $record['draws'] ?? 0, $record['losses'] ?? 0,
+            $self['mineLevel'] ?? 0, HostRules::mineProduction($self['mineLevel'] ?? 0),
+            $self['glory'] ?? 0, $gloryRank, $activeGloryRank,
+        );
         if (($state['traceDetached'] ?? false) === true) {
             $events = array_reverse($state['observationEvents'][$id] ?? []);
         } else {

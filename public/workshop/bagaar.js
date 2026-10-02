@@ -244,6 +244,44 @@ function renderGoldFlow(point,detail,motion){
   row.setAttribute('role','img');row.setAttribute('aria-label',row.title);detail.append(row);
   for(const [element,from,to,duration,easing] of animations)element.animate([{width:`${from}%`},{width:`${to}%`}],{duration,easing});
 }
+const SIGNALS_VERSION='bagaar-signals/1';
+// Frames that already store signals keep those numbers. This fallback is bagaar-signals/1 only.
+function playerSignals(point,frame){
+  if(point.signals)return point.signals;
+  const points=frame?.points||[];
+  const rank=activeOnly=>{
+    const cohort=points.filter(item=>!activeOnly||(item.status||'active')==='active')
+      .sort((a,b)=>b.glory-a.glory||String(a.id).localeCompare(String(b.id)));
+    const place=cohort.findIndex(item=>item.id===point.id);
+    return place<0?null:place+1;
+  };
+  const wins=point.record?.wins??0,draws=point.record?.draws??0,losses=point.record?.losses??0;
+  const fights=wins+draws+losses;
+  const winRate=fights>0?wins/fights:null,lossRate=fights>0?losses/fights:null;
+  const destroyed=point.powerDestroyed??0,lost=point.powerLost??0,looted=point.goldLooted??0;
+  const army=point.armyGold??0,mine=point.mineProduction??0;
+  const glory=point.glory??0,mineLevel=point.mineLevel??0;
+  const finite=value=>Number.isFinite(value)?value:null;
+  const strike=finite(destroyed/(lost+1)),hurt=finite(lost/(destroyed+1));
+  const picsou=mine>0&&strike!=null?finite(strike*army/mine):null;
+  const equilibrium=winRate==null?null:finite(((mineLevel+1)/(glory/20+1))*winRate*((destroyed+looted)/(lost+1)));
+  const rwaa=winRate==null?null:finite(glory*winRate);
+  const joy=winRate==null||strike==null?null:finite(winRate*strike*(looted/(lost+1)));
+  const rage=lossRate==null||hurt==null?null:finite(lossRate*hurt/(looted+1)*(lost/Math.max(glory,10)));
+  const offense=winRate==null||strike==null?null:finite(winRate*strike);
+  const defense=lossRate==null||mine<=0?null:finite(lossRate*army/mine);
+  const defined={
+    R_picsou:picsou!=null,R_joy:joy!=null,R_rage:rage!=null,R_eq:equilibrium!=null,
+    R_rwaa:rwaa!=null,R_offense:offense!=null,R_defense:defense!=null,
+  };
+  return {
+    signalsVersion:SIGNALS_VERSION,derived:true,
+    gloryRank:rank(false),activeGloryRank:rank(true),
+    R_picsou:picsou,R_joy:joy,R_rage:rage,R_eq:equilibrium,R_rwaa:rwaa,R_offense:offense,R_defense:defense,
+    defined,
+  };
+}
+const signalNumber=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2});
 function renderInspection(point,frame,title,detail,motion){
   title.textContent=inspectionTitle(point);
   detail.replaceChildren();detail.classList.add('bagaar-player-detail');
@@ -275,6 +313,24 @@ function renderInspection(point,frame,title,detail,motion){
   line('Puissance détruite',point.powerDestroyed==null?'—':`${number.format(point.powerDestroyed)} Or`,powerHint);
   line('Puissance perdue',point.powerLost==null?'—':`${number.format(point.powerLost)} Or`,powerHint);
   line('Or pillé',point.goldLooted==null?'—':`${number.format(point.goldLooted)} Or`);
+  const signals=playerSignals(point,frame);
+  const current=signals.signalsVersion===SIGNALS_VERSION;
+  const kept='Valeur enregistrée avec une autre formule. Le frontend ne la recalcule pas.';
+  const text=value=>value==null?'—':signalNumber.format(value);
+  line('Formule',signals.signalsVersion||'non versionnée',current
+    ?'Mesures brutes. Une case vide signifie que le rapport n’est pas défini.'
+    :'Ces nombres restent ceux enregistrés avec la frame.');
+  for(const [key,label,hint] of [
+    ['gloryRank','Rang Glwaare','Place dans la cohorte affichée, comptes abandonnés compris. 1 = plus haute Glwaare. Ce rang ne désigne pas le candidat Rwaa.'],
+    ['activeGloryRank','Rang actif','Place parmi les comptes au statut actif. Vide si ce compte n’est pas actif. Être premier ne suffit pas pour devenir Rwaa.'],
+    ['R_picsou','R picsou',current?'(destructions / (pertes + 1)) × (armée / mine). Vide si la mine ne produit pas. Repère descriptif.':kept],
+    ['R_rwaa','R Rwaa',current?'Glwaare × taux de victoire. Vide sans combat. Repère descriptif.':kept],
+    ['R_eq','R équilibre',current?'Niveau de mine, Glwaare, victoires et (destructions + butin) / (pertes + 1). Vide sans combat. Repère descriptif.':kept],
+    ['R_joy','R joie',current?'Taux de victoire × frappe × butin / (pertes + 1). Vide sans combat. Repère descriptif.':kept],
+    ['R_rage','R rage',current?'Taux de défaite × pertes subies, rapportées au butin et à la Glwaare. Vide sans combat. Repère descriptif.':kept],
+    ['R_offense','R offense',current?'Taux de victoire × destructions / (pertes + 1). Vide sans combat. Repère descriptif.':kept],
+    ['R_defense','R défense',current?'Taux de défaite × armée / mine. Vide sans combat ou sans production. Repère descriptif.':kept],
+  ])line(label,key==='gloryRank'||key==='activeGloryRank'?(signals[key]==null?'—':String(signals[key])):text(signals.defined?.[key]===false?null:signals[key]),hint);
   const intent=document.createElement('div');intent.className='bagaar-player-intent';detail.append(intent);
   for(const [label,value] of [['Objectif',point.goal||'—'],['Moyen',point.method||'—']]){
     const row=document.createElement('p'),name=document.createElement('span');name.textContent=`${label} : `;row.append(name,document.createTextNode(value));intent.append(row);
