@@ -238,6 +238,7 @@ final class EraSimulator
                 'powerDestroyed' => $state['inspectionMetrics'][$id]['powerDestroyed'] ?? 0,
                 'powerLost' => $state['inspectionMetrics'][$id]['powerLost'] ?? 0,
                 'goldLooted' => $state['inspectionMetrics'][$id]['goldLooted'] ?? 0,
+                'goldSuffered' => $state['inspectionMetrics'][$id]['goldSuffered'] ?? 0,
                 'goldFlow' => $state['goldFlow'][$id] ?? [], 'goldFlowScale' => $state['goldFlowScale'][$id] ?? 1,
                 'resetCount' => $player['resetCount'] ?? 0,
                 'status' => $player['status'] ?? 'active', 'pauseUntil' => $player['pauseUntil'] ?? null,
@@ -275,23 +276,37 @@ final class EraSimulator
      */
     private function withSignals(array $points): array
     {
-        $order = $points;
-        usort($order, static fn (array $left, array $right): int => [$right['glory'], $left['id']] <=> [$left['glory'], $right['id']]);
-        $ranks = [];
-        foreach ($order as $index => $point) {
-            $ranks[$point['id']] = $index + 1;
-        }
+        $ranks = self::gloryRanks($points, false);
+        $activeRanks = self::gloryRanks($points, true);
         foreach ($points as &$point) {
             $record = $point['record'];
             $point['signals'] = DimensionlessSignals::from(
                 $point['powerDestroyed'], $point['powerLost'], $point['armyGold'], $point['goldLooted'],
                 $record['wins'], $record['draws'], $record['losses'],
-                $point['mineLevel'], $point['mineProduction'], $point['glory'], $ranks[$point['id']],
+                $point['mineLevel'], $point['mineProduction'], $point['glory'],
+                $ranks[$point['id']], $activeRanks[$point['id']] ?? null,
             );
         }
         unset($point);
 
         return $points;
+    }
+
+    /** @param list<array<string,mixed>> $points
+     * @return array<string,int>
+     */
+    private static function gloryRanks(array $points, bool $activeOnly): array
+    {
+        $order = $activeOnly
+            ? array_values(array_filter($points, static fn (array $point): bool => ($point['status'] ?? 'active') === 'active'))
+            : $points;
+        usort($order, static fn (array $left, array $right): int => [$right['glory'], $left['id']] <=> [$left['glory'], $right['id']]);
+        $ranks = [];
+        foreach ($order as $index => $point) {
+            $ranks[$point['id']] = $index + 1;
+        }
+
+        return $ranks;
     }
 
     private function act(array &$state, string $id, array $action, string $weather, int $index): ?array
@@ -439,6 +454,7 @@ final class EraSimulator
         if ($result['event']['loot'] > 0) {
             $state['goldFlow'][$id]['income'] = ($state['goldFlow'][$id]['income'] ?? 0) + $result['event']['loot'];
             $state['goldFlow'][$targetId]['pillaged'] = ($state['goldFlow'][$targetId]['pillaged'] ?? 0) + $result['event']['loot'];
+            $state['inspectionMetrics'][$targetId]['goldSuffered'] = ($state['inspectionMetrics'][$targetId]['goldSuffered'] ?? 0) + $result['event']['loot'];
         }
         $lossValue = ['attacker' => 0, 'defender' => 0];
         foreach ($lossValue as $side => $_) {

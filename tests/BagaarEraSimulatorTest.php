@@ -120,6 +120,7 @@ final class BagaarEraSimulatorTest extends TestCase
         $points = array_column($state['frames'][0]['points'], null, 'id');
         $totalLoot = array_sum(array_column($combats, 'loot'));
         self::assertSame($totalLoot, $points['farm']['goldLooted']);
+        self::assertSame($totalLoot, $points['fridge']['goldSuffered']);
         self::assertSame($totalLoot, $points['fridge']['goldFlow']['pillaged']);
         self::assertGreaterThanOrEqual($totalLoot, $points['farm']['goldFlow']['income']);
     }
@@ -257,18 +258,22 @@ final class BagaarEraSimulatorTest extends TestCase
             ['id' => 'alpha', 'name' => 'Alpha', 'policy' => 'grenouille'],
             ['id' => 'beta', 'name' => 'Beta', 'policy' => 'grenouille'],
         ]));
+        $state['players']['alpha']['status'] = 'abandoned';
+        $state['players']['alpha']['glory'] = 500;
         $state['players']['beta']['glory'] = 40;
         $state = $simulator->advance($state);
 
         $points = array_column($state['frames'][1]['points'], null, 'id');
-        self::assertSame(1, $points['beta']['signals']['gloryRank']);
-        self::assertSame(2, $points['alpha']['signals']['gloryRank']);
-        self::assertArrayHasKey('R_picsou', $points['beta']['signals']);
-        self::assertArrayHasKey('R_offense', $points['beta']['signals']);
-        self::assertArrayHasKey('R_defense', $points['beta']['signals']);
+        self::assertSame('bagaar-signals/1', $points['beta']['signals']['signalsVersion']);
+        self::assertSame(2, $points['beta']['signals']['gloryRank']);
+        self::assertSame(1, $points['alpha']['signals']['gloryRank']);
+        self::assertSame(1, $points['beta']['signals']['activeGloryRank']);
+        self::assertNull($points['alpha']['signals']['activeGloryRank']);
+        self::assertArrayHasKey('defined', $points['beta']['signals']);
 
         $view = PlayerObservation::fromState($state, 'beta', $profile->costs());
-        self::assertSame(1, $view['self']['signals']['gloryRank']);
+        self::assertSame(2, $view['self']['signals']['gloryRank']);
+        self::assertSame(1, $view['self']['signals']['activeGloryRank']);
         self::assertSame($view['self']['signals']['gloryRank'], array_column($view['ranking'], 'rank', 'id')['beta']);
     }
 
