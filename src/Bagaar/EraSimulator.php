@@ -251,6 +251,7 @@ final class EraSimulator
             }
             $points[] = $point;
         }
+        $points = $this->withSignals($points);
         $villages = [];
         foreach ($state['villages'] as $id => $village) {
             $villages[] = ['id' => $id, 'kind' => 'village', 'policy' => 'village',
@@ -267,6 +268,30 @@ final class EraSimulator
             'rwaa' => $state['rwaa'], 'rwaaPv' => $state['rwaaPv'],
             'eventCount' => ($state['eventCount'] ?? 0) + count($state['events'])];
         return $state;
+    }
+
+    /** @param list<array<string,mixed>> $points
+     * @return list<array<string,mixed>>
+     */
+    private function withSignals(array $points): array
+    {
+        $order = $points;
+        usort($order, static fn (array $left, array $right): int => [$right['glory'], $left['id']] <=> [$left['glory'], $right['id']]);
+        $ranks = [];
+        foreach ($order as $index => $point) {
+            $ranks[$point['id']] = $index + 1;
+        }
+        foreach ($points as &$point) {
+            $record = $point['record'];
+            $point['signals'] = DimensionlessSignals::from(
+                $point['powerDestroyed'], $point['powerLost'], $point['armyGold'], $point['goldLooted'],
+                $record['wins'], $record['draws'], $record['losses'],
+                $point['mineLevel'], $point['mineProduction'], $point['glory'], $ranks[$point['id']],
+            );
+        }
+        unset($point);
+
+        return $points;
     }
 
     private function act(array &$state, string $id, array $action, string $weather, int $index): ?array

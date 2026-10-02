@@ -249,6 +249,29 @@ final class BagaarEraSimulatorTest extends TestCase
         self::assertSame($state['players']['a']['record'], $state['frames'][1]['points'][0]['record']);
     }
 
+    public function testSignalsRankTheCohortByGloryAndReachThePolicyObservation(): void
+    {
+        $profile = EngineProfile::fromArray(EngineProfile::defaults());
+        $simulator = new EraSimulator($profile, new BagaarFakeRuntime());
+        $state = $simulator->advance($simulator->start(9, 2, [
+            ['id' => 'alpha', 'name' => 'Alpha', 'policy' => 'grenouille'],
+            ['id' => 'beta', 'name' => 'Beta', 'policy' => 'grenouille'],
+        ]));
+        $state['players']['beta']['glory'] = 40;
+        $state = $simulator->advance($state);
+
+        $points = array_column($state['frames'][1]['points'], null, 'id');
+        self::assertSame(1, $points['beta']['signals']['gloryRank']);
+        self::assertSame(2, $points['alpha']['signals']['gloryRank']);
+        self::assertArrayHasKey('R_picsou', $points['beta']['signals']);
+        self::assertArrayHasKey('R_offense', $points['beta']['signals']);
+        self::assertArrayHasKey('R_defense', $points['beta']['signals']);
+
+        $view = PlayerObservation::fromState($state, 'beta', $profile->costs());
+        self::assertSame(1, $view['self']['signals']['gloryRank']);
+        self::assertSame($view['self']['signals']['gloryRank'], array_column($view['ranking'], 'rank', 'id')['beta']);
+    }
+
     public function testTickChunksDoNotChangeTheEra(): void
     {
         $profile = EngineProfile::fromArray(EngineProfile::defaults());

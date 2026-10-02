@@ -244,6 +244,37 @@ function renderGoldFlow(point,detail,motion){
   row.setAttribute('role','img');row.setAttribute('aria-label',row.title);detail.append(row);
   for(const [element,from,to,duration,easing] of animations)element.animate([{width:`${from}%`},{width:`${to}%`}],{duration,easing});
 }
+function playerSignals(point,frame){
+  if(point.signals)return point.signals;
+  const cohort=[...(frame?.points||[])].sort((a,b)=>b.glory-a.glory||String(a.id).localeCompare(String(b.id)));
+  const place=cohort.findIndex(item=>item.id===point.id);
+  const wins=point.record?.wins??0,draws=point.record?.draws??0,losses=point.record?.losses??0;
+  const fights=wins+draws+losses,winRate=fights?wins/fights:0,lossRate=fights?losses/fights:0;
+  const destroyed=point.powerDestroyed??0,lost=point.powerLost??0,looted=point.goldLooted??0;
+  const army=point.armyGold??0,mine=point.mineProduction??0;
+  const glory=point.glory??0,mineLevel=point.mineLevel??0;
+  const strike=destroyed/(lost+1),hurt=lost/(destroyed+1);
+  const share=parts=>{
+    const safe=parts.map(part=>Number.isFinite(part)&&part>0?part:0);
+    const total=safe.reduce((sum,part)=>sum+part,0);
+    return total<=0?safe.map(()=>1/safe.length):safe.map(part=>part/total);
+  };
+  const [picsou,equilibrium,rwaa]=share([
+    mine>0?strike*army/mine:0,
+    ((mineLevel+1)/(glory/20+1))*winRate*((destroyed+looted)/(lost+1))*glory,
+    glory*winRate,
+  ]);
+  const [joy,rage]=share([
+    winRate*strike*(looted/(lost+1)),
+    lossRate*hurt/(looted+1)*(lost/Math.max(glory,10)),
+  ]);
+  const [offense,defense]=share([winRate*strike,mine>0?lossRate*army/mine:0]);
+  return {
+    gloryRank:place<0?1:place+1,
+    R_picsou:picsou,R_joy:joy,R_rage:rage,R_eq:equilibrium,R_rwaa:rwaa,R_offense:offense,R_defense:defense,
+  };
+}
+const signalNumber=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:2});
 function renderInspection(point,frame,title,detail,motion){
   title.textContent=inspectionTitle(point);
   detail.replaceChildren();detail.classList.add('bagaar-player-detail');
@@ -275,6 +306,17 @@ function renderInspection(point,frame,title,detail,motion){
   line('Puissance détruite',point.powerDestroyed==null?'—':`${number.format(point.powerDestroyed)} Or`,powerHint);
   line('Puissance perdue',point.powerLost==null?'—':`${number.format(point.powerLost)} Or`,powerHint);
   line('Or pillé',point.goldLooted==null?'—':`${number.format(point.goldLooted)} Or`);
+  const signals=playerSignals(point,frame);
+  for(const [key,label,hint] of [
+    ['gloryRank','Rang Glwaare','1 = plus haute Glwaare de la cohorte. Être premier ouvre la voie au Rwaa.'],
+    ['R_picsou','R picsou','Part du trio picsou / équilibre / Rwaa, somme 1. À maximiser pour limiter les pertes relatives.'],
+    ['R_rwaa','R Rwaa','Part du même trio. À maximiser pour viser le titre.'],
+    ['R_eq','R équilibre','Part du même trio. À maximiser pour un jeu équilibré.'],
+    ['R_joy','R joie','Part du duo joie / rage, somme 1. Monte avec les victoires et le butin.'],
+    ['R_rage','R rage','Part du même duo. Monte avec les défaites et les pertes d’armée.'],
+    ['R_offense','r offense','Part du duo offense / défense, somme 1. Plus il est élevé, plus la part offensive est à renforcer.'],
+    ['R_defense','r défense','Part du même duo. Plus il est élevé, plus la part défensive est à renforcer.'],
+  ])line(label,key==='gloryRank'?String(signals[key]):signalNumber.format(signals[key]),hint);
   const intent=document.createElement('div');intent.className='bagaar-player-intent';detail.append(intent);
   for(const [label,value] of [['Objectif',point.goal||'—'],['Moyen',point.method||'—']]){
     const row=document.createElement('p'),name=document.createElement('span');name.textContent=`${label} : `;row.append(name,document.createTextNode(value));intent.append(row);

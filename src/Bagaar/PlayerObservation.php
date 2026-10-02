@@ -36,6 +36,22 @@ final class PlayerObservation
             $row['rwaa'] = ($state['rwaa'] ?? null) === $row['id'];
         }
         unset($row);
+        $gloryRank = 1;
+        foreach ($ranking as $row) {
+            if ($row['id'] === $id) {
+                $gloryRank = $row['rank'];
+                break;
+            }
+        }
+        $metrics = $state['inspectionMetrics'][$id] ?? [];
+        $record = $self['record'] ?? ['wins' => 0, 'draws' => 0, 'losses' => 0];
+        $self['signals'] = DimensionlessSignals::from(
+            $metrics['powerDestroyed'] ?? 0, $metrics['powerLost'] ?? 0,
+            HostRules::armyValue($self['army'], $costs), $metrics['goldLooted'] ?? 0,
+            $record['wins'] ?? 0, $record['draws'] ?? 0, $record['losses'] ?? 0,
+            $self['mineLevel'] ?? 0, HostRules::mineProduction($self['mineLevel'] ?? 0),
+            $self['glory'] ?? 0, $gloryRank,
+        );
         if (($state['traceDetached'] ?? false) === true) {
             $events = array_reverse($state['observationEvents'][$id] ?? []);
         } else {
