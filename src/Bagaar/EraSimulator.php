@@ -238,7 +238,6 @@ final class EraSimulator
                 'powerDestroyed' => $state['inspectionMetrics'][$id]['powerDestroyed'] ?? 0,
                 'powerLost' => $state['inspectionMetrics'][$id]['powerLost'] ?? 0,
                 'goldLooted' => $state['inspectionMetrics'][$id]['goldLooted'] ?? 0,
-                'goldSuffered' => $state['inspectionMetrics'][$id]['goldSuffered'] ?? 0,
                 'goldFlow' => $state['goldFlow'][$id] ?? [], 'goldFlowScale' => $state['goldFlowScale'][$id] ?? 1,
                 'resetCount' => $player['resetCount'] ?? 0,
                 'status' => $player['status'] ?? 'active', 'pauseUntil' => $player['pauseUntil'] ?? null,
@@ -454,7 +453,6 @@ final class EraSimulator
         if ($result['event']['loot'] > 0) {
             $state['goldFlow'][$id]['income'] = ($state['goldFlow'][$id]['income'] ?? 0) + $result['event']['loot'];
             $state['goldFlow'][$targetId]['pillaged'] = ($state['goldFlow'][$targetId]['pillaged'] ?? 0) + $result['event']['loot'];
-            $state['inspectionMetrics'][$targetId]['goldSuffered'] = ($state['inspectionMetrics'][$targetId]['goldSuffered'] ?? 0) + $result['event']['loot'];
         }
         $lossValue = ['attacker' => 0, 'defender' => 0];
         foreach ($lossValue as $side => $_) {

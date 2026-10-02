@@ -312,8 +312,7 @@ function renderInspection(point,frame,title,detail,motion){
   const powerHint='Morts, blessés et prisonniers sortis de l’armée active, valorisés aux prix d’achat du preset.';
   line('Puissance détruite',point.powerDestroyed==null?'—':`${number.format(point.powerDestroyed)} Or`,powerHint);
   line('Puissance perdue',point.powerLost==null?'—':`${number.format(point.powerLost)} Or`,powerHint);
-  line('Or pillé',point.goldLooted==null?'—':`${number.format(point.goldLooted)} Or`,'Or pris sur les autres comptes, cumulé.');
-  line('Or subi',point.goldSuffered==null?'—':`${number.format(point.goldSuffered)} Or`,'Or perdu au pillage, cumulé.');
+  line('Or pillé',point.goldLooted==null?'—':`${number.format(point.goldLooted)} Or`);
   const signals=playerSignals(point,frame);
   const current=signals.signalsVersion===SIGNALS_VERSION;
   const kept='Valeur enregistrée avec une autre formule. Le frontend ne la recalcule pas.';

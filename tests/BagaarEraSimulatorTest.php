@@ -120,7 +120,6 @@ final class BagaarEraSimulatorTest extends TestCase
         $points = array_column($state['frames'][0]['points'], null, 'id');
         $totalLoot = array_sum(array_column($combats, 'loot'));
         self::assertSame($totalLoot, $points['farm']['goldLooted']);
-        self::assertSame($totalLoot, $points['fridge']['goldSuffered']);
         self::assertSame($totalLoot, $points['fridge']['goldFlow']['pillaged']);
         self::assertGreaterThanOrEqual($totalLoot, $points['farm']['goldFlow']['income']);
     }
